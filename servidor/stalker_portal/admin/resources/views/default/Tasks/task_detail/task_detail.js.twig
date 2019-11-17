@@ -1,0 +1,30 @@
+
+function yelp() {
+    $(document).ready(function () {
+        /*$("#task_chat").height($(window).height()*2/3);*/
+        var height = Math.min(
+            document.body.scrollHeight, document.documentElement.scrollHeight,
+            document.body.offsetHeight, document.documentElement.offsetHeight,
+            document.body.clientHeight, document.documentElement.clientHeight
+        );
+        $("#task_chat").height( height-100 );
+        $(document).on('click', "a.main_ajax[disabled!='disabled']", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var sendData = $(this).data();
+            ajaxPostSend($(this).attr('href'), sendData, false, false);
+            $(this).closest('div.open').removeClass('open');
+            return false;
+        });
+       
+        $(document).on('click', 'button',function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            $("#task_form input[name=apply]").val($(this).data('value'));
+            $("#task_form").get(0).submit();
+        });
+       
+    });
+}
+
+document.addEventListener("DOMContentLoaded", yelp, false);

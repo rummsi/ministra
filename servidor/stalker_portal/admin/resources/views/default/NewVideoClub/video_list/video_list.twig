@@ -1,0 +1,160 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Video club'|trans ~ ': ' ~ 'movie list'|trans %}
+
+
+{% block head %}
+    
+    {{ parent() }}
+    <style type="text/css">
+         {% include (app.twig_theme ~ "/NewVideoClub/video_list/video_list.css") %}
+    </style>
+
+{% endblock %}
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Select/js/dataTables.select.js"></script>
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/js/dataTables.buttons.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/css/buttons.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include app.twig_theme ~ "/NewVideoClub/video_list/video_list.js.twig" %}
+        </script>
+        
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {{ main_macro.get_filter('is_series', 'Type'|trans, 'id', 'title', app['isSeries'], 2) }}
+                {{ main_macro.get_filter('genre_id', 'Genre'|trans, 'id', 'title', app['allGenre'], 2) }}
+                {{ main_macro.get_filter('year', 'Year'|trans, 'id', 'title', app['allYears'], 2) }}
+                {{ main_macro.get_filter('status_id', 'Status'|trans, 'id', 'title', app['allStatus'], 2) }}
+                {{ main_macro.get_filter('author', 'Author'|trans, 'id', 'login', app['allModerators'], 2) }}
+                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/add-video" class="btn btn-success pull-right no_context_menu"><i class="fa fa-plus"></i>{{ 'Add movie'|trans }}</a>
+            </div>
+        </div>
+        <div class="row">
+                <div class="box">
+                    {% if attribute(app, 'dropdownAttribute') is defined %}
+                        {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                    {% endif %}
+                    <div class="box-content">
+                        <div class="box-content no-padding">
+
+                            <div class="dt-buttons">
+                                <div class="dt-group-select-dropdown pull-left">
+                                    <a href="#" class="dropdown-toggle btn-- dt-button" data-toggle="dropdown">
+                                        <span><i class="fa "></i>&nbsp;</span>
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-left">
+                                        <li>
+                                            <div id="select_none">
+                                                {{ 'Undo selection'|trans }}
+                                            </div>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li>
+                                            <div id="select_all">
+                                                {{ 'Select all'|trans }}
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div id="select_inverse">
+                                                 {{ 'Inverse selection'|trans }}
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="dataTables_processing"></div>
+                            <table class="table dataTable table-hover table-datatable compact" id="datatable-1">
+                                {% if attribute(app, 'dropdownAttribute') is defined %}
+                                    {{ main_macro.get_datatable_head(app['dropdownAttribute'], "\0") }}
+                                {% endif %}
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+            
+    <div id="modalbox_ad">
+        <div class="devoops-modal add-tasks">
+            <div class="devoops-modal-header">
+                <div class="modal-header-name">
+                    <span>{{ 'Create task'|trans }}</span>
+                </div>
+                <div class="box-icons">
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="devoops-modal-inner">
+                <div class="box-content">
+                    <form class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/create-tasks" method="POST">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Video title'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <span class="col-xs-10 col-sm-12">
+                                    <input type="hidden" name="id">
+                                    <div class="form-control-static txt-default">{{ 'Video title'|trans }}</div>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'To'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class="col-xs-10 col-sm-12">
+                                    <select class="populate placeholder" name="to_usr" id="s2_video_moderators" required="">
+                                        {% if app['allModerators'] %}
+                                            {% for m_item in app.allModerators %}
+                                                <option value="{{m_item.id}}">{{m_item.login}}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Task description'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class="col-xs-10 col-sm-12">
+                                    <textarea class="form-control" name="comment" rows="6" required=""></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="devoops-modal-bottom">
+                <div class="col-xs-12">
+                    <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+                    <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %} 

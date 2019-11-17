@@ -1,0 +1,405 @@
+{% extends app['twig_theme'] ~ '/layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Video club'|trans ~ ': ' ~ (app.videoEdit ? ('Edit movie'|trans ~ " '"~ app.videoName ~ "'"): 'Add movie'|trans) %}
+{% set active_alias = 'video-list' %}
+
+{% form_theme app['form'] _self %}
+
+{# form_errors.html.twig #}
+{% block form_errors %}
+    {% spaceless %}
+        <div>
+        {% if errors|length > 0 %}
+                {% for error in errors %}
+                    <i class="txt-danger fa fa-ban"></i> {{ error.message }} {% if not loop.last %}<br>{% endif %}
+                {% endfor %}
+        {% endif %}
+        </div>
+    {% endspaceless %}
+{% endblock form_errors %}
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/file-uploader-scripts.twig" %}
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" src="./plugins/scrollTo/jquery.scrollTo.min.js" defer=""></script>
+        <script type="text/javascript">
+           
+            {% include app.twig_theme ~ "/NewVideoClub/add_video/add_video.js.twig" %}
+
+        </script>
+    {% block footer_steps_js %}
+    {% endblock footer_steps_js %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="add_channel" class="new_video_club">
+        {% if app['videoEdit'] %}
+        <h4 class="section-header"><span>{{ 'Editing movie'|trans }}: {{ app.videoName }}</span></h4>
+        {% endif %}
+        {{ form_start(app['form'], {'method': 'POST', 'action': (app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias) | trans, 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
+        <div class="bg-danger">
+            <div class="bg-danger">
+                {{ form_errors(app['form']) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="box">
+
+                {% set form_steps = {
+                    1 : 'Basic',
+                    2 : 'Movie information',
+                    3 : 'Screenshots',
+                    4 : 'Files'
+                } %}
+
+                <ol class="nav nav-pills step-wizard-progress-bar active-{{ app.step }} clearfix" role="navigation">
+                    {% for step, step_name in form_steps %}
+                        <li class=" step-{{ step }} {{ step < app.step or app['videoEdit'] ? 'complete': '' }} {{ step == app.step ? 'active': '' }}">
+                            {% if step == app.step %}
+                                {{ step_name|trans }}
+                            {% elseif app['videoEdit'] or step < app.step %}
+                                <a class="no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-video?step={{ step }}{% if attribute(app, 'id') is defined %}&id={{ app.id }}{% endif %}">{{ step_name|trans }}</a>
+                            {% else %}
+                                {{ step_name|trans }}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ol>
+
+                {% block form_step_by_step %}
+                {% endblock form_step_by_step %}
+
+            </div>
+
+            <div class="form-buttons col-xs-12 col-sm-12">
+                <div class="box">
+                    <div class="box-content">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-right">
+                                
+                                {% if app['videoEdit'] and app.step == 4 %}
+                                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/video-list" class="btn btn-success  pull-right"> {{ 'CLOSE'|trans }} </a>
+                                {% elseif not(app['videoEdit']) and app.step == 4 %}
+                                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/video-list" class="btn btn-success  pull-right"> {{ 'Complite'|trans }} </a>
+                                {% else %}
+                                <button type="submit" id="form_save" name="form[save]" class="btn btn-success pull-right">{{ "Save & Forward"|trans }}<i class="fa fa-arrow-right"></i></button>
+                                {% endif %}
+
+                                {% if 1 < app.step %}
+                                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-video?step={{app.step-1}}{% if attribute(app, 'id') is defined %}&id={{ app.id }}{% endif %}" class="btn btn-default  pull-right"><i class="fa fa-arrow-left"></i> {{ 'Back'|trans }} </a>
+                                {% endif %}
+
+                                {% if app['videoEdit'] and app.step != 4 %}
+                                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/video-list" class="btn btn-default  pull-right"> {{ 'CLOSE'|trans }} </a>
+                                {% elseif not(app['videoEdit']) and app.step == 1 %}
+                                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/video-list" class="btn btn-default  pull-right"> {{ 'CLOSE'|trans }} </a>
+                                {% endif %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="">
+            {{ form_rest(app.form) }}
+        </div>
+        {{ form_end(app['form']) }}
+    </div>
+
+
+    {# The tamplates for javascript #}
+
+    <script type="text/template" id="files_box_content">
+        <div class="box-content">
+            <div class="dataTables_processing"></div>
+            <table class="table  table-hover table-datatable">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                {% endif %}
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </script>
+
+    <script type="text/template" id="files_box_header">
+        <a class="collapse-link">
+            <div class="box-header">
+                <div class="box-name">
+                    <div class="row">
+                        <div class="">
+                            <span data-files-title=""></span>
+                        </div>
+                        <div class="col-xs-4 col-sm-3">
+                            <span data-files-count="">{{ 'files'|trans ~ ":" }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-header-btn">
+                    <button class="btn btn-default btn-add-video-rating" data-add-files="1" title="{{'Add file'|trans}}"><i class="fa fa-plus"></i> {{ 'Add file'|trans }}</button>
+                </div>
+                <div class="box-icons">
+                    <i class="fa fa-chevron-up"></i>
+                </div>
+                <div class="no-move"></div>
+            </div>
+        </a>
+    </script>
+
+    <script type="text/template" id="series_box_header">
+        <a class="collapse-link">
+            <div class="box-header">
+                <div class="box-name">
+                    <div class="row">
+                        <div class="col-lg-1 col-md-1 no-padding-right">
+                            <span data-series-number=""></span>
+                        </div>
+                        <div class="col-lg-1 col-md-1 no-padding-right">
+                            <span data-files-count=""></span>
+                        </div>
+                        <div class="col-lg-4 col-md-4 no-padding-right">
+                            <span class="col-lg-4 col-md-4 text-right">{{ 'Title'|trans }}:</span>
+                            <div class="mod_input col-lg-8 col-md-8 no-padding">
+                                <input class="col-lg-12 col-md-12  no-padding" type="text" name="series_name" placeholder="{{ 'Add episodes name'|trans }}">
+                                <i class="fa fa-pencil"></i>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 no-padding-left">
+                            <span class="col-lg-5 col-md-4 text-right no-padding-left">{{ 'Original title'|trans }}:</span>
+                            <div class="mod_input col-lg-7 col-md-6 no-padding">
+                                <input class="col-lg-12 col-md-12  no-padding" type="text" name="series_original_name" placeholder="{{ 'Add original name'|trans }}">
+                                <i class="fa fa-pencil"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-header-btn">
+                    <button class="btn btn-default btn-add-video-rating" data-add-files="1" title="{{ "Add file"|trans}}"><i class="fa fa-plus"  data-original-title="{{ 'Add file'|trans }}" data-toggle="tooltip" data-placement="left"></i></button>
+                    <button class="btn btn-default btn-add-video-rating" data-delete-episode="1" title="{{ "Delete episode"|trans}}"><i class="fa fa-trash" data-original-title="{{ 'Delete episode'|trans }}" data-toggle="tooltip" data-placement="left"></i></button>
+                </div>
+                <div class="box-icons">
+                    <i class="fa fa-chevron-down"></i>
+                </div>
+                <div class="no-move"></div>
+            </div>
+        </a>
+    </script>
+
+    <script type="text/template" id="season_box_header">
+        <a class="collapse-link">
+            <div class="box-header">
+                <div class="box-name">
+                    <div class="row">
+                        <div class="col-lg-1 col-md-1 no-padding-right">
+                            <span data-season-number=""></span>
+                        </div>
+                        <div class="col-lg-1 col-md-1 no-padding-right">
+                            <span data-series-count=""></span>
+                        </div>
+                        <div class="col-lg-4 col-md-4 no-padding-right">
+                            <span class="col-lg-3 col-md-4 text-right" title="{{'Title'|trans}}">{{ 'Title'|trans }}:</span>
+                            <div class="mod_input col-lg-9 col-md-8 no-padding">
+                                <input class="col-lg-12 col-md-12  no-padding" type="text" name="season_name" placeholder="{{ 'Add season name'|trans }}">
+                                <i class="fa fa-pencil"></i>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 no-padding-right">
+                            <span class="col-lg-5 col-md-4 text-right no-padding-left " title="{{'Original title'|trans}}">{{ 'Original title'|trans }}:</span>
+                            <div class="mod_input col-lg-7 col-md-6 no-padding">
+                                <input class="col-lg-12 col-md-12  no-padding" type="text" name="season_original_name" placeholder="{{ 'Add original name'|trans }}">
+                                <i class="fa fa-pencil"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-header-btn">
+                    <button class="btn btn-default btn-add-video-rating" data-add-series="1" title="{{ "Add series"|trans}}"><i class="fa fa-plus" data-original-title="{{ 'Add episodes'|trans }}" data-toggle="tooltip" data-placement="left"></i></button>
+                    <button class="btn btn-default btn-add-video-rating" data-delete-season="1" title="{{ "Remove season"|trans}}"><i class="fa fa-trash" data-original-title="{{ 'Delete season'|trans }}" data-toggle="tooltip" data-placement="left"></i></button>
+                </div>
+                <div class="box-icons">
+                    <i class="fa fa-chevron-down"></i>
+                </div>
+                <div class="no-move"></div>
+            </div>
+        </a>
+    </script>
+
+    <script type="text/template" id="modal_save_form_body">
+        <div class="box-content no-padding">
+            <form id="file_form" class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-video-files">
+                    <div class="col-sm-8 col-sm-offset-2" id="file_form_input_container">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'File type'|trans }}</label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <input type="hidden" class="own_fields form-control" name="id" id="file_id" value="" readonly="readonly">
+                                    <input type="hidden" class="own_fields form-control" name="video_id" id="video_id" value="" readonly="readonly">
+                                    <input type="hidden" class="own_fields form-control" name="season_id" id="season_id" value="" readonly="readonly">
+                                    <input type="hidden" class="own_fields form-control" name="series_id" id="series_id" value="" readonly="readonly">
+                                    <input type="hidden" class="own_fields form-control" name="file_name" id="file_name" value="" readonly="readonly">
+                                    <input type="hidden" class="own_fields form-control" name="status" id="status" value="" readonly="readonly">
+                                    <select id="file_type" name="file_type" class="own_fields populate placeholder">
+                                        <option value="video">{{ 'Video'|trans }}</option>
+                                        <option value="sub">{{ 'Subs'|trans }}</option>
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Quality'|trans }}</label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <select id="file_quality" name="quality" class="own_fields populate placeholder">
+                                        {% if attribute(app, 'quality') is defined and app['quality'] %}
+                                            {% for item in app['quality'] %}
+                                                <option value="{{ item.id }}">{{ item.num_title }}{{ item.text_title ? (' (' ~ item.text_title ~ ')')|trans : '' }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Languages'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <select id="file_languages" name="languages" class="own_fields populate placeholder" multiple="multiple" data-validation='required'>
+                                        {% if attribute(app, 'allLanguages') is defined %}
+                                            {% for key, item in app.allLanguages %}
+                                                <option value="{{ key }}">{{ item }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Volume level'|trans }}</label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-6">
+                                    <select id="file_volume_level" name="volume_level" class="own_fields populate placeholder">
+                                        {% for item in -20..20 %}
+                                            <option value="{{ item }}">{{ item * 5 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Protocol'|trans }}</label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <select id="file_protocol" name="protocol" class="own_fields populate placeholder">
+                                        <option value="http">HTTP</option>
+                                        <option value="custom">Custom URL</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <span class="help-inline col-xs-9 col-sm-9 col-xs-offset-3 col-sm-offset-3">
+                                <span class="small txt-default col-xs-11 col-sm-11">{{ 'Selecting the method of content delivery to the user (http or custom url). When using HTTP, there is no link to the content, it is stored on the server.'|trans }}</span>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'URL'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <input type="text" class="own_fields form-control" name="url" id="video_url" value="" data-validation = 'required custom' data-validation-regexp = '^(\w+\s)?\w+\:\/\/.+$' data-validation-error-msg-custom = "{{ 'Invalid format links'|trans }}">
+                                </span>
+                            </div>
+                            <span class="help-inline col-xs-9 col-sm-9 col-xs-offset-3 col-sm-offset-3">
+                                <span class="small txt-default col-xs-11 col-sm-11">{{ 'Example: ffmpeg http://anon.nasa-global.edgesuite.net/HD_downloads/135_launch_720p.wmv'|trans }}</span>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Temporary link'|trans }}</label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <select id="file_tmp_link_type" name="tmp_link_type" class="populate placeholder own_fields">
+                                        <option value="">&nbsp;</option>
+                                        <option value="flussonic">Flussonic</option>
+                                        <option value="nginx">Nginx secire link</option>
+                                        <option value="wowza">Wowza</option>
+                                        <option value="edgecast_auth">EdgeCast auth</option>
+                                        <option value="akamai_auth">Akamai</option>
+                                        <option value="nimble">Nimble</option>
+                                        <option value="wowza_securetoken">Wowza SecureToken</option>
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Status'|trans }}</label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <select id="file_accessed" name="accessed" class="own_fields populate placeholder">
+                                        <option value="0">{{ 'Not published'|trans }}</option>
+                                        <option value="1">{{ 'Published'|trans }}</option>
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </script>
+
+    <script type="text/template" id="media_info_body">
+        <div class="col-sm-4" id="media_info">
+            <button class="btn btn-success btn-block disabled" disabled="disabled">{{ 'Autofill'|trans }}</button>
+        </div>
+    </script>
+
+    <script type="text/template" id="media_info_info">
+        <span class="col-sm-12 center" data-info-key="" data-info-val=""></span>
+    </script>
+
+    <script type="text/template" id="modal_save_form_buttons">
+        <div class="col-xs-12">
+            <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+            <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+        </div>
+    </script>
+
+    <script type="text/template" id="season_counter_template">
+        <form id="season_counter_form" class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/add-video-season">
+            <input type="hidden" class="own_fields form-control" name="video_id" id="video_id" value="{% if attribute(app, 'video_id') is defined %}{{ app['video_id'] }}{% endif %}" readonly="readonly">
+            <div class="form-group">
+                <label class="col-sm-2 control-label col-sm-offset-2 ">{{ 'Seasons'|trans }}</label>
+                <div class="col-xs-10 col-sm-6">
+                    <select name='season_counter' id='season_counter'>
+                        {% for i in 1..50 %}
+                            <option value='{{ i }}'>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </script>
+
+    <script type="text/template" id="series_counter_template">
+        <div class="form-group">
+            <label class="col-sm-2 control-label col-sm-offset-2">{{ 'Season'|trans }} </label>
+            <div class="col-xs-10 col-sm-6">
+                <select name='' id='series_counter_' class="populate placeholder own_fields">
+                    {% for i in 1..50 %}
+                        <option value='{{ i }}'>{{i}} {{ 'episodes'|trans }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br><br>
+        </div>
+    </script>
+
+{% endblock %}

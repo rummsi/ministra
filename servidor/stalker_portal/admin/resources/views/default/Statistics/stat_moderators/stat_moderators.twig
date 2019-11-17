@@ -1,0 +1,71 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = ('Statistics'|trans ~ ': ' ~ 'Moderators statistics'|trans) %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/Statistics/stat_moderators/stat_moderators.js.twig") %}
+        </script>
+        
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="pull-left">
+                    {{ main_macro.get_filter_button_bar('task_type', 'id', 'title', app['taskType']) }}
+                </div>
+                    {{ main_macro.get_filter('archived', 'Month'|trans, 'id', 'title', app['allArhivedate'], 2) }}
+                    {{ main_macro.get_filter('state', 'Status'|trans, 'id', 'title', app['taskState'], 2) }}
+                    {{ main_macro.get_filter('video_quality', 'Quality'|trans, 'id', 'title', app['videoQuality'], 2, 6) }}
+                    {{ main_macro.get_filter('to_user', 'Assignee'|trans, 'id', 'login', app['taskAdmin'], 2) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'allVideoDuration') is defined%}
+                    <div class="col-xs-10 col-sm-8 col-sm-offset-2 text-center" style="z-index: 100;">
+                        <h4 id="videoduration">{{ 'Summary length, min'|trans }}: {% if app['allVideoDuration']["hd_time"] and app['allVideoDuration']["hd_time"] != -1 %} HD - {{ app['allVideoDuration']["hd_time"] }}; {% endif %} {% if app['allVideoDuration']["sd_time"] and app['allVideoDuration']["sd_time"] != -1 %} SD - {{ app['allVideoDuration']["sd_time"] }}; {% endif %}{% if not app['allVideoDuration']["sd_time"] and not app['allVideoDuration']["hd_time"] %}0{% endif %}</h4>
+                    </div>
+                {% endif %}
+			</div>
+		</div>
+		<div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

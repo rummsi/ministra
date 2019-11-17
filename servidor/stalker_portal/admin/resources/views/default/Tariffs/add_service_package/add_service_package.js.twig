@@ -1,0 +1,752 @@
+
+{% autoescape false %}
+var default_additional_service_options = JSON.parse('{{ app['default_additional_service_options'] }}' || '{}');
+{% endautoescape %}
+
+var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%', placeholder: { id: "-1", text: ""}},
+    select2OptForSettings = select2Opt,
+    service_is_unavailable = {};
+select2OptForSettings['selectOnClose'] = false;
+
+var isEditing = {{ app.servicePackageEdit ? "true" : "false" }}, servicesObj = {};
+
+var conf = {
+        form: '#form_',
+        lang : '{{ app.js_validator_language }}',
+        showHelpOnFocus : true,
+        validateHiddenInputs: true,
+        errorClass: "error",
+        ignore: [],
+        modules: 'jsconf, security',
+
+        onSuccess: function () {
+            $('#form_services').attr('disabled', 'disabled');
+            $(this.form).get(0).submit();
+            return true;
+        },
+        
+        onError: function () {
+            var _this = this;
+            $(_this.form + " select").each(function(){
+                if ($(this).hasClass(_this.errorClass)) {
+                    _this.highlight(this, _this.errorClass);
+                } else {
+                    _this.unhighlight(this, _this.errorClass);
+                }
+            });
+            return false;
+        },
+
+
+        highlight: function (element, errorClass, validClass) {
+            var select2 = $(element).next().find('.selection').children();
+            if (!select2.hasClass(errorClass)) {
+                select2.addClass(errorClass);
+            }
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).next().find('.selection').children().removeClass(errorClass);
+        }
+};
+var modal_form = $.extend({}, conf, {form: "#modalbox_ad form", allowClear: true });
+
+var multySelectConf = {
+        keepOrder: true,
+        dblClick: true,
+        selectableHeader: '<label class="col-sm-12 text-center control-label">{{ 'Available'|trans }}</label>',
+        selectionHeader:  '<label class="col-sm-12 text-center control-label">{{ 'Selected' |trans }}</label>',
+        
+        afterSelect: function (values) {
+            var that = this;
+
+            if (values instanceof Array && values.length) {
+                $.each(values, function (index, val) {
+                    servicesObj['s' + val] = val;
+                });
+                msIds = $.map(values, function (val) {
+                    return (that.sanitize(val));
+                });
+                that.$selectableUl.find('#' + msIds.join('-selectable, #') + '-selectable').removeClass("selected");
+            }
+        },
+
+        afterDeselect: function(values){
+            var that = this;
+            if (values instanceof Array && values.length) {
+                $.each(values, function (index, val) {
+                    delete (servicesObj['s' + val]);
+                });
+                msIds = $.map(values, function (val) {
+                    return (that.sanitize(val));
+                });
+                that.$selectionUl.find('#' + msIds.join('-selection, #') + '-selection').removeClass("selected");
+            }
+
+            if( $('#form_type').val() == "tv"){
+                updateMultySwitcher();
+                updateDockDisplay();
+            }
+        },
+
+        afterInit: function(){
+            var that = this;
+            var action = that.options.dblClick ? 'dblclick' : 'click';
+
+            var btns =  '<div class="transfer-buttons">\
+                            <label class="col-sm-12 control-label"><br></label>\
+                            <button type="button" class="add_all btn btn-block btn-default"> {{ 'All'|trans }}<i class="fa fa-angle-double-right"></i> </button>\
+                            <button type="button" class="add btn btn-block btn-default"> <i class="fa fa-angle-right"></i> </button>\
+                            <button type="button" class="remove btn btn-block btn-default"> <i class="fa fa-angle-left"></i> </button>\
+                            <button type="button" class="remove_all btn btn-block btn-default"> <i class="fa fa-angle-double-left"></i>{{ 'All'|trans }} </button>\
+                        </div>';
+            $('#ms-form_services').append( btns );
+            
+            /* rewrite default click handler */
+            that.$selectableUl.off(action, '.ms-elem-selectable');
+            that.$selectionUl.off(action, '.ms-elem-selection');
+            
+            /* define own */
+            that.$selectableUl.on(action, '.ms-elem-selectable', function(){
+              that.select($(this).data('ms-value'));
+              $(this).removeClass("ms-hover").removeClass("selected");
+            });
+            that.$selectionUl.on(action, '.ms-elem-selection', function(){
+              that.deselect($(this).data('ms-value'));
+              $(this).removeClass("ms-hover").removeClass("selected");
+            });
+
+            var relations = {};
+            relations["1"] = '<span class="archive-status"><img src="{{app.request_context.baseUrl}}/img/tv-archive-on.png"        alt="" title="{{ 'Access to TV Archive: '|trans }}{{ 'Enabled'|trans }}"></span>';
+            relations["0"] = '<span class="archive-status"><img src="{{app.request_context.baseUrl}}/img/tv-archive-off.png"       alt="" title="{{ 'Access to TV Archive: '|trans }}{{ 'Disabled'|trans }}"></span>';
+            relations["-"] = '<span class="archive-status"><img src="{{app.request_context.baseUrl}}/img/tv-archive-undefined.png" alt="" title="{{ 'Access to TV Archive: '|trans }}{{ 'Not specified'|trans }}"></span>';
+
+            // add option signs:
+            $('#ms-form_services .ms-selection li[data-service_status="0"]').append('<span class="pull-right setup"><i class="fa fa-cog" title="{{ 'Setup TV archive service for this channel'|trans }}"></i></span>');
+            $('#ms-form_services .ms-selection li[data-service_status="1"]').each(function() {
+                var $this = $(this);
+                var settings = $('#form_services').find('option[value="'+ $this.data('ms-value') +'"]').data('settings') || "{}";
+                settings = JSON.parse(settings);
+                settings = (settings["enable_tv_archive"] === undefined) ? "-" : settings["enable_tv_archive"];
+                $this.append( relations[settings] );
+            });
+
+            if($("#service_options .tsb-casing").length == 0 ) {
+                $("#service_options").threestatebutton({
+                    stateChanged: stateChanged,
+                    statecount: 3,
+                    state: 1
+                });
+
+                $("#service_options .tsb-casing .fa-check").attr("title", "{{ 'Enable'|trans }}" );
+                $("#service_options .tsb-casing .fa-times").attr("title", "{{ 'Disable'|trans }}" );
+                $("#service_options .tsb-casing .fa-minus").attr("title", "{{ 'Not specified'|trans }}" );
+                $("#service_options .tsb-casing .tsb-ball").hide();
+            }
+        }
+};
+
+function InitSelect2() {
+    $('#form_service_type, #form_type, #service_options_select').select2(select2Opt);
+
+    $('#modalbox_ad select').select2(select2Opt);
+}
+
+function yelp() {
+    $(document).ready(function () {
+        
+        // set up validator for the form
+        if (isEditing) {
+            setEditValidationConfig(conf);
+        } else {
+            setDefaultValidationConfig(conf);
+        }
+        setServerValidationRequestParams();
+
+        $.validate(conf);
+        $.validate(modal_form);
+
+        LoadSelect2Script(InitSelect2);
+        
+        writeServiceOptionsData($('#form_type').val());
+        
+        $( "#form_price" ).spinner({
+            step: 0.01,
+            numberFormat: "C",
+            min: 0,
+            value: $( "#form_price" ).val()
+        });
+
+        $('#form_services').multiSelect(multySelectConf);
+        $('#form_services').multiSelect('deselect_all');
+
+        var selected = JSON.parse($('#form_services_json').val());
+
+        $.each(selected, function(index, val){
+            $('#form_services').multiSelect('select', val);
+        });
+
+        // define the template:
+        $.template( "serviceOptionItem", '<option value="${id}" {{ "{{if selected }}" }}selected="selected"{{ "{{/if}}" }} {{ "{{if status }}" }}data-service_status="${status}"{{ "{{/if}}" }}>${name}{{ "{{if external }}" }} (external){{ "{{/if}}" }}{{ "{{if launcher }}" }} (launcher){{ "{{/if}}" }}</option>' );
+        
+        /*
+        $(document).on('change', '#form_external_id', function (e) {
+            var _this = $(this);
+            _this.next('div.name-check').html('').hide();
+            ajaxPostSend('{{app.request_context.baseUrl}}/{{app.controller_alias}}/check-external-id', {externalid: $(this).val(), selfid: $('#form_id').val()}, false);
+        });*/
+
+        $(document).on('change', '#form_all_services', function(e){
+            if ($(this).is(":checked")){
+                $('#ms-form_services button').prop('disabled', true); // not working
+                $('#form_services').attr('disabled', 'disabled').closest('.form-group').hide();
+            } else{
+                $('#ms-form_services button').prop('disabled', false); // not working
+                $('#form_services').removeAttr('disabled').closest('.form-group').show();
+            }
+            $('#form_services').multiSelect('refresh');
+        });
+
+
+        // Access dropdown
+        $(document).on('change', '#form_service_type', function(eventObj){
+            var type = $(this).val();
+
+            if (type == 'single'){
+                $('#form_rent_duration').removeAttr('disabled').closest('.form-group').show();
+                $('#form_price').removeAttr('disabled').closest('.form-group').show();
+            } else {
+                $('#form_rent_duration').attr('disabled', 'disabled').closest('.form-group').hide();
+                $('#form_price').attr('disabled', 'disabled').closest('.form-group').hide();
+            }
+        });
+
+        if ($('#form_service_type option:selected').length == 0 || !$('#form_service_type option:selected').val()){
+            $('#form_service_type option[value="periodic"]').attr('selected', 'selected');
+            $('#form_rent_duration').attr('disabled', 'disabled').closest('.form-group').hide();
+            $('#form_price').attr('disabled', 'disabled').closest('.form-group').hide();
+        }
+
+        // Type dropdown
+        $(document).on('change', '#form_type', function(eventObj){
+
+            var type = $(this).val();
+
+            if (type == 'module' || type == ''){
+                $('#form_all_services').attr('disabled', 'disabled').closest('.form-group').hide();
+            }else{
+                $('#form_all_services').removeAttr('disabled').closest('.form-group').show();
+            }
+
+            if (type == 'video'){
+                $('#form_service_type').removeAttr('disabled').closest('.form-group').show();
+                if ($('#form_service_type').val() == 'single') {
+                    $('#form_rent_duration').removeAttr('disabled').closest('.form-group').show();
+                    $('#form_price').removeAttr('disabled').closest('.form-group').show();
+                }
+            } else {
+                $('#form_service_type').attr('disabled', 'disabled').closest('.form-group').hide();
+                $('#form_rent_duration').attr('disabled', 'disabled').closest('.form-group').hide();
+                $('#form_price').attr('disabled', 'disabled').closest('.form-group').hide();
+            }
+
+            // resetChbxFull();
+            $('#form_all_services').prop('checked', false);
+            $('#form_services').removeAttr('disabled').closest('.form-group').show();
+
+            $('#form_services').empty();
+            $('#service_options').hide();
+
+            if (type != 0){
+                ajaxPostSend('{{app.request_context.baseUrl}}/{{app.controller_alias}}/get-services', {type: type, package_id: $('#form_id').val() }, false);
+            }
+        });
+
+        if ($('#form_type option:selected').length == 0){
+            $('#form_type option[value="tv"]').attr('selected', 'selected');
+        }
+        //$("#form_type").change(); // front-end hotfix for issue #18622
+
+        $(document).on('click', '#form_save', function(e){
+
+            e.stopPropagation();
+            e.preventDefault();
+
+            var type = $("#form_type").val(), servicesOption = {};
+            servicesOption[type] = {};
+
+            $('#form_services option:selected').each(function(index, val){
+                var _val = $(this).val();
+                if (_val) {
+                    servicesOption[type][_val] = $(this).data('settings');
+                }
+            });
+
+            $('#form_services_json').val(JSON.stringify(servicesObj));
+            $('#form_service_options_json').val(JSON.stringify(servicesOption));
+
+            if ($(conf.form).isValid({}, conf, true)) {
+                conf.onSuccess();
+                return true;
+            } else {
+                conf.onError();
+            }
+            return false;
+        });
+
+        // left pannel
+        $(document).on('click', '#ms-form_services .ms-selectable li', function(e){
+            var $this = $(this);
+            if( !$this.hasClass('selected') ) {
+                if(!e.ctrlKey){
+                    //dropSelection
+                    $('#ms-form_services .ms-selectable').find('li.selected:visible').removeClass("selected");
+                }
+                $this.addClass('selected');
+            } else {
+                if(e.ctrlKey){
+                    $this.removeClass('selected');
+                } else {
+                    $('#ms-form_services .ms-selectable').find('li.selected:visible').removeClass("selected");
+                    $this.addClass('selected');
+                }
+            }
+        });
+
+        $(document).on('click', '#ms-form_services .ms-selection li', function(e){
+            e.stopPropagation();
+            
+            var $this = $(this);
+
+            if( !$this.hasClass('selected') ) {
+                if(!e.ctrlKey){
+                    //dropSelection
+                    $('#ms-form_services .ms-selection').find('li.selected:visible').removeClass("selected");
+                }
+                $this.addClass('selected');
+            } else {
+                if(e.ctrlKey){
+                    $this.removeClass('selected');
+                } else {
+                    $('#ms-form_services .ms-selection').find('li.selected:visible').removeClass("selected");
+                    $this.addClass('selected');
+                }
+            }
+
+            if( $('#form_type').val() == "tv"){
+                updateMultySwitcher();
+                updateDockDisplay();
+            }
+        });
+
+        // add/remove transfer buttons between pannels
+        $(document).on('click', 'button.add', function(){
+            var array = $("#ms-form_services .ms-selectable li.selected").map(function() {
+                return $(this).data('ms-value');
+            }).get();
+            $("#ms-form_services .ms-selectable li.selected").removeClass("selected");
+            $('#form_services').multiSelect('select',array);
+            return false;
+        });
+        
+        $(document).on('click', 'button.remove', function(){
+            var array = $("#ms-form_services .ms-selection li.selected").map(function() {
+                return $(this).data('ms-value');
+            }).get();
+            $("#ms-form_services .ms-selection li.selected").removeClass("selected");
+            $('#form_services').multiSelect('deselect',array);
+            updateDockDisplay();
+            return false;
+        });
+
+        $(document).on('click', 'button.add_all', function(){
+            $('#form_services').multiSelect('select_all');
+            $("#ms-form_services li.ms-hover").removeClass("ms-hover");
+            $("#ms-form_services .ms-selectable li.selected").removeClass("selected");
+            return false;
+        });
+        
+        $(document).on('click', 'button.remove_all', function(){
+            $('#form_services').multiSelect('deselect_all');
+            $("#ms-form_services li.ms-hover").removeClass("ms-hover");
+            $("#ms-form_services .ms-selection li.selected").removeClass("selected");
+            $('#service_options').hide();
+            return false;
+        });
+
+
+        /*** modalbox ***/
+
+        $(document).on('click', '#ms-form_services .ms-selection .fa-cog', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            
+            var li = $(this).closest('li');
+            openEnableTvArchive( li.data('ms-value'), li.children('span').text() );
+        });
+
+        $(document).on('change', '#form_tv_archive_type, select[id$="_storage_names"]', function () {
+            if( $("#modalbox_ad form").is(":visible") ){ // necessary to skip initial reset
+                $(this).validate(function(valid, elem) {
+                    if (valid) {
+                        modal_form.unhighlight(elem, modal_form.errorClass);
+                    } else {
+                        modal_form.highlight(elem, modal_form.errorClass);
+                    }
+                });
+            }
+        });
+
+        $(document).on('click submit', "#modalbox_ad button[type='submit'], #modalbox_ad form", function (e) {
+
+            if (e.currentTarget != e.target) {
+                return;
+            }
+            
+            e.stopPropagation();
+            e.preventDefault();
+
+            if ( $(modal_form.form).isValid(modal_form, {}, true) ) {
+
+                var sendData = {};
+
+                $('input, select', '#modalbox_ad').each(function () {
+                    
+                    var name = (typeof ($(this).attr('name')) != 'undefined') ? $(this).attr('name').replace(/\[\d*?\]/ig, '') : false;
+                    if (!name) {
+                        return true;
+                    }
+                    
+                    var value = $(this).val() || '',
+                        type = typeof ($(this).attr('type')) != 'undefined' ? $(this).attr('type') : $(this).get(0).tagName.toLowerCase();
+                    
+                    if (type == 'checkbox' || type == 'radio') {
+                        sendData[name] = $(this).prop('checked') ? 1: 0;
+                    } else {
+                        sendData[name] = value;
+                    }
+                });
+
+                ajaxPostSend($("#modalbox_ad form").attr('action'), sendData, false, false, true, {success: updateOptionSettings});
+
+                JScloseModalBox();
+            } else {
+                modal_form.onError();
+            }
+            return false;
+        });
+
+        $("#form_allow_pvr").on('change', function () {
+            checkEnableChkBox('form_allow_pvr');
+        });
+        checkEnableChkBox('form_allow_pvr');
+
+        $("#form_tv_archive_type").on('change', function () {
+            toggleChkSelect($(this).val());
+            // also clean validation errors for dependence:
+            $("#form_storage_names").parent().removeClass('has-error');
+            $("#form_storage_names").nextAll(".form-error").remove();
+        });
+        toggleChkSelect($("#form_tv_archive_type").val());
+
+        $('#form_ .form-group .i-hint').tooltip({
+            animation: true,
+            placement: "right"
+        });
+
+        $('#modalbox_ad .i-hint').tooltip({
+            animation: true,
+            placement: "right"
+        });
+
+        $("#service_options").on('click', function(e){
+            e.stopPropagation();
+        });
+
+        $(document).on('click', "#ms-form_services .ms-selection", function (e) {
+            e.stopPropagation();
+            if( $('#form_type').val() == "tv"){
+                updateDockDisplay();
+            }
+        });
+
+        $(document).on('click', function(e){
+            if ($("#ms-form_services .ms-selection").has(e.target).length || $("#service_options").has(e.target).length) {
+                return true;
+            }
+            if ($('#service_options').is(':visible')) {
+                $('#service_options').hide();
+            }
+        });
+
+        setTimeout(function () {
+            $("#service_options").removeClass("hidden").hide();
+        }, 10);
+
+    });
+}
+
+document.addEventListener("DOMContentLoaded", yelp, false);
+
+// from serverside
+var updateService = function (data){
+
+    if (typeof (data.services) !== 'undefined') {
+        $('#form_services').empty();
+        $.each(data.services, function(index, item){
+            $.each(['status', 'external', 'launcher'], function(){
+                if (typeof (item[this]) !== 'undefined' ) {
+                    item[this] += '';
+                } else {
+                    item[this] = false;
+                }
+            });
+            $.tmpl( "serviceOptionItem", item ).appendTo( '#form_services' );
+        });
+        writeServiceOptionsData($('#form_type').val());
+    }
+
+    $('#form_type').attr('data-currtype', data.type);
+    $('#form_services').multiSelect('destroy').multiSelect(multySelectConf);
+
+    if ($('#form_all_services:checked').length){
+        $('#form_services').attr('disabled', 'disabled');
+    }
+};
+
+var writeServiceOptionsData = function(type){
+    var currSettings = JSON.parse($("#form_service_options_json").val() || '{}');
+    if (currSettings[type]) {
+        $('#form_services option').each(function(){
+            if (currSettings && currSettings[type][$(this).val()]) {
+                $(this).data('settings', currSettings[type][$(this).val()]);
+            } else {
+                $(this).removeData('settings');
+            }
+        });
+    }
+};
+
+function stateChanged(e, state, source) {
+
+    // real click or programm call
+    if( e.currentTarget == e.target ) {
+
+        $('#service_options .tsb-casing .tsb-ball').show();
+
+        var convertMap = [
+            ["1", '<img src="{{app.request_context.baseUrl}}/img/tv-archive-on.png" alt=""        title="{{ 'Access to TV Archive: '|trans }}{{ 'Enabled'|trans }}">'],
+            ["0", '<img src="{{app.request_context.baseUrl}}/img/tv-archive-off.png" alt=""       title="{{ 'Access to TV Archive: '|trans }}{{ 'Disabled'|trans }}">'],
+            ["",  '<img src="{{app.request_context.baseUrl}}/img/tv-archive-undefined.png" alt="" title="{{ 'Access to TV Archive: '|trans }}{{ 'Not specified'|trans }}">']
+        ];
+
+        var selectedLi = $('#ms-form_services .ms-selection li.selected:visible');
+        selectedLi.find('.archive-status').empty().append(convertMap[state][1]);
+
+        selectedLi = selectedLi.map(function() { return $(this).data('ms-value'); }).get();
+
+        $('#form_services option:selected').filter(function() {
+            return $.inArray(this.value, selectedLi) !== -1 && $(this).data('service_status') == 1;
+        }).data('settings', state==2 ? "{}" : JSON.stringify({"enable_tv_archive":convertMap[state][0]}) );
+    }
+}
+
+
+function updateMultySwitcher(){
+    // single - OK
+    var settings = $('#form_services').find('option[value="'+ $(this).data('ms-value') +'"]').data('settings') || "{}";
+    settings = JSON.parse(settings);
+    settings = (settings["enable_tv_archive"] === undefined) ? "" : settings["enable_tv_archive"];
+
+    // Array of values
+    var arraySettings = [];
+    var li = $('#ms-form_services .ms-selection').find('li.selected:visible')
+        .map(function() {
+            return $(this).data('ms-value');
+        }).get();
+
+    $('#form_services').find('option:selected')
+        .filter(function() {
+            return $.inArray(this.value, li) !== -1;
+        })
+        .each(function() {
+            settings = $(this).data('settings') || "{}";
+            settings = JSON.parse(settings);
+            settings = (settings["enable_tv_archive"] === undefined) ? "" : settings["enable_tv_archive"];
+            if( $.inArray(settings, arraySettings) === -1 ){
+                arraySettings.push(settings);
+            }
+        });
+
+    if( li.length > 1){
+        $('#service_options').find('.block-header .counter').text(li.length);
+    } else {
+        $('#service_options').find('.block-header .counter').empty();
+    }
+
+    var map = {
+            "0" : 1,
+            "1" : 0,
+            ""  : 2
+        };
+    if( arraySettings.length == 1 ){
+        $('#service_options .tsb-casing .tsb-ball').show();
+        $('#service_options .tsb-state[data-tbsstate="'+ map[ arraySettings[0] ] +'"]').click();
+    } else {
+        $('#service_options .tsb-casing').attr("data-current","none");
+        $('#service_options .tsb-casing .tsb-ball').hide();
+    }
+}
+
+function updateDockDisplay(){
+    var li = $('#ms-form_services .ms-selection').find('li.selected:visible')
+    // control additional dock visibility:
+    // if non selected or selection is with fa-cog
+    if( li.length == 0 || li.filter('[data-service_status="0"]').length > 0 ){
+        $('#service_options').hide();
+    } else {
+        $('#service_options').show();
+    }
+}
+
+function updateOptionSettings(data){
+
+    if( data.success && data.id ){
+        
+        var option = $('#form_services').find('option[value="' +data.id+ '"]');
+
+        if( option.length == 0 ){
+            JSErrorModalBox({msg:"{{ 'Missing channel id'|trans }}. {{ 'Check the settings at TV channel page'|trans }}"});
+            return false;
+        }
+
+        // the default state to TV archive in package is "not specified"
+        option.attr("data-service_status", "1" ).data('settings', "{}");
+
+        // Based on channel list items stay the same from the beggining
+        // and selectable UL li order depends on <select> <option> order.
+        // Use this dependency to update the $selection LI inner data in 2 steps:
+        var li = $('#form_services').data('multiselect').$selectableUl.children().eq(option.index()); // get the LI in selectable list
+        li = $( "#"+li.attr("id").replace("selectable", "selection") ); // get the LI in selection list
+
+        li.attr("data-service_status", "1" );
+        li.find(".setup").remove();
+        li.append('<span class="archive-status"><img src="{{app.request_context.baseUrl}}/img/tv-archive-undefined.png" alt="" title="{{ 'Not specified'|trans }}"></span>');
+
+        // no need to update switcher, becouse the TV archive dock settings and
+        // multy-switcher are already setup at click (like dock is always visible - and it actualy was so).
+        // just update Dock display:
+        updateDockDisplay();
+
+    }
+}
+
+
+/*** modal functions ***/
+
+function openEnableTvArchive(id, name){
+    
+    $('#modalbox_ad').find('.modal-header-name span').text("{{ 'Setup TV archive'|trans }} {{ 'for channel'|trans }} "+name);
+    
+    $("#modalbox_ad").find("input, select").prop("disabled", false).removeAttr('disabled');
+    $("#modalbox_ad").find('form').get(0).reset();
+    
+    $('#modalbox_ad select option:selected').prop('selected', false).removeAttr('selected');
+    $("#modalbox_ad select").trigger("change");
+    $("#modalbox_ad select").each(function(){
+        modal_form.unhighlight(this, modal_form.errorClass);
+    });
+    checkEnableChkBox('form_allow_pvr');
+
+    $('#modalbox_ad #form_channel_id').val(id);
+
+    $('#modalbox_ad').show();
+}
+
+function toggleChkSelect(currVal){
+    var relations = {
+        'stalker_dvr'   :   'form_storage_names',
+        'wowza_dvr'     :   'form_wowza_storage_names',
+        'flussonic_dvr' :   'form_flussonic_storage_names',
+        'nimble_dvr'    :   'form_nimble_storage_names'
+    };
+
+    var $select2, parentVisible = 0;
+
+    $.each(relations, function(key, val){
+        var currObj = $("#" + val);
+        currObj.next('span').hide();
+        currObj.prop("disabled", 'disabled').attr('disabled', "disabled");
+        modal_form.unhighlight("#" + val, modal_form.errorClass);
+        
+        if (key === currVal) {
+            parentVisible = 1;
+            currObj.next('span').show();
+            // update select2 element
+            currObj.trigger('change');
+            currObj.prop("disabled", false).removeAttr('disabled');
+        }
+    });
+
+    if( parentVisible === 0 ) {
+        $select2 = $("#form_storage_names").next('span')
+        $select2.find(".select2-selection__choice").remove();
+        modal_form.unhighlight("#form_storage_names", modal_form.errorClass);
+        $select2.show();
+    }
+
+}
+
+function checkEnableChkBox(chkBoxId){
+    var _this = $("#" + chkBoxId);
+    var parent = _this.closest('div.form-group');
+    if (_this.prop("checked")) {
+        parent.next().show().find('input select').prop("disabled", false).removeAttr('disabled');
+    } else {
+        parent.next().hide().find('input select').prop("disabled", "disabled").attr('disabled', "disabled");
+        // also clean validation errors for dependence field:
+        $("#form_pvr_storage_names").parent().removeClass('has-error');
+        $("#form_pvr_storage_names").nextAll(".form-error").remove();
+        modal_form.unhighlight($("#form_pvr_storage_names"), modal_form.errorClass);
+    }
+}
+
+/*** Validator functions ***/
+function setServerValidationRequestParams() {
+    var param = {
+        'selfid': $("#form_id").val(),
+        'for_validator': true,
+    };
+    $('#form_external_id').attr('data-validation-req-params', JSON.stringify(param) );
+
+    param = {
+        'id': $("#form_id").val(),
+        'for_validator': true,
+    };
+    $('#form_name').attr('data-validation-req-params', JSON.stringify(param) );
+}
+
+function setDefaultValidationConfig(conf) {
+    conf.ignore = [];
+    conf.validateOnBlur = true;
+    conf.validateOnEvent = false;
+}
+
+function setEditValidationConfig(conf) {
+    conf.ignore = ['form[name]','form[external_id]'];
+    conf.validateOnBlur = false;
+    conf.validateOnEvent = true;
+
+    $('#form_name, #form_external_id').one('change', function (e) {
+        var ignore = conf.ignore;
+        var index = ignore.indexOf(this.name);
+        if( index !== -1 ){
+            $(this).attr('data-validation-event', "blur");
+            ignore.splice( index, 1 );
+        }
+        if( ignore.length == 0 ){
+            conf.validateOnBlur = true;
+            conf.validateOnEvent = false;
+        }
+        $.validate(conf);
+    });
+}

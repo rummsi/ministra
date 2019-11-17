@@ -1,0 +1,159 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = ('Administrators'|trans ~ ': ' ~ 'permissions for group administrators '|trans ~ '"' ~ app.adminGropName ~ '"') %}
+{% set active_alias = 'admins-groups' %}
+
+
+{% block footer %}
+    {{ parent() }}
+    
+    <script type="text/javascript" defer>
+       
+        {% include (app.twig_theme ~ "/Admins/admins_groups_permissions/admins_groups_permissions.js.twig") %}
+
+    </script>
+{% endblock %}
+
+
+{% block content %} 
+    <div id="iptv_list">
+        <div class="row" id="adm_grp_perm">
+            <div class="">
+                {%if attribute(app,'permissionMap') is defined %}
+                {% set current_controller = '' %}
+                {% for row in app['permissionMap'] %}
+                    {% if not (current_controller == row.controller_name) %}
+                        {% if not (current_controller == '') %}
+                        </div>
+                    </div>
+                </div>
+                        {% endif %}
+                <div class="">
+                    <div class="box">
+                        <div class="box-header" data-original-title="{{ row.description }}" data-toggle="tooltip" data-placemeent="bottom">
+                            <div class="box-name">
+                                <div class="row">
+                                    <div class="form-group col-xs-2 col-sm-2">
+                                            <div class="col-xs-12 col-sm-12">
+                                                <div class="col-xs-12 col-sm-12">
+                                                <span class="txt-primary">{{ row.controller_name }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-9 col-sm-9">
+                                        <div class="col-xs-4 col-sm-4">
+                                            <div class="col-xs-6 col-sm-6">
+                                                <span class="round-text">{{ 'Viewing'|trans }}</span>
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3">	
+												<div class="mswitch">
+                                                    <input type="hidden" name="controller['{{ row.controller_name }}']['is_ajax']" value="{% if row.is_ajax == 1%}on{% else %}off{% endif %}">
+                                                    <input type="checkbox" id="controller['{{ row.controller_name }}']['view_access']" name="controller['{{ row.controller_name }}']['view_access']" {% if row.view_access == 1%}checked="checked"{% endif %} >
+                                                    <label for="controller['{{ row.controller_name }}']['view_access']" class="label-success"></label>
+												</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-4 col-sm-4">
+                                            <div class="col-xs-8 col-sm-8">
+                                                <span class="round-text">{{ 'Editing'|trans }}</span>
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3">
+												<div class="mswitch">
+                                                    <input type="checkbox" id="controller['{{ row.controller_name }}']['edit_access']" name="controller['{{ row.controller_name }}']['edit_access']" {% if row.edit_access == 1%}checked="checked"{% endif %} >
+                                                    <label for="controller['{{ row.controller_name }}']['edit_access']" class="label-success"></label>
+												</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-4 col-sm-4">
+                                            <div class="col-xs-6 col-sm-6">
+                                                <span class="round-text">{{ 'Actions'|trans }}</span>
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3">
+                                                <div class="mswitch">
+                                                    <input type="checkbox" id="controller['{{ row.controller_name }}']['action_access']" name="controller['{{ row.controller_name }}']['action_access']" {% if row.action_access == 1%}checked="checked"{% endif %} >
+                                                    <label for="controller['{{ row.controller_name }}']['action_access']" class="label-success"></label>
+												</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-icons">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                {#<a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>#}
+                            </div>
+                            <div class="no-move"></div>
+                        </div>
+                        <div class="box-content admin-permissions">
+                        {% set current_controller = row.controller_name %}
+                    {% endif %}
+                    {% if row.action_name != '' and row.action_name != 'index' %}
+                            <div class="row">
+                                <div class="form-group col-xs-12 col-sm-2">
+                                    <span class="txt-primary col-xs-12">{{ row.action_name }}</span>
+                                    <span class="txt col-xs-12">{{ row.description }}</span>
+                                </div>
+                                <div class="form-group col-xs-9 col-sm-9" style="display: block;">
+                                    <div class="col-sm-4 {% if row.is_ajax == 1 %}disabled_opacity{% endif %}">
+                                        <div class="col-sm-6">
+                                            <span class="round-text">{{ 'Viewing'|trans }}</span>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="mswitch">
+                                                <input type="hidden" name="controller['{{ row.controller_name }}']['{{ row.action_name }}']['is_ajax']" value="{% if row.is_ajax == 1%}on{% else %}off{% endif %}">
+                                                <input type="checkbox" {% if row.is_ajax == 1 %}disabled="disabled"{% endif %} value="{% if row.view_access == 1 %}on" checked="checked"{% else %}off"{% endif %} name="controller['{{ row.controller_name }}']['{{ row.action_name }}']['view_access']"  id="controller['{{ row.controller_name }}']['{{ row.action_name }}']['view_access']"  />
+                                                <label for="controller['{{ row.controller_name }}']['{{ row.action_name }}']['view_access']"  class="label-success"></label>
+                                            </div>
+										</div>
+                                    </div>
+                                    <div class="col-sm-4 {% if row.is_ajax == 1 %}disabled_opacity{% endif %}">
+                                        <div class="col-sm-8">
+                                            <span class="round-text">{{ 'Editing'|trans }}</span>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="mswitch">
+                                                <input type="checkbox" id="controller['{{ row.controller_name }}']['{{ row.action_name }}']['edit_access']" name="controller['{{ row.controller_name }}']['{{ row.action_name }}']['edit_access']" {% if row.is_ajax == 1 %} value="off" disabled="disabled" {% elseif row.edit_access == 1%}checked="checked"{% endif %} />
+                                                <label for="controller['{{ row.controller_name }}']['{{ row.action_name }}']['edit_access']"  class="label-success"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 {% if row.is_ajax != 1 %}disabled_opacity{% endif %}">
+                                        <div class="col-sm-6">
+                                            <span class="round-text">{{ 'Actions'|trans }}</span>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="mswitch">
+                                                <input type="checkbox" id="controller['{{ row.controller_name }}']['{{ row.action_name }}']['action_access']" name="controller['{{ row.controller_name }}']['{{ row.action_name }}']['action_access']" {% if row.is_ajax != 1 %} value="off" disabled="disabled" {% elseif row.action_access == 1%}checked="checked"{% endif %} />
+                                                <label for="controller['{{ row.controller_name }}']['{{ row.action_name }}']['action_access']"  class="label-success"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    {% endif %}
+                {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            <div class="form-buttons col-xs-12 col-sm-12">
+                    <div class="box">
+                        <div class="box-content">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-right">
+                                    <button id="save_button" type="submit" class="btn btn-success pull-right">{{ 'Save'|trans }}</button>
+                                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/admins-groups" class="btn btn-default pull-right"> {{ 'Cancel'|trans }} </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

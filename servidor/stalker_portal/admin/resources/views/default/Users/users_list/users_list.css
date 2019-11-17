@@ -1,0 +1,18 @@
+#s2_event.error + .select2 + .help-block.form-error {
+    padding-bottom: 10px;
+}
+
+div.dt-buttons {
+  float: none !important;
+  margin-right: 302px;
+}
+
+div.separator {
+    clear: both;
+    margin: 10px 30px 15px;
+    border-bottom: 1px solid #ccc;
+}
+
+#iptv_list .filters-actions-pannel .filter_s.attribute_set {
+	margin-right: 12px;
+}

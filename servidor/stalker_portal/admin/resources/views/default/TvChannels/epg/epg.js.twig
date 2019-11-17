@@ -1,0 +1,377 @@
+
+        var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+        var conf = {
+            form: '#epg_form',
+            lang : '{{ app.js_validator_language }}',
+            errorClass: "error",
+            validateOnBlur: false,
+            validateOnEvent: true,
+            showHelpOnFocus : true,
+            validateHiddenInputs: true,
+            scrollToTopOnError: false,
+            modules: 'jsconf,security',
+
+            onSuccess: function () {
+                var sendData = new Object();
+                var arr = [];
+                $("#s2_lang_code option").each(function(){
+                    arr.push($(this).val());
+                });
+                $("input[name='lang_code']").val(arr.join(','));
+                var form_fields = $("#modalbox_ad input.own_fields:not(:disabled), #s2_status");
+                form_fields.each(function () {
+                    sendData[this.name] = $(this).val();
+                });
+
+                ajaxPostSend($("#modalbox_ad form").attr('action'), sendData, false, false);
+                return false;
+            },
+            onError: function () {
+                var _this = this;
+                $(_this.form + " select[data-validation]").each(function(){
+                    if ($(this).hasClass(_this.errorClass)) {
+                        _this.highlight(this, _this.errorClass);
+                    } else {
+                        _this.unhighlight(this, _this.errorClass);
+                    }
+                });
+                return false;
+            },
+
+            highlight: function (element, errorClass, validClass) {
+                if (!$(element).parent().children().find('.selection').children().hasClass(errorClass)) {
+                    $(element).parent().children().find('.selection').children().addClass(errorClass);
+                }
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).parent().children().find('.selection').children().removeClass(errorClass);
+            }
+        };
+
+        function InitSelect2() {
+            $('#s2_status').select2(select2Opt);
+
+        }
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object' && json.data.length >0) {
+                    var date;
+                    for (var i in json.data) {
+                        var id = json.data[i].id;
+                        var status = json.data[i].status;
+                        //json.data[i].status = (status == 1 ?"<span class='txt-success'>{{ 'Published'|trans }}</span>":"<span>{{ 'Unpublished'|trans }}</span>");
+                        json.data[i].status = '\
+                            <div class="mswitch">\
+                                <input type="checkbox" \
+                                       id="epg_publish_'+ json.data[i].id +'"\
+                                       name="form[status]" readonly="readonly" class="form-control" \
+                                       ' + ( json.data[i].status ? 'checked="checked"' : '' ) +'\
+                                       data-id="' + json.data[i].id + '"\
+                                       data-status="' + status + '"\
+                                       value="' + ( json.data[i].status ? 'on' : 'off' ) +'">\
+                                <label class="label-success" \
+                                       title="' + ( json.data[i].status ? "{{ 'Published'|trans }}" : "{{ 'Unpublished'|trans }}" ) + '" \
+                                       for="epg_publish_'+ json.data[i].id +'"></label>\
+                            </div>';
+
+                        json.data[i].operations = "\
+                                <div class='col-xs-3 col-sm-8'>\n\
+                                    <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                        <i class='pull-right fa fa-cog'></i>\n\
+                                    </a>\n\
+                                    <ul class='dropdown-menu pull-right'>\n\
+                                        <li>\n\
+                                            <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/epg-list-json' data-id='" + id + "'>\n\
+                                                <span>{{ 'Edit'|trans }}</span>\n\
+                                            </a>\n\
+                                        </li>\n\
+                                        <li>\n\
+                                            <a class='main_ajax no_context_menu' \
+                                                href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-epg-item-status' \
+                                                data-id='" + id + "' data-status='" + status + "'>\n\
+                                                <span>" + (status == 1? '<span>{{ 'Unpublish'|trans }}</span>':'<span>{{ 'Publish'|trans }}</span>') + "</span>\n\
+                                            </a>\n\
+                                        </li>\n\
+                                        <li>\n\
+                                            <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-epg-item' data-id='" + id + "'>\n\
+                                                <span> {{ 'Delete'|trans }} </span>\n\
+                                            </a>\n\
+                                        </li>\n\
+                                    </ul>\n\
+                                </div>";
+                        date = json.data[i]['updated'];
+                        if (date > 0) {
+                            date = new Date(date * 1000);
+                            json.data[i]['updated'] = date.toLocaleFormat("%b %d, %Y %H:%M");
+                        }
+                        json.data[i].uri = escapeHtml( json.data[i].uri );
+                        json.data[i].id_prefix = escapeHtml( json.data[i].id_prefix );
+                    }
+                }
+            }).dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/epg-list-json"
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "bInfo": true,
+
+                fixedHeader: {
+                    header: true,
+                    headerOffset: $('header.navbar').height()
+                },
+
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+                {% endif %}
+                
+                "columnDefs": [
+                    {className: "action-menu", "targets": [ -1 ] },
+                    {"searchable": false, "targets": [-1, -2, -3]},
+                    {"sortable": false, "targets": [-1]}
+                ]
+            }).prev('.dataTables_processing').hide('');
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+
+                LoadDataTablesScripts(InitDatatable);
+                LoadSelect2Script(InitSelect2);
+                
+                $.validate(conf);
+
+                $(document).on('click', "a.main_ajax", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    if( $(this).attr("href").indexOf("remove-epg") != -1 && !confirm("{{"Remove this EPG"|trans}}?") ) {
+                        $(this).closest('div.open').removeClass('open');
+                        return;
+                    }
+
+                    $("#modalbox").data('complete', 0);
+                    var sendData = $(this).data();
+                    ajaxPostSend($(this).attr('href'), sendData, false, false);
+                    $(this).closest('div.open').removeClass('open');
+                    return false;
+                });
+
+                $("#form_reset").on('click', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $(this).closest('form').get(0).reset();
+                    return false;
+                });
+
+                $("#modalbox_ad button[type='submit']").on('click', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    if ($("#epg_form").isValid({}, conf, true)) {
+                        conf.onSuccess();
+                    } else {
+                        conf.onError();
+                    }
+                    return false;
+                });
+
+                $("#add_epg_item").on("click", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    closeModalBox();
+                    $('#epg_form').get(0).reset();
+
+                    $("#modalbox_ad").find(".modal-header-name").children('span').text('{{ 'Add EPG'|trans }}');
+                    $("#modalbox_ad .own_fields").prop("disabled", false).removeAttr('disabled').val('');
+                    /*$("#modalbox_ad input[type='hidden']:not(.not_disabled)").attr('disabled', 'disabled').val('');*/
+                    $("#form_id").attr('disabled', 'disabled').val('');
+
+                    // setup the default state:
+                    $('#s2_status').val($('#s2_status option:first').val());
+                    $("#s2_status").trigger("change");
+                    //$('#s2_status').select2("val","");
+
+                    // put back the form validator default behaviour configuration
+                    clearServerValidator();
+                    setDefaultValidationConfig(conf);
+                    $("#form_uri, #form_id_prefix").removeAttr('data-validation-event');
+                    $.validate(conf);
+                    setServerValidationRequestParams();
+
+                    $('button.remove.all').click();
+                    $('#s2_lang_code_available option.old').removeClass('old').addClass('new');
+                    //$('#form_uri').next('div.name-check').html('').hide();
+                    //$('#form_id_prefix').next('div.name-check').html('').hide();
+                    $('#epg_form').find('[type="submit"]').prop('disabled', false);
+                    $("#modalbox_ad").show();
+                    //        $(this).closest('.form-group').find('tbody tr:hidden').show();
+                    return false;
+                });
+
+                /*
+                $(document).on('change', '#form_uri', function (e) {
+                    var _this = $(this);
+                    _this.next('div.name-check').html('').hide();
+                    _this.closest('form').find('[type="submit"]').prop('disabled', false);
+
+                    _this.validate( {form: '#epg_form'}, conf.lang );
+                    if( !_this.hasClass(conf.errorClass) && _this.val() ) {
+                        ajaxPostSend("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/epg-check-uri", {param: _this.val(), epgid: $('#form_id').val()});
+                    }
+                });
+
+                $(document).on('change', '#form_id_prefix', function(e){
+                    var _this = $(this);
+                    _this.next('div.name-check').html('').hide();
+                    _this.closest('form').find('[type="submit"]').prop('disabled', false);
+
+                    if (_this.val()) {
+                        ajaxPostSend("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/epg-check-prefix", {epg_id: $("#form_id").val(), prefix: _this.val()});
+                    }
+                });*/
+
+                /* use this code if your select accept an empty value
+                $(document).on('change', '#s2_status', function () {
+                    $(this).validate(function(valid, elem) {
+                        if (valid) {
+                            conf.unhighlight(elem, conf.errorClass);
+                        } else {
+                            conf.highlight(elem, conf.errorClass);
+                        }
+                    });
+                });
+                */
+
+                $(document).on('change', ".mswitch input", function(e){
+                    ajaxPostSend('{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-epg-item-status', $(this).data() );
+                });
+
+                $('button.add').click(resetAddOption);
+                $(document).on('dblclick', '#s2_lang_code_available option', resetAddOption);
+
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);
+
+        var resetAddOption = function(){
+            if ( $('#s2_lang_code option').length > 5) {
+                JSErrorModalBox({msg: "{{ 'Max count of languages 5'|trans }}"});
+                var lastOption;
+                while($('#s2_lang_code option').length > 5){
+                    lastOption = $('#s2_lang_code option:last-of-type');
+                    $('#s2_lang_code_available').append(lastOption);
+                    $('#s2_lang_code_available').sortBoxes();
+                }
+            }
+        };
+
+        var setEPGModal = function (data) {
+            closeModalBox();
+            $('#epg_form').get(0).reset();
+
+            $("#modalbox_ad").find(".modal-header-name").children('span').text('{{ 'Edit EPG'|trans }}');
+            //$('#form_uri').next('div.name-check').html('').hide();
+            //$('#form_id_prefix').next('div.name-check').html('').hide();
+            $('#epg_form').find('[type="submit"]').prop('disabled', false);
+
+            if (data.data.length == 1) {
+                var row = data.data[0];
+                for (var field_name in row) {
+                    $("#modalbox_ad .own_fields[name='" + field_name + "']").val(row[field_name]);
+                }
+                // let the Select2 know that value was changed
+                $("#s2_status").trigger("change");
+            }
+            $("#modalbox_ad input").removeAttr('disabled');
+
+            clearServerValidator();
+            setEditValidationConfig(conf);
+            $("#form_uri, #form_id_prefix").removeAttr('data-validation-event');
+            $.validate(conf);
+            setServerValidationRequestParams();
+
+            $('#s2_lang_code_available').append($('#s2_lang_code option'));
+            $('#s2_lang_code').empty();
+            $('#s2_lang_code_available').sortBoxes();
+            if (data.data[0]['lang_code']) {
+
+                $('#s2_lang_code_available option.old').removeClass('old').addClass('new');
+                $(data.data[0]['lang_code'].split(',')).each(function (num, item) {
+                    /*$('#s2_lang_code option[value="' + item + '"]');*/
+                    $('#s2_lang_code').append($('#s2_lang_code_available option[value="' + item + '"]'));
+                    $('#s2_lang_code_available option[value="' + item + '"]').remove();
+                });
+            }
+            $('#s2_lang_code_available').sortBoxes();
+            $("#modalbox_ad").show();
+        };
+
+        var manageEPG = function (obj) {
+            $("#modalbox_ad").click();
+            JSSuccessModalBox(obj);
+            $('#datatable-1').DataTable().ajax.reload();
+        };
+
+        var manageEPGError = function (obj) {
+            JSErrorModalBox(obj);
+        };
+
+        function closeModalBox(){
+            JScloseModalBox();
+        }
+
+        var errAction = function(){
+            JSErrorModalBox({msg: '<span>{{ 'Failed'|trans }}!</span>'});
+        };
+
+
+// drop assigned server-side validator instance to stop reuse:
+function clearServerValidator() {
+    $("#modalbox_ad").find("[data-validation~='server']").each( function(){
+        this.asyncValidators = null;
+    });
+}
+
+function setServerValidationRequestParams() {
+    var epg_id = $("#form_id").val();
+    var param = {
+        'for_validator': true 
+    };
+    $('#form_uri'      ).attr('data-validation-req-params', JSON.stringify( $.extend({}, param, {'epgid': epg_id}) ));
+    $('#form_id_prefix').attr('data-validation-req-params', JSON.stringify( $.extend({}, param, {'epg_id': epg_id}) ));
+}
+
+function setDefaultValidationConfig(conf) {
+    conf.ignore = [];
+    conf.validateOnBlur = true;
+    conf.validateOnEvent = false;
+
+    $("#form_uri, #form_id_prefix").off('change');
+}
+
+function setEditValidationConfig(conf) {
+    conf.ignore = ['uri','id_prefix'];
+    conf.validateOnBlur = false;
+    conf.validateOnEvent = true;
+
+    $("#form_uri, #form_id_prefix").one('change', function (e) {
+        var ignore = conf.ignore;
+        var index = ignore.indexOf(this.name);
+        if( index !== -1 ){
+            $(this).attr('data-validation-event', "blur");
+            ignore.splice( index, 1 );
+            $.validate(conf);
+        }
+    });
+}

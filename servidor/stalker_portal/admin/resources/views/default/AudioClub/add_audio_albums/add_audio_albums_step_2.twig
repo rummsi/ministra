@@ -1,0 +1,58 @@
+{% extends app.twig_theme ~ "/AudioClub/add_audio_albums/add_audio_albums.twig"%}
+
+{% block footer_js %}
+
+    {{ parent() }}
+    {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+    <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/RowReorder/js/dataTables.rowReorder.min.js"></script>
+
+{% endblock %}
+
+{% block footer_steps_js %}
+
+    {{ parent() }}
+    <script type="text/javascript">
+
+        {% include app.twig_theme ~ "/AudioClub/add_audio_albums/add_audio_albums_step_2.js.twig" %}
+
+    </script>
+
+{% endblock %}
+
+
+{% block form_step_by_step %}
+    <h4 class="section-header"><span>{{ 'Tracks of Album'|trans }} - '{{ app['albumName'] }}'</span></h4>
+    {{ form_errors(app['form']) }}
+
+    <div class="box-content" id="iptv_list">
+    <div class="row3">
+        <div class="col-xs-8 col-sm-12">
+            <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/add-audio-track" id="add_track" class="btn btn-success pull-right no_context_menu">{{ 'Add track'|trans }}</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1" data-album_id="{{ app['audioAlbumID'] }}">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock form_step_by_step %}

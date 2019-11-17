@@ -1,0 +1,197 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set active = 'settings' %}
+{% set title = 'Settings'|trans ~ ': ' ~ 'Edit theme'|trans ~ ' - "' ~ app.theme_name ~ '"' %}
+
+{% block head %}
+
+    {{ parent() }}
+    <style type="text/css">
+        {% include (app.twig_theme ~ "/Settings/themes_edit/themes_edit.css") %}
+    </style>
+
+{% endblock %}
+
+{% block footer_js %}
+
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/file-uploader-scripts.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+{% endblock %}
+
+{% block footer %}
+    {{ parent() }}
+
+    <script type="text/javascript" defer>
+        {% include (app.twig_theme ~ "/Settings/themes_edit/themes_edit.js.twig") %}
+    </script>
+{% endblock %}
+
+
+{% block content %}
+
+    {%
+        set tabPannels = {
+            'launcher' : 'Home'|trans,
+            'app' : 'Pannels'|trans,
+            'login' : 'Login'|trans
+            }
+    %}
+    {%
+        set positionVal = {
+            'left' : 'Left'|trans,
+            'right' : 'Right'|trans
+            }
+    %}
+    <div id="add_channel">
+        <form name="form" method="post" action="{{(app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias)}}" class="form-horizontal has-validation-callback" role="form" id="form_" novalidate="0">
+            <input id="to_default_all" type="hidden" name="to_default[all][]" value="all" disabled="disabled">
+            <input id="to_default_169_1080" type="hidden" name="to_default[background_image][]" value="1080" disabled="disabled">
+            <input id="to_default_169_720" type="hidden" name="to_default[background_image][]" value="720" disabled="disabled">
+            <input id="to_default_43_576" type="hidden" name="to_default[background_image][]" value="576" disabled="disabled">
+            <input id="to_default_43_480" type="hidden" name="to_default[background_image][]" value="480" disabled="disabled">
+            <input id="to_default_logo" type="hidden" name="to_default[logo_image][]" value="logo" disabled="disabled">
+            <div class="box">
+                <h4 class="section-header">
+                    <span>{{ "Theme for editing"|trans }} - "{{ app.theme_name }}"</span>
+                </h4>
+                <div class="box-content">
+                    <div class="col-sm-6">
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label text-right">{{ 'Background'|trans }} 16:9</label>
+                            <div class="col-xs-3 col-sm-8 no-padding-left">
+                                <div id="fileupload_16_9">
+                                    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                                    <div class="fileupload-buttonbar">
+                                        <div class="fileupload-buttons">
+                                            <span class="fileinput-button btn btn-default active delete" data-visible='{{ (app.launcher_theme.bg[1080] and not(app.launcher_theme.bg[1080] == app.launcher_theme.original_bg[1080])) ? 1: 0 }}' >
+                                                <i class="fa fa-times"></i>{{'Delete image'|trans}}
+                                            </span>
+                                            <!-- The fileinput-button span is used to style the file input field as button -->
+                                            <span class="fileinput-button btn btn-default active">
+                                                <span><i class="fa fa-plus"></i>{{ 'Upload the image'|trans }}</span>
+                                                <input type="file" name="files" style="opacity: 0;">
+                                            </span>
+                                            <i class="i-hint"
+                                                title="{{ 'An image in jpeg or png format, no larger than 1MB.' |trans}} {{ 'Recommended resolution is 1920x1080' |trans }}" >
+                                                <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                            </i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label text-right">{{ 'Background'|trans }} 4:3</label>
+                            <div class="col-xs-3 col-sm-8 no-padding-left">
+                                <div id="fileupload_4_3">
+                                    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                                    <div class="fileupload-buttonbar">
+                                        <div class="fileupload-buttons">
+                                            <span class="fileinput-button btn btn-default active delete" data-visible='{{ (app.launcher_theme.bg[576] and not(app.launcher_theme.bg[576] == app.launcher_theme.original_bg[576])) ? 1: 0 }}' >
+                                                <i class="fa fa-times"></i>{{'Delete image'|trans}}
+                                            </span>
+                                            <!-- The fileinput-button span is used to style the file input field as button -->
+                                            <span class="fileinput-button btn btn-default active">
+                                                <span><i class="fa fa-plus"></i>{{ 'Upload the image'|trans }}</span>
+                                                <input type="file" name="files" style="opacity: 0;">
+                                            </span>
+                                            <i class="i-hint"
+                                                title="{{ 'An image in jpeg or png format, no larger than 1MB.' |trans }} {{ 'Recommended resolution is 720х576' |trans }}" >
+                                                <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                            </i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label text-right">{{ 'Logo'|trans }}</label>
+                            <div class="col-xs-3 col-sm-8 no-padding-left">
+                                <div id="fileupload_logo">
+                                    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                                    <div class="fileupload-buttonbar">
+                                        <div class="fileupload-buttons">
+                                            <span class="fileinput-button btn btn-default active delete" data-visible='{{ (app.launcher_theme.logo and app.launcher_theme.logo[1080]) ? 1: 0 }}' >
+                                                <i class="fa fa-times"></i>{{'Delete image'|trans}}
+                                            </span>
+                                            <!-- The fileinput-button span is used to style the file input field as button -->
+                                            <span class="fileinput-button btn btn-default active">
+                                                <span><i class="fa fa-plus"></i>{{ 'Upload the image'|trans }}</span>
+                                                <input type="file" name="files" style="opacity: 0;">
+                                            </span>
+                                            <i class="i-hint"
+                                                title="{{ 'Image on a transparent background in png format, no larger than 1MB.' |trans }} {{ 'The logo will be resized to the appropriate size depending on the platform' |trans }}" >
+                                                <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                            </i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label text-right">{{ 'Logo position'|trans }}</label>
+                            <div class="col-xs-3 col-sm-3 no-padding-left">
+                                <input type="hidden" name="id" value="{{ app.launcher_theme.id }}">
+                                <select name="logoAlign" id="logo_position">
+                                    {% for key, val in positionVal %}
+                                    <option value="{{ key }}" {% if app.launcher_theme.logo.align and app.launcher_theme.logo.align == key %}selected="selected"{% endif %}>{{ val }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div id="tabs">
+                            <ul>
+                                {% for key, val in tabPannels%}
+                                    <li><a href="#tabs-{{ key }}">{{ val }}</a></li>
+                                {% endfor %}
+                            </ul>
+                            {% for key, val in tabPannels%}
+                                <div id="tabs-{{ key }}" >
+                                    <img class="launcher-bg-screen" src="{{ app.request_context.baseUrl }}/img/launcherpreview/editpage_{{ key }}.png" alt=""/>
+                                </div>
+                            {% endfor %}
+                            <div class="launcher-preview">
+                                {% if app.launcher_theme %}
+                                    {% for res, path in app.launcher_theme.bg %}
+                                        <div class="res-{{ res }}">
+                                            <img id="launcher_bg_{{ res }}" class="launcher-bg" src="{{ path }}" data-original-src="{{ app.launcher_theme.original_bg[res] }}" alt=""/>
+                                            <img id="launcher_logo_{{ res }}" class="launcher-logo align-{{ app.launcher_theme.logo.align }}" src="{% if app.launcher_theme.logo and app.launcher_theme.logo[res] %}{{ app.launcher_theme.logo[res] }}{% endif %}" data-original-src="" alt=""/>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-buttons col-xs-12 col-sm-12">
+                    <div class="box">
+                        <div class="box-content">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-right">
+
+                                    <button type="button" id="form_save" name="form[save]" class="btn btn-success pull-right">{{ "Save"|trans }}</button>
+
+                                    <a href="{{ app.request_context.baseUrl ~ '/' ~ app.controller_alias }}" class="btn btn-default pull-right"> {{ 'CLOSE'|trans }} </a>
+
+                                    <button type="submit" id="form_to_default" name="to_default[submit]" class="btn btn-default  pull-right"> {{ 'Reset settings to default'|trans }} </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

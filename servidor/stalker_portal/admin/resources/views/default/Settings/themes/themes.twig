@@ -1,0 +1,184 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set active = 'settings' %}
+{% set title = 'Settings'|trans ~ ': ' ~ 'appearance'|trans %}
+
+{% block head %}
+
+    {{ parent() }}
+    <style type="text/css">
+        {% include (app.twig_theme ~ "/Settings/themes/themes.css") %}
+    </style>
+
+{% endblock %}
+
+{% block footer %}
+    {{ parent() }}
+
+    <script type="text/javascript" defer>
+       
+        {% include (app.twig_theme ~ "/Settings/themes/themes.js.twig") %}
+
+    </script>
+{% endblock %}
+
+{% block footer_js %}
+
+    {{ parent() }}
+    {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+    {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+    <script type="text/javascript" src="{{app.request_context.baseUrl}}/js/jquery.tmpl.min.js" defer=""></script>
+
+    <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+    <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+    <script src="{{app.request_context.baseUrl}}/plugins/colorbox/jquery.colorbox.js"></script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row">
+            <div class="box">
+                <h4 class="section-header"><span>{{ 'Default theme'|trans }}</span></h4>
+                <div class="box-content">
+                    <div class="col-sm-10">
+                        <form name="form" method="post" action="{{(app.request_context.baseUrl ~ '/' ~ app.controller_alias )}}/set-current-theme" class="form-horizontal has-validation-callback no-margin" role="form" id="form_" novalidate="0">
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label text-right no-padding-left">{{ 'MAG Set-Top Box'|trans }}</label>
+                                <div class="col-md-3 no-padding-left">
+                                    <select name="default" id="theme_default">
+                                        {% for key, theme in app['allData'] %}
+                                            <option value="{{ theme.id }}" {% if theme.default %}selected="selected"{% endif %}>{{ theme.type_name }} - {{ theme.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label text-right no-padding-left">{{ "Other platforms"|trans }}</label>
+                                <div class="col-md-3 no-padding-left">
+                                    <select name="default_launcher" id="theme_default_launcher">
+                                        {% for key, theme in app['allData'] if not('classic' == theme.type ) %}
+                                            <option value="{{ theme.alias }}" {% if theme.default_launcher %}selected="selected"{% endif %}>{{ theme.type_name }} - {{ theme.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label text-right no-padding-left">&nbsp;</label>
+                                <div class="col-md-3 no-padding-left">
+                                    <button class="btn btn-success" >{{ 'Save'|trans }}</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box">
+                <h4 class="section-header"><span>{{ 'Edit themes'|trans }}</span></h4>
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <table class="table dataTable table-hover table-datatable compact" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% autoescape false %}
+        <script type="text/template" id="item_coll_operations">
+            <div class='col-xs-3 col-sm-8'>
+                {{ "{{if type!=='classic' }}" }}
+                    <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>
+                        <i class='pull-right fa fa-cog'></i>
+                    </a>
+                    <ul class='dropdown-menu pull-right'>
+                        <li>
+                            <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/themes-edit?id=${id}">
+                                <span>{{ 'Edit'|trans }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class='main_ajax no_context_menu' href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/themes-reset-to-default" data-id="${id}">
+                                <span>{{ 'Restore initial theme'|trans }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                {{ '{{/if}}' }}
+            </div>
+        </script>
+
+        <script type="text/template" id="item_coll_devices">
+            <div>
+                {{ "{{each( index, value ) devices}}" }}
+                <div class="pull-left themes-list supported-devices device-${value}">
+                    <img src="{{ app.request_context.baseUrl }}/img/launcherpreview/${value}.png">
+                    {{ "{{if type==='classic' }}" }}
+                    <span class="platform-name">${$item.deviceTitles['mag']}</span>
+                    {{ '{{else}}' }}
+                    <span class="platform-name">${$item.deviceTitles[value]}</span>
+                    {{ '{{/if}}' }}
+                </div>
+                {{ "{{/each}}" }}
+            </div>
+        </script>
+
+        <script type="text/template" id="item_coll_name">
+            {{ "{{if type==='classic' }}" }}
+                <span>${name}</span>
+            {{ '{{else}}' }}
+                <a href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/themes-edit?id=${id}'>${name}</a>
+            {{ '{{/if}}' }}
+        </script>
+
+        <script type="text/template" id="item_coll_type">
+            <span>${type_name}</span>
+        </script>
+
+        <script type="text/template" id="item_coll_preview">
+            <div class="fancybox">
+                {{ "{{if type=='classic' }}" }}
+                    <div class="launcher-preview">
+                        <a class="colorbox classic-theme" rel="theme_${id}" href="${preview}" title="${name}">
+                            <img src="${preview}" alt=""/>
+                        </a>
+                    </div>
+                {{ '{{else}}' }}
+                    <a class="colorbox-inline" href="#theme_${name}" title="${name}">
+                    <div id="theme_${name}" class="launcher-preview " title="${name}">
+
+                        {{ "{{each( res, path ) bg }}" }}
+                        <div class="res-${res}">
+                            <img id="launcher_bg_${res}" class="launcher-bg" src="{{ "{{if path}}" }}${path}{{ "{{else}}" }}${original_bg[res]}{{ '{{/if}}' }}" alt=""/>
+                            {{ "{{if logo && logo[res]}}" }}
+                            <img id="launcher_logo_${res}" class="launcher-logo align-${logo.align}" src="${logo[res]}" alt=""/>
+                            {{ '{{/if}}' }}
+                        </div>
+                        {{ '{{/each}}' }}
+                        <img class="launcher-bg-screen" src="${preview}" alt="" title="${name}" />
+
+                    </div>
+                    </a>
+                {{ '{{/if}}' }}
+            </div>
+        </script>
+    {% endautoescape %}
+
+{% endblock %}

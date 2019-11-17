@@ -1,0 +1,164 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = ('Resellers'|trans ~ ': ' ~ 'resellers list'|trans) %}
+
+{% block head %}
+
+    {{ parent() }}
+    <style type="text/css">
+        {% include (app.twig_theme ~ "/Admins/resellers_list/resellers_list.css") %}
+    </style>
+
+{% endblock %}
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/tagsinput/jquery.tagsinput.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/tagsinput/jquery.tagsinput.css" type="text/css" rel="stylesheet" />
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+           
+            {% include (app.twig_theme ~ "/Admins/resellers_list/resellers_list.js.twig") %}
+
+        </script>
+        
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/add-reseller" class="btn btn-success pull-right no_context_menu" id="add_reseller"><i class="fa fa-plus"></i>{{ 'Adding reseller'|trans }}</a>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="">
+                <div class="box">
+                    {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                    {% endif %}
+                    <div class="box-content">
+                        <div class="box-content no-padding">
+                            <div class="">
+                                <div class="">
+                                    <div class="dataTables_processing"></div>
+                                    <table class="table  table-hover table-datatable" id="datatable-1">
+                                        {% if attribute(app, 'dropdownAttribute') is defined %}
+                                        {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                                        {% endif %}
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalbox_ad">
+        <div class="devoops-modal">
+            <div class="devoops-modal-header">
+                <div class="modal-header-name">
+                    <span></span>
+                </div>
+                <div class="box-icons">
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <form class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/resellers-save">
+                <div class="devoops-modal-inner">
+                    <div class="box">
+                        <div class="box-content">
+                            <!-- singer -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-xs-offset-1">{{ 'Name'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input type="hidden" name="id" class="own_fields" id="reseller_id">
+                                        <input type="text" id="reseller_name" required="required" name="name"
+                                               data-validation="required,server"
+                                               data-validation-event="change"
+                                               data-validation-postpone = "200"
+                                               data-validation-url = "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/resellers-check-name"
+                                               data-validation-req-params = ''
+                                               class="form-control own_fields">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-xs-offset-1">{{ 'Maximum number of users'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input type="text" required="required" name="max_users" class='form-control own_fields'>
+                                    </div>
+                                    <span class="help-inline col-xs-10 col-sm-10">
+                                        <span class="small txt-default">{{ 'Maximum number of users for current reseller. Set "0" for unlimited number of users.'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            {% if attribute(app,'allow_resellers_ip_ranges') is defined and app.allow_resellers_ip_ranges %}
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label col-xs-offset-1">&nbsp;</label>
+                                    <div class="col-xs-10 col-sm-8 no-padding">
+                                        <div class=" col-xs-10 col-sm-10">
+                                            <div class="checkbox-inline" style="padding-top: 7px; margin-top: -7px;">
+                                                <label>
+                                                    <input type="checkbox" name="use_ip_ranges" id="form_use_ip_ranges" class="own_fields">
+                                                    <i class="fa fa-square-o small"></i>
+                                                </label>
+                                            </div>
+                                            <span class="help-inline txt-default">{{ 'Limit the range of IP-addresses of users'|trans }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <div class="form-group" style="display: none;">
+                                <label class="col-sm-3 control-label col-xs-offset-1">{{ 'IP-addresses'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input type="text" id="form_ips" name="ip_ranges" class="form-control own_fields" 
+                                            data-validation="required ip_validate"
+                                            data-validation-depends-on="use_ip_ranges"
+                                            data-validation-error-msg-custom = ""
+                                        />
+                                    </div>
+                                    <div class="clear-left col-xs-10 col-sm-10">
+                                        <span class="help-inline">
+                                            <span class="small txt-default">{{ 'Available formats: IP (e.g. 192.168.1.1), range of IP-addresses (e.g. 192.168.1.0/24 or 192.168.1.0-192.168.1.32)'|trans }}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="devoops-modal-bottom">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+                        <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

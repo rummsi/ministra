@@ -1,0 +1,384 @@
+{# empty Twig template #}
+{% extends (app['twig_theme'] ~ '/' ~ 'layout.twig') | trans %}
+{% import _self as main_macro_inside %}
+
+    {% macro input_checkbox(value, name, key) %}
+        {% if attribute(value, key) is defined %}
+            <div class="toggle-switch toggle-switch-success">
+                <label>
+                    {{ form_widget(value[key]) }}
+                    <div class="toggle-switch-inner"></div>
+                    <div class="toggle-switch-switch"></div>
+                    <div class="bg-danger">
+                        {{ form_errors(value[key]) }}
+                    </div>
+                </label>
+            </div>
+        {% else %}
+            <div class="toggle-switch toggle-switch-success">
+                <label>
+                    <input type="checkbox" name="form[{{ name }}][{{ key }}]" id="form_{{ name }}_{{ key }}">
+                    <div class="toggle-switch-inner"></div>
+                    <div class="toggle-switch-switch"></div>
+                </label>
+            </div>
+        {% endif %}
+    {% endmacro %}
+
+    {% macro input_hidden(value, name, key, label) %}
+        {% if attribute(value, key) is defined %}
+            {% if label %}
+                <label data-field="form[{{ name }}]">{{ value[key].vars.value }}</label>
+            {% endif %}
+            {{ form_widget(value[key]) }}
+            <div class="bg-danger">
+                {{ form_errors(value[key]) }}
+            </div>
+        {% else %}
+            <input type="hidden" id="form_{{ name }}_{{ key }}" name="form[{{ name }}][{{ key }}]">
+        {% endif %}
+    {% endmacro %}
+
+    {% macro get_filter(name, title, id_field, title_field, list_all, block_width, label_width, without_all, postponed, data_filter="0") %}
+        {% if postponed is defined and postponed %}
+            {% set postponed = 1 %}
+        {% else  %}
+            {% set postponed = 0 %}
+        {% endif %}
+        {% if without_all %}
+            {% set list = '' %}
+        {% else %}
+            {% set list = ('<li><a href="#" data-filter="' ~ data_filter ~'" ' ~ (postponed ? 'data-postponed="1"': '') ~ '><span>' ~ 'All'|trans ~ '</span></a></li>') | trans %}
+        {% endif %}
+        {% if not (block_width) %}
+            {% set block_width = 3 %}
+        {% else  %}
+            {% set block_width = block_width + 3 %}
+        {% endif %}
+        {% if not (label_width) %}
+            {% set label_width = 4 %}
+        {% else  %}
+            {% set label_width = label_width %}
+        {% endif %}
+        {#<div class="col-xs-3 col-sm-{{ block_width }} filter" data-tvfilter="{{ name }}">
+            <span class="col-xs-12 col-sm-{{ label_width }} no-padding">{{ title }}:</span>#}
+        {% if attribute(app, 'filters') is defined and attribute(app['filters'], name) is defined and not(app['filters'][name] is sameas('0')) %}
+            {% set f_name = app['filters'][name] %}
+        {% else %}
+            {% set f_name = 0 %}
+        {% endif %}
+        <div class="br  filter" data-tvfilter="{{ name }}" data-filterval="{{ f_name }}">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="no-padding">{{ title }}:</span>
+            {% set list_f = list %}
+            {% for item in list_all %}
+                {% set list_f = (list_f ~ '<li><a href="#" class="' ~ ( (not(f_name is sameas(0)) and f_name == item[id_field]) ? 'active' ) ~ '" data-filter="' ~ item[id_field] ~ '" '~(postponed? 'data-postponed="1"')~'><span>' ~ item[title_field]|escape ~ '</span></a></li>') | trans %}
+                {% if not(f_name is sameas(0)) and f_name == item[id_field] %}
+                        <span class="applied" title="{{ item[title_field]|escape }}">{{ item[title_field]|escape }}</span>
+                        <i class="fa fa-caret-down"></i>
+                {% endif %}
+            {% endfor %}
+            {% autoescape false %}
+                {% if f_name is sameas(0) %}
+                        <span>{% if without_all %}{% else %}{{ 'All'|trans }}{% endif %}</span>
+                        <i class="fa fa-caret-down"></i>
+                {% endif %}
+                </a>
+                <ul class="dropdown-menu pull-left">
+                    {{ list_f }}
+                </ul>
+            {% endautoescape %}
+        </div>
+    {% endmacro %}
+
+
+    {% macro get_filter_value_set_input(name, title, id_field, title_field, list_all, default) %}
+        {% if attribute(app, 'filters') is defined and attribute(app['filters'], name) is defined and app['filters'][name] != ''%}
+            {% set value=app['filters'][name] %}
+        {% else  %}
+            {% set value='' %}
+        {% endif %}
+        <div class="btn-group filter_s" data-tvfilter="{{ name }}" data-filterval="{{ value|join('|') }}">
+            {% autoescape false %}
+            <a href="#" class="btn dropdown-toggle" data-toggle="dropdown"><span class="no-padding">{{ title }}:</span>
+                <span>
+                    {% if '0' in value %}
+                        {{ 'All'|trans }}{% if value|length > 1 %}|{% endif %}
+                    {% else %}
+                        {% set value_str='' %}
+                        {% for item in list_all %}
+                            {% if item[id_field] in value %}
+                                {% set value_str=(value_str ~ item[title_field] ~ "|")|trans %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ value_str|trim('|')|escape }}
+                    {% endif %}
+                </span>
+                <i class="fa fa-caret-down"></i>
+                {% if not default %}
+                    <i class="fa fa-times-circle" title="{{ 'Delete this filter'|trans }}" ></i>
+                {% endif %}
+            </a>
+            <div class="dropdown-menu">
+                <select class="populate placeholder" name="{{ name }}" id="filter_s2_{{ name }}" data-postponed="1" multiple>
+                    <option value="0">{{ 'All'|trans }}</option>
+                    {% for item in list_all %}
+                        <option value="{{ item[id_field] }}" {% if item[id_field] in value %}selected="selected"{% endif %}>{{ item[title_field]|escape }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endautoescape %}
+        </div>
+    {% endmacro %}
+
+
+    {% macro get_filter_string_input(name, title, id_field, title_field, list_all, default) %}
+        {% if attribute(app, 'filters') is defined and attribute(app['filters'], name) is defined and app['filters'][name] != ''%}
+            {% set value=app['filters'][name] %}
+        {% else  %}
+            {% set value='' %}
+        {% endif %}
+        <div class="br filter" data-tvfilter="{{ name }}" data-filterval="{{ value }}">
+            {% autoescape false %}
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="no-padding">{{ title }}:</span>
+                    <span>{{ value }}</span>
+                    <i class="fa fa-caret-down"></i>
+                    {% if not default %}
+                        <i class="fa fa-times-circle" title="{{ 'Delete this filter'|trans }}" ></i>
+                    {% endif %}
+                </a>
+                <div class="dropdown-menu">
+                    <input type="text" name="{{ name }}" id="filter_string_{{ name }}" value="{{ value }}" class="filter_string autocomplete">
+                    <button class="btn btn-success filter_string" type="button" data-postponed="1"><i class="fa fa-check"></i></button>
+                </div>
+            {% endautoescape %}
+        </div>
+    {% endmacro %}
+
+    {% macro get_filter_datetime_input(name, title, id_field, title_field, list_all, default) %}
+        {% if attribute(app, 'filters') is defined and attribute(app['filters'], name) is defined and app['filters'][name] != ''%}
+            {% set value=app['filters'][name] %}
+        {% else  %}
+            {% set value='' %}
+        {% endif %}
+        <div class="br filter filter-date-range" data-tvfilter="{{ name }}" data-filterval="{{ value.from }}|{{ value.to }}">
+            {% autoescape false %}
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="no-padding">{{ title }}:</span>
+                <span>{{ value.from }} - {{ value.to }}</span>
+                <i class="fa fa-caret-down"></i>
+                {% if not default %}
+                    <i class="fa fa-times-circle" title="{{ 'Delete this filter'|trans }}" ></i>
+                {% endif %}
+            </a>
+            <div class="dropdown-menu popup-date-range">
+                <div class="input-group">
+                    <input id="filter_string_{{ name }}_from" class='form-control filter_string' type='text' data-date-format='dd-mm-yy' name="{{ name }}[from]" value="{{ value.from }}">
+                    <span  class="input-group-addon">&ndash;</span>
+                    <input id="filter_string_{{ name }}_to" class='form-control filter_string' type='text' data-date-format='dd-mm-yy' name="{{ name }}[to]" value="{{ value.to }}">
+                </div>
+                <div id="filter_string_{{ name }}" class="datepicker-inline"></div>
+                <div class="buttons-container">
+                    <button class="btn btn-default btn-clear " type="button" data-postponed="1">{{ 'Clean'|trans }}</button>
+                    <button class="btn btn-success btn-apply " type="button" data-postponed="1"><i class="fa fa-check"></i> {{ 'Apply'|trans }}</button>
+                </div>
+            </div>
+            {% endautoescape %}
+        </div>
+    {% endmacro %}
+
+    {% macro get_dropdown_attribute(dropdownAttribute, list_id, list_title, list_width, with_all, no_padding) %}
+        {% import _self as main_macro_inside %}
+        {% set set_id='attribute_set' %}
+        {% set set_title= 'Attributes'|trans %}
+        {% set set_width=1 %}
+        {% if list_id is defined and list_id %}
+            {% set set_id=list_id %}
+        {% endif %}
+        {% if list_title is defined and list_title %}
+            {% set set_title=list_title %}
+        {% endif %}
+        {% if list_width is defined and list_width %}
+            {% set set_width=list_width %}
+        {% endif %}
+        {% if with_all %}
+            {% set with_all=with_all %}
+        {% else %}
+            {% set with_all=1 %}
+        {% endif %}
+        <div class="{% if list_title is defined and list_title %}no-padding{% endif %} attribute_set btn-group" id="{{ set_id }}" style="">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <span><img src="{{app.request_context.baseUrl}}/img/icon-dropdown-column.svg" alt=""></span>
+                <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                {% if with_all == 1 %}
+                    {% if attribute(dropdownAttribute, 'all') is defined %}
+                    {{ main_macro_inside.get_dropdown_attribute_item(dropdownAttribute['all'], set_id) }}
+                    {% else %}
+                <li>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" value="all" name="{{ set_id }}[]"> {{ 'All'|trans }}
+                            <i class="fa fa-square-o"></i>
+                        </label>
+                    </div>
+                </li>
+                    {% endif %}
+                <li class="divider"></li>
+                {% endif %}
+                {% for key, item in dropdownAttribute %}
+                    {% if 'all' != item.name %}
+                {{ main_macro_inside.get_dropdown_attribute_item(item, set_id) }}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+    {% endmacro %}
+
+    {% macro get_dropdown_attribute_item(item, set_id) %}
+        {% autoescape false %}
+        <li data-filter='{{ item.name }}'>
+            <div class="checkbox {% if item.name == 'all' %}checkbox-all{% endif %}">
+                <label>
+                    <input type="checkbox" name="{{ set_id }}[]" {% if item.name == 'operations'%}readonly="readonly" disabled="disabled"{% endif %} value="{{ item.name }}" {% if item.checked %}checked="{{ item.checked }}"{% endif %}> {{ item.title }}
+                    <i class="fa fa-square-o"></i>
+                </label>
+            </div>
+        </li>
+        {% endautoescape %}
+    {% endmacro %}
+
+    {% macro get_datatable_head(dropdownAttribute, addFirst, addLast ) %}
+        <thead>
+            <tr>
+        {% autoescape false %}
+            {% if addFirst is defined and addFirst %}
+                <th>{{addFirst}}</th>
+            {% endif %}
+            {% for key, item in dropdownAttribute %}
+                {% if 'all' != item.name %}
+                <th data-filter="{{ item.name }}">{% if not(item.name == 'operations') %}{{ item.title }}{% endif %}</th>
+                {% endif %}
+            {% endfor %}
+            {% if addLast is defined and addLast %}
+                <th>{{addLast}}</th>
+            {% endif %}
+        {% endautoescape %}
+            </tr>
+        </thead>
+    {% endmacro %}
+
+    {% macro get_datatable_column(dropdownAttribute) %}
+        "columns": [
+        {% for key, item in dropdownAttribute %}
+            {% if 'all' != item.name %}
+            {"data": "{{ item.name }}" {% if not(item.checked) %}, visible: false, className: 'none'{% endif %}}{% if not loop.last %},{% endif %}
+            {% endif %}
+        {% endfor %}
+        ],
+    {% endmacro %}
+
+    {% macro get_filter_button_bar(name, id_field, title_field, list_all) %}
+            {% autoescape false %}
+
+                {% if attribute(app, 'filters') is defined and attribute(app['filters'], name) is defined%}
+                    {% set f_name = app['filters'][name] %}
+                    {% for item in list_all %}
+                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/{{app.action_alias}}?filters[{{ name }}]={{ item[id_field] }}" class="pull-left btn btn-success {% if f_name == item[id_field] %}active{% endif %}">{{ item[title_field] }}</a>
+                    {% endfor %}
+                {% endif %}
+
+            {% endautoescape %}
+    {% endmacro %}
+
+    {% macro get_datepicker_double_input(width, half) %}
+        {% if not width %}
+            {% set width = 5 %}
+        {% endif %}
+        {% if not half %}
+            {% set half = (width // 2) + 1 %}
+            {% set style = '' %}
+        {% else %}
+            {% set style = 'style="margin-right: 0px;"' %}
+        {% endif %}
+        <div class="col-xs-{{ width +1 }} col-sm-{{ width + 4 }} col-md-{{ width + 1 }} col-lg-{{ width }} filter pull-left" data-tvfilter="time_period" >
+            <div class="col-sm-{{ half }} filter no-padding leftbordercircle" data-tvfilter="time_period" {% autoescape false %}{{ style }}{% endautoescape %}>
+                <input class="col-xs-12 col-sm-12 filter" placeholder="{{ 'from'|trans }}" type="text" id="datepicker_from" name="interval_from" value="{% if attribute(app['filters'], 'interval_from') is defined %}{{ app['filters']['interval_from'] }}{% endif %}">
+            </div>
+            <div class="col-sm-{{ half }} filter no-padding" data-tvfilter="time_period" {% autoescape false %}{{ style }}{% endautoescape %}>
+                <input class="col-xs-12 col-sm-12 filter" placeholder="{{ 'to'|trans }}" type="text" id="datepicker_to" name="interval_to" value="{% if attribute(app['filters'], 'interval_to') is defined %}{{ app['filters']['interval_to'] }}{% endif %}">
+            </div>
+        </div>
+    {% endmacro %}
+
+    {% macro get_datepicker_js_script(notDateLimit) %}
+        var datePickerOpt = {
+        {% if not(notDateLimit is defined) %}
+            maxDate: 0,
+        {% endif %}
+        {% if (attribute(app, 'minDatepickerDate') is defined) and not(notDateLimit is defined) %}
+            minDate: new Date({{ app['minDatepickerDate'] }} * 1000),
+        {% endif %}
+            numberOfMonths: 1,
+            language: 'ru',
+            firstDay: 1,
+            dateFormat: 'dd/mm/yy',
+            dayNamesMin: [
+                '{{ 'Sun'|trans }}',
+                '{{ 'Mon'|trans }}',
+                '{{ 'Tue'|trans }}',
+                '{{ 'Wed'|trans }}',
+                '{{ 'Thu'|trans }}',
+                '{{ 'Fri'|trans }}',
+                '{{ 'Sat'|trans }}'
+            ],
+            monthNames: [
+                '{{ 'January'|trans }}',
+                '{{ 'February'|trans }}',
+                '{{ 'March'|trans }}',
+                '{{ 'April'|trans }}',
+                '{{ 'May'|trans }}',
+                '{{ 'June'|trans }}',
+                '{{ 'July'|trans }}',
+                '{{ 'August'|trans }}',
+                '{{ 'September'|trans }}',
+                '{{ 'October'|trans }}',
+                '{{ 'November'|trans }}',
+                '{{ 'December'|trans }}'
+            ],
+            onClose: function(){}
+        };
+        datePickerOpt.onClose = function (selectedDate) {
+        $("#datepicker_to").datepicker("option", "minDate", selectedDate);
+            $('#datatable-1').DataTable().ajax.reload();
+        };
+        if (typeof(datePickerOptAlt) != 'undefined') {
+             $.extend(datePickerOpt, datePickerOptAlt);
+        }
+        $("#datepicker_from").datepicker(datePickerOpt);
+
+        datePickerOpt.onClose = function (selectedDate) {
+        $("#datepicker_from").datepicker("option", "maxDate", selectedDate);
+            $('#datatable-1').DataTable().ajax.reload();
+        };
+        if (typeof(datePickerOptAlt) != 'undefined') {
+            $.extend(datePickerOpt, datePickerOptAlt);
+        }
+        $("#datepicker_to").datepicker(datePickerOpt);
+    {% endmacro %}
+
+    {% macro set_monitoring_status(value, key, status) %}
+        {% if status %}
+            {% if attribute(value, key) is defined %}
+            <div >
+                <label class="nowrap txt-{% if value[key].vars.data %}success{% else %}danger{% endif %}">
+                    {% if value[key].vars.data %}{{ "OK" |trans }}{% else %}{{ "No signal" |trans }}{% endif %}
+                </label>
+            </div>
+            {% endif %}
+        {% else %}
+            <div>
+                <label> - </label>
+            </div>
+        {% endif %}
+    {% endmacro %}

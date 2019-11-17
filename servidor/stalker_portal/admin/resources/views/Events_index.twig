@@ -1,0 +1,454 @@
+{% extends 'layout.twig' %}
+{% import '/macro/iptw_macro.twig' as main_macro %}
+{% set title = 'events' %}
+{% set title = ('Events'|trans ~ ': ' ~ 'list of events '|trans ~ (attribute(app, 'currentUser') is defined ? "user"|trans ~ " - " ~ app.currentUser.name ~ "(" ~ app.currentUser.mac ~ ")": '')) | trans %}
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {{ main_macro.get_filter('event', 'Event'|trans, 'id', 'title', app['allEvent']) }}
+                {{ main_macro.get_filter('sended', 'Delivery status'|trans, 'id', 'title', app['sendedStatus'], 5, 9) }}
+                {{ main_macro.get_filter('ended', 'Receipt status'|trans, 'id', 'title', app['receivingStatus'], 5, 9) }}
+
+                <a id="add_events" href="#" class="btn btn-success pull-right">{{ 'Create new event'|trans }}</a>
+
+                {% if attribute(app, 'currentUser') is defined %}
+                    <a id="clean_events" href="#" class="btn btn-danger pull-right" data-uid="{{ app.currentUser.uid }}">{{ 'Clean'|trans }}</a>
+                {% else %}
+                    <a id="clean_events" href="#" class="btn btn-danger pull-right" data-uid="all">{{ 'Clean all'|trans }}</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="box">
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            <thead>
+                            <tr>
+                                <th data-filter="events_id">#</th>
+                                <th data-filter="addtime">{{ 'Added'|trans }}</th>
+                                <th data-filter="eventtime">{{ 'Expiration date'|trans }}</th>
+                                <th data-filter="mac">MAC</th>
+                                <th data-filter="event">{{ 'Event'|trans }}</th>
+                                <th data-filter="msg">{{ 'Message'|trans }}</th>
+                                <th data-filter="sended">{{ 'Delivery status'|trans }}</th>
+                                <th data-filter="ended">{{ 'Receipt status'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if attribute(app, 'eventList') is defined %}
+                                <!-- Start: list_row -->
+                                {% for item in app.eventList %}
+                                    <tr>
+                                        <td>{{ item.events_id }}</td>
+                                        <td>{{ item.addtime|date('M d, Y H:i') }}</td>
+                                        <td>{{ item.eventtime|date('M d, Y H:i') }}</td>
+                                        <td>
+                                            <a href="{{ app.request.baseUrl }}/{{ app.controller_alias }}?uid={{ item.uid }}">{{ item.mac }}</a>
+                                        </td>
+                                        <td>{{ item.event }}</td>
+                                        <td>
+                                            <div class="event_message">{{ item.msg }}</div>
+                                        </td>
+                                        <td>{% if item.sended != '0' %}<span class="">{{ 'Delivered'|trans }}</span>{% else %}<span class="">{{ 'Not delivered'|trans }}</span>{% endif %}</td>
+                                        <td>{% if item.ended != '0' %}<span class="">{{ 'Received'|trans }}</span>{% else %}<span class="">{{ 'Not received'|trans }}</span>{% endif %}</td>
+                                    </tr>
+                                {% endfor %}
+                                <!-- End: list_row -->
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalbox_ad">
+        <div class="devoops-modal">
+            <div class="devoops-modal-header">
+                <div class="modal-header-name">
+                    <span>{{ 'New event'|trans }}</span>
+                </div>
+                <div class="box-icons">
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <form class="form-horizontal" role="form">
+                <div class="devoops-modal-inner">
+                    <div class="box">
+                        <div class="box-content">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Recipient'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-6">
+                                        <select class="populate placeholder" name="user_list_type" id="s2_user_list_type">
+                                            <option value="to_all">{{ 'All'|trans }}</option>
+                                            <option value="by_user_list">{{ 'List'|trans }}</option>
+                                            <option value="by_group">{{ 'Group'|trans }}</option>
+                                            <option value="by_pattern">{{ 'On the preset'|trans }}</option>
+                                            <option value="to_single">{{ 'One'|trans }}</option>
+                                        </select>
+                                    </div>
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default">{{ 'Choose recipient. Example: to one, to all, on the list, on the preset, to the group'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group" data-list-type="by_user_list">
+                                <label class="col-sm-3 control-label col-sm-offset-1">{{ 'List of MAC-addresses'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <input type="hidden" name="file_name" id="file_name">
+                                    <!-- The file upload form used as target for the file upload widget -->
+                                    <div id="fileupload" class="pull-left">
+                                        <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                                        <div class="fileupload-buttonbar">
+                                            <div class="fileupload-buttons">
+                                                <!-- The fileinput-button span is used to style the file input field as button -->
+                                            <span class="fileinput-button btn btn-success">
+                                                <span>{{ 'Add a picture'|trans }}</span>
+                                                <input type="file" name="files" style="opacity: 0;">
+                                            </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default">{{ 'The file must contain pre-compiled list of MAC-addresses in the txt extension or another text format'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group" data-list-type="by_group">
+                                <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Group'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-6">
+                                        <select class="populate placeholder" name="group_id" id="s2_group_id">
+                                            {% for item in app.consoleGroup %}
+                                                <option value="{{ item.id }}">{{ item.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default">{{ 'Select a group of users that will be delivered message'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group" data-list-type="by_pattern">
+                                <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Preset'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-6">
+                                        <select class="populate placeholder" name="pattern" id="s2_pattern">
+                                            <option value="MAG100">MAG100</option>
+                                            <option value="MAG200">MAG200</option>
+                                            <option value="MAG245">MAG245</option>
+                                            <option value="MAG245D">MAG245D</option>
+                                            <option value="MAG250">MAG250</option>
+                                            <option value="MAG254">MAG254</option>
+                                            <option value="MAG255">MAG255</option>
+                                            <option value="MAG256">MAG256</option>
+                                            <option value="MAG257">MAG257</option>
+                                            <option value="MAG270">MAG270</option>
+                                            <option value="MAG275">MAG275</option>
+                                            <option value="MAG322">MAG322</option>
+                                            <option value="MAG323">MAG323</option>
+                                            <option value="MAG324">MAG324</option>
+                                            <option value="MAG324C">MAG324C</option>
+                                            <option value="MAG325">MAG325</option>
+                                            <option value="MAG349">MAG349</option>
+                                            <option value="MAG350">MAG350</option>
+                                            <option value="MAG351">MAG351</option>
+                                            <option value="MAG352">MAG352</option>
+                                            <option value="AuraHD0">AuraHD0</option>
+                                            <option value="AuraHD1">AuraHD1</option>
+                                            <option value="AuraHD9">AuraHD9</option>
+                                            <option value="IP_STB_HD">IP_STB_HD</option>
+                                        </select>
+                                    </div>
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default">{{ 'Select preset for STB type'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group" data-list-type="to_single">
+                                <label class="col-sm-3 control-label col-sm-offset-1">{{ 'MAC-address'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-6">
+                                        <input class="form-control" type="text" title="" value="{% if attribute(app, 'currentUser') is defined %}{{ app.currentUser.mac }}{% endif %}" name="mac">
+                                    </div>
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default">{{ 'Input user MAC-address'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Actions'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-6">
+                                        <select class="populate placeholder" data-validation=required name="event" id="s2_event">
+                                            {% for type in app['formEvent'] %}
+                                                <option value="{{ type['id'] }}">{{ type['title'] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default">{{ 'Select one of the actions'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group" data-event-type="play_channel;play_radio_channel">
+                                <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Channel'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-6">
+                                        <input class="form-control" type="text" title="" value="" name="channel">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" data-event-type="send_msg">
+                                <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Reboot'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-6">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" value="1" name="reboot_after_ok">
+                                                <i class="fa fa-square-o small"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default">{{ 'Reboot the STB after OK button is pressed'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-sm-offset-1">TTL<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-6">
+                                        <input class="form-control" type="text" title="" data-validation=required value="" name="ttl">
+                                    </div>
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default">{{ 'Time to live, measured in seconds'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group" data-event-type="send_msg;send_msg_with_video">
+                                <label class="col-sm-3 control-label col-sm-offset-1">MSG</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-12">
+                                        <textarea class="form-control" rows="4" title="" value="" name="msg" id="msg_textarea"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" data-event-type="send_msg;send_msg_with_video">
+                                <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Message templates'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-6">
+                                        <a href="#" id="msg_pattern"> 'Testing time has been expired' </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" data-event-type="send_msg_with_video">
+                                <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Video URL'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-12">
+                                        <input class="form-control" type="text" title="" value="" name="video_url">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="devoops-modal-bottom">
+                    <div class="box">
+                        <div class="box-content">
+                            <div class="row">
+                                <div class="pull-right">
+                                <button type="submit" class="btn btn-success  pull-right">{{ 'Save'|trans }}</button>
+                                <button type="reset" class="btn btn-default pull-right" >{{ 'Cancel'|trans }}</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% include "basic_templates/file-uploader-scripts.twig" %}
+
+    <script type="text/javascript" defer>
+
+        function DemoSelect2() {
+            $.getScript("{{ app.request.baseUrl }}/plugins/select2/i18n/{% if app["language"] %}{{ app["language"] }}{% else %}en{% endif %}.js", function() {
+                $.fn.select2.defaults.set('dropdownAutoWidth', 'false');
+                $.fn.select2.defaults.set('width', '100%');
+                $("[id^='s2_']").select2({minimumResultsForSearch: -1});
+            });
+        }
+
+        function initFileUploader(){
+            $('#fileupload').fileupload({
+                url: '{{ app.request.baseUrl }}/{{ app.controller_alias }}/upload-list-addresses',
+                type: 'POST',
+                autoUpload: true,
+                multipart: true,
+                /*acceptFileTypes: /(\.|\/)(jpe?g|png)$/i,*/
+                maxFileSize: 1000000,
+                maxNumberOfFiles: 1
+            }).bind('fileuploaddone', function (e, data) {
+                var response;
+                if (data && data.jqXHR && data.jqXHR.status && data.jqXHR.status == 200 && data.jqXHR.responseJSON) {
+                    response = data.jqXHR.responseJSON;
+                } else {
+                    JSErrorModalBox();
+                    return false;
+                }
+
+                if (response.success) {
+                    $('#file_name').val(response.fname);
+                    if ($.isFunction(window[response.action]) && !response.error) {
+                        window[response.action](response);
+                    }
+                } else {
+                    JSErrorModalBox(response);
+                }
+                return false;
+            });
+            return true;
+        }
+
+        function TestTable1() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object' && json.data.length >0) {
+                    var date;
+                    for (var i in json.data) {
+                        var uid = json.data[i].uid;
+                        var mac = json.data[i].mac;
+                        json.data[i].mac = '<a href="{{ app.request.baseUrl }}/{{ app.controller_alias }}?uid=' + uid + '" >' + mac + '</a>';
+                        json.data[i].msg = '<div class="event_message">' + json.data[i].msg + '</div>';
+                        json.data[i].sended = json.data[i].sended != '0' ? '<span class="">{{ 'Delivered'|trans }}</span>' : '<span class="">{{ 'Not delivered'|trans }}</span>';
+                        json.data[i].ended = json.data[i].ended != '0' ? '<span class="">{{ 'Received'|trans }}</span>' : '<span class="">{{ 'Not received'|trans }}</span>';
+                        date = json.data[i]['addtime'];
+                        if (date > 0) {
+                            date = new Date(date * 1000);
+                            json.data[i]['addtime'] = date.toLocaleFormat("%b %d, %Y %H:%M");
+                        }
+                        date = json.data[i]['eventtime'];
+                        if (date > 0) {
+                            date = new Date(date * 1000);
+                            json.data[i]['eventtime'] = date.toLocaleFormat("%b %d, %Y %H:%M");
+                        }
+                    }
+                }
+            }).dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ app.request.baseUrl }}/{{ app.controller_alias }}/events-list-json",
+                    "data": function (d) {
+                        d = dataTableDataPrepare(d);
+
+                        $('input[id^="filter_"]').each(function () {
+                            d['filters[' + $(this).attr("id").replace("filter_", "") + ']'] = $(this).val();
+                        });
+                    }
+                },
+                "deferLoading": [{{ app.recordsFiltered }}, {{ app.totalRecords }}],
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                "columns": [
+                    {"data": "events_id"},
+                    {"data": "addtime"},
+                    {"data": "eventtime"},
+                    {"data": "mac"},
+                    {"data": "event"},
+                    {"data": "msg"},
+                    {"data": "sended"},
+                    {"data": "ended"}
+                ],
+                "bFilter": true,
+                "bPaginate": true,
+                "bInfo": true,
+                "aoColumnDefs": [
+                    { className: "action-menu", "targets": [ -1 ] },
+                    {"searchable": false, "targets": [0, -1]}
+                ]
+            }).prev('.dataTables_processing').hide('');
+            $('#datatable-1').DataTable().order( [ 0, 'desc' ] ).draw();
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+                LoadDataTablesScripts(TestTable1);
+                LoadSelect2Script(DemoSelect2);
+
+                if (typeof (loadFileUploadScripts) != 'function' || !loadFileUploadScripts(initFileUploader)){
+                    JSErrorModalBox({msg: "{{ 'Cannot load File Upload plugin'|trans }}"})
+                }
+
+                    $("[data-list-type], [data-event-type]").hide().find('input, select, textarea').attr('disabled', 'disabled');
+                    $(document).on('change', "#s2_user_list_type, #s2_event", function (e) {
+                        checkFields($(this), e);
+                    });
+
+                    $(document).on('click', "#msg_pattern", function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        $('#msg_textarea').text($.trim($('#msg_textarea_pattern').text()));
+                        return false;
+                    });
+
+                    $(document).on('click', '#add_events', function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        $("#modalbox_ad").show().find('input, select, textarea').removeAttr('disabled');
+                        checkFields('#s2_user_list_type', e);
+                        checkFields('#s2_event', e);
+                        return false;
+                    });
+
+                    $(document).on('click', "#modalbox_ad button[type='submit']", function (e) {
+
+                        $.validate({
+                            onSuccess : function() {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                var formData = $("#modalbox_ad form").serialize();
+                                ajaxPostSend("{{app.request.baseUrl}}/{{app.controller_alias}}/add-event", formData);
+                                return false;
+                            }
+                        });
+                    });
+                    $(document).on('click', "#clean_events", function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        ajaxPostSend("{{app.request.baseUrl}}/{{app.controller_alias}}/clean-events", {uid: $(this).data('uid')});
+                        return false;
+                    });
+
+                });
+            }
+            document.addEventListener("DOMContentLoaded", yelp, false);
+
+            function checkFields(obj, e) {
+                var dataName = $(obj).attr('id') == 's2_user_list_type' ? 'data-list-type' : 'data-event-type';
+                $("[" + dataName + "]").hide().find('input, select, textarea').attr('disabled', 'disabled');
+                $(obj).find('option:selected').each(function () {
+                    var searchVal = $(this).val();
+                    var dataNameIn = dataName.replace('data-', '').replace('-', ' ').camelCase();
+                    $('[' + dataName + '*="' + searchVal + '"]').each(function() {
+                        if ($(this).data(dataNameIn) && $(this).data(dataNameIn).split(";").indexOf(searchVal) !== -1) {
+                            $(this).show().find('input, select, textarea').removeAttr('disabled');
+                        }
+                    });
+                });
+                return false;
+            }
+
+    </script>
+
+{% endblock %}

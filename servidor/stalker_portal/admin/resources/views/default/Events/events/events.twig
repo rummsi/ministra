@@ -1,0 +1,69 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'events' %}
+{% set title = 'Events'|trans ~ ': ' ~ 'list of events '|trans ~ (attribute(app, 'currentUser') is defined ? "user"|trans ~ " - " ~ app.currentUser.login ~ "(" ~ app.currentUser.mac ~ ")": '') %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        {% include (app.twig_theme ~ "/basic_templates/events_menu.twig") %}
+
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/Events/events/events.js.twig") %}
+        </script>
+        
+{% endblock %}
+
+
+{% block content %} 
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {{ main_macro.get_filter('event', 'Event'|trans, 'id', 'title', app['allEvent']) }}
+                {{ main_macro.get_filter('sended', 'Delivery status'|trans, 'id', 'title', app['sendedStatus'], 5, 9) }}
+                {{ main_macro.get_filter('ended', 'Receipt status'|trans, 'id', 'title', app['receivingStatus'], 5, 9) }}
+
+                <a id="add_events" href="#" class="btn btn-success pull-right no_context_menu"><i class="fa fa-plus"></i>{{ 'Create new event'|trans }}</a>
+
+                {% if attribute(app, 'currentUser') is defined %}
+                    <a id="clean_events" href="#" class="btn btn-default pull-right no_context_menu" data-uid="{{ app.currentUser.uid }}"><i class="fa fa-trash"></i>{{ 'Delete all events'|trans }}</a>
+                {% else %}
+                    <a id="clean_events" href="#" class="btn btn-default pull-right no_context_menu" data-uid="all" title="{{ "Delete all events from the list"|trans }}"><i class="fa fa-trash"></i>{{ 'Delete all events'|trans }}</a>
+                {% endif %}
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

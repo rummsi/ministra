@@ -1,0 +1,321 @@
+
+        var conf = {
+            form: '#modalbox form',
+            lang : '{{ app.js_validator_language }}',
+            showHelpOnFocus : true,
+            validateHiddenInputs: true,
+            scrollToTopOnError: false,
+            errorClass: "error",
+            ignore: [],
+            modules: 'security',
+
+            onSuccess: function () {
+                var sendData = {
+                    id: $("#modalbox input[name='id']").val(),
+                    groupid: $("#modalbox input[name='groupid']").val(),
+                    name: $("#modalbox input[type='text']").val()
+                };
+
+                $.ajax({
+                    url: $("#modalbox form").attr('action'),
+                    type: 'POST',
+                    data: sendData,
+                    success: function (data) {
+                        if (data.success) {
+                            if ($.isFunction(window[data.action]) && !data.error) {
+                                window[data.action](data);
+                            }
+                        } else if (data.error) {
+                            alert(data.error);
+                        } else {
+                            alert("{{ 'Some server error'|trans }}");
+                        }
+                    },
+                    error: function (data) {
+                        var errAction = '';
+                        if (typeof (data.responseJSON) == 'object') {
+                            errAction += data.responseJSON.action + 'Error';
+                        }
+                        if ($.isFunction(window[errAction])) {
+                            window[errAction](data.responseJSON);
+                        } else {
+                            alert("{{ 'Some network error or access denied'|trans }}");
+                        }
+                    },
+                    dataType: "json",
+                    async: false
+                });
+
+                closeModalBox();
+                return false;
+            },
+            onError: function () {
+                return false;
+            }
+        };
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object') {
+                    for (var i in json.data) {
+                        cels = getCeils(json.data[i]);
+                        json.data[i].mac = cels.mac;
+                        json.data[i].uid = cels.uid;
+                        json.data[i].operations = cels.operations;
+                    }
+                }
+            }).dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/users-groups-consoles-list-json",
+                    "data": function (d) {
+                        var RegExp = /id=(\d+)/;
+                        if (id = RegExp.exec(window.location.href)) {
+                            d.id = id[1];
+                        }
+                    }
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+                {% endif %}
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "bInfo": true,
+
+                "fixedHeader": {
+                    header: true,
+                    headerOffset: $('header.navbar').height()
+                },
+                
+                "aoColumnDefs": [
+                    { className: "action-menu", "targets": [ -1 ] },
+                    {"searchable": false, "targets": [-1]},
+                    {"sortable": false, "targets": [-1]}
+                ]
+            }).prev('.dataTables_processing').hide('');
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+
+                /*
+                $(document).on('change', '#item_mac', function (e) {
+                    var _this = $(this);
+                    _this.next('div').removeClass('bg-danger').empty().hide();
+                    
+                    if ($("#modalbox form").isValid({}, conf, true)) {
+                        var mac_val = $.trim(_this.val());
+                        var regExp = /([0-9a-fA-F]{2}([:]|$)){6}$/ig;
+                        $('#modalbox button[type="submit"]').attr("disabled", "disabled");
+                        if (regExp.test(mac_val)) {
+                            $('#modalbox button[type="submit"]').removeAttr("disabled");
+
+                            var sendData = {
+                                mac: mac_val,
+                                uid: $('#modalbox input[name="uid"]').val()
+                            };
+
+                            ajaxPostSend("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/check-console-item", sendData, false, false);
+
+                        } else {
+                            _this.next('div').append('<i class="txt-danger fa fa-ban"></i> {{ 'Enter the MAC-address according to the format'|trans }}').css('visibility', 'visible').show();
+                        }
+                    }
+                });*/
+
+                $(document).on('click', "a.main_ajax", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var _this = $(this);
+                    _this.closest('div.open').removeClass('open');
+
+                    if( $(this).attr("href").indexOf("remove-console-item") != -1 && !confirm("{{"Remove this user from the group?"|trans}}") ) {
+                        return;
+                    }
+
+                    $.ajax({
+                        url: $(this).attr('href'),
+                        type: 'POST',
+                        data: $(this).data(),
+                        success: function (data) {
+                            if (data.success) {
+                                if ($.isFunction(window[data.action]) && !data.error) {
+                                    window[data.action](data);
+                                }
+                            } else {
+                                alert("{{ 'Some server error'|trans }}");
+                            }
+                        },
+                        error: function (data) {
+                            var errAction = '';
+                            if (typeof (data.responseJSON) == 'object') {
+                                errAction += data.responseJSON.action + 'Error';
+                            }
+                            if ($.isFunction(window[errAction])) {
+                                window[errAction]($(_this));
+                            } else {
+                                alert("{{ 'Some network error or access denied'|trans }}");
+                            }
+                        },
+                        dataType: "json",
+                        async: false
+                    });
+/*
+                    var sendData = $(this).data();
+                    ajaxPostSend($(this).attr('href'), sendData, false, false);
+*/
+                    return false;
+                });
+
+                $(document).on('click', '#add_console_item', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    openModalBox($(this));
+                    return false
+                });
+
+                $(document).on('click', "#modalbox button[type='reset'], #modalbox, #modalbox a.close-link, #modalbox a.close-link *", function (e) {
+                    if (e.currentTarget != e.target) {
+                        return;
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    closeModalBox();
+                    return false;
+                });
+
+                $(document).on('click', "#modalbox button[type='submit']", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    if ($("#modalbox form").isValid({}, conf, true)) {
+                        conf.onSuccess();
+                    }
+                    return false;
+                });
+
+                LoadDataTablesScripts(InitDatatable);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);
+
+        var addConsoleItem = function (data) {
+            var cRow = $("#datatable-1 tr:last");
+            $('#datatable-1').DataTable().draw();
+        };
+
+        var addConsoleItemError = function (data) {
+            JSErrorModalBox(data);
+        };
+
+        var removeConsoleItem = function (data) {
+            var cRow = $('a[data-consoleid="' + data.id + '"]').closest('tr');
+            $('#datatable-1').DataTable().row(cRow).remove().draw();
+        };
+
+        function closeModalBox() {
+            $("#modalbox").hide();
+            $(conf.form).get(0).reset();
+            $('#modalbox').find('.modal-header-name span').empty();
+            $('#modalbox').find('.devoops-modal-inner').find('input').val('');
+            $('#item_mac').next('div').removeAttr('class').empty();
+        }
+
+        function openModalBox(obj) {
+            $('#modalbox').find('.modal-header-name span').text( obj.data('consolegroupid') ? '{{ 'Edit console'|trans }}' : '{{ 'Add console'|trans }}' );
+            if ($('#modalbox').find('.devoops-modal-inner').find('input').length == 0) {
+                $('#modalbox').find('.devoops-modal-inner' ).html( $("#add_console_template").html() );
+                $('#modalbox').find('.devoops-modal-bottom').html( $("#modal_form_buttons").html() );
+            } else {
+                $('#modalbox form').get(0).reset();
+            }
+
+            if (obj.data('consoleid')) {
+                $('#modalbox').find('.devoops-modal-inner').find('input[name="id"]').val(obj.data('consoleid'));
+                $('#modalbox').find('.devoops-modal-inner').find('input[type="text"]').val(obj.closest('tr').find('td:first a').text());
+            }
+
+            // set up form validator
+            if (obj.data('consoleid')) {
+                clearServerValidator();
+                setEditValidationConfig(conf);
+                $("#item_mac").removeAttr('data-validation-event');
+            } else {
+                clearServerValidator();
+                setDefaultValidationConfig(conf);
+                $("#item_mac").removeAttr('data-validation-event');
+            }
+            $.validate(conf);
+            setServerValidationRequestParams();
+
+            $('#modalbox').find('.devoops-modal-inner').find('input[name="groupid"]').val({{ app['groupid'] }});
+            $('#modalbox').find('.devoops-modal-bottom').find('[type="submit"]').prop("disabled", false).removeAttr("disabled");
+            $('#modalbox form').attr('action', obj.attr('href'));
+            $("#modalbox").show();
+            obj.closest('div.open').removeClass('open');
+        }
+        
+        function getCeils(data) {
+            var firstCeil = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-users?id=' + data.uid + '">' + data.mac + '</a>';
+            var secondCeil = data.uid;
+            var thirdCeil = "<div class='col-xs-3 col-sm-8'>\n\
+                                <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                    <i class='pull-right fa fa-cog'></i>\n\
+                                </a>\n\
+                                <ul class='dropdown-menu pull-right'>\n\
+                                    <li>\n\
+                                        <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-console-item' data-consoleid='" + data.id + "'>\n\
+                                            <span> {{ 'Remove from group'|trans }} </span>\n\
+                                        </a>\n\
+                                    </li>\n\
+                                </ul>\n\
+                            </div>";
+            return {mac: firstCeil, uid: secondCeil, operations: thirdCeil};
+        }
+
+
+function setServerValidationRequestParams() {
+    var param = {
+        'id': $("#modalbox input[name='id']").val(),
+        'for_validator': true,
+    };
+    $('#item_mac').attr('data-validation-req-params', JSON.stringify(param) );
+}
+
+// drop assigned server-side validator instance to stop reuse:
+function clearServerValidator() {
+    $("#modalbox").find("[data-validation~='server']").each( function(){
+        this.asyncValidators = null;
+    });
+}
+
+function setDefaultValidationConfig(conf) {
+    conf.ignore = [];
+    conf.validateOnBlur = true;
+    conf.validateOnEvent = false;
+    
+    $("#item_mac").off('change');
+}
+
+function setEditValidationConfig(conf) {
+    conf.ignore = ['mac'];
+    conf.validateOnBlur = false;
+    conf.validateOnEvent = true;
+
+    $("#item_mac").one('change', function (e) {
+        var ignore = conf.ignore;
+        var index = ignore.indexOf(this.name);
+        if( index !== -1 ){
+            $(this).attr('data-validation-event', "blur");
+            ignore.splice( index, 1 );
+            $.validate(conf);
+        }
+    });
+}

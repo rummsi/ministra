@@ -1,0 +1,110 @@
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object') {
+                    for (var i in json.data) {
+                        var id = json.data[i].id;
+                        var status = json.data[i].status;
+
+                        json.data[i].operations = "<div class='col-xs-3 col-sm-8'>\n\
+                                                        <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                                            <i class='pull-right fa fa-cog'></i>\n\
+                                                        </a>\n\
+                                                        <ul class='dropdown-menu pull-right'>\n\
+                                                            <li>\n\
+                                                                <a href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-radio?id=" + id + "'>\n\
+                                                                    <span>{{ 'Edit'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-radio' data-radioid='" + id + "' data-radiostatus='" + status + "'>\n\
+                                                                    <span>" + (status != 0 ? "{{ 'Unpublish'|trans }}" : "{{ 'Publish'|trans }}") + "</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-radio' data-radioid='" + id + "'>\n\
+                                                                    <span>{{ 'Delete'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                        </ul>\n\
+                                                    </div>";
+                        
+                        //json.data[i].status = status != 0 ? "<span class='txt-success'>{{ 'Published'|trans }}</span>" : "<span class='txt-danger'>{{ 'Unpublished'|trans }}</span>";
+                        json.data[i].status = '\
+                           <div class="mswitch">\
+                                <input type="checkbox" \
+                                       id="rad_status_'+ json.data[i].id +'"\
+                                       name="form[status]" readonly="readonly" class="form-control" \
+                                       ' + ( json.data[i].status != 0 ? 'checked="checked"' : '' ) +'\
+                                       data-radioid="' + json.data[i].id + '"\
+                                       data-radiostatus="' + json.data[i].status +'">\
+                                <label class="label-success" \
+                                       title="' + ( json.data[i].status != 0 ? "{{'Published'|trans}}" : "{{'Unpublished'|trans}}" ) + '" \
+                                       for="rad_status_'+ json.data[i].id +'"></label>\
+                            </div>';
+
+                        json.data[i].volume_correction *= 5;
+                        var name = json.data[i].name;
+
+                        json.data[i].name = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-radio?id=' + id + '" >' +escapeHtml( name )+ '</a>';
+                    }
+                }
+            }).dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/radio-list-json"
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+                {% endif %}
+
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "bInfo": true,
+
+                "fixedHeader": {
+                    header: true,
+                    headerOffset: $('header.navbar').height()
+                },
+                
+                "aoColumnDefs": [
+                    { className: "action-menu", "targets": [ -1 ] },
+                    {"searchable": false, "targets": [-1, -2, -3, -4]},
+                    {"sortable": false, "targets": [-1]},
+                    {className: "data-filter-status", "targets": [-3]}
+                ]
+            }).prev('.dataTables_processing').hide('');
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+                
+                $(document).on('click', "a.main_ajax", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var _this = $(this);
+                    _this.closest('div.open').removeClass('open');
+
+                    if( $(this).attr("href").indexOf("remove-radio") != -1 && !confirm("{{"Delete this radio?"|trans}}") ) {
+                        return;
+                    }
+
+                    ajaxPostSend($(this).attr('href'), $(this).data(), false, false);
+                    return false;
+                });
+
+                $(document).on('change', ".mswitch input", function(e){
+                    ajaxPostSend('{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-radio', $(this).data() );
+                });
+
+                LoadDataTablesScripts(InitDatatable);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);

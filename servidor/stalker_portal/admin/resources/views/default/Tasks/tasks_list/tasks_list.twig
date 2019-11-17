@@ -1,0 +1,66 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = ('Tasks'|trans ~ ': ' ~ 'tasks list in section'|trans ~ '"' ~ app.task_type_title ~ '"') %}
+
+{% block head %}
+
+    {{ parent() }}
+    <style type="text/css">
+        {% include (app.twig_theme ~ "/Tasks/tasks_list/task_list.css") %}
+    </style>
+
+{% endblock %}
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/Tasks/tasks_list/tasks_list.js.twig") %}
+        </script>
+        
+{% endblock %}
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    {{ main_macro.get_filter('task_type', 'Task type'|trans, 'id', 'title', app['taskType'], 3, 6, 1) }}
+                    {{ main_macro.get_filter('state', 'State'|trans, 'id', 'title', app['taskState'], 3, 6) }}
+                    {{ main_macro.get_filter('status', 'Status'|trans, 'id', 'title', app['taskStatus'], 3, 6) }}
+                    {{ main_macro.get_filter('archive', 'Archive'|trans, 'id', 'title', app['taskArchive'], 3, 6) }}
+                    {{ main_macro.get_filter('to_user', 'Assigned to'|trans, 'id', 'login', app['taskAdmin'], 3, 6) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

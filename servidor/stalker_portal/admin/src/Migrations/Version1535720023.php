@@ -1,0 +1,41 @@
+<?php
+
+namespace Ministra\Migrations;
+
+use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\DBAL\Schema\Schema;
+class Version1535720023 extends \Doctrine\DBAL\Migrations\AbstractMigration
+{
+    public function up(\Doctrine\DBAL\Schema\Schema $schema)
+    {
+        $this->addSql(<<<EOL
+--
+CREATE TABLE `audio_playlists` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL DEFAULT 0,
+  `name` varchar(128) NOT NULL DEFAULT '',
+  `modified` timestamp null default null,
+  INDEX `user` (`user_id`),
+  PRIMARY KEY (`id`)
+) DEFAULT CHARSET=utf8;
+CREATE TABLE `audio_playlist_tracks` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `playlist_id` int NOT NULL DEFAULT 0,
+  `track_id` int NOT NULL DEFAULT 0,
+  `added` timestamp null default null,
+  INDEX `playlist` (`playlist_id`),
+  PRIMARY KEY (`id`)
+) DEFAULT CHARSET=utf8;
+EOL
+);
+    }
+    public function down(\Doctrine\DBAL\Schema\Schema $schema)
+    {
+        $this->addSql(<<<EOL
+DROP TABLE `audio_playlists`;
+DROP TABLE `audio_playlist_tracks`;
+--
+EOL
+);
+    }
+}

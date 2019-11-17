@@ -1,0 +1,352 @@
+{% extends app['twig_theme'] ~ '/layout.twig' %}
+
+{% set title = 'Service packages'|trans ~ ': ' ~ (app.servicePackageEdit ? ('Edit package'|trans ~ " '"~ app.packageName ~ "'"): 'Add package'|trans) %}
+{% set active_alias = 'service-packages' %}
+
+{% block head %}
+        
+        {{ parent() }}
+        <link href="{{ app.request_context.baseUrl }}/plugins/jquery-multi-select/multi-select.css" type="text/css" rel="stylesheet" />
+        <link href="{{ app.request_context.baseUrl }}/plugins/multistate-switch/tsb.css" type="text/css" rel="stylesheet" />
+
+{% endblock %}
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+        <script type="text/javascript" src="{{app.request_context.baseUrl}}/js/jquery.tmpl.min.js" defer=""></script>
+        <script type="text/javascript" src="{{app.request_context.baseUrl}}/plugins/jquery-multi-select/jquery.multi-select.js" defer=""></script>
+        <script type="text/javascript" src="{{app.request_context.baseUrl}}/plugins/multistate-switch/tsb.js" defer=""></script>
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/Tariffs/add_service_package/add_service_package.js.twig") %}
+        </script>
+    
+{% endblock %}
+
+
+{% block content %}
+    <div id="add_channel">
+        {{ form_start(app['form'], {'method': 'POST', 'action': (app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias) | trans, 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
+        <div class="bg-danger">
+            <div class="bg-danger">
+                {{ form_errors(app['form']) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="box">
+                    <div class="box-content">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{{ 'External ID'|trans }}</label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {{ form_widget(app['form'].id, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_widget(app['form'].services_json, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_widget(app['form'].service_options_json, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_widget(app['form'].external_id, {'attr': {'class': 'form-control',
+                                        'data-validation': 'server',
+                                        'data-validation-postpone': '200',
+                                        'data-validation-url': app.request_context.baseUrl ~ '/'~ app.controller_alias ~'/check-external-id',
+                                        'data-validation-param-name': 'externalid',
+                                        'data-validation-optional': 'true'
+                                    }}) }}
+                                    <div class="name-check">
+                                        {{ form_errors(app['form'].external_id) }}
+                                    </div>
+                                </div>
+                                <i class="i-hint"
+                                   title="{{ 'Package identifier, can be used for external services'|trans }}. {{ 'Must be unique'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{{ 'Package name'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {{ form_widget(app['form'].name, {'attr': {'class': 'form-control',
+                                        'data-validation': 'required, server',
+                                        'data-validation-postpone': '200',
+                                        'data-validation-url': app.request_context.baseUrl ~ '/'~ app.controller_alias ~'/check-package-name',
+                                        'data-validation-param-name': 'name'
+                                    }}) }}
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].name) }}
+                                    </div>
+                                </div>
+                                <i class="i-hint"
+                                   title="{{ 'You can use letters, digits and symbols from the list: ! @ # $ % ^ & * ( ) _ - + : ; , .'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{{ 'Description'|trans }}</label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {{ form_widget(app['form'].description, {'attr': {'class': 'form-control'}}) }}
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].description) }}
+                                    </div>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-12">
+                                    <span class="small txt-default"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{{ 'Service'|trans }}</label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {% if attribute(app['form'].type, 'vars') is defined %}
+                                        {% set type_val = app['form'].type.vars.value %}
+                                    {% else %}
+                                        {% set type_val = '' %}
+                                    {% endif %}
+                                    {{ form_widget(app['form'].type, {'attr': {'class': 'populate placeholder', 'data-currtype': type_val }}) }}
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].type) }}
+                                    </div>
+                                </div>
+                                <i class="i-hint"
+                                   title="{{ 'Category of content which this package belongs to'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                        </div>
+
+                        <div class="form-group" {{ app['form'].service_type.vars.attr.disabled ? 'style="display: none;"' : '' }}>
+                            <label class="col-sm-2 control-label">{{ 'Access'|trans }}</label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-3">
+                                    {{ form_widget(app['form'].service_type, {'attr': {'class': 'populate placeholder'}}) }}
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].service_type) }}
+                                    </div>
+                                </div>
+                                <i class="i-hint"
+                                   title="{{ 'Type of access to the service: regular or one-off - with the terms and the price of rent'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                        </div>
+                        <div class="form-group" {{ app['form'].rent_duration.vars.attr.disabled ? 'style="display: none;"' : '' }}>
+                            <label class="col-sm-2 control-label">{{ 'Duration of rent'|trans }}</label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-3">
+                                    {{ form_widget(app['form'].rent_duration, {'attr': {'class': 'form-control'}}) }}
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].rent_duration) }}
+                                    </div>
+                                </div>
+                                <i class="i-hint"
+                                   title="{{ 'The duration of the specified service hours'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                        </div>
+                        <div class="form-group" {{ app['form'].price.vars.attr.disabled ? 'style="display: none;"' : '' }}>
+                            <label class="col-sm-2 control-label">{{ 'Price'|trans }}</label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-3">
+                                    {{ form_widget(app['form'].price, {'attr': {'class': 'form-control'}}) }}
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].price) }}
+                                    </div>
+                                </div>
+                                <i class="i-hint"
+                                   title="{{ 'Price for rent services'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-checkbox" {{ app['form'].all_services.vars.attr.disabled ? 'style="display: none;"' : '' }}>
+                            <label class="col-sm-2 control-label">{{ 'Full package'|trans }}</label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-8">
+                                    <div class="checkbox-inline">
+                                        <label>
+                                            {{ form_widget(app['form'].all_services) }}      
+                                            <i class="fa fa-square-o small"></i>
+                                        </label>
+                                    </div>
+                                    <i class="i-hint"
+                                       title="{{ 'Gives access to all content of the selected service'|trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].all_services) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" {{ app['form'].type.vars.value=='module' or not(app['form'].services.vars.attr.disabled) ? 'style="display: block;"' : 'style="display: none;"' }}>
+                            <div class="col-sm-10 no-padding">
+                                <div class="col-sm-12">
+                                    {{ form_widget(app['form'].services, {'attr': {'class': 'populate placeholder' }}) }}
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].services) }}
+                                    </div>
+                                </div>
+                                <span class="help-inline col-sm-12 text-center">
+                                    <span class="small txt-default">{{ 'Use Ctrl key to select several items'|trans }}. </span>
+                                    <span class="small txt-default">{{ 'You can use arrow keys and space button to transfer elements lightly'|trans }}.</span>
+                                </span>
+                            </div>
+                            <div id="service_options" class="col-xs-2 hidden">
+                                <div class="block-header"><strong title="{{'Setup access to the channel\'s TV archive for this package'|trans}}">{{ 'TV archive'|trans }}</strong> <span class="counter badge pull-right"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-buttons col-sm-12">
+                    <div class="box">
+                        <div class="box-content">
+                            <div class="row">
+                                <div class="col-xs-10 col-sm-8 pull-right">
+                                    {{ form_widget(app['form'].save, { 'label': 'Save'|trans , attr: {'class': 'btn btn-success  pull-right'}}) }}
+                                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/service-packages" class="btn btn-default pull-right">{{ 'Cancel'|trans }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="">
+            {{ form_rest(app.form) }}
+        </div>
+        {{ form_end(app['form']) }}  
+    </div>
+
+
+    <div id="modalbox_ad">
+        <div class="devoops-modal">
+            <div class="devoops-modal-header">
+                <div class="modal-header-name">
+                    <span>{{ 'TV archive'|trans }}</span>
+                </div>
+                <div class="box-icons">
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+
+            <form class="form-horizontal" role="form" action="{{app.request_context.baseUrl ~ '/' ~ app.controller_alias}}/set-tvarchive-settings">
+                <div class="devoops-modal-inner">
+                    <div class="box">
+                        <div class="box-content" id="add_channel_storage_save">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'TV archive type'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-9">
+                                    <div class=" col-xs-10 col-sm-5 col-sm-shifted">
+                                        <input type="hidden" id="form_channel_id" name="form[channel_id]" value="">
+                                        <select id="form_tv_archive_type" name="form[tv_archive_type]" class="form-control populate placeholder" data-validation="required" placeholder="Disabled">
+                                                <option value="" selected="selected"></option>
+                                            {% for key, row in app.tv_archive_type %}
+                                                <option value="{{ key }}">{{ row }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="bg-danger">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'Archive servers'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-9">
+                                    <div class=" col-xs-10 col-sm-10 col-sm-shifted">
+                                        {% for type_name, item_list in app.dvr_storages %}
+                                        <select id="form_{{ type_name }}" name="form[{{ type_name }}][]" required="required" class="populate placeholder" data-validation="required" data-validation-depends-on="form[tv_archive_type]" data-validation-error-msg="{{ 'Select the storage for recording'|trans }}" multiple="multiple">
+                                            {% for key, row in item_list %}
+                                                <option value="{{ key }}">{{ row }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="bg-danger">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'TV archive address'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-9">
+                                    <div class="col-xs-10 col-sm-10 col-sm-shifted">
+                                        <input type="text" id="form_mc_cmd" name="form[mc_cmd]" class="form-control" data-validation="required,custom" data-validation-regexp="^(http|udp|rtp)\:\/\/" data-validation-error-msg-custom="{{ 'Valid protocols are http://, rtp:// and udp://'|trans }}" data-validation-depends-on="form[tv_archive_type]" value="" />
+                                        <div class="bg-danger">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'TV archive length'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-9">
+                                    <div class="col-xs-10 col-sm-4 col-sm-shifted">
+                                        <input type="text" id="form_tv_archive_duration" name="form[tv_archive_duration]" required="required" class="form-control placeholder" data-validation="required,number" data-validation-allowing="range[0;999]" data-validation-error-msg-number="{{ 'Allowed values from 0 to 999'|trans }}" data-validation-depends-on="form[mc_cmd]" value="0" />
+                                        <div class="bg-danger">
+                                        </div>
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{{ 'Measured in hours' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                            {% if false and attribute(app.dvr_storages, 'storage_names') is defined %}
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'Allow nPVR'|trans }}</label>
+                                <div class="col-xs-10 col-sm-9">
+                                    <div class=" col-xs-10 col-sm-12">
+                                        <div class="checkbox-inline">
+                                            <label>
+                                                <input type="checkbox" id="form_allow_pvr" name="form[allow_pvr]" value="on">
+                                                <i class="fa fa-square-o small"></i>
+                                            </label>
+                                        </div>
+                                        <i class="i-hint" title="{{ 'Allow the user to record selected programs on the server repository' |trans }}" >
+                                            <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                        </i>
+                                        <div class="bg-danger">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'nPVR servers'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-9">
+                                    <div class="col-xs-10 col-sm-12">
+                                        <select id="form_pvr_storage_names" name="form[pvr_storage_names][]" required="required" class="populate placeholder" data-validation="required" data-validation-depends-on="form[allow_pvr]" data-validation-error-msg="{{ 'Select the storage for recording'|trans }}" multiple="multiple">
+                                        {% for key, row in app.dvr_storages.storage_names %}
+                                            <option value="{{ key }}">{{ row }}</option>
+                                        {% endfor %}
+                                        </select>
+                                        <div class="bg-danger">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="devoops-modal-bottom">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+                        <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,1190 @@
+
+        var datepickerBaseOpt = {
+            numberOfMonths: 1,
+            firstDay    : 1,
+            language: '{% if attribute(app, 'locale') is defined and app['locale']|length == 2 %}{{ app['locale'] }}{% else %}en{% endif %}',
+            showButtonPanel : false,
+            dateFormat  : 'dd-mm-yy',
+            dayNamesMin : [
+                '{{ 'Sun'|trans }}',
+                '{{ 'Mon'|trans }}',
+                '{{ 'Tue'|trans }}',
+                '{{ 'Wed'|trans }}',
+                '{{ 'Thu'|trans }}',
+                '{{ 'Fri'|trans }}',
+                '{{ 'Sat'|trans }}'
+            ],
+            monthNames  : [
+                '{{ 'January'|trans }}',
+                '{{ 'February'|trans }}',
+                '{{ 'March'|trans }}',
+                '{{ 'April'|trans }}',
+                '{{ 'May'|trans }}',
+                '{{ 'June'|trans }}',
+                '{{ 'July'|trans }}',
+                '{{ 'August'|trans }}',
+                '{{ 'September'|trans }}',
+                '{{ 'October'|trans }}',
+                '{{ 'November'|trans }}',
+                '{{ 'December'|trans }}'
+            ],
+            onClose: function (selectedDate) {
+                var dateParam, inputNeighbor;
+                if ($(this).attr('id').slice(-3) == '_to') {
+                    dateParam = "maxDate";
+                    inputNeighbor = $(this).prev('input');
+                } else {
+                    dateParam = "minDate";
+                    inputNeighbor = $(this).next('input');
+                }
+                if (inputNeighbor && inputNeighbor.length) {
+                    inputNeighbor.datepicker("option", dateParam, selectedDate);
+                }
+            }
+        };
+
+        var conf = {
+            form: '#modalbox form',
+            lang : '{{ app.js_validator_language }}',
+            showHelpOnFocus : true,
+            validateHiddenInputs: true,
+            scrollToTopOnError: false,
+            errorClass: "error",
+            ignore: ['.ignore'],
+            modules: 'jsconf',
+
+            onSuccess: function () {
+                return false;
+            },
+            onError: function () {
+                return false;
+            }
+        };
+
+        var mediaTypeName = [
+            {% for key, val in app.mediaTypeName %}'{{ val }}'{% if not loop.last %},{% endif %}{% endfor %}
+        ];
+
+        var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+        function InitSelect2() {
+            $("[id^='s2_']").not("#filter_s2_state, #filter_s2_status").select2(select2Opt);
+            $("#filter_s2_state, #filter_s2_status").select2(select2Opt);
+            $("[id^='filter_s2_']").select2(select2Opt);
+        }
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object' && json.data.length >0) {
+                    var date;
+                    for (var i in json.data) {
+                        var id = json.data[i].id;
+                        {% if attribute(app, 'reseller') is defined and not app['reseller'] %}
+                        var reseller_id = json.data[i].reseller_id;
+                        var reseller_name = json.data[i].reseller_name;
+                        {% endif %}
+                        var status = json.data[i].status;
+                        var state = json.data[i].state;
+                        var expire_billing_date = json.data[i].expire_billing_date;
+                        var mac = json.data[i].mac;
+
+                        json.data[i].now_playing_type = (typeof (mediaTypeName[json.data[i].now_playing_type]) != 'undefined' ? mediaTypeName[json.data[i].now_playing_type]: '--');
+                        json.data[i].operations = "<div class='col-xs-3 col-sm-8'>\n\
+                                                        <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                                            <i class='pull-right fa fa-cog'></i>\n\
+                                                        </a>\n\
+                                                        <ul class='dropdown-menu pull-right'>\n\
+                                                            <li>\n\
+                                                                <a href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-users?id=" + id + "'>\n\
+                                                                    <span>{{ 'Edit'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/users-consoles-logs?id=" + id + "'>\n\
+                                                                    <span>{{ 'Logs'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a "+ ( !mac && !json.data[i].login ? "disabled='disabled' ":"") + "class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/send-message' data-userid='" + id + "'>\n\
+                                                                    <span>{{ 'Send event'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>";
+                                                            {% if attribute(app, 'reseller') is defined and not app['reseller'] %}
+                        json.data[i].operations +=          "<li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/move-user-to-reseller' data-id='" + id + "' data-reseller_id='" + reseller_id + "'>\n\
+                                                                    <span>{{ 'Set reseller'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>";
+                                                            {% endif %}
+                                                            {% if attribute(app, 'enableBilling') is defined and app.enableBilling %}
+                        json.data[i].operations +=          "<li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/set-expire-billing-date' data-userid='" + id + "' data-setaction='set'>\n\
+                                                                    <span>{{ 'Set expires billing date'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>";
+                                                            if (expire_billing_date > 0) {
+                        json.data[i].operations +=          "<li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/set-expire-billing-date' data-userid='" + id + "' data-setaction='unset'>\n\
+                                                                    <span>{{ 'Unset expires billing date'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>";
+                                                            }
+                                                            {% endif %}
+                        json.data[i].operations +=          "<li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-user' data-userid='" + id + "'>\n\
+                                                                    <span>{{ 'Delete'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                        </ul>\n\
+                                                    </div>";
+                        var last_active = new Date(json.data[i].last_active * 1000);
+                        json.data[i].state = state != 0 ? "<span class=''>Online</span>" : "<span class=''>Offline</span><br><span>{{ 'Last activity'|trans }}: " + (json.data[i].last_active != 0? last_active.toLocaleFormat("%b %d, %Y %H:%M"): "-") + "</span>";
+
+                        json.data[i].login = escapeHtml( json.data[i].login );
+                        json.data[i].fname = escapeHtml( json.data[i].fname );
+                        json.data[i].ls = escapeHtml( json.data[i].ls );
+
+                        // Note that 0 corresponds to status On !
+                        //json.data[i].status = "<span class=''>" + (status == 0 ? "{{ 'on'|trans }}" : "{{ 'off'|trans }}") + "</span>";
+                        json.data[i].status = '\
+                           <div class="mswitch">\
+                                <input type="checkbox" \
+                                       id="user_status_'+ json.data[i].id +'"\
+                                       name="form[status]" readonly="readonly" class="form-control" \
+                                       ' + ( json.data[i].status == 0 ? 'checked="checked"' : '' ) +'\
+                                       data-userid="' + json.data[i].id + '"\
+                                       data-userstatus="' + json.data[i].status +'">\
+                                <label class="label-success" \
+                                       title="' + ( json.data[i].status == 0 ? "{{'Switch off'|trans}}" : "{{'Switch on'|trans}}" ) + '" \
+                                       for="user_status_'+ json.data[i].id +'"></label>\
+                            </div>';
+
+                        if (json.data[i].country) {
+                            json.data[i].ip = "<span class='countries-flag-container'><span class='pull-left'>" + json.data[i].ip + "</span><span class='flag-wrapper pull-right'><span class='flag flag-icon-background flag-icon-"+json.data[i].country+"'>&nbsp;</span></span></span>";
+                        }
+
+                        if (json.data[i].ip_link) {
+                            json.data[i].ip = "<a href='"+ json.data[i].ip_link +"' target='_blanc'>" + json.data[i].ip +"</a>";
+                        }
+
+                        date = json.data[i]['last_change_status'];
+                        if (date > 0) {
+                            date = new Date(date * 1000);
+                            json.data[i]['last_change_status'] = date.toLocaleFormat("%b %d, %Y");
+                        } else {
+                            json.data[i]['last_change_status'] = ''/*'00-00-0000'*/;
+                        }
+                        {% if attribute(app, 'enableBilling') is defined and app.enableBilling %}
+                        date = json.data[i]['expire_billing_date'];
+                        if (date > 0) {
+                            date = new Date(date * 1000);
+                            json.data[i]['expire_billing_date'] = date.toLocaleFormat("%b %d, %Y");
+                        } else {
+                            json.data[i]['expire_billing_date'] = '{{ 'Unlimited'|trans }}';
+                        }
+                        {% endif %}
+                        date = json.data[i]['created'];
+                        if (date > 0) {
+                            date = new Date(date * 1000);
+                            json.data[i]['created'] = date.toLocaleFormat("%b %d, %Y");
+                        } else {
+                            json.data[i]['created'] = '---';
+                        }
+
+                        /* replaced with renders
+                        json.data[i].mac = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-users?id='+ id +'" >'+ mac +'</a>';
+                        {% if attribute(app, 'reseller') is defined and not app['reseller'] %}
+                        json.data[i].reseller_name = '<a class="main_ajax no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/move-user-to-reseller" data-id="' + id + '" data-reseller_id="' + reseller_id + '">'+escapeHtml( reseller_name )+'</a>';
+                        {% endif %}
+                        */
+                    }
+                }
+            }).dataTable({
+                "processing": true,
+                "serverSide": true,
+                "pageLength": 50,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/users-list-json",
+                    "data": function (d) {
+                        d = dataTableDataPrepare(d);
+
+                        $("div[data-tvfilter]").each(function(){
+                            var inputs, s2_filter;
+                            if ((inputs = $(this).find('input.datepicker')).length) {
+                                d['filters[' + $.trim($(this).data('tvfilter')) + ']'] = inputs.map(function(){return this.value}).get().join('|');
+                            } else if((s2_filter = $(this).find('select[id^="filter_s2_"]')).length){
+                                d['filters[' + $.trim($(this).data('tvfilter')) + ']'] = s2_filter.find('option:selected').map(function(){return this.value}).get().join('|');
+                            } else {
+                                d['filters[' + $.trim($(this).data('tvfilter')) + ']'] = $.trim($(this).data('filterval')) || '';
+                            }
+                        });
+                    }
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "searchDelay": 800,
+                "bInfo": true,
+
+                "fixedHeader": {
+                    header: true,
+                    headerOffset: $('header.navbar').height()
+                },
+                "select": {
+                    style:    'multi',
+                    selector: 'td.select-checkbox'
+                },
+                "order": [[ 1, "asc" ]],
+                "rowId": "RowOrder", // required to restore selected rows on reload
+
+                // modify the sDom
+                "sDom": "<'clearfix'<'pull-right'fAV>B>rt<'row-fluid'<'col-md-4 no-padding'i><'col-md-8 no-padding'pl>>",
+
+                //from macro
+                "columns": [
+                    // be sure to change col indexes at aoColumnDefs if added
+                    { "data": null, defaultContent: "", orderable: false, className: 'w-1p select-checkbox'},
+                {% for key, item in app['dropdownAttribute'] %}
+                    {% if 'all' != item.name %}
+                    {"data": "{{ item.name }}", "name": "{{ item.name }}" {% if not(item.checked) %}, visible: false, className: 'none'{% endif %}}{% if not loop.last %},{% endif %}
+                    {% endif %}
+                {% endfor %}
+                ],
+
+                "aoColumnDefs": [
+                    {% if enable_tariff_plans %}
+                    {"searchable": false, "targets": [0, 4, 5, 8, 9, 11, 12, 13, {% if attribute(app, 'reseller') is defined and not app['reseller'] %}14, {% endif %}-1]},
+                    {% else %}
+                    {"searchable": false, "targets": [0, 4, 7, 8, 10, 11, 12, {% if attribute(app, 'reseller') is defined and not app['reseller'] %}13, {% endif %}-1]},
+                    {% endif %}
+                    {"sortable": false, "targets": [0,-1]},
+                    { className: "action-menu", "targets": [ -1 ] },
+                    { className: "data-filter-status", "targets": [{% if attribute(app, 'reseller') is defined and not app['reseller'] %}-3{% else %}-2{% endif %}{% if attribute(app, 'enableBilling') is defined and app.enableBilling %}, -1{% endif %} ]},
+
+
+                    /*** Renders ***/
+                    {
+                        // The `data` parameter refers to the data for the cell (defined by the
+                        // `data` option, which defaults to the column being worked with, in
+                        // this case `data: 0`.
+                        "render": function ( data, type, row ) {
+                            return '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-users?id='+ row.id +'" >'+ escapeHtml(row.mac) +'</a>';
+                        },
+                        "targets": 1
+                    },
+
+                    {% if attribute(app, 'reseller') is defined and not app['reseller'] %}
+                    {
+                        "render": function ( data, type, row ) {
+                            return '<a class="main_ajax no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/move-user-to-reseller" data-id="' + row.id + '" data-reseller_id="' + row.reseller_id + '">'+ escapeHtml(row.reseller_name) +'</a>';
+                        },
+                        "targets": {% if attribute(app, 'enableBilling') is defined and app.enableBilling %}-3{% else %}-2{% endif %}
+                    },
+                    {% endif %}
+                ],
+
+
+                "buttons": [
+                    // Batch Select Buttons
+                    {
+                        extend: 'collection',
+                        className: 'dt-group-select-dropdown',
+                        text: '<span class="fa select-checkbox"></span> <i class="fa fa-caret-down"></i>',
+                        autoClose: true,
+                        background: true,
+                        fade: 0,
+                        buttons: [
+                            {
+                                text: '{{ 'Select all'|trans }}',
+                                name: 'selectAll',
+                                className: 'dt-group-button-select',
+                                action: function ( e, dt, node, config ) {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    JScloseModalBox();
+                                    if( $(this).hasClass("disabled") ) {
+                                        return;
+                                    }
+                                    dt.rows().select();
+                                }
+                            },
+                            {
+                                text: '{{ 'Inverse selection'|trans }}',
+                                name: 'selectInverse',
+                                className: 'dt-group-button-select',
+                                action: function ( e, dt, node, config ) {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    JScloseModalBox();
+                                    if( $(this).hasClass("disabled") ) {
+                                        return;
+                                    }
+                                    var rowsSelected = dt.rows( { selected: true } );
+                                    dt.rows().select();
+                                    rowsSelected.deselect();
+                                }
+                            },
+                            {
+                                text: '{{ 'Undo selection'|trans }}',
+                                name: 'selectNone',
+                                className: 'dt-group-button-select',
+                                action: function ( e, dt, node, config ) {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    JScloseModalBox();
+                                    if( $(this).hasClass("disabled") ) {
+                                        return;
+                                    }
+                                    dt.rows().deselect();
+                                }
+                            }
+                        ]
+                    },
+
+                    // Change status
+                    {
+                        extend: 'collection',
+                        // params are described here:
+                        // https://datatables.net/reference/button/collection
+                        //titleAttr: "Yes! We have title !",
+                        //className: 'dt-button-delete',
+                        text: '<i class="fa fa-toggle-on"></i> {{ 'Status'|trans }} <i class="fa fa-caret-down"></i>',
+                        titleAttr: "{{ 'Change status'|trans }}",
+                        autoClose: true,
+                        background: true,
+                        //backgroundClassName: "dt-button-background",
+                        fade: 0, // speed
+                        buttons: [
+                            {
+                                text: '{{ 'Switch on'|trans }}',
+                                className: 'dt-group-toggle-button',
+                                action: function ( e, dt, node, config ) {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    JScloseModalBox();
+
+                                    var sendData = {};
+                                    var ids = dt.rows( { selected: true } ).ids().toArray().toString().replace(/dTRow_/g, "" );
+                                    sendData.group_key = "ids";
+                                    sendData.ids = JSON.stringify(ids.split(','));
+                                    sendData.userstatus = 1;
+
+                                    var extOptions = { success: function (data) {
+                                        data.action = "updateTableData";
+                                        ajaxSuccess(data, false, false);
+                                    }}
+
+                                    ajaxPostSend( "{{app.request_context.baseUrl}}/{{ app.controller_alias }}/toggle-status", sendData, false, false, true, extOptions );
+                                }
+                            },
+                            {
+                                text: '{{ 'Switch off'|trans }}',
+                                className: 'dt-group-toggle-button',
+                                action: function ( e, dt, node, config ) {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    JScloseModalBox();
+
+                                    var sendData = {};
+                                    var ids = dt.rows( { selected: true } ).ids().toArray().toString().replace( /dTRow_/g, "" );
+                                    sendData.group_key = "ids";
+                                    sendData.ids = JSON.stringify(ids.split(','));
+                                    sendData.userstatus = 0;
+
+                                    var extOptions = { success: function (data) {
+                                        data.action = "updateTableData";
+                                        ajaxSuccess(data, false, false);
+                                    }}
+
+                                    ajaxPostSend( "{{app.request_context.baseUrl}}/{{ app.controller_alias }}/toggle-status", sendData, false, false, true, extOptions );
+                                }
+                            }
+                        ]
+                    },
+
+                    // Send Event
+                    {
+                        text: '<i class="fa fa-calendar"></i> {{'Send event'|trans }}',
+                        titleAttr: "{{ 'Send event'|trans }}",
+                        name: 'sendEvent',
+                        action: function ( e, dt, node, config ) {
+                            if( $(this).hasClass('disabled') ) {
+                                return false;
+                            }
+                            e.stopPropagation();
+                            e.preventDefault();
+                            JScloseModalBox();
+
+                            var tr = dt.rows( { selected: true } );
+                            openEventModal(e, tr, true);
+                            return false;
+                        }
+                    },
+
+                    {% if attribute(app, 'reseller') is defined and not app['reseller'] %}
+                    // Reseller
+                    // default Clear drop-down button comes here, the rest list of reseller buttons
+                    // are attached to the table via init event. This is made for code clarity.
+                    {
+                        extend: 'collection',
+                        text: '<i class="fa fa-user fa-user-secret"></i> {{ 'Set reseller'|trans }} <i class="fa fa-caret-down"></i>',
+                        titleAttr: "{{ 'Set reseller'|trans }}",
+                        autoClose: true,
+                        background: true,
+                        fade: 0,
+                        buttons: [
+                            {
+                                text: '{{ 'Not selected'|trans }}',
+                                action: function ( e, dt, node, config ) {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    JScloseModalBox();
+
+                                    actionClearReseller();
+                                }
+                            }
+                        ]
+                    },
+                    {% endif %}
+
+                    // Delete button
+                    {
+                        text: '<i class="fa fa-trash fa-trash-o-"></i> {{'Delete'|trans }}',
+                        titleAttr: "{{ 'Delete'|trans }}",
+                        action: function ( e, dt, node, config ) {
+
+                            if( $(this).hasClass('disabled') )
+                                return false;
+
+                            e.stopPropagation();
+                            e.preventDefault();
+                            JScloseModalBox();
+
+                            var tr = dt.rows( { selected: true } )
+                            var sendData = {};
+                            var ids = dt.rows( { selected: true } ).ids().toArray().toString().replace(/dTRow_/g, "" );
+
+                            var msgConfirm = tr.count()==1 ? "{{'Are you sure you want to delete user?'|trans}}" : "{{'Are you sure you want to delete users?'|trans }}";
+
+                            if( confirm(msgConfirm) ){
+                                sendData.group_key = "ids";
+                                sendData.ids = ids;
+                                sendData.ids = JSON.stringify(sendData.ids.split(','));
+
+                                var extOptions = { success: function (data) {
+                                    data.action = "updateTableData";
+                                    ajaxSuccess(data, false, false);
+                                }}
+
+                                ajaxPostSend( "{{app.request_context.baseUrl}}/{{ app.controller_alias }}/remove-users", sendData, false, false, true, extOptions );
+                                resetTableButtons();
+                                setGroupSelectState( "none" );
+                            }
+                            return false;
+                        }
+                    }
+                ],
+
+                "fnInitComplete": function (settings) {
+                    var resellers = {% if attribute(app, 'allResellers') is defined %}{% autoescape false %}{{ app['allResellers']| json_encode() }}{% endautoescape %}{% else %}[]{% endif%};
+                    var dt = $('#datatable-1').DataTable();
+                    var buttonAPI = dt.button();
+
+                    {% if attribute(app, 'reseller') is defined and not app['reseller'] %}
+
+                    // remove Default reseller from array:
+                    resellers = jQuery.map( resellers, function (item) {
+                        return item.id=='-' ? null : item;
+                    });
+
+                    $.each( resellers, function (i, item) {
+                        // https://datatables.net/forums/discussion/42271/add-sub-button-to-collection-dynamically
+                        buttonAPI.add( "3-"+(i+1), {
+                            text: escapeHtml(item.name),
+                            action: function ( e, dt, node, config ) {
+                                actionChangeReseller(item.id);
+                            }
+                        });
+                    });
+
+                    {% endif %}
+
+                    $("#datatable-1_filter input").off( 'keyup.DT search.DT input.DT paste.DT cut.DT' );
+                    $("#datatable-1_filter input").on( 'keyup.DT search.DT input.DT paste.DT cut.DT', debounce( settings.searchDelay, function(e) {
+                        settings.oInstance.DataTable().search( this.value ).draw();
+                    } ) );
+
+
+                    // redefine empty table message
+                    $.extend(true, settings.oInstance.fnSettings().oLanguage, {
+                        //"sEmptyTable": "{{ 'Users not found'|trans }}",
+                        "sZeroRecords": "{{ 'Users not found'|trans }}"
+                    });
+                    settings.oInstance.fnUpdate();
+
+                    initTableButtons();
+                }
+            }).prev('.dataTables_processing').hide('');
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+
+                LoadDataTablesScripts(InitDatatable);
+                LoadSelect2Script(InitSelect2);
+
+                confEvent.modules = 'jsconf, date, logic';
+                extendEventForm();
+                eventsMenuHandlers();
+                // Make user's MAC-address field free of validation
+                //$(confEvent.form).get(0).validationConfig.ignore.push('mac');
+
+                $(document).on('click', "a.main_ajax", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var _this = $(this);
+                    _this.closest('div.open').removeClass('open');
+
+                    if (_this.attr('href').search("send-message") != -1 || _this.attr('href').search("set-expire-billing-date") != -1  || _this.attr('href').search("move-user-to-reseller") != -1) {
+                        return false;
+                    }
+
+                    if( _this.attr("href").indexOf("remove-user") != -1 && !confirm("{{'Are you sure you want to delete user?'|trans}}") ) {
+                        return;
+                    }
+
+                    ajaxPostSend($(this).attr('href'), $(this).data(), false, false);
+                    return false;
+                });
+
+                $(document).on('change', ".mswitch input", function(e){
+                    ajaxPostSend('{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-user', $(this).data() );
+                });
+
+                $(document).on('click', 'a[href*="send-message"]', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $(this).closest("div.open").removeClass('open');
+
+                    var tr = $(this).closest('tr');
+                    openEventModal(e,tr);
+                    return false;
+                });
+
+                $('form').on('reset', function() {
+                    $("input[type='hidden']", $(this)).val('');
+                });
+                
+                {% if attribute(app, 'enableBilling') is defined and app.enableBilling %}
+                $(document).on('click', 'a[href*="set-expire-billing-date"]', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var _this = $(this);
+                    if (_this.data('setaction') == 'set') {
+                        setExpireDateModal(_this);
+                    } else {
+                        ajaxPostSend(_this.attr('href'), _this.data());
+                    }
+                    return false;
+                });
+                $(document).on('hide', '#modalbox', function(e){
+                    $("div[id*='datepicker']").removeClass('dp_white');
+                    $('#modalbox .devoops-modal').removeAttr('style');
+                    $('#modalbox').removeClass('modal-schedule');
+                });
+                {% endif %}
+
+                {% if attribute(app, 'reseller') is defined and not app['reseller'] %}
+                $(document).on('click', "a[href*='move-user-to-reseller']", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $("#modalbox").data('complete', 1);
+                    $('#modalbox').find('.modal-header-name span').text("{{ 'Resellers'|trans }}");
+                    var reseller_id = $(this).data('reseller_id');
+                    $('#modalbox').find('.devoops-modal-inner').html($("#move_user_to_reseller_template").html());
+                    $('#modalbox input[name="id"]').val($(this).data('id'));
+                    $('#modalbox input[name="source_id"]').val(reseller_id);
+                    $('#target_reseller option').removeAttr('selected');
+                    $('#target_reseller option[value="'+ reseller_id +'"]').attr('selected', 'selected');
+
+                    $('#modalbox').find('.devoops-modal-bottom').html($("#modal_form_button_template").html());
+                    $('#modalbox button[type="submit"]').text("{{ 'Move'|trans }}");
+
+                    $("#target_reseller").select2(select2Opt);
+
+                    $("#modalbox").show();
+                    $(this).closest('div.open').removeClass('open');
+                    return false;
+                });
+                {% endif %}
+
+                $(document).on('click', "#modalbox button[type='submit']", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    if ($("#modalbox form").isValid({}, conf, true)) {
+                        var _this = $(this);
+                        var sendData = new Object();
+                        var form_fields = _this.closest("#modalbox").find('form').find(".own_fields:not(:disabled)");
+                        form_fields.each(function () {
+                            if ($(this).val()) {
+                                if (this.type.toUpperCase() != 'CHECKBOX' || this.checked) {
+                                    sendData[this.name] = $(this).val();
+                                }
+                            }
+                        });
+                        var action = _this.closest("#modalbox").find('form').attr('action');
+                        ajaxPostSend(action, sendData, false, false);
+                        return false;
+                    }
+                });
+
+                /*** Filters ***/
+
+                $(document).on('change', "#filter_param li:not(:first-child) input[type='checkbox']", function (e) {
+                    if (this.checked) {
+                        ajaxPostSend("{{app.request_context.baseUrl}}/{{app.controller_alias}}/get-filter", {text_id: $(this).val()});
+                    } else {
+                        $('div[data-tvfilter="' + $(this).val() + '"]').remove();
+                    }
+                });
+
+                $(document).on('click', 'div[data-tvfilter] ul a, div[data-tvfilter]:not(.filter-date-range) .dropdown-menu button, div[data-tvfilter]:not(.filter-date-range) .dropdown-menu button i', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var filter_str = (this.tagName == "A") ? $(this).data('filter'): $(this).closest('.dropdown-menu').find('input').map(function(){return this.value}).get().join('|');
+                    $(this).closest('[data-filterval]').data('filterval', filter_str);
+                    $(this).closest('[data-filterval]').find('a.dropdown-toggle span:nth-child(2)').text((this.tagName == "A") ? $(this).text() : $(this).closest('.dropdown-menu').find('input').map(function(){return this.value}).get().join(' - '));
+                    $(this).closest('.open').removeClass('open');
+                    return false;
+                });
+
+                //console.log( $('div[data-tvfilter] ul') );
+
+                $(document).on('click', '.filter-date-range .btn-clear', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var datepicker = $(this).closest('.filter').find('.datepicker-inline');
+                    datepicker.datepicker( "setDate", null );
+                });
+
+                $(document).on('click', '.filter-date-range .btn-apply', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var filter_data = $(this).closest('.dropdown-menu').find('input').map(function(){return this.value}).get();
+                    $(this).closest('[data-filterval]').data('filterval', filter_data.join('|'));
+                    $(this).closest('[data-filterval]').find('a.dropdown-toggle span:nth-child(2)').text( filter_data.join(' - ') );
+                    $(this).closest('.open').removeClass('open');
+                    return false;
+                });
+
+                $(document).on("focus", ".filter-date-range .filter_string", function(e){
+                    if (e.currentTarget != e.target) {
+                        return;
+                    }
+                    var $this = $(this);
+                    var currVal = $.trim( $this.val() );
+                    var dateRange = $this.parent().find('.filter_string');
+                    var calendar = $this.closest('.filter').find('.datepicker-inline');
+
+                    var value =  ($this.attr('name').indexOf('[from]')!=-1) ? dateRange.eq(1).val() : dateRange.eq(0).val();
+
+                    calendar.datepicker( "option", "altField", this );
+                    if ($this.attr('name').indexOf('[from]')!=-1) {
+                        calendar.datepicker( "option", 'minDate', null );
+                        calendar.datepicker( "option", 'maxDate', $.trim(value) );
+                    } else {
+                        calendar.datepicker( "option", 'minDate', $.trim(value) );
+                        calendar.datepicker( "option", 'maxDate', null );
+                    }
+                    calendar.datepicker( "setDate", currVal );
+                });
+
+                $(document).on('change', 'select[id^="filter_s2_"]', function (e) {
+                    var selectedOpt = $('option:selected', this);
+
+                    if ((!$(this).data('tested') || $(this).data('tested') == '0')) {
+                        var incomingVal = selectedOpt.map(function(){return this.value}).get(),
+                            existsVal = $(this).closest('[data-filterval]').data('filterval'), diffVal;
+
+                        existsVal = (existsVal) ? existsVal.split('|') : ['0'];
+                        diffVal = incomingVal.filter(function(value){
+                            return existsVal.indexOf(value) == -1;
+                        });
+
+                        if ( (diffVal.length == 1 && diffVal.indexOf('0') != -1) || incomingVal.length == 0 ) {
+                            $(this).val('0');
+                        } else {
+                            $(this).val(incomingVal.filter(function(value){return value !== '0'}));
+                        }
+                        $(this).data('tested', '1');
+                        $(this).trigger('change');
+                    } else {
+                        var filter_val = selectedOpt.map(function(){return this.value}).get().join('|');
+                        var filter_str = selectedOpt.map(function(){return $(this).text()}).get().join('|');
+                        $(this).closest('[data-filterval]').data('filterval', filter_val);
+                        $(this).closest('[data-filterval]').find('a.dropdown-toggle span:nth-child(2)').text(filter_str);
+                        $(this).data('tested', '0');
+                    }
+                });
+
+                $('.datepicker[id^="filter_string"], .datepicker-inline').datepicker($.extend(datepickerBaseOpt, {minDate: null}));
+
+                $(document).on("click", "#apply_filter_button", function(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $('div[data-tvfilter] button.filter_string').trigger("click");
+                    $('#datatable-1').DataTable().ajax.reload();
+                    return false;
+                });
+
+                $(document).on("click", "#form_filter_button", function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $('#modalbox').find('.modal-header-name span').text("{{ 'Save filter'|trans }}");
+                    var filter_set = {
+                        id: {% if attribute(app, 'filter_set') is defined %}{{ app.filter_set.id }}{% else %}$(this).attr('data-filter_set_id') || 0{% endif %},
+                        admin_id : {% if attribute(app, 'user_id') is defined %}{{ app.user_id }}{% else %}0{% endif %},
+                        title: "{% if attribute(app, 'filter_set') is defined %}{{ app.filter_set.title }}{% endif %}",
+                        for_all: {% if attribute(app, 'filter_set') is defined and app.filter_set.for_all %}true{% else %}false{% endif %},
+                        description: "{% if attribute(app, 'filter_set') is defined %}{{ app.filter_set.description }}{% endif %}",
+                        filter_set: {}
+                    };
+
+                    $("div[data-tvfilter]").each(function(){
+                        var inputs, s2_filter;
+                        if ((inputs = $(this).find('input.datepicker')).length) {
+                            filter_set.filter_set[$.trim($(this).data('tvfilter'))] = inputs.map(function(){return this.value}).get().join('|');
+                        } else if((s2_filter = $(this).find('select[id^="filter_s2_"]')).length){
+                            filter_set.filter_set[$.trim($(this).data('tvfilter'))] = s2_filter.find('option:selected').map(function(){return this.value}).get().join('|');
+                        } else {
+                            filter_set.filter_set[$.trim($(this).data('tvfilter'))] = $.trim($(this).data('filterval')) || '';
+                        }
+                    });
+
+                    filter_set.filter_set = encodeURIComponent(JSON.stringify(filter_set.filter_set));
+
+                    $('#modalbox').find('.devoops-modal-inner').html($("#save_filter_template").html());
+                    $('#modalbox input[name="filter_set[id]"]').val(filter_set.id);
+                    $('#modalbox input[name="filter_set[admin_id]"]').val(filter_set.admin_id);
+                    $('#modalbox input[name="filter_set[filter_set]"]').val(filter_set.filter_set);
+                    $('#modalbox input[name="filter_set[title]"]').val(filter_set.title);
+                    $('#modalbox input[name="filter_set[for_all]"]').prop('checked', filter_set.for_all);
+                    $('#modalbox textarea').text(filter_set.description);
+                    $.validate(conf);
+
+                    $('#modalbox').find('.devoops-modal-bottom').html($("#modal_form_button_template").html());
+                    $('#modalbox button[type="submit"]').text("{{ 'Save'|trans }}");
+
+                    $('#modalbox').show();
+                    return false;
+                });
+
+                $(document).off('click', 'div[data-tvfilter] a.dropdown-toggle i.fa-times-circle');
+                $(document).on('click', 'div[data-tvfilter] a.dropdown-toggle i.fa-times-circle', function(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var parentDiv = $(this).closest('div[data-tvfilter]');
+                    $("#filter_param li[data-filter='" + parentDiv.data('tvfilter') + "'] input").prop("checked", false);
+                    parentDiv.remove();
+                    return false;
+                });
+
+                $(document).on('click', "span.select2-selection__choice__remove", function(e){
+                    e.stopPropagation();
+                });
+
+                $('input.autocomplete').each(function(){
+                    $(this).autocomplete(autoCompleteInit($(this)));
+                });
+
+                $(document).on('click', 'div[data-tvfilter] a:first-child', function(e){
+                    if ($(this).closest('div').hasClass('open')){
+                        $(this).closest('div').find("input:first-of-type").trigger("focus").trigger("click");
+                    }
+                });
+
+                $("#modalbox").on("click", "button[type='reset']", function(){
+                    $("#modalbox form").get(0).reset();
+                    JScloseModalBox();
+                });
+
+
+                var table = $('#datatable-1').DataTable();
+                table
+                    .on( 'select', function ( e, dt, type, indexes ) {
+                        var rows = dt.rows( { selected: true } );
+                        $(".dt-buttons .dt-button").show().removeClass( "disabled" );
+
+                        if ( rows.count() == dt.rows().count() ){
+                            setGroupSelectState( "all" );
+                        } else {
+                            setGroupSelectState( "some" );
+                        }
+                        chkEventButton(rows, dt);
+                    })
+                    .on( 'deselect', function ( e, dt, type, indexes ) {
+                        var rows = dt.rows( { selected: true } );
+
+                        if ( rows.count() > 0 ) {
+                            $(".dt-buttons .dt-button").show().removeClass( "disabled" );
+                            chkEventButton(rows, dt);
+                            setGroupSelectState( "some" );
+                        } else {
+                            setGroupSelectState( "none" );
+                            resetTableButtons();
+                        }
+                    })
+
+                    // expand Processing width for overflow table
+                    .on( 'processing.dt', function ( e, settings, processing ) {
+                        $(settings.aanFeatures.r).css( 'width', $(settings.aanFeatures.t).width() );
+                    } );
+
+                // reset Buttons on Paging reload
+                $('#datatable-1').on( 'page.dt', function () {
+                    resetTableButtons();
+                    setGroupSelectState("none");
+                } );
+
+                // Reinit group actions Table Buttons
+                $('#datatable-1').on( 'draw.dt', function ( e, settings ) {
+                    if( table.rows( {selected: true} ).ids().length == 0 ) {
+                        resetTableButtons();
+                        setGroupSelectState('none');
+                    }
+                } );
+
+                //setTimeout( initTableButtons, 200 );
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);
+
+        var removeUser = function (obj) {
+            if (typeof(obj.add_button) != 'undefined') {
+                if (obj.add_button) {
+                    $("#add_button").show();
+                    $("#limit_message").hide();
+                } else {
+                    $("#add_button").hide();
+                    $("#limit_message").show();
+                }
+            }
+            deleteTableRow(obj);
+        };
+        
+        function checkFields(obj, e) {
+            var dataName = $(obj).attr('id') == 's2_user_list_type' ? 'data-list-type' : 'data-event-type';
+            $("[" + dataName + "]").hide().find('input, select, textarea').attr('disabled', 'disabled');
+            $(obj).find('option:selected').each(function () {
+                var searchVal = $(this).val();
+                var dataNameIn = dataName.replace('data-', '').replace('-', ' ').camelCase();
+                $('[' + dataName + '*="' + searchVal + '"]').each(function() {
+                    var $this = $(this);
+                    if ($this.data(dataNameIn) && $this.data(dataNameIn).split(";").indexOf(searchVal) !== -1) {
+                        $this.show().find('input, select, textarea').removeAttr('disabled');
+                    }
+                });
+            });
+            return false;
+        }
+
+        function extendEventForm() {
+            $("#s2_user_list_type").parent().nextAll().remove();
+            //$("#s2_user_list_type").closest(".form-group").find(".help-inline").remove();
+            var macField = $("input[name='mac']");
+            var loginField =    '<div class="form-group" data-list-type="to_single">\n\
+                                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Login'|trans }}<span class="icon-required">*</span></label>\n\
+                                    <div class="col-xs-10 col-sm-8">\n\
+                                        <div class=" col-xs-10 col-sm-6">\n\
+                                            <input type="hidden" name="user_id" id="user_id" value="">\n\
+                                            <input type="text" name="login" class="form-control with-error-space" value="" readonly="readonly" data-validation="required" data-validation-optional-if-answered="mac">\n\
+                                        </div>\n\
+                                    </div>\n\
+                                </div>'
+            // fields for batch action
+            var multipleField = '<div class="form-group" data-list-type="">\n\
+                                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Selected users'|trans }}<span class="icon-required">*</span></label>\n\
+                                    <div class="col-xs-10 col-sm-8">\n\
+                                        <div class=" col-xs-10 col-sm-6">\n\
+                                            <input type="hidden" name="selected_ids" id="selected_ids" readonly="readonly" data-validation="required" value="">\n\
+                                        </div>\n\
+                                     </div>\n\
+                                </div>'
+
+            macField.attr("data-validation-optional-if-answered", "login").closest(".form-group")
+                .after( loginField )
+                .after( multipleField );
+        }
+
+        function openEventModal (e, tr, isGroupAction) {
+/*
+            // the form reset is done on close by devoops.js:623
+            // so we need just to clear some values:
+            $("#modalbox_ad select").trigger('change'); // update select2 according to <select> default values
+            $("#modalbox_ad form").get(0).reset();      // clear select2 validation errors
+*/
+
+            $("#modalbox_ad form").get(0).reset();
+            $("#modalbox_ad").find("select[id^='s2_']").trigger('change.select2'); // update all select2 appearence after form reset
+            $("#modalbox_ad").show().find('input, select, textarea').removeAttr('disabled');
+
+            if( isGroupAction ){
+                $("#s2_user_list_type option[value='to_selected']").remove();
+                $("#s2_user_list_type").append('<option value="to_selected">{{ 'Selected users'|trans }} ('+ tr.count() +')</option>');
+                $("#s2_user_list_type").val('to_selected');
+            } else {
+                $("#s2_user_list_type").val('to_single');
+            }
+            $("#s2_user_list_type").trigger('change.select2').attr('disabled', 'disabled');
+
+            checkFields('#s2_user_list_type', e);
+            checkFields('#s2_event', e);
+            setEventTTL();
+
+            // for group action
+            if( isGroupAction ){
+                var ids = tr.ids().toArray().toString().replace(/dTRow_/g, "" );
+                $("input[name='selected_ids']").val( ids ).removeAttr('disabled');
+                /* create logins/mac string
+                var logins = tr.data().toArray().map( function(data) {
+                    return data.login || data.mac;
+                });
+                loginField.val( logins );
+                */
+                return;
+            }
+
+            // for single action
+            var table = $('#datatable-1').DataTable();
+            if( tr.jquery ){
+                tr = table.row(tr);
+            }
+            var data = tr.data();
+
+            var mac = data.mac;
+            var macField = $("input[name='mac']");
+            var loginField = $("input[name='login']");
+            var regExp = /([0-9a-fA-F]{2}([:]|$)){6}$/ig;
+
+            if( $.trim(mac) == '' ) {
+                $("input[name='user_id']").val( data.id ).removeAttr('disabled');
+                loginField.val( data.login );
+                macField.attr('disabled', 'disabled');
+                macField.closest('.form-group').hide();
+            } else {
+                if ( regExp.test(mac) ) {
+                    macField.val(mac).attr('readonly', 'readonly');
+                } else {
+                    macField.val(mac).removeAttr('readonly');
+                }
+                loginField.attr('disabled', 'disabled');
+                loginField.closest('.form-group').hide();
+                $("input[name='user_id']").attr('disabled', 'disabled');
+            }
+        }
+
+        function chkEventButton (rows, dt) {
+            var disable = false;
+            $.each( rows.data(), function (i, item) {
+                if( item.mac=="" && item.login=="" ){
+                    disable = true;
+                    return false;
+                }
+            });
+            dt.button("sendEvent:name")[disable?'disable':'enable']();
+        }
+
+        {% if attribute(app, 'reseller') is defined and not app.reseller %}
+        function actionClearReseller () {
+            var dt = $('#datatable-1').DataTable();
+            var tr = dt.rows( { selected: true } );
+            var ids = tr.ids().toArray().toString().replace( /dTRow_/g, "" );
+
+            var sendData = {};
+            sendData.group_key = "ids";
+            sendData.ids = JSON.stringify(ids.split(','));
+
+            var extOptions = { success: function (data) {
+                data.action = "updateTableData";
+                ajaxSuccess(data, false, false);
+            }}
+
+            ajaxPostSend( "{{app.request_context.baseUrl}}/{{ app.controller_alias }}/clear-users-reseller", sendData, false, false, true, extOptions );
+        }
+
+        function actionChangeReseller (id) {
+            var dt = $('#datatable-1').DataTable();
+            var tr = dt.rows( { selected: true } );
+            var ids = tr.ids().toArray().toString().replace( /dTRow_/g, "" );
+
+            var sendData = {};
+            sendData.group_key = "ids";
+            sendData.ids = JSON.stringify(ids.split(','));
+            sendData.reseller = id;
+
+            var extOptions = { success: function (data) {
+                data.action = "updateTableData";
+                ajaxSuccess(data, false, false);
+            }}
+
+            ajaxPostSend( "{{app.request_context.baseUrl}}/{{ app.controller_alias }}/change-users-reseller", sendData, false, false, true, extOptions );
+        }
+        {% endif %}
+
+        {% if attribute(app, 'enableBilling') is defined and app.enableBilling %}
+        function setExpireDateModal(obj){
+            $('#modalbox .modal-header-name span').text('{{ 'Expire billing date'|trans }}');
+            $('#modalbox .devoops-modal-inner').html($("#expire_date_template").html());
+            $('#modalbox input[name="userid"]').val(obj.data('userid'));
+            $('#modalbox .devoops-modal-bottom').html($("#modal_expire_date_buttons_template").html());
+            //$('#modalbox button[type="reset"]').removeClass('pull-right').addClass('pull-left').parent('div').removeClass('pull-right').removeClass('no-padding');
+            //$('#modalbox button[type="submit"]').text("{{ 'Set date'|trans }}");
+
+            //$('#modalbox .devoops-modal').width(400);
+            $('#modalbox').addClass('modal-schedule');
+            $("#expire_date_datepicker").next('.datepicker-inline').datepicker($.extend( {}, datepickerBaseOpt, {
+                    altField: 'input#expire_date_datepicker',
+                    minDate: new Date(),
+                    onClose: null,
+                    onSelect: function(dateText){
+                        $("input#expire_date_datepicker").val( $(this).val() );
+                    }
+            }));
+            //$("div[id*='datepicker']").addClass('dp_white');
+            $(obj).closest('div.open').removeClass('open');
+            $('#modalbox').show();
+        }
+        {% endif %}
+
+        var addFilter = function(data){
+            var last_filter_block = $('#filter_block div[data-tvfilter]:last');
+
+            var filtervalStr = '<div class=" '+(data.filter.values_set && data.filter.values_set.length > 0 ? "filter_s": "filter") +' btn-group" data-tvfilter="'+ data.filter.text_id +'" data-filterval="'+(data.filter.type == 'DATETIME' ? '|':'')+ '">';
+
+            if (last_filter_block.length) {
+                last_filter_block.after(filtervalStr);
+            } else {
+                $("#filter_block").append(filtervalStr);
+            }
+            if (data.filter.values_set && data.filter.values_set.length > 0) {
+                createFilterList(data.filter);
+            } else if (data.filter.type == 'STRING'){
+                createFilterText(data.filter)
+            } else if (data.filter.type == 'DATETIME'){
+                createFilterDate(data.filter)
+            }
+            $("#filter_param").removeClass('open');
+            $('div[data-tvfilter="'+ data.filter.text_id +'"]').addClass('open').find("input:first-of-type").trigger("focus").trigger("click");
+        };
+
+        var saveFilterData = function(data){
+            if (data.return_id) {
+                //$("#form_filter_button").attr('data-filter_set_id', data.return_id);
+            }
+            JSSuccessModalBox(data);
+        };
+
+        var saveFilterDataError = function(data){
+            JSErrorModalBox(data);
+        };
+
+        var addFilterError = function(data){
+            JSErrorModalBox(data);
+            if (typeof(data) != 'undefined' && typeof(data.filter) != 'undefined' && typeof(data.filter.text_id) != 'undefined' ) {
+                $("li[data-filter='" + data.filter.text_id + "'] input[type='checkbox']").prop('disabled', 'disabled').attr('checked', false);
+            }
+        };
+
+        function createFilterList(filter_data){
+            var filter_bloc = $('div[data-tvfilter="'+ filter_data.text_id +'"]');
+            filter_bloc.append('<a data-toggle="dropdown" class="btn dropdown-toggle" href="#"><span class="no-padding">' +escapeHtml( filter_data.title )+ ':</span><span>' + '{{ 'All'|trans }}' + '</span><i class="fa fa-caret-down"></i><i title="{{ 'Delete this filter'|trans }}" class="fa fa-times-circle"></i></a>')
+                    .append('<div class="dropdown-menu">');
+            filter_bloc.find("div.dropdown-menu").append('<select class="populate placeholder" name="'+ filter_data.text_id +'" id="filter_s2_'+ filter_data.text_id +'" data-postponed="1" multiple>');
+            var list = filter_bloc.find('select');
+            list.append('<option value="0" >' + '{{ 'All'|trans }}' + '</option>');
+            for (var i in filter_data.values_set) {
+                list.append('<option value="' + filter_data.values_set[i].value + '">' +escapeHtml( filter_data.values_set[i].title )+ '</option>');
+            }
+
+            if ($("#filter_s2_"+ filter_data.text_id).find('option:selected').length == 0) {
+                $($("#filter_s2_"+ filter_data.text_id).find('option').get(0)).prop('selected', 'selected');
+            }
+
+            $("#filter_s2_"+ filter_data.text_id).select2(select2Opt);
+        }
+
+        function createFilterText(filter_data){
+            var filter_bloc = $('div[data-tvfilter="'+ filter_data.text_id +'"]');
+            filter_bloc.append('<a data-toggle="dropdown" class=" dropdown-toggle" href="#"><span class="no-padding">' + filter_data.title + ':</span><span></span><i class="fa fa-caret-down"></i><i class="fa fa-times-circle"></i></a>');
+            filter_bloc.append('<div class="dropdown-menu">' +
+            '<input type="text" class="filter_string autocomplete" value="" id="filter_string_'+ filter_data.text_id +'" name="'+ filter_data.text_id +'">' +
+            '<button type="button" class="btn btn-success filter_string"  data-postponed="1"><i class="fa fa-check"></i></button>' +
+            '</div>');
+            var _this = $( '#filter_string_'+ filter_data.text_id );
+            _this.autocomplete(autoCompleteInit(_this));
+        }
+
+        function createFilterDate(filter_data){
+            var filter_bloc = $('div[data-tvfilter="'+ filter_data.text_id +'"]');
+            filter_bloc.addClass('filter-date-range');
+            filter_bloc.append('<a data-toggle="dropdown" class="btn dropdown-toggle" href="#"><span class="no-padding">' + filter_data.title + ':</span><span></span><i class="fa fa-caret-down"></i><i class="fa fa-times-circle"></a>');
+            filter_bloc.append('<div class="dropdown-menu popup-date-range">' +
+            '<div class="input-group">'+
+                '<input type="text" class="form-control filter_string" data-date-format="dd-mm-yy" name="'+ filter_data.text_id +'[from]" id="filter_string_'+ filter_data.text_id +'_from" value="">' +
+                '<span  class="input-group-addon">&ndash;</span>'+
+                '<input type="text" class="form-control filter_string" data-date-format="dd-mm-yy" name="'+ filter_data.text_id +'[to]" id="filter_string_'+ filter_data.text_id +'_to" value="">' +
+            '</div>'+
+            '<div id="filter_string_'+ filter_data.text_id+ '" class="datepicker-inline"></div>'+
+            '<div class="buttons-container">'+
+                '<button type="button" class="btn btn-default btn-clear"  data-postponed="1"> {{ 'Clean'|trans }}</button>'+
+                '<button type="button" class="btn btn-success btn-apply" data-postponed="1"><i class="fa fa-check"></i> {{ 'Apply'|trans }}</button>' +
+            '</div>'+
+            '</div>');
+            $('.datepicker-inline').datepicker($.extend(datepickerBaseOpt, {minDate: null}));
+        }
+
+        function autoCompleteInit(targetObj) {
+            return {
+                source: "{{app.request_context.baseUrl}}/{{app.controller_alias}}/get-autocomplete-" + targetObj.prop('name').replace("_", "-"),
+                minLength: 3,
+                messages:{
+                    noResults: "{{ 'No search results'|trans }}"
+                },
+                close: function( event, ui ) {
+                    targetObj.closest('[data-filterval]').data('filterval', targetObj.val());
+                    targetObj.closest('[data-filterval]').find('a.dropdown-toggle span:nth-child(2)').text(targetObj.val());
+                }
+            }
+        }
+
+function initTableButtons() {
+    //$(".dt-group-select-dropdown").prependTo( $(".dataTables_wrapper .dt-buttons").first() );
+    resetTableButtons();
+}
+
+function resetTableButtons() {
+    $(".dt-buttons .dt-button").not(".dt-group-select-dropdown").addClass( "disabled" ).hide();
+}
+
+function setGroupSelectState(state) {
+    if ( typeof state != "string" ){
+        return;
+    }
+    var table = $('#datatable-1').DataTable();
+
+    table.buttons(['0-0','0-1','0-2']).enable();
+    $(".dt-group-select-dropdown").removeClass( "all none some" ).addClass( state );
+
+        switch( state ) {
+    case "none": table.buttons(['selectNone:name','selectInverse:name']).disable();
+                 break;
+    case "all":  table.button('selectAll:name').disable();
+                 break;
+    }
+}

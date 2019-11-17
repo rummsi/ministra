@@ -1,0 +1,117 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Video club'|trans ~ ': ' ~ 'movie list'|trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+{% endblock %}
+{% block footer %}
+
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/VideoClub/video_list/video_list.js.twig") %}
+        </script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {{ main_macro.get_filter('status_id', 'Status'|trans, 'id', 'title', app['allStatus'], 2) }}
+                {{ main_macro.get_filter('genre_id', 'Genre'|trans, 'id', 'title', app['allGenre'], 2) }}
+                {{ main_macro.get_filter('year', 'Year'|trans, 'id', 'title', app['allYears'], 2) }}
+                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/add-video" class="btn btn-success pull-right">{{ 'Add movie'|trans }}</a>
+            </div>
+        </div>
+        <div class="row">
+                <div class="box">
+                    {% if attribute(app, 'dropdownAttribute') is defined %}
+                        {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                    {% endif %}
+                    <div class="box-content">
+                        <div class="box-content no-padding">
+                            <div class="dataTables_processing"></div>
+                            <table class="table dataTable table-hover table-datatable" id="datatable-1">
+                                {% if attribute(app, 'dropdownAttribute') is defined %}
+                                    {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                                {% endif %}
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+            
+    <div id="modalbox_ad">
+        <div class="devoops-modal add-tasks">
+            <div class="devoops-modal-header">
+                <div class="modal-header-name">
+                    <span>{{ 'Create task'|trans }}</span>
+                </div>
+                <div class="box-icons">
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="devoops-modal-inner">
+                <div class="box-content">
+                    <form class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/create-tasks" method="POST">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Video title'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <span class="col-xs-10 col-sm-6">
+                                    <input type="hidden" name="id">
+                                    <span class="txt-default">{{ 'Video title'|trans }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'To'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class="col-xs-10 col-sm-11">
+                                    <select class="populate placeholder" name="to_usr" id="s2_video_moderators" required="">
+                                        {% if app['allModerators'] %}
+                                            {% for m_item in app.allModerators %}
+                                                <option value="{{m_item.id}}">{{m_item.login}}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Task description'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class="col-xs-10 col-sm-11">
+                                    <textarea class="col-xs-12 col-sm-12 " name="comment" rows="6" required=""></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-sm-1 pull-right no-padding">&nbsp;</div>
+                        <div class="pull-right no-padding">
+                            <button type="submit" class="btn btn-success pull-right">{{ 'Save'|trans }}</button>
+                            <button type="reset" class="btn btn-default pull-left" >{{ 'Cancel'|trans }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %} 

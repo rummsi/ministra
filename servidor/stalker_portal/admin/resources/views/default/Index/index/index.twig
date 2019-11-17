@@ -1,0 +1,686 @@
+{% extends app['twig_theme'] ~ '/layout.twig' %}
+
+{% set title = 'Mainpage'|trans ~ ': ' ~ 'Dashboard'|trans %}
+
+
+{% block head %}
+    
+    {{ parent() }}
+    <style type="text/css">
+         {% include (app.twig_theme ~ "/Index/index/index.css") %}
+    </style>
+
+{% endblock %}
+{% block footer_js %}
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/google-chart/jsapi.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/google-chart/corechart.js"></script>
+
+        <link href="{{app.request_context.baseUrl}}/plugins/google-chart/chart.css" rel="stylesheet">
+        <link href="{{app.request_context.baseUrl}}/plugins/google-chart/chart-tooltip.css" rel="stylesheet">
+
+        <script src="{{app.request_context.baseUrl}}/plugins/flot/jquery.flot.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/flot/jquery.flot.time.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/flot/jquery.flot.navigate.js"></script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list" class="dashboard">
+        <div class="row  filters-actions-pannel">
+           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <h2 class="page-title pull-left">{{ 'Dashboard'|trans }}</h2>
+                <div class="pull-right">
+                    <span id="update-timing">{{ 'Auto update after 10 seconds'|trans }}</span>
+                    <button id="auto-update-button" type="button" class="btn btn-success">{{ 'Update data'|trans }}</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <br>
+            <div class="col-xs-12 col-lg-6 no-padding-left col-left">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="box-name">
+                            <span>{{ 'Devices'|trans }}</span>
+                        </div>
+                        <a class="collapse-link">
+                            <div class="circle-button box-icons">
+                                <i class="fa fa-chevron-up"></i>
+                            </div>
+                            <div class="no-move"></div>
+                        </a>
+                    </div>
+                    <div class="box-content">
+                        <div class="dataTables_processing"></div>
+                        <table  id="datatable-devices" class="table  table-datatable">
+                            <thead>
+                            <tr>
+                                <th data-filter="online">{{ 'Online'|trans }}</th>
+                                <th data-filter="offline">{{ 'Offline'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in datatables['devices'] %}
+                                    <tr>
+                                        {% for key in item|keys %}
+                                            <td>{{ item[key] }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {% if attribute(datatables, 'licenses') is defined and datatables['licenses'] %}
+                <div class="box">
+                    <div class="box-header">
+                        <div class="box-name">
+                            <span>{{ 'License keys'|trans }}</span>
+                        </div>
+                        <a class="collapse-link">
+                            <div class="circle-button box-icons">
+                                <i class="fa fa-chevron-up"></i>
+                            </div>
+                            <div class="no-move"></div>
+                        </a>
+                    </div>
+                    <div class="box-content">
+                        <div class="dataTables_processing"></div>
+                        <table id="datatable-licenses" class="table   table-datatable">
+                            <thead>
+                            <tr>
+                                <th data-filter="type">{{ 'Type'|trans }}</th>
+                                <th data-filter="activates">{{ 'Activated keys'|trans }}</th>
+                                <th data-filter="available">{{ 'Available keys'|trans }}</th>
+                                <th data-filter="reserved">{{ 'Reserved keys'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in datatables['licenses'] %}
+                                    <tr>
+                                        {% for key in item|keys %}
+                                            <td>{{ item[key] }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if attribute(datatables, 'content') is defined and datatables['content'] %}
+                <div class="box">
+                    <div class="box-header">
+                        <div class="box-name">
+                            <span>{{ 'Content type'|trans }}</span>
+                        </div>
+                        <a class="collapse-link">
+                            <div class="circle-button box-icons">
+                                <i class="fa fa-chevron-up"></i>
+                            </div>
+                            <div class="no-move"></div>
+                        </a>
+                    </div>
+                    <div class="box-content">
+                        <div class="dataTables_processing"></div>
+                        <table id="datatable-content" class="table   table-datatable">
+                            <thead>
+                            <tr>
+                                <th data-filter="type">{{ 'Type'|trans }}</th>
+                                <th data-filter="published">{{ 'Published Content'|trans }}</th>
+                                <th data-filter="total">{{ 'All Content'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in datatables['content'] %}
+                                    <tr>
+                                        {% for key in item|keys %}
+                                            <td>{{ item[key] }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+
+            <div class="col-xs-12 col-lg-6 col-right">
+                
+                {% if attribute(datatables, 'storage') is defined and datatables['storage'] %}
+                <div class="box">
+                    <div class="box-header">
+                        <div class="box-name">
+                            <span title="{{ 'Storages (measured in the number of the current session)'|trans }}">
+                                {{ 'Storages'|trans }}</span>
+                        </div>
+                        <a class="collapse-link">
+                            <div class="circle-button box-icons">
+                                <i class="fa fa-chevron-up"></i>
+                            </div>
+                            <div class="no-move"></div>
+                        </a>
+                    </div>
+                    <div class="box-content">
+                        <div class="dataTables_processing"></div>
+                        <table id="datatable-storage" class="table   table-datatable">
+                            <thead>
+                            <tr>
+                                <th data-filter="storage">{{ 'Storage name'|trans }}</th>
+                                <th data-filter="video">{{ 'Video club'|trans }}</th>
+                                <th data-filter="tv_archive">{{ 'Tv archive'|trans }}</th>
+                                <th data-filter="timeshift">{{ 'Timeshift'|trans }}</th>
+                                <th data-filter="loading">{{ 'Load'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in datatables['storage'] %}
+                                    <tr>
+                                        {% for key in item|keys %}
+                                            <td>{{ item[key] }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if attribute(datatables, 'streaming') is defined and datatables['streaming'] %}
+                <div class="box">
+                    <div class="box-header">
+                        <div class="box-name">
+                            <span>{{ 'Streaming servers'|trans }}</span>
+                        </div>
+                        <a class="collapse-link">
+                            <div class="circle-button box-icons">
+                                <i class="fa fa-chevron-up"></i>
+                            </div>
+                            <div class="no-move"></div>
+                        </a>
+                    </div>
+                    <div class="box-content">
+                        <div class="dataTables_processing"></div>
+                        <table id="datatable-streaming" class="table   table-datatable">
+                            <thead>
+                            <tr>
+                                <th data-filter="server">{{ 'Server name'|trans }}</th>
+                                <th data-filter="sessions">{{ 'Number of sessions'|trans }}</th>
+                                <th data-filter="loading">{{ 'Load'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in datatables['streaming'] %}
+                                    <tr>
+                                        {% for key in item|keys %}
+                                            <td>{{ item[key] }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="box popularity-chart">
+                    <div class="box-header">
+                        <div class="box-name">
+                            <span>{{ 'Popularity of services'|trans }}</span>
+                        </div>
+                        <a class="collapse-link">
+                            <div class="circle-button box-icons">
+                                <i class="fa fa-chevron-up"></i>
+                            </div>
+                            <div class="no-move"></div>
+                        </a>
+                    </div>
+                    <div class="box-content">
+                        <div id="google-chart-1"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 no-padding-left">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="box-name">
+                            <span>{{ 'Users activity'|trans }}</span>
+                        </div>
+                        <a class="collapse-link">
+                            <div class="circle-button box-icons">
+                                <i class="fa fa-chevron-up"></i>
+                            </div>
+                            <div class="no-move"></div>
+                        </a>
+                    </div>
+                    <div class="box-content">
+                        <div id="visit-plot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" defer>
+        var google = {};
+        var updateTimerInterval = null;
+
+        // Draw all test xCharts
+        function DrawAllxCharts(data) {
+            //  Chart 1
+
+            var max = 0;
+
+            for (var __index in data) {
+                if (!data.hasOwnProperty(__index)) {
+                    continue;
+                }
+
+                if (max < data[__index].sessions) {
+                    max = data[__index].sessions
+                }
+            }
+
+            var chart1_data = [
+                ["Element", "", { role: "style" }, {type: 'string', role: 'tooltip', 'p': {'html': true}}],
+                ['{{ 'Tv'|trans }}', data.tv.sessions, "color: #0193d5; stroke-width: 0", '<span>{{ 'Total sessions'|trans }}: <b>'+data.tv.sessions+'</b></span>'],
+                ['{{ 'Video club'|trans }}', data.video.sessions, "color: #6e5fd6; stroke-width: 0", '<span>{{ 'Total sessions'|trans }}: <b>'+data.video.sessions+'</b></span>'],
+                ['{{ 'Audio club'|trans }}', data.audio.sessions, "color: #339a35; stroke-width: 0", '<span>{{ 'Total sessions'|trans }}: <b>'+data.audio.sessions+'</b></span>'],
+                ['{{ 'Radio'|trans }}', data.radio.sessions, "color: #e7ac22; stroke-width: 0", '<span>{{ 'Total sessions'|trans }}: <b>'+data.radio.sessions+'</b></span>'],
+                ['{{ 'Karaoke'|trans }}', data.karaoke.sessions, "color: #ce7e36; stroke-width: 0", '<span>{{ 'Total sessions'|trans }}: <b>'+data.karaoke.sessions+'</b></span>']
+            ];
+
+            var gridlines = {
+                count: max <= 10 ? Math.ceil(max / 3) + 1 : 5,
+                ticks: []
+            }
+            var step = Math.ceil( max / gridlines.count);
+            for (var i = 0; i < gridlines.count; i++) {
+                gridlines.ticks.push(step * i)
+            }
+
+            var last = gridlines.ticks[gridlines.ticks.length - 1]
+
+            if ( max-last >= (step / gridlines.count) ) { // add extra tick, when difference >= 0.2*step
+                gridlines.ticks.push(max)
+            } else if (last != max) { // replace last tick
+                gridlines.ticks.pop()
+                gridlines.ticks.push(max)
+            }
+
+            var chart1_options = {
+                tooltip: {isHtml: true},
+                vAxis: {
+                        //minValue: 0.00,
+                        //maxValue:max,
+                        // baseline:0.00,
+                        viewWindowMode:'explicit',
+                        viewWindow:
+                        {
+                           max:max,
+                           min:0
+                        },
+                        gridlines:{count:gridlines.ticks.length},
+                        ticks: gridlines.ticks
+                },
+                backgroundColor: '#FFFFFF',
+                chartArea: {width: '85%', height: '85%'},
+                bar: {groupWidth: "40"},
+                legend: { position: "none" }
+            };
+            if (typeof (google) == 'undefined') {
+                google = window['google'];
+            }
+            var chart1_element = 'google-chart-1';
+            var chart1_type = google.visualization.ColumnChart;
+            drawGoogleChart(chart1_data, chart1_options, chart1_element, chart1_type);
+        }
+
+        function drawGoogleChart(chart_data, chart_options, element, chart_type) {
+            if (typeof (google) == 'undefined') {
+                google = window['google'];
+            }
+            // Function for visualize Google Chart
+            var data = google.visualization.arrayToDataTable(chart_data);
+            var chart = new chart_type(document.getElementById(element));
+            chart.draw(data, chart_options);
+        }
+
+        function load_page_data(){
+            if (typeof (window['google']) == 'undefined') {
+                window['google'] = google;
+            }
+            $.ajax({
+                dataType: 'json',
+                type: 'post',
+                url: '{{ app.request_context.baseUrl }}/index/index-datatable4-list-json',
+                async: false,
+                success: function(data){
+                    if(data && data.data){
+                        DrawAllxCharts(data.data);
+                    }
+                }
+            });
+        }
+
+        function InitDatatable() {
+            $.extend( $.fn.dataTable.defaults, {
+                "searching": false,
+                "ordering": false,
+                "processing": true,
+                "serverSide": true,
+                "bAutoWidth": false,
+                "bFilter": false,
+                "bPaginate": false,
+                "bInfo": false,
+                "bJQueryUI": true,
+                'iDisplayLength': 5,
+                'bLengthChange': false,
+                "sDom": "t",
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                "fnInitComplete": function (oSettings) {
+                    $(oSettings.nTableWrapper).prev('.dataTables_processing').hide();
+                }
+            } );
+
+
+            $('#datatable-devices').dataTable({
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/index/datatable-devices",
+                    "data": function (d) {}
+                },
+                "deferLoading": 1,
+                // the reason to use html data initialization is avoiding collapse effect
+                // the reason to initialize with data Object over html markup is avoiding double escaping special-cheracters
+                "data": {{ datatables['devices']|json_encode(constant('JSON_PRETTY_PRINT'))|raw }},
+                "columns": [
+                    {"data": "online"},
+                    {"data": "offline"}
+                ],
+                "aoColumnDefs": [
+                    /*{"width": '20%', "targets": [-3]}*/
+                ]
+            });
+
+
+            $('#datatable-licenses').dataTable({
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/index/datatable-licenses",
+                },
+                "deferLoading": {{ datatables['licenses']|length }},
+                "data": {{ datatables['licenses']|json_encode|raw }},
+                "columns": [
+                    {"data": "type"},
+                    {"data": "activated"},
+                    {"data": "available"},
+                    {"data": "reserved"}
+                ],
+                "aoColumnDefs": [
+                    /*{"width": '20%', "targets": [-3]}*/
+                ]
+            });
+
+
+            $('#datatable-content').dataTable({
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/index/datatable-content",
+                },
+                "deferLoading": {{ datatables['content']|length }},
+                "data": {{ datatables['content']|json_encode|raw }},
+                "columns": [
+                    {"data": "type"},
+                    {"data": "published"},
+                    {"data": "total"}
+                ],
+                "aoColumnDefs": [
+                    /*{"width": '20%', "targets": [-3]}*/
+                ]
+            });
+
+
+            $('#datatable-storage').dataTable({
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/index/datatable-storages",
+                },
+                "deferLoading": {{ datatables['storage']|length }},
+                "data": {{ datatables['storage']|json_encode|raw }},
+                "columns": [
+                    {"data": "storage"},
+                    {"data": "video"},
+                    {"data": "tv_archive"},
+                    {"data": "timeshift"},
+                    {"data": "loading"}
+                ],
+                "aoColumnDefs": [
+                    /*** Renders ***/
+                    {
+                        "render": function ( data, type, row ) {
+                            return escapeHtml(row.storage);
+                        },
+                        "targets": 0
+                    }
+                ]
+            });
+
+
+            $('#datatable-streaming').dataTable({
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/index/datatable-streaming",
+                },
+                "deferLoading": {{ datatables['streaming']|length }},
+                "data": {{ datatables['streaming']|json_encode|raw }},
+                "columns": [
+                    {"data": "server"},
+                    {"data": "sessions"},
+                    {"data": "loading"}
+                ],
+                "aoColumnDefs": [
+                    /*** Renders ***/
+                    {
+                        "render": function ( data, type, row ) {
+                            return escapeHtml(row.server);
+                        },
+                        "targets": 0
+                    }
+                ]
+            });
+        }
+
+        function DrawFlot(){
+
+            var d = [[0]];
+
+            $.ajax({
+                dataType: 'json',
+                type: 'post',
+                url: '{{ app.request_context.baseUrl }}/index/index-datatable5-list-json',
+                async: false,
+                success: function(data){
+                    if(data && data.data && data.data.length){
+                        d = data.data;
+                    }
+                }
+            });
+
+            // first correct the timestamps - they are recorded as the daily
+            // midnights in UTC+0100, but Flot always displays dates in UTC
+            // so we have to add one hour to hit the midnights in the plot
+            var x = new Date();
+            var utcOffset = (-x.getTimezoneOffset()) * 60 *1000;
+            for (var i = 0; i < d.length; ++i) {
+                d[i][0] = (d[i][0] * 1000 + utcOffset);
+            }
+
+            var options = {
+                xaxis: {
+                    mode: "time",
+                    tickLength: 5,
+                    position: 'bottom',
+                    min: d[d.length > 48 ? d.length - 48 : 0][0],
+                    dayNames : [
+                        '{{ 'Sun'|trans }}',
+                        '{{ 'Mon'|trans }}',
+                        '{{ 'Tue'|trans }}',
+                        '{{ 'Wed'|trans }}',
+                        '{{ 'Thu'|trans }}',
+                        '{{ 'Fri'|trans }}',
+                        '{{ 'Sat'|trans }}'
+                    ],
+                    monthNames  : [
+                        '{{ 'January'|trans }}',
+                        '{{ 'February'|trans }}',
+                        '{{ 'March'|trans }}',
+                        '{{ 'April'|trans }}',
+                        '{{ 'May'|trans }}',
+                        '{{ 'June'|trans }}',
+                        '{{ 'July'|trans }}',
+                        '{{ 'August'|trans }}',
+                        '{{ 'September'|trans }}',
+                        '{{ 'October'|trans }}',
+                        '{{ 'November'|trans }}',
+                        '{{ 'December'|trans }}'
+                    ]
+                },
+                yaxis: {
+                    zoomRange: false,
+                    panRange: false,
+                    position: 'left'
+                },
+                grid: {
+                    markings: weekendAreas,
+                    borderColor: '#dddddd'
+                },
+                zoom: {
+                    interactive: true
+                },
+                pan: {
+                    interactive: true
+                }
+            };
+
+            var plot = $.plot("#visit-plot", [d], options);
+
+        }
+
+        // helper for returning the weekends in a period
+
+        function weekendAreas(axes) {
+
+            var markings = [],
+                    d = new Date(axes.xaxis.min);
+
+            // go to the first Saturday
+
+            d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 1) % 7))
+            d.setUTCSeconds(0);
+            d.setUTCMinutes(0);
+            d.setUTCHours(0);
+
+            var i = d.getTime();
+
+            // when we don't set yaxis, the rectangle automatically
+            // extends to infinity upwards and downwards
+
+            do {
+                markings.push({xaxis: {from: i, to: i + 2 * 24 * 60 * 60 * 1000}});
+                i += 7 * 24 * 60 * 60 * 1000;
+            } while (i < axes.xaxis.max);
+
+            return markings;
+        }
+
+        function resetTimer(){
+            $('#update-timing').text($('#update-timing').text().replace(/\-?\d{1,2}/ig, '0'));
+            clearInterval(updateTimerInterval);
+            setTimeout(function(){
+                try {
+                    updateStatistics();
+                } catch (e) {}
+            },10);
+            updateTimer();
+        }
+
+        function updateStatistics(){
+            var $autoUpdateText = $('#update-timing');
+            //var currText = $autoUpdateText.text();
+            //$autoUpdateText.text("{{ 'Processing'|trans }}...");
+            var currTable = new $.fn.dataTable.Api( '.table-datatable' );
+            currTable.ajax.reload();
+
+            try {
+                DrawFlot();
+            } catch (e) {
+            }
+
+            try {
+                load_page_data();
+            } catch (e) {
+            }
+            //$autoUpdateText.text(currText);
+            $autoUpdateText.text($autoUpdateText.text().replace(/\-?\d{1,2}/ig, 10));
+            updateTimer();
+        }
+
+        function updateTimer(){
+            if (updateTimerInterval) {
+                clearInterval(updateTimerInterval);
+            }
+            updateTimerInterval = setInterval(function(){
+                var $autoUpdateText = $('#update-timing');
+                var regExp = /\d{1,2}/i;
+                var curTime = regExp.exec($autoUpdateText.text());
+
+                if (isNaN(curTime) || curTime < 0) {
+                    curTime = 10;
+                }
+                curTime = parseInt(curTime, 10);
+                curTime--;
+                $autoUpdateText.text($autoUpdateText.text().replace(/\-?\d{1,2}/ig, curTime ));
+
+                if (curTime <= 0 || curTime >= 10) {
+                    setTimeout(function(){
+                        try {
+                            updateStatistics();
+                        } catch (e) {}
+                    },10);
+                    clearInterval(updateTimerInterval);
+                    return;
+                }
+            }, 1000)
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+
+                LoadDataTablesScripts(InitDatatable);
+
+                $(document).on('hide', '.dataTables_processing', function(e){
+                    $(".dataTables_wrapper > div.row-fluid").hide();
+                });
+
+                DrawFlot();
+                updateTimer();
+
+                $("#auto-update-button").on('click', function(){
+                    resetTimer();
+                });
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);
+    </script>
+{% endblock %}

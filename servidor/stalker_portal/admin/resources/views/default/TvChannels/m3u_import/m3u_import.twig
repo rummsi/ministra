@@ -1,0 +1,203 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import (app['twig_theme'] ~ '/macro/iptw_macro.twig') as main_macro %}
+
+{% set title = ('IPTV channels'|trans ~ ': ' ~ 'Import from m3u'|trans) | trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/file-uploader-scripts.twig" %}
+
+{% endblock %}
+{% block footer %}
+        
+        {{ parent() }}
+        <script type="text/javascript" src="./js/jquery.tmpl.min.js" defer=""></script>
+        <script type="text/javascript" defer>
+           
+            {% include app['twig_theme'] ~ "/TvChannels/m3u_import/m3u_import.js.twig" %}
+
+        </script>
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row filters-actions-pannel">
+            <div class="box">
+                <div class="box-content" id="add_channel_base">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-5 col-sm-5">
+                                <div id="fileupload" class="pull-left">
+                                    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                                    <div class="fileupload-buttonbar">
+                                        <div class="fileupload-buttons">
+                                            <!-- The fileinput-button span is used to style the file input field as button -->
+                                            <span class="fileinput-button btn btn-success">
+                                                <span><i class="fa fa-plus"></i>{{ 'Add a file'|trans }}</span>
+                                                <input type="file" name="files" style="opacity: 0;">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-5 col-sm-5 pull-right">
+                                <button id="save_channels"  class="btn btn-action hidden pull-right"><i class="fa fa-check"></i>{{ 'Save channels'|trans }}</button>
+                                <button id="clean_channels" class="btn btn-action hidden pull-right"><i class="fa fa-close"></i>{{ 'Clean all'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row" style="display: none;">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-content">
+                        <h4 class="text-danger center" id="warning_message"></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 no-padding" id="channels_container">
+
+            </div>
+        </div>
+    </div>
+
+    
+    <script type="text/template" id="channel-template" >
+        <div class="box" style="display: none;" id="channel_item_${item_number}">
+            <div class="box-content">
+                <form id="channel_form_${item_number}" class="channel_form" enctype="multipart/form-data">
+                    <div class="row no-margin">
+                        
+                        <div class="m3u-logo-box">
+                            <div class="form-group m3u_logo_container">
+                                <img src="${logo}" alt="">
+                                <div class="clear_m3u_logo" title="{{ 'Delete logo'|trans }}"></div>
+                                
+                                <div id="m3u_logo_${item_number}" class="fileupload" data-file_num="${item_number}">
+                                    <input class="own_field" id="file_logo_${item_number}" type="hidden" name="logo" value="${logo}">
+                                    <input type="file" name="files" style="opacity: 0;" multiple="">
+                                </div>
+                                
+                            </div>
+                            <span class="small txt-default">${logo_name}</span>
+                        </div>
+
+                        <div class="container-box">
+
+                        <div class="col-xs-1 no-padding-right no-padding-left">
+                            <div class="form-group">
+                                <span class="help-inline">
+                                    <span class=" txt-default">{{ 'Channel number'|trans }}</span>
+                                </span>
+                                <div class="">
+                                    <input type="text" name="number" class="form-control own_field" data-validation="required"  value="${number}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-5 no-padding-right no-padding-left">
+                            <div class="col-xs-6 no-padding-right">
+                                <div class="form-group">
+                                    <span class="help-inline">
+                                        <span class=" txt-default">{{ 'Channel name'|trans }}</span>
+                                    </span>
+                                    <div class="">
+                                        <input type="text" class="form-control own_field" name="name" data-validation="required" value="${name}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 no-padding-right">
+                                <div class="form-group">
+                                    <span class="help-inline">
+                                        <span class=" txt-default">{{ 'Streaming links'|trans }}</span>
+                                    </span>
+                                    <div class="">
+                                        <input type="text" class="form-control own_field" name="cmd" data-validation="required" value="${cmd}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3 no-padding-right no-padding-left">
+                            <div class="col-xs-7 no-padding-right">
+                                <div class="form-group">
+                                    <span class="help-inline">
+                                        <span class=" txt-default">{{ 'Genre'|trans }}</span>
+                                    </span>
+                                    <select class="populate placeholder own_field" name="tv_genre_id" data-validation="required" id="channel_s2_${item_number}">
+                                        {{ "{{each allGenres}}" }}
+                                            <option value="{{ "${id}" }}" {{ "{{if title.toUpperCase()==genre.toUpperCase()}}" }}selected{{ "{{/if}}" }}>{{ "${title}" }}</option>
+                                        {{ "{{/each}}" }}
+                                    </select>
+                                    {{ "{{if genre}}" }}
+                                        <span class=" txt-default">({{ 'from file'|trans }}: "${genre}")</span>
+                                    {{ "{{/if}}" }}
+                                </div>
+                            </div>
+                            <div class="col-xs-5 no-padding-right">
+                                <div class="form-group">
+                                    <span class="help-inline">
+                                        <span class=" txt-default">{{ 'XMLTV ID'|trans }}</span>
+                                    </span>
+                                    <div class="">
+                                        <input type="text" class="form-control own_field" name="xmltv_id" value="${xmltv_id}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3 no-padding-left no-padding-right">
+                            <div class="col-xs-6 no-padding-right">
+                                <div class="form-group">
+                                    <span class="help-inline">
+                                        <span class=" txt-default">{{ 'Basic channel'|trans }}</span>
+                                    </span>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" value="1" name="base_ch" class="own_field">
+                                            <i class="fa fa-square-o "></i>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 no-padding-right">
+                                <div class="form-group">
+                                    <span class="help-inline">
+                                        <span class=" txt-default">{{ 'Age restriction'|trans }}</span>
+                                    </span>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" value="1" name="censored" class="own_field">
+                                            <i class="fa fa-square-o "></i>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        </div>
+                        
+                            {# <div class="col-xs-1 pull-right no-padding-right no-padding-left"> #}
+                            <div class="m3u_item_buttons">
+                                <div class="form-group col-xs-6 no-padding-right no-padding-left">
+                                    <button class="btn btn-default" type="button" data-action="delete"><i class="fa fa-times"></i></button>
+                                </div>
+                                <div class="form-group col-xs-6 no-padding-right no-padding-left">
+                                    <button class="btn btn-success" type="submit"><i class="fa fa-check"></i></button>
+                                </div>
+                            </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </script>
+
+{% endblock %}

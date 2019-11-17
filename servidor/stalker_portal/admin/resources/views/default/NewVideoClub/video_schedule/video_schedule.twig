@@ -1,0 +1,86 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Video club'|trans ~ ': ' ~ 'schedule'|trans %}
+
+
+{% block footer_js %}
+
+    {{ parent() }}
+    {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+    <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+    <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+    <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Select/js/dataTables.select.js"></script>
+
+    <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/js/dataTables.buttons.js"></script>
+    <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/css/buttons.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+
+    {{ parent() }}
+    <script type="text/javascript" defer>
+        {% include app.twig_theme ~ "/NewVideoClub/video_schedule/video_schedule.js.twig" %}
+    </script>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div id="iptv_list">
+        <div class="row filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></div>
+        </div>
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+
+                        <div class="dt-buttons">
+                            <div class="dt-group-select-dropdown pull-left--">
+                                <a href="#" class="dropdown-toggle btn-- dt-button" data-toggle="dropdown">
+                                    <span><i class="fa "></i>&nbsp;</span>
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-left">
+                                    <li>
+                                        <div id="select_none">
+                                            {{ 'Undo selection'|trans }}
+                                        </div>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <div id="select_all">
+                                            {{ 'Select all'|trans }}
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div id="select_inverse">
+                                            {{ 'Inverse selection'|trans }}
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute'], "\0") }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

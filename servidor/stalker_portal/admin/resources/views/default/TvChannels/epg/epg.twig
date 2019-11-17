@@ -1,0 +1,208 @@
+{% extends (app['twig_theme'] ~ '/' ~ 'layout.twig') %}
+{% import (app['twig_theme'] ~ '/macro/iptw_macro.twig') as main_macro %}
+
+{% set active = 'settings' %}
+{% set title = ('IPTV channels'|trans ~ ': ' ~ 'EPG'|trans) | trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        
+        <script src="{{app.request_context.baseUrl}}/plugins/multiselect_transfer/jquery.selso.js"></script>
+
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/TvChannels/epg/epg.js.twig") %}
+        </script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row filters-actions-pannel">
+           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="pull-right">
+                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/add-epg-item" class="btn btn-success  pull-right no_context_menu" id="add_epg_item">
+                        <i class="fa fa-plus"></i>{{ 'Add EPG'|trans }}</a>
+                </div>
+                <div class="pull-right">
+                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/update-epg" class="btn btn-default pull-right main_ajax no_context_menu" data-id="all" title="{{ 'Check updates for all EGP and update it if necessary'|trans }}">
+                        <i class="fa fa-repeat"></i>{{ 'Update EPG'|trans }}</a>
+                </div>
+                <div class="pull-right">
+                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/update-epg" class="btn btn-default pull-right main_ajax no_context_menu" data-id="all" data-force="1" title="{{ 'Drop EPG for all channels and get the new ones'|trans }}">
+                        <i class="fa fa-refresh"></i>{{ 'Force update of EPG'|trans }}</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {#<div class=" auto-height">
+                    <div class="box-name">
+                        <div class="row">
+                            <div class="col-xs-10 col-sm-8 col-sm-offset-2 text-center bg-warning">
+                                <span class="text_black">{{ 'Force update of EPG - complete EPG update for all channels'|trans }}.</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-10 col-sm-8 col-sm-offset-2 text-center bg-warning">
+                                <span class="text_black">{{ 'Update EPG – consider only the new/last changes'|trans }}.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="no-move"></div>
+                </div>#}
+                <div class="box">
+                    {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                    {% endif %}
+                    <div class="box-content">
+                        <div class="box-content no-padding">
+                            <div class="dataTables_processing"></div>
+                            <table class="table compact table-hover table-datatable" id="datatable-1">
+                                {% if attribute(app, 'dropdownAttribute') is defined %}
+                                    {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                                {% endif %}
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalbox_ad">
+        <div class="devoops-modal">
+            <div class="devoops-modal-header">
+                <div class="modal-header-name">
+                    <span></span>
+                </div>
+                <div class="box-icons">
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <form class="form-horizontal" role="form" id="epg_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-epg-item">
+                <div class="devoops-modal-inner">
+                    <div class="box">
+                        <div class="box-content">
+                            <!-- name -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">{{ 'URL'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10 ">
+                                        <input type="hidden" name="id" id="form_id" class="own_fields" required="required">
+                                        <input id="form_uri" class="form-control own_fields" type="text" name="uri"
+                                            data-validation="required, server" 
+                                            data-validation-postpone="200"
+                                            data-validation-url="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/epg-check-uri"
+                                            data-validation-param-name="param"
+                                            data-validation-req-params='{"for_validator": true }'>
+                                        <div class="name-check"></div>
+                                    </div>
+                                    {#
+                                    <i class="i-hint"
+                                        title="http://www.example.com/export/export.xml" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                    #}
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default">http://www.example.com/export/export.xml</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">{{ 'Prefix'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10 ">
+                                        <input id="form_id_prefix" class="form-control own_fields" type="text" name="id_prefix" data-validation-optional="true" data-validation="server" 
+                                            data-validation-postpone="200"
+                                            data-validation-url="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/epg-check-prefix"
+                                            data-validation-param-name="prefix"
+                                            data-validation-req-params='{"for_validator": true }'>
+                                        <div class="name-check"></div>
+                                    </div>
+                                    {#
+                                    <i class="i-hint"
+                                        title="{{ 'Prefix is necessary to distinguish the EPG source in case, if the following XNLTV ID is stated in several sources'|trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                    #}
+                                    <span class="help-inline col-xs-10 col-sm-10">
+                                        <span class="small txt-default">{{ 'Prefix is necessary to distinguish the EPG source in case, if the following XMLTV ID is stated in several sources'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">{{ 'Initial state'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10 ">
+                                        <select class="populate placeholder own_fields" data-validation="required"   name="status" id="s2_status" >
+                                            <option value="1">{{ 'Published'|trans }}</option>
+                                            <option value="0">{{ 'Unpublished'|trans }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">{{ 'Languages by priority'|trans }}</label>
+                                <div class="col-sm-10" style="margin: 7px 0 5px; margin-left: 8% !important">
+                                    <input type="hidden" class="own_fields" name="lang_code" value="">
+                                    <fieldset id="letters" class="col-sm-12">
+                                        <div class="col-sm-5">
+                                            <label class="col-sm-12 text-center">{{ 'Available'|trans }}</label>
+                                            <select size="9" class="left populate placeholder col-sm-12" multiple="multiple" name="s2_lang_code_available" id="s2_lang_code_available" >
+                                                {% if attribute(app, 'allLanguages') is defined %}
+                                                    {% for code, lang in app.allLanguages %}
+                                                        <option id="opt_{{ code }}" value="{{ code }}">{{ lang }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2 no-padding">
+                                            <br><br><br>
+                                            <button type="button" class="add btn btn-block btn-default"> &gt; </button>
+                                            <button type="button" class="remove btn btn-block btn-default"> &lt; </button>
+                                            <button type="button" class="remove all btn btn-block btn-default"> &lt;&lt; {{ 'all'|trans }}</button>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <label class="col-sm-12 text-center">{{ 'Selected'|trans }}</label>
+                                            <select size="9" class="right populate placeholder col-sm-12" multiple="multiple" name="s2_lang_code" id="s2_lang_code" >
+                                            </select>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-12 text-center">
+                                    <span class="small txt-default">{{ 'The maximum number of languages that can be selected - 5'|trans }}</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="devoops-modal-bottom">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+                        <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

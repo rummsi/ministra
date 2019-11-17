@@ -1,0 +1,154 @@
+{% extends app['twig_theme'] ~ '/layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'License key'|trans ~ ': ' ~ 'License keys list'|trans %}
+
+{% block head %}
+
+    {{ parent() }}
+    <style type="text/css">
+        {% include (app.twig_theme ~ "/LicenseKeys/license_keys_list/license_keys_list.css") %}
+    </style>
+
+{% endblock %}
+
+{% block footer_js %}
+
+    {{ parent() }}
+    {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+    {% include app.twig_theme ~ "/basic_templates/file-uploader-scripts.twig" %}
+
+    <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+    <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+    <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Select/js/dataTables.select.js"></script>
+
+    <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/js/dataTables.buttons.js"></script>
+    <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/css/buttons.dataTables.css" rel="stylesheet">
+
+    <script type="text/javascript" src="./js/jquery.tmpl.min.js" defer></script>
+
+{% endblock %}
+{% block footer %}
+
+    {{ parent() }}
+    <script type="text/javascript" defer>
+        {% include (app.twig_theme ~ "/LicenseKeys/license_keys_list/license_keys_list.js.twig") %}
+    </script>
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {{ main_macro.get_filter('key_type', 'Key type'|trans, 'id', 'title', app['allKeyTypes'], 2, null, null, null, "<not set>") }}
+                {{ main_macro.get_filter('user_status', 'User status'|trans, 'id', 'title', app['allUserStatuses'], 2, null, null, null, "<not set>") }}
+                {{ main_macro.get_filter('status', 'Key status'|trans, 'id', 'title', app['allStatuses'], 2, null, null, null, "<not set>") }}
+                {{ main_macro.get_filter('device', 'Device'|trans, 'id', 'title', app['allDevices'], 2, null, null, null, "<not set>") }}
+
+                <div id="fileupload" class="pull-right">
+                    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                    <div class="fileupload-buttonbar">
+                        <div class="fileupload-buttons">
+                            <!-- The fileinput-button span is used to style the file input field as button -->
+                            <span class="fileinput-button btn btn-success">
+                                <span><i class="fa fa-plus"></i>{{ 'Import license keys'|trans }}</span>
+                                <input type="file" name="files" style="opacity: 0;">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute'], "\0") }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<div id="modalbox_ad" class="modalbox " style="/*display: block;*/">
+    <div class="devoops-modal">
+        <div class="devoops-modal-header">
+            <div class="modal-header-name">
+                <span>{{ 'Clearing of license keys'|trans }}</span>
+            </div>
+            <div class="box-icons">
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="devoops-modal-inner">
+            <div class="lk-result-inner modal-inner-connection">
+                <span>{{ 'The clearing of license keys will begin shortly.'|trans }}</span>
+            </div>
+            <div class="lk-result-inner modal-inner-connection-error">
+                <span>{{ 'Something went wrong. Check your internet connection and try again later.'|trans }}</span>
+            </div>
+            <div class="results-list modal-inner-process modal-inner-process-error modal-inner-success">
+                <table id="results-list" class="results-list clear-result-list">
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="devoops-modal-bottom">
+            <div class="statusbar statusbar-connection pull-left">
+                <div class="status-icon status-icon-spinner pull-left"></div>
+                <span>{{ 'Connection'|trans }}</span>
+            </div>
+            <div class="statusbar statusbar-connection-error pull-left">
+                <div class="status-icon status-icon-error pull-left"><i class="fa fa-times"></i></div>
+                <span>{{ 'Connection to database failed'|trans }}</span>
+            </div>
+            <div class="statusbar statusbar-process statusbar-process-error statusbar-success pull-left">
+                <div class="status-icon status-icon-spinner pull-left"></div>
+                <div class="status-icon status-icon-error pull-left"><i class="fa fa-times"></i></div>
+                <div class="status-icon status-icon-success pull-left"><i class="fa fa-check"></i></div>
+                <span class="statusbar-result">{{ '%N of %T cleared, %S skipped, %E errors'|trans }}</span>
+            </div>
+
+            <button id="btn-finish" type="button" class="btn btn-success pull-right">{{ 'Save log as .CSV'|trans }}</button>
+            <button id="btn-restart" type="button" class="btn btn-success pull-right">{{ 'Try again'|trans }}</button>
+            <button id="btn-save" type="button" class="btn btn-default pull-right">{{ 'Save log as .CSV'|trans }}</button>
+        </div>
+
+        <div class="devoops-modal-inner-overlay devoops-modal-confirm-overlay"></div>
+        <div class="devoops-modal-bottom devoops-modal-confirm">
+            <div class="statusbar statusbar-confirm pull-left">
+                {{ 'Are you sure you want to stop clearing of license keys?'|trans }}
+            </div>
+
+            <button id="btn-resume" type="button" class="btn btn-success pull-right">{{ 'Not, resume'|trans }}</button>
+            <button id="btn-stop"   type="button" class="btn btn-default pull-right">{{ 'Yes, stop'|trans }}</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/template" id="result-template">
+    <tr class="{{ "{{if error}}" }}error{{ "{{/if}}" }} {{ "{{if skiped}}" }}skiped{{ "{{/if}}" }} {{ "{{if success}}" }}success{{ "{{/if}}" }}">
+        <td class="key">${code}</td>
+        <td>${code}</td>
+        <td class="last"><i class="fa {{ "{{if error}}" }}fa-times{{ "{{/if}}" }} {{ "{{if success}}" }}fa-check{{ "{{/if}}" }} "></i></td>
+    </tr>
+</script>
+
+{% endblock %}

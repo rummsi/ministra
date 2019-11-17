@@ -1,0 +1,386 @@
+/*
+ this component has templates in .twig file
+*/
+        var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+        function InitSelect2() {
+            $('select[id^="app_"]').select2(select2Opt);
+        }
+
+        function InitDatatable() {
+
+            /*$.ajax({
+                url: "{{app.request_context.baseUrl}}/plugins/datatables/dataTables.sortingDateDE.js",
+                dataType: "script",
+                cache: true
+            });
+            $.ajax({
+                url: "{{app.request_context.baseUrl}}/plugins/datatables/dataTables.sortingFormattedVersions.js",
+                dataType: "script",
+                cache: true
+            });*/
+
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                var status = json.info.status;
+                if (typeof (json.data) == 'object') {
+                    var id = json.info.id;
+                    for (var i in json.data) {
+                        var item = json.data[i];
+                        var is_conflicts = false;
+                        var current = item.current;
+                        if (item.installed) {
+                            item.status = (current && status == '1' ? "{{ 'Active'|trans }}" : "{{ 'Installed'|trans }}");
+                        } else {
+                            item.status = "{{ 'Not installed'|trans }}";
+                        }
+
+                        date = json.data[i]['published'];
+                        json.data[i]['published'] = {};
+                        json.data[i]['published'].timestamp = date;
+                        if (date > 0) {
+                            date = new Date(date * 1000);
+                            json.data[i]['published'].display = date.toLocaleFormat("%b %d, %Y %H:%M");
+                        } else {
+                            json.data[i]['published'].display = '---';
+                        }
+
+                        if (item.error) {
+                            json.data[i].conflicts = '<p class="text-danger">'+item.error+'<br/>'; + '</p>';
+                            is_conflicts = true;
+                        }else if (item.conflicts && item.conflicts.length !=0) {
+                            var conflicts = '<p class="text-danger">{{ 'conflicts with'|trans }}<br/>';
+                            for(var j in item.conflicts) {
+                                conflicts += item.conflicts[j]['alias'] + ' ' + item.conflicts[j]['current_version'] + '<br>';
+                            }
+                            json.data[i].conflicts = conflicts + '</p>';
+                            is_conflicts = true;
+                        } else {
+                            json.data[i].conflicts = '<p class="text-default">{{ 'no conflicts'|trans }}</p>';
+                        }
+
+                        json.data[i].operations = "<div class='col-xs-3 col-sm-8'>\n\
+                                                        <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                                            <i class='pull-right fa fa-cog'></i>\n\
+                                                        </a>\n\
+                                                        <ul class='dropdown-menu pull-right'>";
+                        if (item.current) { //
+                            json.data[i].operations += "\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-version-list-json' data-id='" + id + "' data-version='" + item.version + "'>\n\
+                                                                    <span> {{ 'More details'|trans }} </span>\n\
+                                                                </a>\n\
+                                                            </li>";
+                        }
+                        if (!item.installed) {
+                            json.data[i].operations +=      "\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' " + (is_conflicts ? 'disabled="disabled"' : '') + " href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-version-install' data-id='" + id + "' data-version='" + item.version + "'>\n\
+                                                                    <span> " + "{{ 'Install'|trans }}" + " </span>\n\
+                                                                </a>\n\
+                                                            </li>";
+                        } else {
+                            json.data[i].operations +=      "\n\
+                                                            <li>\n\
+                                                                <a id='toggle_link_"+ id +"' class='main_ajax no_context_menu' " + (is_conflicts && (status != '1' || !current) ? 'disabled="disabled"' : '') + " href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-toggle-state' data-id='" + id + "' " + ( current ? " data-status='" + (status == '1' ? '0': '1') + "'" : " data-current_version='" + item.version + "' data-status='1'") + ">\n\
+                                                                    <span> " + (status != '1' || !current ? "{{ 'Activate'|trans }}" : "{{ 'Deactivate'|trans }}") + " </span>\n\
+                                                                </a>\n\
+                                                            </li>";
+                        }
+                        json.data[i].operations +=          "\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' " + (!item.installed || current? 'disabled="disabled"' : '') + " href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-version-delete' data-id='" + id + "' data-version='" + item.version + "'>\n\
+                                                                    <span> {{ 'Delete'|trans }} </span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                        </ul>\n\
+                                                    </div>";
+                    }
+                }
+                $('#datatable-1').closest('.form-group').find('.dataTables_processing').hide('');
+            }).dataTable({
+                "processing": true,
+                "serverSide": false,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-version-list-json?id={% if attribute(app, 'app_info') is defined and app.app_info.info|length > 0 %}{{ app.app_info.info.id }}{% endif %}",
+                    "data": function (d) {
+                    }
+                },
+                "deferLoading": [{{ app.app_info.recordsFiltered }}, {{ app.app_info.recordsTotal }}],
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                "columns": [
+                    {"data": "version" },
+                    {"data": {
+                        _:    "published.display",
+                        sort: "published.timestamp"
+                    }},
+                    {"data": "conflicts" },
+                    {"data": "status" },
+                    {"data": "operations" },
+                ],
+                "bFilter": true,
+                "bPaginate": true,
+                "bInfo": false,
+                "order": [[ 0, "desc" ]],
+                "columnDefs": [
+                    {className: "action-menu", "targets": [-1]},
+                    {"searchable": false, "targets": [-1]},
+                    {"sortable": false, "targets": [-1]},
+                    { "type": 'formatted-version', targets: [0] }
+                ]
+            });
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+                {% if attribute(app, 'app_info') is defined and not(app.app_info.info.type == 'app')%}
+                $("#iptv_list").on('click', '#app_status, a.main_ajax[href$="smart-application-toggle-state"]', function(e){
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    if ($(this).get(0).tagName.toLocaleLowerCase() == 'input'){
+                        if ($(this).prop('disabled') || $(this).prop('readonly')) {
+                            JSErrorModalBox({msg: "{{ 'Perhaps the application is not installed. Before activate this application is necessary to install any version of the application.'|trans}}"});
+                        }
+                    } else {
+                        e.preventDefault();
+                    }
+                    confirmHandler(this, 1);
+                });
+                {% else %}
+                $(document).on('click', '#app_status', function(){
+                    if ($(this).prop('disabled') || $(this).prop('readonly')) {
+                        JSErrorModalBox({msg: "{{ 'Perhaps the application is not installed. Before activate this application is necessary to install any version of the application.'|trans}}"});
+                    }
+                    {% if attribute(app, 'app_info') is defined and app.app_info.info|length > 0 %}
+                    ajaxPostSend('{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-toggle-state', {status: $(this).is(':checked'), id: {{ app.app_info.info.id }} });
+                    {% endif %}
+                });
+                {% endif %}
+                $("#ajax-content input[type='checkbox']").each(function(){
+                    $(this).attr('oldval', $(this).is(":checked"));
+                    this.reset = function(){
+                        var oldval = $(this).attr('oldval').toString();
+                        while(oldval && oldval != $(this).prop('checked').toString()) {
+                            $(this).prop('checked', !$(this).prop('checked')).trigger('change');
+                        }
+                    };
+                });
+                $("#ajax-content").on('change', "input[type='checkbox']", function(e){
+                    $(this).attr('oldval', !$(this).is(":checked"));
+                });
+
+                $(document).on('click', "a.main_ajax", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var _this = this;
+                    $("#modalbox").data('complete', 0);
+                    var sendData = $(_this).data();
+
+                    showModalBox();
+                    var timer = setInterval(function(){
+                        if ($("#modalbox").is(":visible")) {
+                            ajaxPostSend($(_this).attr('href'), sendData, false );
+                            clearInterval(timer);
+                        }
+                    }, 10);
+
+                    $(this).closest('div.open').removeClass('open');
+                    return false;
+                });
+
+                $(document).on('click', "#modalbox button[type='submit']", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var sendData = new Object();
+                    var form_fields = $("#modalbox").find('form').find(".own_fields:not(:disabled)");
+                    form_fields.each(function () {
+                        if ($(this).val()) {
+                            if (this.type.toUpperCase() != 'CHECKBOX' || this.checked) {
+                                sendData[this.name] = $(this).val();
+                            }
+                        }
+                    });
+                    var action = $("#modalbox").find('form').attr('action');
+                    JSshowModalBox();
+                    ajaxPostSend(action, sendData, false, false, true);
+                    return false;
+                });
+
+                $(document).on('click', "#modalbox button[type='reset']", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    JScloseModalBox();
+                    $("#ajax-content input[type='checkbox']").each(function(){
+                        this.reset();
+                    });
+                    return false;
+                });
+
+                $(document).on('click', '#app_autoupdate', function(){
+                    {% if attribute(app, 'app_info') is defined and app.app_info.info|length > 0 %}
+                    ajaxPostSend('{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-toggle-state', {autoupdate: $(this).is(':checked'), id: {{ app.app_info.info.id }} });
+                    {% endif %}
+                });
+
+                $(document).on('click', "#modalbox, #modalbox a.close-link, #modalbox a.close-link *", function (e) {
+                    if (e.currentTarget != e.target) {
+                        return;
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if ($("#modalbox").data('complete') && $("#modalbox").data('complete') == 1) {
+                        JScloseModalBox();
+                    } else {
+                        for (i = 0; i < 3; i++) {
+                            $('#modalbox > div').fadeTo('slow', 0.5).fadeTo('slow', 1.0);
+                        }
+                    }
+                    return false;
+                });
+
+                LoadDataTablesScripts(InitDatatable);
+                LoadSelect2Script(InitSelect2);
+            });
+        }
+
+        var manageList = function (obj) {
+            $('#datatable-1').DataTable().ajax.reload();
+            JSSuccessModalBox(obj);
+            if (typeof (obj.installed) != 'undefined' ) {
+                if (obj.installed == '1') {
+                    $("#app_status").removeAttr('disabled').removeAttr('readonly');
+                    $("#app_autoupdate").removeAttr('app_autoupdate').removeAttr('app_autoupdate');
+                }
+            }
+        };
+
+        var manageListError = function (obj) {
+            JSErrorModalBox(obj);
+        };
+
+        var createOptionForm = function(obj){
+            $("#modalbox").hide();
+            $("#modalbox").data('complete', 1);
+            $('#modalbox').find('.modal-header-name span').text(obj.info.name);
+            $('#modalbox').find('.devoops-modal-inner').html($("#modal_option_form_body").text());
+            $('#modalbox').find('.devoops-modal-bottom').html($("#modal_form_buttons").text());
+            if (obj.data.length == 1 && obj.data[0].options.length > 0) {
+                fillModalForm(obj.data[0].options);
+            } else {
+                $('#modalbox .devoops-modal-bottom').find("button[type=submit]").hide();
+                $('#modalbox .devoops-modal-bottom').find("button[type=reset]").removeClass('pull-left').addClass('pull-right').text("{{ 'Close'|trans }}");
+            }
+            $('#current_version').text(obj.data.length == 1 ? obj.data[0].version : '');
+            $('#apps_id').val(obj.info.id);
+            $('#description').text(obj.data.length == 1 ? obj.data[0].description : '');
+            $('#modalbox').show();
+        };
+
+        var fillModalForm = function(option){
+            if (!option) {
+                return;
+            }
+            var container, field, type, tagName, currValue;
+            var field_types = ["input", "select"];
+            $.each(option, function(){
+                type = field_types[this.valueList ? 1: 0];
+                container = $($("#modal_form_"+type).text()).appendTo($('#modalbox form'));
+                for(var fieldName in this){
+                    field = container.find("[data-option-field='"+fieldName+"']");
+                    tagName = field.get(0).tagName.toLowerCase();
+                    currValue = this.value;
+                    if (field_types.indexOf(tagName) == -1) {
+                        field.text(this[fieldName]);
+                    } else {
+                        field.attr('name', "apps["+this.name+"]");
+                        field.attr('id', "apps_"+this.name);
+                        if (field_types.indexOf(tagName) == 0) {
+                            field.val(currValue);
+                        } else if (field_types.indexOf(tagName) == 1) {
+                            $.each(this.valueList, function(){
+                                field.append('<option value="'+this+'" '+(currValue == this?'selected="selected"':'')+' >'+this+'</option>');
+                            });
+                        }
+                    }
+                }
+            });
+            InitSelect2();
+        };
+
+        var createOptionFormError = function(obj){
+            JSErrorModalBox(obj);
+        };
+
+        var changeStatus = function(obj){
+            if ( typeof(obj.field) != 'undefined' && obj.field == 'app_autoupdate') {
+                JSSuccessModalBox(obj);
+            } else {
+                manageList(obj);
+            }
+            if ( typeof(obj.field) != 'undefined') {
+                $('#' + obj.field).prop('checked', obj.installed ? true: false);
+                if ( typeof(obj.conflicts) != 'undefined' && obj.conflicts) {
+                    $('#' + obj.field).prop('disabled', 'disabled').prop('readonly', 'readonly');
+                }
+            }
+        };
+
+        var changeStatusError = function(obj){
+            JSErrorModalBox(obj);
+            if ( typeof(obj.field) != 'undefined') {
+                $('#' + obj.field).prop('checked', obj.installed ? true: false);
+            }
+        };
+
+        function showModalBox() {
+            $('#modalbox').find('.modal-header-name span').removeClass('txt-danger').text('{{ 'Wait'|trans }}...');
+            $('#modalbox').find('.devoops-modal-inner').html('<span style="margin: 10px 20px;">{{ 'Request is being processed'|trans }}...</span>');
+            $('#modalbox').find('.devoops-modal-bottom').empty();
+            $("#modalbox").show();
+        }
+
+        function closeModalBox() {
+            $("#modalbox").hide();
+            $('#modalbox').find('.modal-header-name span').removeClass('txt-danger').empty();
+            $('#modalbox').find('.devoops-modal-inner').empty();
+            $('#modalbox').find('.devoops-modal-bottom').empty();
+        }
+
+        function customConfirm(obj){
+            $("#modalbox .modal-header-name").html("{{ 'Warning'|trans }}");
+            $("#modalbox .devoops-modal-inner").html("\n\
+            <div class='col-md-12'>\n\
+                <span class='col-md-12 txt-default'>\n\
+                    {{ 'This is system apps. Disabling this application can lead to failures in other applications. Do really want deactivate this application?'|trans }}\n\
+                </span>\n\
+            </div>");
+            if ($("#modalbox .devoops-modal-bottom button").length == 0) {
+                $("#modalbox .devoops-modal-bottom").append($("#modal_form_buttons").html());
+            }
+            $("#modalbox .devoops-modal-bottom button[type='reset']").text("{{ 'Cancel'|trans }}");
+            $("#modalbox .devoops-modal-bottom button[type='submit']").attr('type', 'button').text("{{ 'Deactivate'|trans }}");
+
+            $("#modalbox .devoops-modal-bottom").on('click', "button[type='button']", function(e){
+                confirmHandler(obj);
+            });
+
+            $("#modalbox").show();
+        }
+
+        function confirmHandler(obj, getInfo){
+            var sendData = $(obj).data();
+            if ($(obj).get(0).tagName.toLocaleLowerCase() == 'input') {
+                sendData['status'] = $(obj).is(':checked');
+                sendData['id'] = {{ app.app_info.info.id }};
+            }
+
+            if (sendData['status'] || !getInfo) {
+                ajaxPostSend('{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-toggle-state', sendData);
+            } else {
+                customConfirm(obj);
+            }
+
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);

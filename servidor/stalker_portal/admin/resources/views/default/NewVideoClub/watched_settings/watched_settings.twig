@@ -1,0 +1,75 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% set title = 'Video club'|trans ~ ': ' ~ 'Watched'|trans %}
+{% set active_alias = 'watched-settings' %}
+
+
+{% block footer %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+       
+        {% include (app.twig_theme ~ "/NewVideoClub/watched_settings/watched_settings.js.twig") %}
+
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div id="add_channel" style="padding-top: 0">
+        {{ form_start(app['form'], {'method': 'POST', 'action': (app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias), 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="box">
+                        <div class="box-content">
+                            <div class="col-xs-10 col-sm-6">
+                                <div class="form-group">
+                                    <h4 class="section-header">{{ form_label(app['form'].history_option) }}</h4>
+                                    {% for choiceFormView in app['form'].history_option %}
+                                        <div class="radio">
+                                            <label>
+                                                {{ form_widget(choiceFormView) }}
+                                                {{ choiceFormView.vars.label }}
+                                                <i class="fa "></i>
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-sm-12"></div>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class="form-group">
+                                    <h4 class="section-header">{{ form_label(app['form'].not_ended_history_size) }}</h4>
+                                    {% for choiceFormView in app['form'].not_ended_history_size %}
+                                        <div class="radio">
+                                            <label>
+                                                {{ form_widget(choiceFormView) }}
+                                                {{ choiceFormView.vars.label }}
+                                                <i class="fa "></i>
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-buttons col-xs-12 col-sm-12">
+                <div class="box">
+                    <div class="box-content">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-right">
+                                {{ form_widget(app['form'].save, { 'label': 'Save'|trans , attr: {'class': 'btn btn-success pull-right'}}) }}
+                                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/" class="btn btn-default pull-right"> {{ 'Cancel'|trans }} </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="display: none;">
+                {{ form_rest(app['form']) }}
+            </div>
+        {{ form_end(app['form']) }}
+    </div>
+
+{% endblock %}

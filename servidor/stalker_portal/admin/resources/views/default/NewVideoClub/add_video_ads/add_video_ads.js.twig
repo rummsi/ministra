@@ -1,0 +1,78 @@
+
+        var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+        var conf = {
+            form: '#form_',
+            lang : '{{ app.js_validator_language }}',
+            showHelpOnFocus : true,
+            validateHiddenInputs: true,
+            ignore: ['.ignore'],
+            modules: 'jsconf',
+            onSuccess: function () {
+                $(this.form).get(0).submit();
+                return false;
+            },
+            onError: function () {
+                return false;
+            }
+        };
+
+        function InitSelect2() {
+            $('#form_denied_categories').select2(select2Opt);
+            //$('#form_must_watch').select2(select2Opt); // replaced with .slider()
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+
+                $.validate(conf);
+
+                LoadSelect2Script(InitSelect2);
+
+                $('.form-group .i-hint').tooltip({
+                    animation: true,
+                    placement: "right"
+                });
+
+                var select = $( "#form_must_watch" );
+                var handle = $( "#slider-handle" );
+
+                var slider = $( "#slider" ).slider({
+                  value: select[ 0 ].options.length - 1 - select[ 0 ].selectedIndex,
+                  min: 0,
+                  max: select[ 0 ].options.length - 1,
+
+                  create: function() {
+                    handle.text( select[ 0 ].options[ select[ 0 ].selectedIndex ].innerText );
+                  },
+                  slide: function( event, ui ) {
+                    var max = $( "#slider" ).slider( "option", "max" );
+                    //$( "#amount" ).val( ui.value );
+                    handle.text( select[ 0 ].options[ max - ui.value ].innerText );
+                    select[ 0 ].selectedIndex = max - ui.value;
+                  }
+                });
+                
+                select.on( "change", function() {
+                  slider.slider( "value", select[ 0 ].options.length - 1 - this.selectedIndex );
+                  handle.text( select[ 0 ].options[ select[ 0 ].selectedIndex ].innerText );
+                }).hide();
+
+                //$( "#amount" ).val( $( "#slider" ).slider( "value" ) );
+                
+                $(document).on("click", "#form_save", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    if ($(conf.form).isValid({}, conf, true)) {
+                        conf.onSuccess();
+                    } else {
+                        conf.onError();
+                    }
+                    return false;
+                });
+
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);

@@ -1,0 +1,90 @@
+
+var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+var conf = {
+    form: '#form_',
+    lang : '{{ app.js_validator_language }}',
+    showHelpOnFocus : true,
+    validateHiddenInputs: true,
+    modules: 'jsconf',
+    onSuccess: function () {
+        $('tr[id*="_part_"]').each(function(){
+            if (!$(this).is(':visible')) {
+                $(this).find('option').removeAttr('selected');
+                $(this).find('[data-code]').prop('checked', false);
+            }
+        });
+
+        $(conf.form).get(0).submit();
+        return false;
+    },
+    onError: function () {
+        return false;
+    }
+};
+
+function InitSelect2() {
+    $('select').select2(select2Opt);
+}
+
+function yelp() {
+    $(document).ready(function () {
+        $("form").each(function(){this.reset()});
+        $.validate(conf);
+
+        $("#form_save").on('click', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            if ($(conf.form).isValid({}, conf, true)) {
+                conf.onSuccess();
+            } else {
+                conf.onError();
+            }
+            return false;
+        });
+
+        LoadSelect2Script(InitSelect2);
+
+        $(document).on('change', "#form_platform", function(e){
+            var selectedVal = $(this).val();
+            $(this).find("option").each(function(){
+                var trId = '[id^="' + $(this).val() + '_part"]';
+                if($(this).val() != selectedVal) {
+                    $(trId).hide().find("input:checkbox[data-code]").prop("checked", false).removeAttr("checked");
+                    setDisabledRows($(trId).hide().find("input:checkbox[data-code]"));
+                } else {
+                    $(trId).show();
+                }
+            });
+        });
+        setSelectWarning($('input:checkbox[data-code="205"]'));
+        $(document).on('change', 'input:checkbox[data-code="205"]', function(e){
+            setSelectWarning($(this));
+        });
+        setDisabledRows($('input:checkbox[data-code]'));
+        $(document).on('change', 'input:checkbox[data-code]', function(e){
+            setDisabledRows($(this));
+        });
+    });
+}
+document.addEventListener("DOMContentLoaded", yelp, false);
+
+function setSelectWarning(selectObj){
+    $("#warning_label").css({visibility: $(selectObj).is(":checked") ? 'visible' : 'hidden'});
+}
+
+function setDisabledRows(objList){
+    objList.each(function(){
+        var codeReff = $(this).data('code');
+        var reffObj = $(this).closest('tr').find('[data-codereff="'+ codeReff +'"]');
+        reffObj[(!$(this).is(":checked")? 'add': 'remove')+'Class']('disabled')
+            .closest('label')[(!$(this).is(":checked")? 'add': 'remove')+'Class']('disabled')
+            .closest('div')[(!$(this).is(":checked")? 'add': 'remove')+'Class']('disabled_opacity');
+        reffObj.prop('disabled', !$(this).is(":checked"));
+        if ($(this).is(":checked")) {
+            reffObj.removeAttr('disabled');
+        } else {
+            reffObj.attr('disabled', 'disabled');
+        }
+    });
+}

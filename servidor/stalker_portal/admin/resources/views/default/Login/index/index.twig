@@ -1,0 +1,76 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+
+{% set active = 'index' %}
+{% set title = 'login' %}
+
+{% block head %}
+
+    {{ parent() }}
+    <style type="text/css">
+         {% include (app.twig_theme ~ "/Login/index/index.css") %}
+    </style>
+
+{% endblock %}
+
+{% block container %}
+    <div class="container">
+            <div class=" panel-info ">
+                <div class="panel-body">
+                    <center><img id="login-logo" src="img/m-logo-full.png"></center>
+
+                    <form action="{{ path('login-check') }}" method="POST" class="form-signin" role="form">
+                        <div class="input-group login-form {% if error %}has-error{% endif %}">
+                            <input type="text" class="form-control " placeholder="{{ 'Username'|trans }}" name="_username"/>
+                            <input type="password" class="form-control " placeholder="{{ 'Password'|trans }}" name="_password"/>
+                            {% if error %}
+                                <div class="alert col-sm-12">
+                                    <i class="fa fa-warning"></i>
+                                    <span>{{ 'Incorrect Username or Password'|trans }}</span>
+                                </div>
+                            {% endif %}
+
+                            <input type="submit" class="btn lobtn btn-block" value="{{ 'Sign in'|trans }}">
+                        </div>
+                    </form>
+                </div>
+            </div>
+    </div>
+    <script src="{{app.request_context.baseUrl}}/plugins/jquery/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" defer="defer">
+        $(document).ready(function(){
+            localStorage.removeItem('opinionCheck');
+            {% if attribute(app, 'npmVersionError') is defined %}
+            var npmVersionError = localStorage.getItem('npm-version-error');
+            if (!npmVersionError) {
+                npmVersionError = {
+                    timescounter: 0,
+                    closed: false,
+                    timestamp: 0
+                };
+            } else {
+                npmVersionError = $.parseJSON(npmVersionError);
+                npmVersionError.closed = false;
+            }
+            localStorage.setItem('npm-version-error', JSON.stringify(npmVersionError));
+            {% endif %}
+            //localStorage.removeItem('npm-version-error');
+
+            $(document).on('submit', 'form', function(e){
+                var currAdmin = $('input[name="username"]').val();
+                var lastAdmin = localStorage.getItem('lastAdmin') || false;
+                if (currAdmin) {
+                    if (lastAdmin && lastAdmin != currAdmin) {
+                        for (var key in localStorage){
+                            if (key.search('DataTable') != -1) {
+                                localStorage.removeItem(key);
+                            }
+                        }
+                    }
+                    localStorage.setItem('lastAdmin', currAdmin);
+                }
+                localStorage.removeItem('check_health_time');
+            });
+
+        });
+    </script>
+{% endblock container %}

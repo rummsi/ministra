@@ -1,0 +1,224 @@
+
+        var select2OptPH = {
+            minimumResultsForSearch: -1,
+            dropdownAutoWidth: false,
+            width: '100%',
+            allowDuplicates: false,
+            placeholder : {
+                id: "-1",
+                text: "",
+                selected: 'selected'
+            }
+        };
+
+        var conf = {
+            form: '#modal_form',
+            lang : '{{ app.js_validator_language }}',
+            showHelpOnFocus : true,
+            validateHiddenInputs: true,
+            scrollToTopOnError: false,
+            modules: 'jsconf, logic',
+
+            onSuccess: function () {
+                var sendData = {};
+
+                $(this.form).find('input, select').each(function () {
+                    sendData[$(this).attr('name')] = $(this).is(':checkbox') ? ($(this).is(':checked') ? 1 : 0) : $(this).val();
+                });
+                JScloseModalBox();
+                ajaxPostSend($(this.form).attr('action'), sendData, false, false, true);
+                return false;
+            },
+
+            onError: function () {
+                return false;
+            }
+        };
+
+        function InitSelect2() {
+            $('#form_stream_server_type').select2(select2OptPH);
+        }
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object') {
+                    for (var i in json.data) {
+                        var id = json.data[i].id;
+
+                        json.data[i].operations = "<div class='col-xs-3 col-sm-8'>\n\
+                                                        <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                                            <i class='pull-right fa fa-cog'></i>\n\
+                                                        </a>\n\
+                                                        <ul class='dropdown-menu pull-right'>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-storages-status' data-id='"+ id +"' data-status='"+ json.data[i].status +"'>\n\
+                                                                    <span>" + (json.data[i].status == 1? "{{ 'Switch off'|trans }}": "{{ 'Switch on'|trans }}") + "</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/reset-cache' data-id='"+ id +"'>\n\
+                                                                    <span>{{ 'Clean the cache'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/get-storage' data-id='"+ id +"'>\n\
+                                                                    <span>{{ 'Edit'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-storage' data-id='" + id + "' data-tasks='" + json.data[i].tasks + "' data-storage_name='" + json.data[i].storage_name + "' >\n\
+                                                                    <span> {{ 'Delete'|trans }} </span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                        </ul>\n\
+                                                    </div>";
+
+                        json.data[i].status = '\
+                           <div class="mswitch">\
+                                <input type="checkbox" \
+                                       id="storage_status_'+ json.data[i].id +'"\
+                                       name="form[status]" readonly="readonly" class="form-control" \
+                                       ' + ( json.data[i].status != 0 ? 'checked="checked"' : '' ) +'\
+                                       data-id="' + json.data[i].id + '"\
+                                       data-status="' + json.data[i].status +'">\
+                                <label class="label-success" \
+                                       title="' + ( json.data[i].status != 0 ? "{{'Switched on'|trans}}" : "{{'Switched off'|trans}}" ) + '" \
+                                       for="storage_status_'+ json.data[i].id +'"></label>\
+                            </div>';
+
+                        json.data[i].storage_ip = escapeHtml( json.data[i].storage_ip );
+                        json.data[i].storage_name = "<a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/get-storage' data-id='"+ id +"'><span>"+ escapeHtml( json.data[i].storage_name )+ "</span></a>";
+                        json.data[i].nfs_home_path = escapeHtml( json.data[i].nfs_home_path );
+                    }
+                }
+            }).dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/storages-list-json"
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+                {% endif %}
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "bInfo": true,
+
+                "fixedHeader": {
+                    header: true,
+                    headerOffset: $('header.navbar').height()
+                },
+                
+                "columnDefs": [
+                    { className: "action-menu", "targets": [ -1 ] },
+                    {"searchable": false, "targets": [-1, -2]},
+                    {"sortable": false, "targets": [-1]}
+                ]
+            }).prev('.dataTables_processing').hide();
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+                $.validate(conf);
+
+                LoadSelect2Script(InitSelect2);
+
+                $(document).on('change', ".mswitch input", function(e){
+                    ajaxPostSend('{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-storages-status', $(this).data() );
+                });
+
+                $(document).on('change', '#form_stream_server_type', function(e){
+                    var val = $(this, 'option[selected]').val() ? true: false;
+                    $('#form_stream_server_port, #form_stream_server_app').prop('disabled', !val).closest('.form-group')[val? 'show': 'hide']('fast');
+                });
+
+                $(document).on('change', '#form_dvr_type', function(e){
+                    var val = $(this, 'option[selected]').val() ? true: false;
+                    $('#form_fake_tv_archive').prop('disabled', !val).closest('.form-group')[val? 'show': 'hide']('fast');
+                    var sendData = {
+                        id: $("#modal_form input[name*='id']").val(),
+                        storage_name: $("#modal_form input[name*='storage_name']").val(),
+                        dvr_type: $(this, 'option[selected]').val()
+                    };
+                    if (sendData.id) {
+                        ajaxPostSend('{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/check-linked-channels', sendData);
+                    }
+                });
+
+                $(document).on('click', "a.main_ajax[disabled!='disabled']", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    var sendData = $(this).data();
+                    if ($(this).attr('href').search('refresh-cache') !== -1) {
+                        JSshowModalBox();
+                    } else if ($(this).attr('href').search('remove-storage') !== -1 && $(this).data('tasks') == 1 && !confirm("{{ 'Storage "{strg}" has linked channels'|transchoice(1, {'"{strg}"' : '#strgnm#'}) }}. {{ 'Are you sure you want to delete storage %s?'|transchoice(1, {'%s' : '#strgnm#'}) }}".replace(/#strgnm#/gi, '"' + $(this).data('storage_name') + '"'))) {
+                        return false;
+                    } else {
+                        $("#modalbox").data('complete', 0);
+                    }
+                    ajaxPostSend($(this).attr('href'), sendData, false, false, true);
+                    $(this).closest('div.open').removeClass('open');
+                    return false;
+                });
+
+                $(document).on('click', '#add_storage', function(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+                    showAdModalBox({storage: {title: '{{ 'Add storage'|trans }}'}});
+                    return false;
+                });
+
+                $(document).on('click', '#save_button', function(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    if ($(conf.form).isValid({}, conf, true)) {
+                        conf.onSuccess();
+                    } else {
+                        conf.onError();
+                    }
+                    return false;
+                });
+                LoadDataTablesScripts(InitDatatable);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);
+
+        function showAdModalBox(data){
+            $("#modalbox").data('complete', 1);
+            $("#modalbox .modal-header-name span").text(data.storage.title);
+            $("#modalbox .devoops-modal-inner").html($('#save_storage_form').tmpl(data.storage));
+            $("#modalbox .devoops-modal-bottom").html($('#save_storage_form_button').html());
+
+            $("select", conf.form).each(function(){
+                var objKey = $(this).attr('id').replace('form_', '');
+                if (data.storage[objKey]) {
+                    $(this).val(data.storage[objKey]);//.trigger('change');
+                }
+            });
+
+            $("input[type='checkbox']", conf.form).each(function(){
+                var objKey = $(this).attr('id').replace('form_', '');
+                if (data.storage[objKey]) {
+                    $(this).attr('checked', (data.storage[objKey] + '') === '1');
+                }
+            });
+
+            $("#modalbox select").select2(select2OptPH);
+
+            $.validate(conf);
+            $("#additional_information").hide('fast');
+            $("#modalbox").show();
+        }
+
+        function checkLinkedChannelsResult(data){
+            if (data && data.msg) {
+                notty(data.msg, 'warning');
+            }
+        }

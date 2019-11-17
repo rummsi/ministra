@@ -1,0 +1,11 @@
+/var/log/stalkerd/*.log {
+    rotate 10
+    daily
+    compress
+    delaycompress
+    notifempty
+    missingok
+    sharedscripts
+    postrotate
+    endscript
+}

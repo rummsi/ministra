@@ -1,0 +1,150 @@
+
+        var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+        var isEditing = {{ app.radioEdit ? "true" : "false" }}
+
+        var conf = {
+            form: '#form_',
+            lang : '{{ app.js_validator_language }}',
+            validateOnBlur: true,
+            validateOnEvent: false,
+            showHelpOnFocus : true,
+            validateHiddenInputs: true,
+            errorClass: "error",
+            ignore: [],
+            modules: 'security',
+
+            onSuccess: function () {
+                $(conf.form).get(0).submit();
+                return true;
+            },
+            onError: function () {
+                return false;
+            }
+        };
+
+        function InitSelect2() {
+            $('#form_volume_correction').select2(select2Opt);
+        }
+        
+        function yelp() {
+            $(document).ready(function () {
+
+                // set up validator for the form
+                if (isEditing) {
+                    setEditValidationConfig(conf);
+                } else {
+                    setDefaultValidationConfig(conf);
+                }
+
+                $.validate(conf);
+
+                // set request params attribute
+                setServerValidationRequestParams();
+
+                $('#form_ .form-group .i-hint').tooltip({
+                    animation: true,
+                    placement: "right"
+                });
+
+                /*
+                $(document).on('change', '#form_number, #form_name', function(e){
+
+                    var _this = $(this);
+                    _this.next('div').removeClass('bg-danger').html('').hide();
+
+                    _this.validate( {form: '#form_'}, conf.lang );
+                    if( !_this.hasClass(conf.errorClass) && _this.val()) {
+
+                   $.ajax({
+                        url: 'radio/' + _this.data('checkurl'),
+                        type: 'POST',
+                        data: {param: _this.val(), radioid: $('#form_id').val()},
+                        success: function (data) {
+                            if (data.success) {
+                                _this.next('div').append('<i class="txt-success fa fa-check"></i> ' + data.chk_rezult).show();
+                            } else{
+                                JSErrorModalBox(data);
+                            }
+                        },
+                        error: function (data) {
+                            if (typeof(data.responseJSON) != 'undefined' && typeof(data.responseJSON.error) != 'undefined') {
+                                _this.next('div').append('<i class="txt-danger fa fa-ban"></i> ' + data.responseJSON.error).show();
+                            } else {
+                                console.log("{{ 'Some network error or access denied' }}");
+                            }
+                        },
+                        dataType: "json",
+                        async: false
+                    });}
+                });*/
+
+                $("#form_save").on('click', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    if ($(conf.form).isValid({}, conf, true)) {
+                        conf.onSuccess();
+                    } else {
+                        conf.onError();
+                    }
+                    return false;
+                });
+
+                LoadSelect2Script(InitSelect2);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);
+
+
+function setServerValidationRequestParams() {
+    var param = {
+        'for_validator': true,
+        'radioid': $("#form_id").val()
+    };
+    $('#form_number, #form_name').attr('data-validation-req-params', JSON.stringify(param) );
+}
+
+function setDefaultValidationConfig(conf) {
+// note form[number] is filled by default, so it's Edit mode at the beging:
+    conf.ignore = ['form[number]'];
+    conf.validateOnBlur = false;
+    conf.validateOnEvent = true;
+
+    // complete Editing mode Config with this params:
+    $("#form_name, #form_cmd").attr('data-validation-event', "blur");
+
+    // hack to switch to default behavior
+    $("#form_number").one('change', function (e) {
+        var ignore = conf.ignore;
+        var index = ignore.indexOf(this.name);
+        if( index !== -1 ){
+            ignore.splice( index, 1 );
+            conf.validateOnBlur = true;
+            conf.validateOnEvent = false;
+            $.validate(conf);
+        }
+    });
+}
+
+function setEditValidationConfig(conf) {
+    // by default skip fields with serverside validation while unchanged
+    conf.ignore = ['form[name]','form[number]'];
+    conf.validateOnBlur = false;
+    conf.validateOnEvent = true;
+
+    // this function reverts validation behaviour
+    // to unmodified as far as the default.
+    // $(this).attr('data-validation-skipped', 0); // is inner solution, don't work at this point
+    // used solution from issue #606
+    $("#form_name, #form_number").one('change', function (e) {
+        var ignore = conf.ignore;
+        var index = ignore.indexOf(this.name);
+        if( index !== -1 ){
+            $(this).attr('data-validation-event', "blur");
+            ignore.splice( index, 1 );
+            $.validate(conf);
+        }
+    });
+}

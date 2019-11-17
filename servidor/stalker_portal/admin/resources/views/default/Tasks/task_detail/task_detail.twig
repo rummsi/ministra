@@ -1,0 +1,195 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set active_alias = 'tasks-list' %}
+{% set title = ('Tasks'|trans ~ ': ' ~ 'History of task'|trans ~ ' №' ~ app.task_num ~ ' ' ~ 'in section'|trans ~ ' "' ~ app.taskTypeTitle ~'"') %}
+
+
+{% block footer %}
+    {{ parent() }}
+    
+    <script type="text/javascript" defer>
+       
+        {% include (app.twig_theme ~ "/Tasks/task_detail/task_detail.js.twig") %}
+
+    </script>
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row2">
+                
+                {% if attribute(app, 'infoTable') is defined %}
+            <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 pull-right">
+                <div class="box-content">
+                    <div id="task_card" class="box-content ">
+                        <div class="row one-list-message">
+                            <div class="col-xs-8">
+                                {% if attribute(app, 'creator') is defined %}
+                                    #{{ app['task_num'] }}
+
+                            {#<label>{{ app['infoTable']['Title'] }}</label>#}
+                                {% endif %}
+                            </div>
+                            <div class="col-xs-3 message-title">
+                                {#{% autoescape false %}{{ app['infoTable']['State'] }}{% endautoescape %}#}
+                            </div>
+                            <div class="col-xs-3 message-date">{{ app['added']|date('M d, Y H:i') }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 message-title">
+                                <table class="table">
+                                    {% autoescape false %}
+                                        {% for key, value in app['infoTable'] %}
+                                                {% if loop.index0 % 2  == 0 %}
+                                                    {% set tr_class = 'odd' %}
+                                                {% else %}
+                                                    {% set tr_class = 'even' %}
+                                                {% endif %}
+                                            <tr class="{{tr_class}}">
+                                                <td width="30%">{{ key }}</td>
+                                                <td>{{ value }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endautoescape %}
+                                </table>
+                            </div>
+                            {% if attribute(app, 'comment') is defined and not (app['comment'] is empty) %}
+                            <hr>
+                            <div class="col-xs-12 col-sm-12 message-title">
+                                <label>{{ 'Description'|trans }}:</label>
+                                <br/>
+                                <p>{{ app['comment'] }}</p>
+                            </div>
+                                {% if app['showForm'] %}
+                            <div class="col-xs-12  col-sm-12 message-title">
+                                <button form="task_form" type="submit" class="btn btn-success pull-right" data-value="ended">{{ 'Done'|trans }}</button>
+                                    {% if app['showInput'] %}
+                                <button form="task_form" type="submit" class="btn btn-default pull-right" data-value="rejected">{{ 'Reject'|trans }}</button>
+                                    {% endif %}
+                            </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+                {% endif %}
+
+            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                <div class="box-content">
+                    <div class="box-content "  id="task_chat">
+                            <div class="col-xs-12 text-center  alert alert-info start" role="alert">
+                                <span class="message-date label label-timestamp label-warning">{{ app['added']|date('M d, Y H:i') }}</span>
+                                <strong class=" ">{{ 'Created task'|trans }} №{{ app['task_num'] }}</strong>
+                            </div>
+                            {#
+                            <div class="col-xs-7  one-list-message bg-{{ app['taskStateColor'][0] }} message-title"><b>{{ 'Created task'|trans }} №{{ app['task_num'] }}</b></div>
+                            #}
+                        {% if attribute(app, 'comment') is defined and not (app['comment'] is empty) %}
+                        <div class="col-xs-12">
+                            <label class="pull-left creator">{{ app['creator'] }}</label>
+                            {#<span  class="pull-left message-date"  >{{ app['added']|date('M d, Y H:i') }}</span>#}
+                            <div class="col-xs-7  one-list-message bg-{{ app['taskStateColor'][0] }} message-title"><b>{{ app['comment'] }}</b></div>
+                        </div>
+                        {% endif %}
+                        
+                        {% for row in app['taskAll'] %}
+                            
+                            {% if not loop.first and attribute(row,'comment') is defined %}
+                                {% if row['from_usr'] == app['toLeft'] %}
+                                    {% set add_class = 'pull-left' %}
+                                {% else %}
+                                    {% set add_class = 'pull-right' %}
+                                {% endif %}
+                                <div class="col-xs-12 {{ add_class }} {% if row['readed'] == "0" %}bg-default{% endif %}">
+                                    <label class='{{ add_class }} message-author'>{{ row['from_usr_login'] }}</label>
+                                    <span class="{{ add_class }} message-date">{{ row['send_time']|date('M d, Y H:i') }}</span>
+                                    <div class="{{ add_class }} one-list-message col-xs-7 message-title">
+                                        <p>{{ row['comment'] }}</p>
+                                    </div>
+                                    {% if row['readed'] == "0" %}<div class="not_read col-xs-5 {{ add_class }}">{{ 'Message has not been read'|trans }}</div>{% endif %}
+                                </div>
+                            {% endif %}
+                            
+                            {% if loop.last %}
+                                {% if row.state != 0 %}
+                                {#
+                                <div class="col-sm-12 pull-left  one-list-message bg-none  {{ app['taskStateColor'][row.state] }}">
+                                    <div class="col-xs-12 message-title">
+                                        <span>{{ 'Task is'|trans }} {{ app['taskAllState'][row.state]['title']|lower }}</span>
+                                        <div class="col-xs-2 message-date">{{ row['end_time']|date('M d, Y H:i') }}</div>
+                                    </div>
+                                </div>
+                                #}
+                                <div class="col-xs-12 text-center alert alert-{{ app['taskStateColor'][row.state] }}" role="alert">
+                                    <span class=" "> <b>{{ 'Task is'|trans }} {{ app['taskAllState'][row.state]['title']|lower }}</b></span>
+                                    <span class="message-date label label-timestamp label-{{ app['taskStateColor'][row.state] }}">{{ row['end_time']|date('M d, Y H:i') }}</span>
+                                </div>
+                                {% endif %}
+
+                                {% if row.archived != "0" %}
+                                {#
+                                <div class="col-sm-7  one-list-message bg-none">
+                                    <div class="col-xs-9 message-title ">
+                                        <span>{{ 'Task has been sent to archive'|trans }}</span>
+                                        {% if row['archived_time'] %}
+                                        <div class="col-xs-2 message-date">{{ row['archived_time']|date('M d, Y H:i') }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                #}
+                                <div class="col-xs-12 text-center message-archived">
+                                    {{ 'Task has been sent to archive'|trans }}
+                                    {% if row['archived_time'] %}
+                                    <span class="label label-default label-timestamp">{{ row['archived_time']|date('M d, Y H:i') }}</span>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                                {#
+                                <div class="col-sm-12 text-center pull-left">
+                                    <span class=" "> <b>{{ 'Task is'|trans }} {{ app['taskAllState'][row.state]['title']|lower }}</b></span>
+                                    <span class="message-date  label label-default">{{ row['end_time']|date('M d, Y H:i') }}</span>
+                                </div>
+                                #}
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+                        {% if app['showForm'] %}
+                        <div class="box-content no-padding" id="task_chat_panel">
+                            <div class="col-xs-11 col-sm-11">
+                                <form class="form-horizontal" method="POST" role="form" id="task_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/send-task-message-{% if app['task_type'] == 'karaoke' %}karaoke{% else %}video{% endif %}">
+                                    <div class="form-group">
+                                        <div class=" col-xs-11 col-sm-11 ">
+                                            <input type="hidden" name="recipientID" class="own_fields" value="{{ app['recipientID'] }}">
+                                            <input type="hidden" name="taskid" class="own_fields" value="{{ app['taskID'] }}">
+                                            <input type="hidden" name="selfID" class="own_fields" value="{{ app['selfID'] }}">
+                                            <input type="hidden" name="task_type" class="own_fields" value="{{ app['task_type'] }}">
+                                            <input type="hidden" name="reply_to" value="{{ app['replyTo'] }}">
+                                            <input type="hidden" name="apply" value="">
+                                            {% if app['showInput'] %}
+                                                <input type="text" name="message" class='form-control input-sm chat_input own_fields form-control'>
+                                            {% endif %}
+                                        </div>
+                                            {% if app['showInput'] %}
+                                        <div class="col-xs-1 col-sm-1 pull-right">
+                                            <button type="submit" class="btn btn-primary btn-sm" id="btn-chat" data-value="message">{{ 'Reply'|trans }}</button>
+                                        </div>
+                                            {% endif %}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+{% endblock %}

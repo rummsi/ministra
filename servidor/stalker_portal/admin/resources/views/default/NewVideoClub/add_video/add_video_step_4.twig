@@ -1,0 +1,32 @@
+{% extends app.twig_theme ~ "/NewVideoClub/add_video/add_video.twig"%}
+{% block footer_steps_js %}
+
+    {{ parent() }}
+    <script type="text/javascript">
+
+        {% include app.twig_theme ~ "/NewVideoClub/add_video/add_video_step_4.js.twig" %}
+
+    </script>
+
+{% endblock %}
+{% block form_step_by_step %}
+            <h4 class="section-header"><span>{{ 'Files'|trans }}</span></h4>
+
+            <div class="row" id="season_button_container" style="display: none">
+                <div class="col-xs-6 col-sm-6 col-xs-offset-6 col-sm-offset-6">
+                    <div class="box">
+                        <div class="box-content">
+                            <button id="update_season" class="btn btn-success col-xs-6 col-sm-4 col-md-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-1 pull-right">{{ 'Update season data'|trans }}</button>
+                            <button id="add_season_structure" class="btn btn-default col-xs-6 col-sm-4 col-md-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-1 pull-right">{{ 'Create season structure'|trans }}</button>
+                            <button id="add_season" class="btn btn-default col-xs-6 col-sm-4 col-md-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-1 pull-right">{{ 'Add one season'|trans }}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12"><div class="box"></div></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12">
+                    <div id="files_container" data-video_id="{% if attribute(app, 'video_id') is defined %}{{ app['video_id'] }}{% endif %}"></div>
+                </div>
+            </div>
+{% endblock form_step_by_step %}

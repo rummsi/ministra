@@ -1,0 +1,226 @@
+/*
+ this component has templates in .twig file
+*/
+
+        var conf = {
+            form: '#form_',
+            lang : '{{ app.js_validator_language }}',
+            showHelpOnFocus : true,
+            validateHiddenInputs: true,
+            scrollToTopOnError: false,
+            modules: 'jsconf',
+
+            onSuccess: function () {
+                var sendData = {};
+
+                $(this.form).find('input, select').filter(':not(disabled)').each(function () {
+                    sendData[$(this).attr('name')] = $(this).is(':checkbox') ? ($(this).is(':checked') ? 1 : 0) : $(this).val();
+                });
+                $.validate();
+                $(conf.form).get(0).reset();
+                JScloseModalBox();
+                JSshowModalBox();
+                ajaxPostSend($(conf.form).attr('action'), sendData, false, false, true);
+                return false;
+            },
+
+            onError: function () {
+                return false;
+            }
+        };
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object') {
+                    for (var i in json.data) {
+                        var item = json.data[i];
+                        var id = json.data[i].id;
+
+                        json.data[i].name = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/application-detail?id=' + id + '">' +escapeHtml( json.data[i].name )+ '</a>';
+                        var status = item.status;
+                        if (!item.current_version) {
+                            item.current_version = "{{ 'Undefined'|trans }}"
+                        }
+                        if (item.installed) {
+                            item.current_version += ' ' + (item.available_version != item.current_version ? '&nbsp;&nbsp;&nbsp;<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/application-detail?id=' + id + '">{{ 'Update'|trans }}</a>' : '');
+                            item.status = item.status == '1' ? "{{ 'Active'|trans }}" : "{{ 'Disabled'|trans }}";
+                        } else {
+                            item.current_version = ' ' + '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/application-detail?id=' + id + '">{{ 'Install'|trans }}</a>';
+                            item.status = "{{ 'Not installed'|trans }}";
+                        }
+
+                        json.data[i].operations = "<div class='col-xs-3 col-sm-8'>\n\
+                                                        <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                                            <i class='pull-right fa fa-cog'></i>\n\
+                                                        </a>\n\
+                                                        <ul class='dropdown-menu pull-right'>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' " + (!item.installed ? 'disabled="disabled"' : '') + " href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/application-toggle-state' data-id='" + id + "' data-status='" + (status == '1' ? '0': '1') + "'>\n\
+                                                                    <span> " + (status != '1' ? "{{ 'Activate'|trans }}" : "{{ 'Deactivate'|trans }}") + " </span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' " + (status == '1' ? 'disabled="disabled"' : '') + " href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/application-delete' data-id='" + id + "'>\n\
+                                                                    <span> {{ 'Delete'|trans }} </span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                        </ul>\n\
+                                                    </div>";
+                    }
+                }
+            }).dataTable({
+                "processing": true,
+                "serverSide": false,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/application-list-json",
+                    "data": function (d) {
+                    }
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+                {% endif %}
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "bInfo": true,
+                "aoColumnDefs": [
+                    {className: "action-menu", "targets": [-1]},
+                    {"searchable": false, "targets": [-1]},
+                    {"sortable": false, "targets": [-1]}
+                ]
+            }).prev('.dataTables_processing').hide('');
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+                $.validate(conf);
+                $(document).on('click', "a.main_ajax", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var $this = $(this);
+                    $this.closest('div.open').removeClass('open');
+
+                    if( $this.attr("href").indexOf("application-delete") !== -1 && !confirm("{{"Delete this application?"|trans}}") ) {
+                        return false;
+                    }
+
+                    $("#modalbox").data('complete', 0);
+                    JSshowModalBox();
+                    var sendData = $this.data();
+                    ajaxPostSend($this.attr('href'), sendData, false, false, true );
+                    return false;
+                });
+
+                $(document).on('click', "#modalbox, #modalbox a.close-link, #modalbox a.close-link *", function (e) {
+                    if (e.currentTarget != e.target) {
+                        return;
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if ($("#modalbox").data('complete') && $("#modalbox").data('complete') == 1) {
+                        JScloseModalBox();
+                    } else {
+                        for (i = 0; i < 3; i++) {
+                            $('#modalbox > div').fadeTo('slow', 0.5).fadeTo('slow', 1.0);
+                        }
+                    }
+                    return false;
+                });
+
+                $(document).on("click", "#add_apps", function (e) {
+                    if (e.currentTarget != e.target) {
+                        return;
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    buildGetForm();
+
+                    $('#modalbox').show();
+
+                    return false;
+                });
+
+                $(document).on('submit', "#modalbox form", submitPopupForm );
+                $(document).on('click',  "#modalbox button[type='submit']", submitPopupForm );
+
+                $(document).on('click', "#modalbox button[type='reset']", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    JScloseModalBox();
+                    return false;
+                });
+
+                $(document).on('click', '#add_apps_back', function(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var url = $('#apps_url').val();
+                    JScloseModalBox();
+                    buildGetForm();
+                    $('#apps_url').val(url);
+                    return false;
+                });
+
+                LoadDataTablesScripts(InitDatatable);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);
+
+        function buildGetForm() {
+            $("#modalbox").hide();
+            $("#modalbox").data('complete', 1);
+            $('#modalbox').find('.modal-header-name span').text('{{ 'Add application by URL (Step 1)'|trans }}');
+            $('#modalbox').find('.devoops-modal-inner').html($("#modal_get_form_body").text());
+            $('#modalbox').find('.devoops-modal-bottom').html($("#modal_get_form_buttons").text());
+            $('#modalbox').show();
+        }
+
+        function buildSaveForm(data) {
+            $("#modalbox").hide();
+            $("#modalbox").data('complete', 1);
+            $('#modalbox').find('.modal-header-name span').text('{{ 'Add application by URL (Step 2)'|trans }}');
+            $('#modalbox').find('.devoops-modal-inner').html($("#modal_save_form_body").text());
+            $('#modalbox').find('.devoops-modal-bottom').html($("#modal_save_form_buttons").text());
+            fillModalForm(data.data);
+            $('#modalbox').show();
+        }
+
+        var fillModalForm = function (data) {
+            conf.form = "#" + $("#modalbox").find('form').attr('id');
+            $.validate();
+            $(conf.form).get(0).reset();
+            if (data.repository && data.repository.url) {
+                var regExp = new RegExp('\\.git$', 'gi');
+                $('#apps_url').val(data.repository.url.replace(regExp, ''));
+            }
+            if (data.name) {
+                $('#apps_name').val(data.name).next('h5').text(data.name);
+            }
+            if (data.version) {
+                $('#apps_version').val(data.version).next('h5').text(data.version);
+            }
+
+            if (data.description) {
+                $('#apps_description').text(data.description);
+            }
+        };
+
+        function submitPopupForm(e) {
+            if (e.currentTarget != e.target) {
+                return;
+            }
+            e.stopPropagation();
+            e.preventDefault();
+            conf.form = "#" + $("#modalbox").find('form').attr('id');
+
+            if ($(conf.form).isValid({}, conf, true)) {
+                conf.onSuccess();
+            } else {
+                conf.onError();
+            }
+            return false;
+        }

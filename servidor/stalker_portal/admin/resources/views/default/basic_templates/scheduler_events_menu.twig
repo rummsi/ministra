@@ -1,0 +1,637 @@
+<div id="modalbox_ad">
+    <div class="devoops-modal">
+        <div class="devoops-modal-header">
+            <div class="modal-header-name">
+                <span>{{ 'Add event into the schedule'|trans }}</span>
+            </div>
+            <div class="box-icons">
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <form id="event_form" class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-schedule-event">
+            <input type="hidden" name="id" class="form-control" value="">
+            <div class="devoops-modal-inner">
+                <div class="box">
+                    <div class="box-content">
+
+                        <fieldset>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Type'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    <select class="populate placeholder" name="type" id="s2_schedule_type" data-validation="required">
+                                        {% if attribute(app,'scheduleType') is defined and app['scheduleType']|length > 0 %}
+                                            {% for type in app['scheduleType'] %}
+                                                <option value="schedule_type_{{ type['id'] }}" >{{ type['title'] }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" data-schedule-type="schedule_type_2;schedule_type_1">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'The date of start event'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class="col-xs-10 col-sm-6">
+                                    <input class="form-control" placeholder="{{ 'from'|trans }}" type="text" id="date_begin" name="date_begin" value="" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" data-schedule-type="schedule_type_2">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'The date of end event'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class="col-xs-10 col-sm-6">
+                                    <input class="form-control" placeholder="{{ 'to'|trans }}" type="text" id="date_end" name="date_end" value="" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert well well-sm col-sm-10 col-sm-offset-1 text_black text-center" role="alert" data-schedule-type="schedule_type_2">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ 'If the date the start / end is not specified, the event will be repeated at a specified interval until its status is changed to "Stopped"'|trans }}
+                        </div>
+
+                        <div class="form-group" data-schedule-type="schedule_type_2">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Repeating interval'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    <select class="populate placeholder" name="interval" id="s2_repeating_interval" data-validation="required">
+                                        {% for type in app['repeatingInterval'] %}
+                                            <option value="repeating_interval_{{ type['id'] }}">{{ type['title'] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" data-schedule-type="schedule_type_2" data-repeating-type="repeating_interval_1">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Month'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    <select class="populate placeholder" name="month" id="s2_month" data-validation="required">
+                                        {% for item in app['monthNames'] %}
+                                            <option value="{{ '%02d'|format(item['id']) }}">{{ item['title'] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" data-schedule-type="schedule_type_2" data-repeating-type="repeating_interval_2">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Every'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-5 col-sm-3 col-sm-shifted">
+                                    <select class="populate placeholder" name="every_month" id="s2_every_month" data-validation="required">
+                                        {% for i in range(1, 12) %}
+                                            <option value="{{ '%02d'|format(i) }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class=" col-xs-5 col-sm-3">
+                                    <label class="control-label col-sm-offset-1">{{ 'month'|trans }}</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="date_type_day" class="form-group" data-schedule-type="schedule_type_2" data-repeating-type="repeating_interval_1;repeating_interval_2">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Date type'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class="col-xs-5 col-sm-4 col-sm-shifted">
+                                    <div class="radio">
+                                        <label class="">
+                                            <input type="radio" name="date_type" id="date_type_day_week" value="day_week" checked="checked" data-validation="required"> {{ 'Day of week'|trans }}
+                                            <i class="fa fa-circle-o small"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-5 col-sm-4">
+                                    <div class="radio">
+                                        <label class="">
+                                            <input type="radio" name="date_type" id="date_type_day_number" value="day_number" data-validation="required"> {{ 'Day number'|trans }}
+                                            <i class="fa fa-circle-o small"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" data-schedule-type="schedule_type_2" data-repeating-type="repeating_interval_3;repeating_interval_2;repeating_interval_1" data-date-type="day_week">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Day'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class="col-xs-10 col-sm-12">
+                                    {% for item in app['dayNames'] %}
+                                    <div class="checkbox-inline">
+                                        <label>
+                                            <input type="checkbox" value="{{ item.id }}" name="day_week[]"> {{ item.title }}
+                                            <i class="fa fa-square-o small"></i>
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert well well-sm col-sm-10 col-sm-offset-1  text_black text-center" role="alert"  data-schedule-type="schedule_type_2" data-repeating-type="repeating_interval_3;repeating_interval_2;repeating_interval_1" data-date-type="day_week">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ 'If do not selected any of the days of the week the event will be run every day.'|trans }}
+                        </div>
+
+                        <div class="form-group" data-schedule-type="schedule_type_2" data-repeating-type="repeating_interval_1;repeating_interval_2;repeating_interval_4" data-date-type="day_number">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Day number'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-5 col-sm-3 col-sm-shifted">
+                                    <select class="populate placeholder" name="every_day" id="s2_every_day" data-validation="required">
+                                        {% for i in range(1, 31) %}
+                                            <option value="{{ '%02d'|format(i) }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" data-schedule-type="schedule_type_2;schedule_type_1" >
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Time'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-5 col-sm-2 col-sm-shifted">
+                                    <select class="populate placeholder" name="every_hour" id="s2_every_hour" data-validation="required">
+                                        {% for i in range(0, 23) %}
+                                            <option value="{{ '%02d'|format(i) }}">{{ '%02d'|format(i) }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <label class="col-xs-1 col-sm-shifted no-padding-right ln-30 text-center" style="width: 18px;">:</label>
+                                <div class=" col-xs-5 col-sm-2 col-sm-shifted">
+                                    <select class="populate placeholder" name="every_minute" id="s2_every_minute" data-validation="required">
+                                        {% for i in range(0, 55, 5) %}
+                                            <option value="{{ '%02d'|format(i) }}">{{ '%02d'|format(i) }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="separator"></div>
+                        </div>
+                        </fieldset>
+
+
+                        <fieldset>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Recipient'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    <select class="populate placeholder" name="user_list_type" id="s2_user_list_type" data-validation="required">
+                                        <option value="to_all">{{ 'All'|trans }}</option>
+                                        <option value="by_group">{{ 'Group'|trans }}</option>
+                                        <option value="to_single">{{ 'One'|trans }}</option>
+                                        <option value="by_filter">{{ 'Filter'|trans }}</option>
+                                    </select>
+                                </div>
+                                <i class="i-hint"
+                                    title="{{ 'Example: to one, to all, on the list, on the preset, to the group'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                                <span class="help-inline col-xs-12 col-sm-8 col-sm-shifted">
+                                    <span class="small txt-default">{{ 'Choose recipient'|trans }}</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group" data-list-type="by_group">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Group'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    <select class="populate placeholder" name="group_id" id="s2_group_id" data-validation="required">
+                                        {% for item in app.consoleGroup %}
+                                            <option value="{{ item.id }}">{{ item.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-12">
+                                    <span class="small txt-default">{{ 'Select a group of users that will be delivered message'|trans }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group" data-list-type="to_single">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'MAC-address'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-8 col-sm-shifted">
+                                    <input class="form-control with-error-space" type="text" title="" value="{% if attribute(app, 'currentUser') is defined %}{{ app.currentUser.mac }}{% endif %}" name="mac" data-validation="required,custom" data-validation-regexp='^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$'>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-12">
+                                    <span class="small txt-default">{{ 'Input user MAC-address'|trans }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group" data-list-type="by_filter">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Filter name'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    <select class="populate placeholder" name="filter_set" id="s2_filter" data-validation="required">
+                                        {% if attribute(app,'allFilters') is defined and app['allFilters']|length > 0 %}
+                                            {% if attribute(app, 'user_id') is defined %}
+                                                {% set check_id = app['user_id'] %}
+                                            {% else %}
+                                                {% set check_id = -1 %}
+                                            {% endif %}
+                                            {% for filter in app['allFilters'] %}
+                                                {% if filter['for_all'] == 1 or filter['for_all'] == check_id or (attribute(app, 'userlogin') is defined and app['userlogin'] == 'admin') %}
+                                                    <option value="{{ filter['id'] }}" data-filter-descriprion="{{ filter['filter_set'] }}">{{ filter['title'] }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" data-list-type="by_filter">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Filter description'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <span class="help-inline col-xs-12 col-sm-12">
+                                    <span class="small txt-default" id="filter_description_input"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Actions'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    <select class="populate placeholder" data-validation="required" name="event" id="s2_event">
+                                        {% for type in app['formEvent'] %}
+                                            <option value="{{ type['id'] }}">{{ type['title'] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-12">
+                                    <span class="small txt-default">{{ 'Select one of the actions'|trans }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group" data-event-type="play_channel;play_radio_channel">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Channel'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-8 col-sm-shifted">
+                                    <input class="form-control" type="text" title="" value="" name="channel" data-validation="required">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label col-sm-offset-1">TTL<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class="  col-xs-10 col-sm-6">
+                                    <input id="ttl" class="form-control with-error-space" type="text" name="ttl" data-validation="required" value="">
+                                </div>
+                                <i class="i-hint"
+                                    title="{{ 'Time to live, measured in seconds'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                        </div>
+                        </fieldset>
+
+
+                        <fieldset>
+                                <div class="form-group " data-event-type="send_msg">
+                                    <div class="separator"></div>
+                                </div>
+                                <div class="form-group  form-group-checkbox" data-event-type="send_msg">
+                                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Reboot'|trans }}</label>
+                                    <div class="col-xs-10 col-sm-8">
+                                        <div class=" col-xs-10 col-sm-8 col-sm-shifted">
+                                            <div class="checkbox-inline">
+                                                <label>
+                                                    <input type="checkbox" value="1" name="reboot_after_ok">
+                                                    <i class="fa fa-square-o small"></i>
+                                                </label>
+                                            </div>
+                                            <i class="i-hint"
+                                                title="{{ 'Reboot the STB after OK button is pressed'|trans }}" >
+                                                <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                            </i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-event-type="send_msg">
+                                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Message templates'|trans }}</label>
+                                    <div class="col-xs-10 col-sm-8">
+                                        <div class=" col-xs-10 col-sm-6">
+                                            <select class="populate placeholder" name="" id="s2_msg_pattern">
+                                                <option value="" data-template-header=""></option>
+                                                {% if attribute(app,'messagesTemplates') is defined and app['messagesTemplates']|length > 0 %}
+                                                    {% for item in app['messagesTemplates'] %}
+                                                        <option value="{{ item['id'] }}" data-template-header="{{ item['header'] }}">{{ item['title'] }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-event-type="send_msg">
+                                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Message header'|trans }}<span class="icon-required">*</span></label>
+                                    <div class="col-xs-10 col-sm-8">
+                                        <div class=" col-xs-10 col-sm-10">
+                                            <input class="form-control" type="text" title="" value="" name="header" id="msg_header" data-validation="required">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-event-type="send_msg">
+                                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Message text'|trans }}<span class="icon-required">*</span></label>
+                                    <div class="col-xs-10 col-sm-8">
+                                        <div class=" col-xs-10 col-sm-10">
+                                            <textarea id="msg_textarea" class="form-control" rows="4" name="msg" data-validation="required"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group  form-group-checkbox" data-event-type="send_msg" id="add_post_function_container">
+                                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Add post-function'|trans }}</label>
+                                    <div class="col-xs-10 col-sm-8">
+                                        <div class=" col-xs-10 col-sm-8 col-sm-shifted">
+                                            <div class="checkbox-inline">
+                                                <label>
+                                                    <input type="checkbox" value="1" name="add_post_function" id="add_post_function">
+                                                    <i class="fa fa-square-o small"></i>
+                                                </label>
+                                            </div>
+                                            <i class="i-hint"
+                                                title="{{ 'The function to be executed when pressing the "OK" button'|trans }}" >
+                                                <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                            </i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-event-type="post_function_type" id="post_function_type">
+                                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Post-function'|trans }}<span class="icon-required">*</span></label>
+                                    <div class="col-xs-10 col-sm-8">
+                                        <div class=" col-xs-10 col-sm-6">
+                                            <select class="populate placeholder" name="post_function" id="s2_post_function" data-validation-depends-on="add_post_function" data-validation="required">
+                                                <option value="send_msg_with_video">{{ 'Send message with video'|trans }}</option>
+                                                {#<option value="run_application">{{ 'Run application'|trans }}</option>#}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" data-event-type="post_function_video_url" id="send_msg_with_video">
+                                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Video URL'|trans }}<span class="icon-required">*</span></label>
+                                    <div class="col-xs-10 col-sm-8">
+                                        <div class=" col-xs-10 col-sm-12">
+                                            <input class="form-control" type="text" name="param1" value="" data-validation-depends-on="add_post_function" data-validation="required">
+                                        </div>
+                                    </div>
+                                </div>
+                        </fieldset>
+
+                    </div>
+                </div>
+            </div>
+            <div class="devoops-modal-bottom">
+                <div class="col-xs-12">
+                    <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+                    <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+    var confEvent = {
+        form: '#event_form',
+        formContainer: '#modalbox_ad',
+        lang : '{{ app.js_validator_language }}',
+        showHelpOnFocus : true,
+        validateHiddenInputs: true,
+        scrollToTopOnError: false,
+        errorClass: "error",
+        ignore: [],
+        modules: 'jsconf, logic',
+        // $.formUtils.dialogs.removeInputStylingAndMessage()
+        // works correctly when this default keys are setup here
+        errorElementClass: "error", inputParentClassOnError: "has-error", errorMessageClass: "form-error",
+
+        onSuccess: function () {
+            var formData = $("#modalbox_ad form").serialize();
+            ajaxPostSend($("#modalbox_ad form").prop('action'), formData);
+            return false;
+        },
+        onError: function () {
+            $(this.formContainer).find('span.form-error, div.bg-danger').each(function(){
+                if (!$(this).closest('div.box-content').is(':visible')){
+                    $(this).closest('div.box').find('a.collapse-link').trigger('click');
+                }
+            });
+            var _this = this;
+            $(_this.form + " select").each(function(){
+                if ($(this).hasClass('error')) {
+                    _this.highlight(this, _this.errorClass);
+                } else {
+                    _this.unhighlight(this, _this.errorClass);
+                }
+            });
+            return false;
+        },
+
+        highlight: function (element, errorClass, validClass) {
+            if (!$(element).next().children('.selection').children().hasClass(errorClass)) {
+                $(element).next().children('.selection').children().addClass(errorClass);
+            }
+        },
+
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).next().children('.selection').children().removeClass(errorClass);
+        }
+    };
+
+    function eventsMenuHandlers() {
+    /*
+     *  Note: popup open initialization is at page script
+     */
+
+        $.validate(confEvent);
+
+        LoadSelect2Script(InitSelect2);
+
+        setEventTTL();
+
+        $("[data-list-type], [data-event-type], [data-schedule-type], [data-repeating-type], [data-date-type] ").hide().find('input, select, textarea').attr('disabled', 'disabled');
+
+        $(document).on('change', "#s2_user_list_type, #date_type_day input, #s2_schedule_type, #s2_repeating_interval", function (e) {
+            checkFields($(this), e);
+
+            if ($(this).prop('id') == 's2_schedule_type') {
+                if ($(this).val() == 'schedule_type_1' ) {
+                    $("#date_begin").removeAttr('disabled').closest('.form-group').show().find('label:first-child').text("{{ 'The date of run event'|trans }}");
+                    $("#date_begin").removeAttr('placeholder');
+                } else {
+                    $("#date_begin").closest('.form-group').find('label:first-child').text("{{ 'The date of start event'|trans }}");
+                    $("#date_begin").attr('placeholder', "{{ 'from'|trans }}");
+                }
+                checkFields('#s2_repeating_interval');
+            }
+            if ($(this).prop('id') == 's2_schedule_type' || $(this).prop('id') == 's2_repeating_interval') {
+                checkFields('#date_type_day input');
+            }
+            if ($(this).prop('id') == 's2_user_list_type' || $(this).val() == 'by_filter') {
+                $("#s2_filter").trigger('change');
+            }
+        });
+
+        $(document).on('change', "#s2_event", function (e) {
+            checkFields($(this), e);
+            setEventTTL();
+            // clear valid state becouse of programmatically fill TTL
+            $.formUtils.dialogs.removeInputStylingAndMessage( $("#ttl"), confEvent );
+        });
+
+        $(document).on('change', "#s2_filter", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var filter_description_text = $(this).find('option:selected').data('filter-descriprion');
+            $('#filter_description_input').text(filter_description_text);
+            return false;
+        });
+
+        $(document).on('change', "#s2_msg_pattern", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            $('#msg_textarea').val($.trim($('#msg_textarea_pattern_'+$(this).val()).html()));
+            $('#msg_header').val($(this).find('option:selected').data('template-header'));
+            $.formUtils.dialogs.removeInputStylingAndMessage( $("#msg_textarea"), confEvent );
+            $.formUtils.dialogs.removeInputStylingAndMessage( $("#msg_header"), confEvent );
+            return false;
+        });
+
+        $(document).on('click', "#modalbox_ad button[type='submit']", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            if ($(confEvent.form).isValid({}, confEvent, true)) {
+                confEvent.onSuccess();
+            } else {
+                confEvent.onError();
+            }
+            return false;
+        });
+
+        $(document).on('hide', "#add_post_function_container", function(e){
+            $("[data-event-type^='post_function']").hide().find('select, input').attr('disabled', 'disabled');
+        });
+
+        $(document).on('change show', "#add_post_function, #add_post_function_container", function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            if ($("#add_post_function").is(':checked')) {
+                $("#post_function_type").show().find('select').removeAttr('disabled');
+            } else {
+                $("#post_function_type").hide().find('select').attr('disabled', 'disabled');
+                $("[data-event-type^='post_function']").hide().find('select, input').attr('disabled', 'disabled');
+            }
+            return false;
+        });
+
+        $(document).on('change show', "#s2_post_function, #post_function_type", function(e){
+            $("[data-event-type^='post_function']").filter("[data-event-type!='post_function_type']").hide().find('select, input').attr('disabled', 'disabled');
+            $("#" + $("#s2_post_function").val()).show().find('select, input').removeAttr('disabled');
+        });
+
+        $('#event_form .i-hint').tooltip({
+            animation: true,
+            placement: "right"
+        });
+    }
+
+    function InitSelect2() {
+        $("[id^='s2_']").select2(select2Opt);
+    }
+
+    function checkFields(obj, e) {
+
+        if ($(obj).length > 1) {
+            $(obj).each(function(){
+                checkFields($(this));
+            });
+            return;
+        }
+
+        if ($(obj).attr('disabled')) {
+            return;
+        }
+
+        var dataName = '';
+
+        switch ($(obj).attr('id')) {
+            case 's2_user_list_type' : {
+                dataName = 'data-list-type';
+                break;
+            }
+            case 's2_event' : {
+                dataName = 'data-event-type';
+                break;
+            }
+            case 's2_schedule_type' : {
+                dataName = 'data-schedule-type';
+                break;
+            }
+            case 's2_repeating_interval' : {
+                dataName = 'data-repeating-type';
+                break;
+            }
+            case 'date_type_day_week':
+            case 'date_type_day_number' : {
+                dataName = 'data-date-type';
+                break;
+            }
+
+        }
+        if (dataName) {
+            var searchVal = $(obj).prop('tagName').toLowerCase() == 'select' ? $(obj).find('option:selected').val() : ($(obj).prop('checked') ? $(obj).val() : false);
+            if (searchVal) {
+                $("[" + dataName + "]").hide().find('input, select, textarea').attr('disabled', 'disabled').removeAttr('require');//.rules('remove');
+                var dataNameIn = dataName.replace('data-', '').replace('-', ' ').camelCase();
+                $('[' + dataName + '*="' + searchVal + '"]').each(function() {
+                    var _this = $(this), inputFields;
+                    if (!_this.is(":visible") && _this.data(dataNameIn) && _this.data(dataNameIn).split(";").indexOf(searchVal) !== -1) {
+                        _this.show();
+                        inputFields = _this.find('input, select, textarea');
+                        inputFields.removeAttr('disabled');
+                        if (inputFields.filter(":not([type='checkbox'])").length) {
+                            inputFields.filter(":not([type='checkbox'])").attr('require', 'require');//.rules('add', {required: true});
+                        }
+                    }
+                });
+            }
+        }
+        return false;
+    }
+
+    function setEventTTL() {
+        switch ($("#s2_event").val()) {
+                {% if attribute(app, 'defTTL') is defined %}
+                {% for key, val in app['defTTL'] %}
+                {% if key != 'other' %}
+            case '{{ key }}': { $("#ttl").val("{{ val }}"); break; }
+                {% endif %}
+                {% endfor %}
+            default : { $("#ttl").val("{{ app['defTTL']['other'] }}"); break; }
+                {% endif %}
+        }
+    }
+
+</script>
+{% if attribute(app, 'messagesTemplates') is defined and app.messagesTemplates|length> 0%}
+    {% for item in app.messagesTemplates %}
+<script type="text/template" id="msg_textarea_pattern_{{ item.id }}">
+    {{ item.body }}
+</script>
+    {% endfor %}
+{% endif %}

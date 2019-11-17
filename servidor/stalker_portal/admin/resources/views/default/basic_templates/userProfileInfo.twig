@@ -1,0 +1,18 @@
+{#<div class="dropdown dropup-user">#}
+    <a id="dropdown3" class="dropdown-toggle" data-toggle="dropdown" title="{{ 'User profile'|trans }}"
+       href="#">
+        <i class="fa fa-user"></i>
+        <i class="fa fa-caret-down pull-right"></i>
+    </a>
+    <div class="dropdown-menu" role="menu" aria-labelledby="dropdown3">
+        <div class="inner">
+            <span class="auth-user-name">{{ app['user_info']['login'] }}</span><br>
+            <span class="auth-user-group">{{ 'Administrator'|trans }}</span>
+        </div>
+        <div class="auth-user-logout">
+            <a id="auth_user_auth_user_logout"
+               href="{{ app.request_context.baseUrl }}/auth-user/auth-user-logout">
+                <i class="fa fa-sign-out"></i>{{ 'Logout'|trans }}</a>
+        </div>
+    </div>
+{#</div>#}

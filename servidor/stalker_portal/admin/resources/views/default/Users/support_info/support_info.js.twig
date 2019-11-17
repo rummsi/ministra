@@ -1,0 +1,36 @@
+
+var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+function InitSelect2() {
+    $("#form_lang").select2(select2Opt);
+}
+
+function yelp() {
+    $(document).ready(function () {
+
+        LoadSelect2Script(InitSelect2);
+
+        $(document).on('submit', '#support_info_form', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+
+            var  sendData = {
+                lang: $('#form_lang').val(),
+                content: $.trim($('#form_content').val())
+            };
+            ajaxPostSend("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-support-content", sendData, false, false);
+        });
+
+        $(document).on('change', '#form_lang', function(e){
+            ajaxPostSend("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/get-support-content", {'lang' : $(this).val()}, false, false);
+        });
+
+
+    });
+}
+
+document.addEventListener("DOMContentLoaded", yelp, false);
+
+var setSupportContent = function(data){
+    $("#form_content").val((data && data.data && data.data.content) ? data.data.content: '');
+}

@@ -1,0 +1,452 @@
+<?php
+
+\session_start();
+\ob_start();
+require __DIR__ . '/common.php';
+use Ministra\Lib\Admin;
+use Ministra\Lib\AdminAccess;
+use Ministra\Lib\S642b6461e59cef199375bfb377c17a39\L18e6d54d6202a6e70c8e428830aa4c89;
+$error = '';
+$action_name = 'add';
+$action_value = \_('Add');
+\Ministra\Lib\Admin::checkAuth();
+\Ministra\Lib\Admin::checkAccess(\Ministra\Lib\AdminAccess::ACCESS_VIEW);
+foreach (@$_POST as $key => $value) {
+    $_POST[$key] = \trim($value);
+}
+if (!empty($_POST['nfs_home_path']) && \strripos($_POST['nfs_home_path'], '/') != \strlen($_POST['nfs_home_path']) - 1) {
+    $_POST['nfs_home_path'] .= '/';
+}
+if (@$_POST['add']) {
+    \Ministra\Lib\Admin::checkAccess(\Ministra\Lib\AdminAccess::ACCESS_CREATE);
+    \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\L18e6d54d6202a6e70c8e428830aa4c89::getInstance()->insert('storages', ['storage_name' => @$_POST['storage_name'], 'storage_ip' => @$_POST['storage_ip'], 'apache_port' => @$_POST['apache_port'], 'nfs_home_path' => @$_POST['nfs_home_path'], 'max_online' => @$_POST['max_online'], 'user_agent_filter' => @$_POST['user_agent_filter'], 'for_moderator' => @(int) $_POST['for_moderator'], 'for_records' => @(int) $_POST['for_records'], 'flussonic_dvr' => @(int) $_POST['flussonic_dvr'], 'wowza_dvr' => @(int) $_POST['wowza_dvr'], 'fake_tv_archive' => @(int) $_POST['fake_tv_archive'], 'archive_stream_server' => @$_POST['archive_stream_server'], 'external' => @(int) $_POST['external'], 'for_simple_storage' => @(int) $_POST['for_simple_storage'], 'not_for_mag100' => @(int) $_POST['not_for_mag100'], 'stream_server_type' => @$_POST['stream_server_type'], 'stream_server_port' => @(int) $_POST['stream_server_port'], 'stream_server_app' => @$_POST['stream_server_app']]);
+    \header('Location: storages.php');
+    exit;
+}
+$id = @(int) $_GET['id'];
+if (!empty($id)) {
+    if (@$_POST['edit']) {
+        \Ministra\Lib\Admin::checkAccess(\Ministra\Lib\AdminAccess::ACCESS_EDIT);
+        \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\L18e6d54d6202a6e70c8e428830aa4c89::getInstance()->update('storages', ['storage_name' => @$_POST['storage_name'], 'storage_ip' => @$_POST['storage_ip'], 'apache_port' => @$_POST['apache_port'], 'nfs_home_path' => @$_POST['nfs_home_path'], 'max_online' => @$_POST['max_online'], 'user_agent_filter' => @$_POST['user_agent_filter'], 'for_moderator' => @(int) $_POST['for_moderator'], 'for_records' => @(int) $_POST['for_records'], 'flussonic_dvr' => @(int) $_POST['flussonic_dvr'], 'wowza_dvr' => @(int) $_POST['wowza_dvr'], 'fake_tv_archive' => @(int) $_POST['fake_tv_archive'], 'archive_stream_server' => @$_POST['archive_stream_server'], 'external' => @(int) $_POST['external'], 'for_simple_storage' => @(int) $_POST['for_simple_storage'], 'not_for_mag100' => @(int) $_POST['not_for_mag100'], 'stream_server_type' => @$_POST['stream_server_type'], 'stream_server_port' => @(int) $_POST['stream_server_port'], 'stream_server_app' => @$_POST['stream_server_app']], ['id' => (int) $_GET['id']]);
+        \header('Location: storages.php');
+        exit;
+    } elseif (@$_GET['del']) {
+        \Ministra\Lib\Admin::checkAccess(\Ministra\Lib\AdminAccess::ACCESS_DELETE);
+        \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\L18e6d54d6202a6e70c8e428830aa4c89::getInstance()->delete('storages', ['id' => (int) $_GET['id']]);
+        \header('Location: storages.php');
+        exit;
+    } elseif (isset($_GET['status'])) {
+        \Ministra\Lib\Admin::checkAccess(\Ministra\Lib\AdminAccess::ACCESS_CONTEXT_ACTION);
+        \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\L18e6d54d6202a6e70c8e428830aa4c89::getInstance()->update('storages', ['status' => $_GET['status']], ['id' => (int) $_GET['id']]);
+        \header('Location: storages.php');
+        exit;
+    }
+}
+if (@$_GET['edit'] && !empty($id)) {
+    $action_name = 'edit';
+    $action_value = \_('Save');
+    $edit_storage = \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\L18e6d54d6202a6e70c8e428830aa4c89::getInstance()->from('storages')->where(['id' => $id])->get()->first();
+}
+if (@$_GET['reset_cache'] && !empty($id)) {
+    \Ministra\Lib\Admin::checkAccess(\Ministra\Lib\AdminAccess::ACCESS_CONTEXT_ACTION);
+    $storage = \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\L18e6d54d6202a6e70c8e428830aa4c89::getInstance()->from('storages')->where(['id' => $id])->get()->first();
+    $storage_name = $storage['storage_name'];
+    if (!empty($storage_name)) {
+        $reset_result = \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\L18e6d54d6202a6e70c8e428830aa4c89::getInstance()->update('storage_cache', ['changed' => '0000-00-00 00:00:00'], ['storage_name' => $storage_name])->result();
+        if ($reset_result) {
+            $error = \sprintf(\_('Cache %s is cleared'), $storage_name);
+        }
+    } else {
+        $error = \sprintf(\_('Storage with id %s not found'), $id);
+    }
+}
+if (@$_GET['reset_all_cache']) {
+    \Ministra\Lib\Admin::checkAccess(\Ministra\Lib\AdminAccess::ACCESS_PAGE_ACTION);
+    $reset_result = \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\L18e6d54d6202a6e70c8e428830aa4c89::getInstance()->update('storage_cache', ['changed' => '0000-00-00 00:00:00'])->result();
+    if ($reset_result) {
+        $error = \_('Cache is cleared');
+    }
+}
+$storages = \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\L18e6d54d6202a6e70c8e428830aa4c89::getInstance()->from('storages')->get()->all();
+?>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+        }
+
+        td {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            text-decoration: none;
+            color: #000000;
+        }
+
+        .list, .list td, .form {
+            border-width: 1px;
+            border-style: solid;
+            border-color: #E5E5E5;
+        }
+
+        a {
+            color: #0000FF;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        a:link, a:visited {
+            color: #5588FF;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: #0000FF;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    </style>
+    <title><?php 
+echo \_('Storages');
+?></title>
+    <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript">
+    $(function () {
+
+      $('.for_records').click(function () {
+        if ($(this).attr('checked')) {
+          $('.flussonic_dvr').show();
+          $('.wowza_dvr').show();
+          $('.fake_tv_archive').show();
+        } else {
+          $('.flussonic_dvr').hide();
+          $('.wowza_dvr').hide();
+          $('.fake_tv_archive').hide();
+        }
+      });
+
+      $('.stream_server_type').change(function () {
+        if ($(this).val()) {
+          $('.stream_server_app_block').show();
+          $('.stream_server_port_block').show();
+        } else {
+          $('.stream_server_app_block').hide();
+          $('.stream_server_port_block').hide();
+        }
+      });
+    });
+    </script>
+</head>
+<body>
+<table align="center" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td align="center" valign="middle" width="100%" bgcolor="#88BBFF">
+            <font size="5px" color="White"><b>&nbsp;<?php 
+echo \_('Storages');
+?>&nbsp;</b></font>
+        </td>
+    </tr>
+    <tr>
+        <td width="100%" align="left" valign="bottom">
+            <a href="index.php"><< <?php 
+echo \_('Back');
+?></a> | <a
+                    href="master_log.php"><?php 
+echo \_('Logs');
+?></a> | <a href="?reset_all_cache=1"
+                                                                             onclick="if(confirm('<?php 
+echo \htmlspecialchars(\_('Are you sure you want to reset a cache?'), \ENT_QUOTES);
+?>')){return true}else{return false}"><?php 
+echo \_('Clear cache');
+?></a>
+            | <a href="cache_refresh.php"
+                 onclick="if(confirm('<?php 
+echo \htmlspecialchars(\_('Are you sure you want to update a cache? This operation will take some time.'), \ENT_QUOTES);
+?>')){return true}else{return false}"><?php 
+echo \_('Refresh cache');
+?></a> | <a
+                    href="unique_video.php"><?php 
+echo \_('Unique movies');
+?></a> | <a
+                    href="video_search.php"><?php 
+echo \_('Search in storages');
+?></a>
+        </td>
+    </tr>
+    <tr>
+        <td align="center">
+            <font color="Red">
+                <strong>
+                    <?php 
+echo $error;
+?>
+                </strong>
+            </font>
+            <br>
+            <br>
+        </td>
+    </tr>
+    <tr>
+        <td align="center">
+            <table class='list' cellpadding='3' cellspacing='0'>
+                <tr>
+                    <td>ID</td>
+                    <td><?php 
+echo \_('Name');
+?></td>
+                    <td>IP</td>
+                    <td><?php 
+echo \_('Home path');
+?></td>
+                    <td>Max online</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <?php 
+foreach ($storages as $storage) {
+    echo '<tr ';
+    if ($storage['for_moderator']) {
+        echo 'style="background-color: #ffecec;"';
+    }
+    echo '>';
+    echo '<td>' . $storage['id'] . '</td>';
+    echo '<td>' . $storage['storage_name'] . '</td>';
+    echo '<td>' . $storage['storage_ip'] . '</td>';
+    echo '<td>' . $storage['nfs_home_path'] . '</td>';
+    echo '<td>' . $storage['max_online'] . '</td>';
+    echo '<td>';
+    if ($storage['status'] == 1) {
+        $status_str = 'on';
+        $color = 'Green';
+        $new_status = 0;
+    } else {
+        $status_str = 'off';
+        $color = 'Red';
+        $new_status = 1;
+    }
+    echo '<a href="?status=' . $new_status . '&id=' . $storage['id'] . '" style="color:' . $color . '" onclick="if(confirm(\'' . \sprintf(\_('Are you sure you want to change the status of the storage %s?'), $storage['storage_name']) . '\')){return true}else{return false}">' . $status_str . '</a>&nbsp;';
+    echo '<a href="?reset_cache=1&id=' . $storage['id'] . '" style="color:grey" onclick="if(confirm(\'' . \sprintf(\_('Are you sure you want to reset the cache of the storage %s?'), $storage['storage_name']) . '\')){return true}else{return false}">' . \_('clear cache') . '</a>&nbsp;';
+    echo '<a href="?edit=1&id=' . $storage['id'] . '">edit</a>&nbsp;';
+    echo '<a href="?del=1&id=' . $storage['id'] . '" onclick="if(confirm(\'' . \sprintf(\_('Are you sure you want to delete storage %s?'), $storage['storage_name']) . '\')){return true}else{return false}">del</a>';
+    echo '</td>';
+    echo '</tr>';
+}
+?>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td align="center">
+            <br>
+            <br>
+            <form method="POST">
+                <table class="form">
+                    <tr>
+                        <td width="190"><?php 
+echo \_('Name');
+?></td>
+                        <td><input type="text" name="storage_name"
+                                   value="<?php 
+echo @$edit_storage['storage_name'];
+?>" <?php 
+if (!empty($_GET['id'])) {
+    echo 'readonly';
+}
+?>/></td>
+                    </tr>
+                    <tr>
+                        <td>IP</td>
+                        <td><input type="text" name="storage_ip" value="<?php 
+echo @$edit_storage['storage_ip'];
+?>"/></td>
+                    </tr>
+                    <tr>
+                        <td>Apache port</td>
+                        <td><input type="text" name="apache_port"
+                                   value="<?php 
+echo empty($edit_storage['apache_port']) ? '88' : $edit_storage['apache_port'];
+?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><?php 
+echo \_('Home path');
+?></td>
+                        <td><input type="text" name="nfs_home_path"
+                                   value="<?php 
+echo @$edit_storage['nfs_home_path'];
+?>"/></td>
+                    </tr>
+                    <tr>
+                        <td>Max online</td>
+                        <td><input type="text" name="max_online" value="<?php 
+echo @$edit_storage['max_online'];
+?>"/></td>
+                    </tr>
+                    <tr>
+                        <td><?php 
+echo \_('User-Agent Filter');
+?></td>
+                        <td><input type="text" name="user_agent_filter"
+                                   value="<?php 
+echo @$edit_storage['user_agent_filter'];
+?>"/></td>
+                    </tr>
+                    <tr>
+                        <td><?php 
+echo \_('Storing content');
+?></td>
+                        <td><input type="checkbox" name="for_simple_storage"
+                                   value="1" <?php 
+if (@$edit_storage['for_simple_storage']) {
+    echo 'checked="checked"';
+}
+?>/></td>
+                    </tr>
+                    <tr>
+                        <td><?php 
+echo \_('Not available for MAG100');
+?></td>
+                        <td><input type="checkbox" name="not_for_mag100"
+                                   value="1" <?php 
+if (@$edit_storage['not_for_mag100']) {
+    echo 'checked="checked"';
+}
+?>/></td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top"><?php 
+echo \_('Record TV');
+?></td>
+                        <td>
+                            <input type="checkbox" class="for_records" name="for_records"
+                                   value="1" <?php 
+if (@$edit_storage['for_records']) {
+    echo 'checked="checked"';
+}
+?>
+                                   onchange="this.checked ? document.getElementById('fake_tv_archive').style.display = '' : document.getElementById('fake_tv_archive').style.display = 'none'"/>
+                            <div class="flussonic_dvr"
+                                 style="text-align: right; margin-left: 5px; display: <?php 
+echo @$edit_storage['for_records'] ? '' : 'none';
+?>">
+                                Flussonic DVR
+                                <input type="checkbox" name="flussonic_dvr"
+                                       value="1" <?php 
+if (@$edit_storage['flussonic_dvr']) {
+    echo 'checked="checked"';
+}
+?> />
+                            </div>
+                            <div class="wowza_dvr"
+                                 style="text-align: right; margin-left: 5px; display: <?php 
+echo @$edit_storage['for_records'] ? '' : 'none';
+?>">
+                                Wowza DVR
+                                <input type="checkbox" name="wowza_dvr"
+                                       value="1" <?php 
+if (@$edit_storage['wowza_dvr']) {
+    echo 'checked="checked"';
+}
+?> />
+                            </div>
+                            <div class="fake_tv_archive"
+                                 style="text-align: right; margin-left: 5px; display: <?php 
+echo @$edit_storage['for_records'] ? '' : 'none';
+?>">
+                                <?php 
+echo \_('Emulation');
+?>
+                                <input type="checkbox" name="fake_tv_archive"
+                                       value="1" <?php 
+if (@$edit_storage['fake_tv_archive']) {
+    echo 'checked="checked"';
+}
+?> />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><?php 
+echo \_('Stream server');
+?></td>
+                        <td>
+                            <select name="stream_server_type" class="stream_server_type">
+                                <option value="">---</option>
+                                <option value="flussonic" <?php 
+echo @$edit_storage['stream_server_type'] == 'flussonic' ? 'selected' : '';
+?>>
+                                    Flussonic
+                                </option>
+                                <option value="wowza" <?php 
+echo @$edit_storage['stream_server_type'] == 'wowza' ? 'selected' : '';
+?>>
+                                    Wowza
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="stream_server_port_block"
+                        style="display: <?php 
+echo empty($edit_storage['stream_server_type']) ? 'none' : '';
+?>">
+                        <td><?php 
+echo \_('Stream server port');
+?></td>
+                        <td><input type="text" name="stream_server_port"
+                                   value="<?php 
+echo empty($edit_storage['stream_server_port']) ? '1935' : $edit_storage['stream_server_port'];
+?>"/>
+                        </td>
+                    </tr>
+                    <tr class="stream_server_app_block"
+                        style="display: <?php 
+echo empty($edit_storage['stream_server_type']) ? 'none' : '';
+?>">
+                        <td><?php 
+echo \_('Stream server App');
+?></td>
+                        <td><input type="text" name="stream_server_app"
+                                   value="<?php 
+echo @$edit_storage['stream_server_app'];
+?>"/></td>
+                    </tr>
+                    <tr style="display: none">
+                        <td><?php 
+echo \_('External');
+?></td>
+                        <td><input disabled="disabled" type="checkbox" name="external"
+                                   value="1" <?php 
+if (@$edit_storage['external']) {
+    echo 'checked="checked"';
+}
+?>/></td>
+                    </tr>
+                    <tr>
+                        <td><?php 
+echo \_('Only moderators');
+?></td>
+                        <td><input type="checkbox" name="for_moderator"
+                                   value="1" <?php 
+if (@$edit_storage['for_moderator']) {
+    echo 'checked="checked"';
+}
+?>/></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" name="<?php 
+echo $action_name;
+?>"
+                                   value="<?php 
+echo $action_value;
+?>"/></td>
+                    </tr>
+                </table>
+            </form>
+        </td>
+    </tr>
+</table>
+

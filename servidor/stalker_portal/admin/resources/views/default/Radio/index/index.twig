@@ -1,0 +1,59 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Radio'|trans ~ ': ' ~ 'list of radio'|trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/Radio/index/index.js.twig") %}
+        </script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {{ main_macro.get_filter('status_id', 'Status'|trans, 'id', 'title', app['allStatus']) }}
+                {{ main_macro.get_filter('monitoring_status', 'Monitoring status'|trans, 'id', 'title', app['allMonitoringStatus'], 2) }}
+                {{ main_macro.get_filter('volume_correction', 'Volume'|trans, 'val', 'title', app['allVolumeVal']) }}
+                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/add-radio" class="btn btn-success pull-right no_context_menu"><i class="fa fa-plus"></i>{{ 'Add radio'|trans }}</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

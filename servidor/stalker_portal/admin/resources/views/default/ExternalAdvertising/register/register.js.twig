@@ -1,0 +1,52 @@
+var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+var conf = {
+    form: '#form_',
+    lang : '{{ app.js_validator_language }}',
+    showHelpOnFocus : true,
+    validateHiddenInputs: true,
+    modules: 'jsconf, logic',
+    onSuccess: function () {
+        $(conf.form).get(0).submit();
+        return true;
+    },
+    onError: function () {
+        return false;
+    }
+};
+
+function InitSelect2() {
+    $('#form_region').select2(select2Opt);
+}
+
+function yelp() {
+    $(document).ready(function () {
+        $("form").each(function(){this.reset()});
+
+        $.validate(conf);
+
+        $("#form_save, #form_skip").on('click', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var submitType = $(this).attr('id').replace('form_', '');
+            if (submitType == 'skip') {
+                $(conf.form).find('input, select').filter(':visible:not([type="checkbox"])').prop('disabled', 'disabled');
+            }
+            if ($(conf.form).isValid({}, conf, true)) {
+                $("#form_submit_type").val(submitType);
+                conf.onSuccess();
+            } else {
+                conf.onError();
+            }
+            return false;
+        });
+
+        $("#form_region").on('change', function(e){
+            $('#form_other_region').closest('div.form-group')[$(this).val() == 'other' ? 'show': 'hide']();
+        });
+        $("#form_region").trigger('change'); // check to show region input text field (#21278)
+
+        LoadSelect2Script(InitSelect2);
+    });
+}
+document.addEventListener("DOMContentLoaded", yelp, false);

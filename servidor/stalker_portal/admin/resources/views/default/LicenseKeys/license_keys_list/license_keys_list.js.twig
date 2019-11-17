@@ -1,0 +1,839 @@
+var stack;
+var restart = function () {return;}
+
+function initFileUploader() {
+  $('#fileupload').fileupload({
+    url: '{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/upload-key-file',
+    type: 'POST',
+    autoUpload: true,
+    multipart: true,
+    acceptFileTypes: /(\.|\/)(csv)$/i,
+    maxFileSize: 1000000,
+    maxNumberOfFiles: 1
+  }).bind('fileuploaddone', function (e, data) {
+    var response;
+    if (data && data.jqXHR && data.jqXHR.status && data.jqXHR.status == 200 && data.jqXHR.responseJSON) {
+      response = data.jqXHR.responseJSON;
+    } else {
+      JSErrorModalBox();
+      return false;
+    }
+    if (response.success) {
+      ajaxSuccess(response, false);
+    }
+    return false;
+  }).bind('fileuploadfail', function (e, data) {
+    if (data && data.jqXHR && data.jqXHR.status && data.jqXHR.responseJSON) {
+      JSErrorModalBox(data.jqXHR.responseJSON);
+    } else {
+      JSErrorModalBox();
+    }
+  });
+  return true;
+}
+
+function InitDatatable() {
+  $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+    if (typeof (json.data) == 'object') {
+      for (var i in json.data) {
+        json.data[i] = rowDataPrepare(json.data[i]);
+        json.data[i].id = json.data[i].key_id;
+        var id = json.data[i].key_id;
+
+        json.data[i].operations = "<div class='col-xs-3 col-sm-8' style='z-index: 100000!important;'>\n\
+                                                        <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                                            <i class='pull-right fa fa-cog'></i>\n\
+                                                        </a>\n\
+                                                        <ul class='dropdown-menu pull-right'>\n\
+                                                            <li>\n\
+                                                                <a class='js__ajax-btn-url-actions' href=\"javascript: void(0)\" data-href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/clear-license-keys?ids=" + JSON.stringify([id]).replace(/"/g, "\\\"") + "'>\n\
+                                                                    <span>{{ 'Clean'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class=\"js__ajax-btn-url-actions\"" + (json.data[i].user_identifier > 0 && json.data[i].user_status == '0' ? "disabled" : "") + " href=\"javascript: void(0);\" data-href=\"{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-key-status?action=reserved&id=" + id + "\">\n\
+                                                                    <span>{{ 'Reserve'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class=\"js__ajax-btn-url-actions\" href=\"javascript: void(0);\" data-href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/check-license-keys?ids=" + JSON.stringify([$.trim(id)]) + "'>\n\
+                                                                    <span>{{ 'Update info'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                        </ul>\n\
+                                                    </div>";
+      }
+    }
+  }).dataTable({
+    "processing": true,
+    "serverSide": true,
+    "ajax": {
+      "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/license-keys-list-json"
+    },
+    "language": {
+      "url": "{{ app.datatable_lang_file }}"
+    },
+
+    "bFilter": true,
+    "lengthChange": true,
+    "bPaginate": true,
+    "bInfo": true,
+
+    "fixedHeader": {
+      header: true,
+      headerOffset: $('header.navbar').height()
+    },
+
+    select: {
+      style: 'multi',
+      selector: 'td.select-checkbox'
+    },
+    rowId: "RowOrder", // required to restore selected rows on reload
+    "sDom": "<'clearfix'<'pull-right'fAV>B>rt<'row-fluid'<'col-md-4 no-padding'i><'col-md-8 no-padding'pl>>",
+
+    "order": [[1, "desc"]],
+    "columns": [
+      { "data": null, defaultContent: "", orderable: false, /*visible: true,*/ className: 'w-1p select-checkbox' },
+        {% for key, item in app['dropdownAttribute'] %}
+        {% if 'all' != item.name %}
+      {
+        "data": "{{ item.name }}",
+        "searchable": {% if item.searchable is defined %}{% if item.searchable %}true{% else %}false{% endif %}{% else %}true{% endif %},
+        "name": "{{ item.name }}"
+          {% if not(item.checked) %}, visible: false, className: 'none'{% endif %}
+      }
+        {% if not loop.last %},{% endif %}
+        {% endif %}
+        {% endfor %}
+    ],
+
+    "aoColumnDefs": [
+      { "searchable": false, "targets": [0, -1, -5] },
+      { "sortable": false, "targets": [0, -1] },
+      { "className": "dt-status ", "targets": 5 },
+      { "className": "hidden", "targets": 10 },
+      { "className": "action-menu", "targets": 11 }
+    ],
+
+    // remove column.visible from stateSave
+    // the DT was applying the column visibility setting from stateSave after dropdown filter
+    "stateSaveParams": function (settings, data) {
+      data.columns.forEach(
+        function (item) {
+          item.visible = null;
+          delete item.visible;
+        });
+    },
+
+    "buttons": [
+      // Batch Select Buttons
+      {
+        extend: 'collection',
+        className: 'dt-group-select-dropdown',
+        text: '<span class="fa select-checkbox"></span> <i class="fa fa-caret-down"></i>',
+        autoClose: true,
+        background: true,
+        fade: 0,
+        buttons: [
+          {
+            text: '{{ 'Select all'|trans }}',
+            name: 'selectAll',
+            className: 'dt-group-button-select',
+            action: function (e, dt, node, config) {
+              e.stopPropagation();
+              e.preventDefault();
+              JScloseModalBox();
+              if ($(this).hasClass("disabled")) {
+                return;
+              }
+              dt.rows().select();
+            }
+          },
+          {
+            text: '{{ 'Inverse selection'|trans }}',
+            name: 'selectInverse',
+            className: 'dt-group-button-select',
+            action: function (e, dt, node, config) {
+              e.stopPropagation();
+              e.preventDefault();
+              JScloseModalBox();
+              if ($(this).hasClass("disabled")) {
+                return;
+              }
+              var rowsSelected = dt.rows({ selected: true });
+              dt.rows().select();
+              rowsSelected.deselect();
+            }
+          },
+          {
+            text: '{{ 'Select none'|trans }}',
+            name: 'selectNone',
+            className: 'dt-group-button-select',
+            action: function (e, dt, node, config) {
+              e.stopPropagation();
+              e.preventDefault();
+              JScloseModalBox();
+              if ($(this).hasClass("disabled")) {
+                return;
+              }
+              dt.rows().deselect();
+            }
+          }
+        ]
+      },
+
+      // Clean LK
+      {
+        text: '{{ 'Clean'|trans }}',
+        action: function (e, dt, node, config) {
+
+          if ($(this).hasClass('disabled'))
+            return false;
+
+          e.stopPropagation();
+          e.preventDefault();
+          JScloseModalBox();
+
+          var tr = dt.rows({ selected: true })
+          var sendData = {};
+          var ids = dt.rows({ selected: true }).ids().toArray().toString().replace(/dTRow_/g, "");
+          $('#results-list tbody').empty()
+
+          sendData.group_key = "ids";
+          sendData.ids = ids;
+          sendData.ids = sendData.ids.split(',');
+          //sendData.ids = JSON.stringify(sendData.ids.split(','));
+
+          if (!$(node).hasClass('disabled')) {
+            setModalState("connection");
+            $("#modalbox_ad").show();
+            processKeys(sendData.ids);
+          }
+
+          /*dt.rows().deselect();
+          resetTableButtons();
+          setGroupSelectState( "none" );*/
+
+          return false;
+        }
+      },
+      // Reserve LK
+      {
+        text: '{{ 'Reserve'|trans }}',
+        action: function (e, dt, node, config) {
+
+          if ($(this).hasClass('disabled'))
+            return false;
+
+          e.stopPropagation();
+          e.preventDefault();
+          JScloseModalBox();
+
+          var tr = dt.rows({ selected: true })
+          var sendData = {};
+          var ids = dt.rows({ selected: true }).ids().toArray().toString().replace(/dTRow_/g, "");
+          $('#results-list tbody').empty()
+
+          sendData.group_key = "ids";
+          sendData.ids = ids;
+          sendData.action = "reserved";
+          sendData.ids = sendData.ids.split(',');
+          //sendData.ids = JSON.stringify(sendData.ids.split(','));
+
+          if (!$(node).hasClass('disabled')) {
+            ajaxPostSend(
+              "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-key-status",
+              sendData,
+              false,
+              false,
+              true,
+              {
+                success: function (data) {
+                  $("#datatable-1").DataTable().ajax.reload(null, false);
+                  ajaxSuccess(data, false, false);
+                }
+              }
+            );
+          }
+
+          /*dt.rows().deselect();
+          resetTableButtons();
+          setGroupSelectState( "none" );*/
+
+          return false;
+        }
+      },
+
+      // Switch on/off
+      {
+        extend: 'collection',
+        // params are described here:
+        // https://datatables.net/reference/button/collection
+        text: '<i class="fa fa-toggle-on"></i> {{ 'Switch on/off'|trans }} <i class="fa fa-caret-down"></i>',
+        autoClose: true,
+        background: true,
+        //backgroundClassName: "dt-button-background",
+        fade: 0, // speed
+        buttons: [
+          {
+            text: '{{ 'Switch on'|trans }}',
+            action: function (e, dt, node, config) {
+              e.stopPropagation();
+              e.preventDefault();
+              JScloseModalBox();
+
+              var sendData = {};
+              var ids = dt.rows({ selected: true }).ids().toArray().toString().replace(/dTRow_/g, "");
+
+              sendData.group_key = "id";
+              sendData.id = ids;
+              sendData.action = "active";
+
+              if ((sendData.id).search(',') != -1) {
+                sendData.id = JSON.stringify(sendData.id.split(','));
+              }
+
+              ajaxPostSend("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-key-status", sendData, false, false, false);
+              $('#datatable-1').DataTable().ajax.reload(null, true);
+            }
+          },
+          {
+            text: '{{ 'Switch off'|trans }}',
+            action: function (e, dt, node, config) {
+              e.stopPropagation();
+              e.preventDefault();
+              JScloseModalBox();
+
+              var sendData = {};
+              var ids = dt.rows({ selected: true }).ids().toArray().toString().replace(/dTRow_/g, "");
+
+              sendData.group_key = "id";
+              sendData.id = ids;
+              sendData.action = "block";
+
+              if ((sendData.id).search(',') != -1) {
+                sendData.id = JSON.stringify(sendData.id.split(','));
+              }
+
+              ajaxPostSend("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-key-status", sendData, false, false, true);
+              $('#datatable-1').DataTable().ajax.reload(null, true);
+            }
+          }
+        ]
+      }
+    ],
+
+    "fnInitComplete": function (oSettings) {
+      initTableButtons();
+
+      // redefine empty table message
+      $.extend(true, oSettings.oInstance.fnSettings().oLanguage, {
+        "sEmptyTable": "{{ 'License keys not found'|trans }}",
+        "sZeroRecords": "{{ 'License keys not found'|trans }}"
+      });
+      oSettings.oInstance.fnUpdate();
+    }
+  }).prev('.dataTables_processing').hide(50);
+}
+
+function yelp() {
+  $(document).ready(function () {
+
+    LoadDataTablesScripts(InitDatatable);
+
+    if (typeof (loadFileUploadScripts) != 'function' || !loadFileUploadScripts(initFileUploader)) {
+      JSErrorModalBox({ msg: "{{ 'Cannot load File Upload plugin'|trans }}" })
+    }
+
+    var table = $('#datatable-1').DataTable();
+
+    table
+      .on('select', function (e, dt, type, indexes) {
+        var rows = dt.rows({ selected: true }).count();
+        $(".dt-buttons .dt-button").show().removeClass("disabled");
+
+        if (rows == dt.rows().count()) {
+          setGroupSelectState("all");
+        } else {
+          setGroupSelectState("some");
+        }
+
+      })
+      .on('deselect', function (e, dt, type, indexes) {
+        var rows = dt.rows({ selected: true }).count();
+
+        if (rows >= 1) {
+          $(".dt-buttons .dt-button").show().removeClass("disabled");
+          setGroupSelectState("some");
+        } else if (rows == 0) {
+          setGroupSelectState("none");
+          resetTableButtons();
+        }
+      })
+
+      // expand Processing width for overflow table
+      .on('processing.dt', function (e, settings, processing) {
+        $(settings.aanFeatures.r).css('width', $(settings.aanFeatures.t).width());
+      });
+
+    // reset Buttons on Paging reload
+    $('#datatable-1').on('page.dt', function () {
+      resetTableButtons();
+      setGroupSelectState("none");
+    });
+
+    // Reinit group actions Table Buttons
+    $('#datatable-1').on('draw.dt', function (e, settings) {
+      if (table.rows({ selected: true }).ids().length == 0) {
+        resetTableButtons();
+        setGroupSelectState('none');
+      }
+    });
+
+    $(document).on('click', "a.main_ajax:not([disabled])", function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+      var _this = this;
+      $("#modalbox").data('complete', 0);
+      var sendData = $(_this).data();
+      ajaxPostSend($(_this).attr('href'), sendData, false);
+      $(this).closest('div.open').removeClass('open');
+      return false;
+    });
+
+    $(document).on('change', ".mswitch input", function (e) {
+      ajaxPostSend('{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-key-status', $(this).data());
+    });
+
+    /*** Modal window ***/
+
+    $(document).off('click', "#modalbox_ad a.close-link, #modalbox_ad a.close-link .fa-times, #modalbox_ad, #modalbox_ad button[type='reset']");
+    $(document).on('click', "#modalbox_ad a.close-link, #modalbox_ad a.close-link .fa-times, #modalbox_ad, #modalbox_ad button[type='reset']", function (e) {
+      if (e.target != e.currentTarget) {
+        return;
+      }
+      e.stopPropagation();
+      e.preventDefault();
+
+      var $modal = $("#modalbox_ad");
+
+      if (!$modal.data('complete')) {
+        $modal.addClass("confirm");
+      } else if (confirm("Really want to close?")) {
+        // ?remove frame
+        $modal.hide();
+        restart();
+      }
+      return false;
+    });
+
+    $(document).on('click', "#btn-resume", function (e) {
+      $("#modalbox_ad").removeClass("confirm");
+    });
+
+    $(document).on('click', "#btn-stop", function (e) {
+      // stop cleaning
+      // remove frame
+      var $modal = $("#modalbox_ad");
+      $modal.removeClass("confirm");
+      $modal.hide();
+    });
+
+    $(document).on('click', "#btn-restart", function (e) {
+      restart();
+    });
+    var $table = $('datatable-1').DataTable();
+    var throttledSearch = $.fn.dataTable.util.throttle(
+      function () {
+        $table
+          .column(colIdx)
+          .search(this.value)
+          .draw();
+      },
+      4000
+    );
+    $(document).on("keyup change keydown", "[type^=search]", throttledSearch);
+
+    $(document).on("click", ".js__ajax-btn-url-actions", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      $(".action-menu").has(this).trigger("click")
+
+      url = $(this).attr("data-href").replace(/\\\"/g, '"');
+
+      ajaxPostSend(url.replace(/ /g, ""), {}, false, false, true, {
+        success: function (data) {
+          $('#datatable-1').DataTable().ajax.reload(null, true);
+          message = ""
+          isError = false
+          if (typeof data.data !== undefined && typeof data.data.denied !== "undefined") {
+            var items = data.data
+            var statuses = ["cleared", "skipped", "denied", "invalid_format", "limit_reached", "expired", "blocked"];
+            for (var item in statuses) {
+              if (!statuses.hasOwnProperty(item)) {
+                continue;
+              }
+              item = statuses[item];
+              if (typeof items[item] === "object" && items[item].length) {
+                isError = ["denied", "invalid_format", "limit_reached", "expired", "blocked"].indexOf(item) !== -1
+                message = items[item][0].license + ": " + items[item][0].message
+                break;
+              }
+            }
+          }
+          data.message = message;
+          if (isError) {
+            data.error = true;
+            data.success = false;
+            if (typeof data.responseJSON === "undefined") {
+              data = {
+                responseJSON: data
+              };
+            }
+            ajaxError(data, false);
+          } else {
+            data.success = true
+            data.error = false
+            data.msg = message
+            data.message = message
+            ajaxSuccess(data, message, false);
+          }
+        },
+      }, true);
+
+      return false;
+    })
+
+    $(document).on('click', ".fa-refresh", function (e) {
+      data = {
+        "group_key": "ids",
+        "ids": JSON.stringify([$(this).parent().parent().parent().attr("id").replace("dTRow_", "")])
+      }
+      $.ajax({
+        url: '{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/check-license-keys',
+        type: "POST",
+        data: data,
+        dataType: "JSON",
+        success: function (data) {
+          if (typeof data.data !== "object") {
+            JSErrorModalBox();
+            $("#datatable-1").DataTable().ajax.reload(null);
+            return;
+          }
+          data = data.data;
+          for (var i in data) {
+            if (!data.hasOwnProperty(i)) {
+              continue;
+            }
+            if (!data[i].length) {
+              continue;
+            }
+
+            if (i !== "cleared" && i !== "skipped") {
+              JSErrorModalBox(data[i][0]);
+              break;
+            }
+
+            JSSuccessModalBox(data[i][0]);
+            break;
+          }
+          $("#datatable-1").DataTable().ajax.reload(null, false);
+        },
+        error: function (xhr, error, status) {
+          JSErrorModalBox(xhr.responseJSON);
+          $("#datatable-1").DataTable().ajax.reload(null, false);
+        }
+      })
+    });
+
+    $(document).on('click', '#btn-finish, #btn-save', function (e) {
+      var $elems = $('.clear-result-list tbody tr'),
+        fileData = [];
+
+      for (var i in $elems) {
+        if (!$elems.hasOwnProperty(i)) {
+          continue;
+        }
+        var text = [];
+        var $tds = $("td", $elems[i]);
+        if ($tds.length !== 2) {
+          continue
+        }
+        $tds.each(function () {
+          text.push($.trim($(this).text()));
+        });
+
+        var txt = text.join(';')
+        if (fileData.indexOf(txt) === -1) {
+          fileData.push(txt);
+        }
+      }
+      var element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(fileData.join("\n")));
+      element.setAttribute('download', "report.csv");
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
+    })
+
+    window.onunload = function () {
+      var $modalbox = $("#modalbox_ad");
+      if ($modalbox.is(':visible') && $modalbox.data('complete') == 0) {
+        return "{{ 'Please wait till the operation complete, this can take some time'|trans }}";
+      }
+    };
+
+    window.onbeforeunload = function () {
+      var $modalbox = $("#modalbox_ad");
+      if ($modalbox.is(':visible') && $modalbox.data('complete') == 0) {
+        return "{{ 'Please wait till the operation complete, this can take some time'|trans }}";
+      }
+    };
+  });
+}
+
+document.addEventListener("DOMContentLoaded", yelp, false);
+
+function rowDataPrepare(item) {
+  var added = parseInt(item['added']);
+  if (added > 0) {
+    var dateOn = new Date(added);
+    item['added'] = dateOn.toLocaleFormat("%b %d, %Y").replace(" ", "&nbsp;");
+  }
+  var active = parseInt(item['last_active']);
+  if (active > 0) {
+    var dateActive = new Date(active * 1000);
+    item['last_active'] = isNaN(dateActive.getDate()) ? '-' : dateActive.toLocaleFormat("%b %d, %Y").replace(" ", "&nbsp;");
+  }
+  var expire = parseInt(item['expire_date']);
+  if (added > 0) {
+    var expireDate = new Date(expire * 1000);
+    item['expire_date'] = isNaN(expireDate.getDate()) ? '-' : expireDate.toLocaleFormat("%b %d, %Y").replace(" ", "&nbsp;");
+  }
+  item.user_identifier = parseInt(item.user_id)
+  item.user_id = item.user_id && item.user_id.toString() !== '0' ? "<a href='{{ app.request_context.baseUrl }}/users/edit-users?id=" + item.user_id + "'>" + item.login +
+    (item.user_status == '1' ? ' ({{ 'disabled'|trans }})' : '') + "</a>" : '-';
+  item.action = '<div class="mswitch">\n\
+                      <input type="checkbox" id="key_' + item.key_id + '" name="status" readonly="readonly" class="form-control" ' + (item.action !== 'active' ? 'checked="checked"' : '') + ' data-id="' + item.key_id + '" data-action="' + item.action + '" ' + (item.action == 'ignore' ? 'disabled="disabled"' : '') + '>\n\
+                      <label class="label-success" title="' + (item.action !== 'active' ? "{{ 'Active'|trans }}" : "{{ 'Blocked'|trans }}") + '" for="key_' + item.key_id + '"></label>\n\
+                   </div>';
+  var status_classes = {
+    'activated': 'skyblue',
+    'manually_entered': 'green',
+    'not_activated': 'no-monitoring',
+    'blocked': 'red'
+  }
+  item.status = '<span class="monitoring-status ' + (status_classes[item.status_flag] ? status_classes[item.status_flag] : '') + ' nowrap">' + item.status + '</span>';
+    {% autoescape false %}
+  var key_types = {
+      {% for row in app.allKeyTypes %}
+    "{{ row.id }}": '{{ row.title }}'{% if not(loop.last) %}{{ ',' }}{% endif %}
+      {% endfor %}
+  }
+    {% endautoescape %}
+  item.key_type = key_types[item.key_type] || item.key_type;
+  item.id = item.key_id;
+
+  return item;
+}
+
+
+function initTableButtons() {
+  resetTableButtons();
+}
+
+function resetTableButtons() {
+  $(".dt-buttons .dt-button").not(".dt-group-select-dropdown").addClass("disabled").hide();
+}
+
+function setGroupSelectState(state) {
+  if (typeof state != "string") {
+    return;
+  }
+  var table = $('#datatable-1').DataTable();
+
+  table.buttons(['0-0', '0-1', '0-2']).enable();
+  $(".dt-group-select-dropdown").removeClass("all none some").addClass(state);
+
+  switch (state) {
+    case "none":
+      table.buttons(['selectNone:name', 'selectInverse:name']).disable();
+      break;
+    case "all":
+      table.button('selectAll:name').disable();
+      break;
+  }
+}
+
+function setModalState(state) {
+  var $this = $("#modalbox_ad");
+
+  if (state == "connection" || state == "process") {
+    $this.data('complete', 0);
+  } else {
+    $this.data('complete', 1);
+  }
+
+  if (state == "connection" || state == "error" || state == "success") {
+    $this.removeClass("confirm");
+  }
+
+  if (state == "error") {
+    var prevState = $this.attr("class").match(/state-[a-z]+\b/);
+    prevState = prevState ? prevState.toString() : "state";
+    state = (prevState + "-error").replace("state-", "")
+  }
+
+  $this.removeClass("state-connection state-connection-error state-process state-process-error state-success state-error");
+  $this.addClass("state-" + state);
+};
+
+
+function processKeys(ids) {
+  var keys = ids,
+    pack,
+    result = [];
+  var i = 0;
+
+  //var statusbarTmpl = "{{ '%N of %T cleared, %S skipped, %E errors'|trans }}",
+  var statusbarTmpl = ["{{ '%N of %T cleared'|trans }}", "{{ '%S skipped'|trans }}", "{{ '%E errors'|trans }}"]
+  counter = 0,
+    total = keys.length,
+    counterErrors = 0,
+    counterSkipped = 0;
+
+  var getKeysPack = function (len) {
+    pack = keys.splice(0, len);
+    return pack;
+  }
+
+  var processPack = processNextPack = function () {
+    i++;
+    getKeysPack(20);
+    if (pack.length != 0) {
+      sendKeys(pack);
+    } else {
+      // finish
+      setModalState("success");
+      $("#datatable-1").DataTable().ajax.reload(null, false);
+    }
+  }
+
+  var sendKeys = function () {
+    if (result.length == 0) {
+      setModalState("connection");
+    } else {
+      setModalState("process");
+    }
+
+    var sendData = {};
+    sendData.group_key = "ids";
+    sendData.ids = JSON.stringify(pack)
+
+    $.ajax({
+      url: 'license-keys/clear-license-keys', //404
+      type: 'POST',
+      async: true,
+      timeout: 0,
+      dataType: "json",
+      data: sendData,
+
+      success: function (data) {
+        processResponse(data);
+      },
+      error: function (xhr, error, status) {
+        var errorMessage = xhr.responseJSON || status + " " + xhr.status
+
+        if (typeof errorMessage === "object") {
+          errorMessage = errorMessage.error;
+        }
+
+        processError(errorMessage);
+        /*if (data.readyState == 4 || data.status != 0) {
+            if (typeof(data.nothing_to_do) != 'undefined' && data.nothing_to_do) {
+                JScloseModalBox();
+            } else {
+                ajaxError(data);
+            }
+        }*/
+      }
+    });
+  }
+
+  var processResponse = function (data) {
+    var $resultsList = $('#results-list tbody');
+    setModalState("process");
+    if (data.data.length != 0) {
+      result = result.concat(data.data);
+
+      // output Result
+      $.each(data.data, function (itemsGroup, items) {
+        for (var index in items) {
+          if (!items.hasOwnProperty(index)) {
+            continue;
+          }
+
+          var item = items[index];
+          var className = "success";
+
+          if (itemsGroup === "skipped") {
+            counterSkipped++;
+            className = "skipped";
+          } else if (itemsGroup === "cleared") {
+            counter++;
+            className = "success"
+          } else {
+            counterErrors++;
+            className = "error";
+          }
+
+          var $tr = $('<tr/>');
+          $tr.addClass(className)
+          $tr.append($('<td/>').text(item.license))
+          $tr.append($('<td/>').text(item.message))
+
+          $resultsList.append($tr);
+
+          $("#result-template").appendTo
+          $('#modalbox_ad .devoops-modal-inner').scrollTo("max");
+        }
+        updateStatusbar();
+      });
+    }
+
+    processNextPack();
+  }
+
+  var processError = function (errorMessage) {
+    if (errorMessage) {
+      $('.statusbar-connection-error span').text(errorMessage)
+    }
+    setModalState("error", errorMessage);
+    $("#datatable-1").DataTable().ajax.reload(null, false);
+  }
+
+  var updateStatusbar = function () {
+    var statusbar = statusbarTmpl[0];
+    statusbar = statusbar.replace('%N', counter);
+    statusbar = statusbar.replace('%T', total);
+
+    if (counterSkipped) {
+      statusbar = statusbar + ', ' + statusbarTmpl[1].replace('%S', counterSkipped);
+    }
+    if (counterErrors) {
+      statusbar = statusbar + ', ' + statusbarTmpl[2].replace('%E', counterErrors);
+    }
+
+    $(".statusbar-result").text(statusbar);
+  }
+
+  // replace Tryagain button handler
+  restart = sendKeys;
+
+  processPack();
+}
+

@@ -1,0 +1,66 @@
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object') {
+                    for (var i in json.data) {
+                        var row = json.data[i];
+                        for (var key in row) {
+                            if (key != 'date') {
+                                var val = row[key];
+                                json.data[i][key] = '<a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/stat-claims-logs?date=' + row.date + '&type=' + key + '">'+ val +'</a>';
+                            }
+                        }    
+                    }
+                }
+            }).dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/stat-claims-list-json",
+                    "data": function (d) {
+                        d = dataTableDataPrepare(d);
+
+                        $('input[id^="datepicker_"]').each(function () {
+                            d['filters[' + $(this).attr("id").replace("datepicker_", "interval_") + ']'] = $(this).val();
+                        });
+                    }
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+                {% endif %}
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "bInfo": true,
+
+                "fixedHeader": {
+                    header: true,
+                    headerOffset: $('header.navbar').height()
+                },
+                
+				"columnDefs": [     ]
+            }).prev('.dataTables_processing').hide();
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+                {{ main_macro.get_datepicker_js_script() }}
+
+                $(document).on("click", "a.main_ajax", function(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+                    ajaxPostSend($(this).prop("href"), $(this).data());
+                    $(this).closest(".open").removeClass("open");
+                    return false;
+                });
+                window.stateSaveReject = true;
+                LoadDataTablesScripts(InitDatatable);
+                
+            });
+        }
+        
+        document.addEventListener("DOMContentLoaded", yelp, false);
+        

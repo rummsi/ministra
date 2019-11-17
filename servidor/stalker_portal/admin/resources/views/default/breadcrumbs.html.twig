@@ -1,0 +1,16 @@
+{#{% set separator = "" %}#}
+<ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+        <li {% if loop.last %}class="active"{% endif %}>
+            {% if breadcrumb.target is null or loop.last %}
+                {{ breadcrumb.linkName|trans }}
+            {% else %}
+                <a href="{{ breadcrumb.target }}">{{ breadcrumb.linkName|trans }}</a>
+            {% endif %}
+            {% if not(loop.last) %}
+                <span class="fa fa-angle-right separator"></span>
+                {#{{ separator }}#}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

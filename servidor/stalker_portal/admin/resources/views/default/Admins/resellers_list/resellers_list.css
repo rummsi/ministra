@@ -1,0 +1,17 @@
+.has-error .tagsinput { /* replaced by .form-control */
+
+}
+
+.has-error .tagsinput + .help-block.form-error {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.form-control.validating-server-side[data-validation][disabled] + .tagsinput {
+    cursor: not-allowed;
+    padding-right: 30px;
+    background-image: url(./img/loader-20.gif);
+    background-position: 97% 50%;
+    background-repeat: no-repeat;
+    background-color: #eee;
+}

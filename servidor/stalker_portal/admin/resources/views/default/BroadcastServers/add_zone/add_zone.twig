@@ -1,0 +1,336 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+
+{% set title = 'Streaming servers'|trans ~ ': ' ~ 'streaming area'|trans ~ ' - ' ~ (app.zoneEdit ? 'edit area'|trans ~ '"' ~ app.zoneName ~ '"': 'add area'|trans) %}
+{% set active_alias = 'broadcast-zone-list' %}
+
+
+{% block footer_js %}
+
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+        <script src="{{app.request_context.baseUrl}}/plugins/multiselect_transfer/jquery.selso.js"></script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="add_channel">
+        {{ form_start(app['form'], {'method': 'POST', 'action': (app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias) | trans, 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
+        <div class="bg-danger">
+            <div class="bg-danger">
+                {{ form_errors(app['form']) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="box">
+                    <div class="box-content">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{{ 'Title'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {{ form_widget(app['form'].id, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_widget(app['form'].name, {'attr': {'class': 'form-control', 'data-validation':'required'}}) }}
+                                </div>
+                                <i class="i-hint"
+                                   title="{{ 'Title of the area. You can use letters, digits and symbols from the list: ! @ # $ % ^ & * ( ) _ - + : ; , .'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                                <div class="bg-danger">
+                                    {{ form_errors(app['form'].name) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-checkbox">
+                            <label class="col-sm-2 control-label">{{ 'Default area'|trans }}</label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-8">
+                                    <div class="checkbox-inline">
+                                        <label>
+                                            {{ form_widget(app['form'].default_zone) }}      
+                                            <i class="fa fa-square-o small"></i>
+                                        </label>
+                                    </div>
+                                    <i class="i-hint"
+                                       title="{{ 'It will be selected as default for all new streaming servers'|trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].default_zone) }}
+                                    </div>
+                                </div>
+                                {% if not(app['form'].default_zone.vars.value) %}
+                                <span class="help-inline ln-18 col-sm-6">
+                                    <span class="small txt-default">{{ 'To select as default, first you have to uncheck the current default zone'|trans }}</span>
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{{ 'Type'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {{ form_widget(app['form'].type, {'attr': {'class': 'populate placeholder', 'data-validation':'required'}}) }}
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].type) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12 no-padding" data-zonetype="ip" {% if not(app['form'].type.vars.value == 'ip') %}style="display: none;"{% endif %}>
+                                <label class="col-sm-2 control-label">{{ 'IP-addresses'|trans }}</label>
+                                <div class="col-xs-10 col-sm-6">
+                                    <div class=" col-xs-10 col-sm-6">
+                                        {{ form_widget(app['form'].ips, {'attr': {'class': 'form-control'}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].ips) }}
+                                        </div>
+                                    </div>
+                                    <div class="clear-left col-xs-12 col-sm-6">
+                                        <span class="help-inline">
+                                            <span class="small txt-default">{{ 'Available formats: ip(e.g. 192.168.1.1) or range of ip-addresses (e.g. 192.168.1.0/24)'|trans }}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-8" data-zonetype="country" {% if app['form'].type.vars.value and app['form'].type.vars.value == 'ip' %}style="display: none;"{% endif %}>
+                                <fieldset id="letters" class="col-sm-12  col-sm-offset-1">
+                                    <div class="col-sm-4">
+                                        <label class="col-sm-12 control-label">{{ 'Countries'|trans }}</label>
+                                        {{ form_widget(app['form'].disabled_countries, {'attr': {'class': 'left populate placeholder col-sm-12', "multiple": "multiple"}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].disabled_countries) }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <br><br><br><br><br>
+                                        <button type="button" class="add all btn btn-block btn-default"> {{ 'all'|trans }} &gt;&gt; </button>
+                                        <button type="button" class="add btn btn-block btn-default"> &gt; </button>
+                                        <button type="button" class="remove btn btn-block btn-default"> &lt; </button>
+                                        <button type="button" class="remove all btn btn-block btn-default"> &lt;&lt; {{ 'all'|trans }}</button>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="col-sm-12 control-label">{{ 'Selected'|trans }}</label>
+                                        {{ form_widget(app['form'].countries, {'attr': {'class': 'right populate placeholder col-sm-12', "multiple": "multiple"}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].countries) }}
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+                <div class="form-buttons col-sm-12">
+                    <div class="box">
+                        <div class="box-content">
+                            <div class="row">
+                                <div class="col-xs-10 col-sm-8 pull-right">
+                                    {{ form_widget(app['form'].save, { 'label': 'Save'|trans , attr: {'class': 'btn btn-success pull-right'}}) }}
+                                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/broadcast-zone-list" class="btn btn-default pull-right"> {{ 'Cancel'|trans }} </a>
+    {#                                {{ form_widget(app['form'].reset, { 'label': ' {{ 'Cancel'|trans }} ' , attr: {'class': 'btn btn-default pull-left'}}) }}#}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none;">
+            {#{{ form_widget(app.form._token) }}#}
+            {{ form_rest(app.form) }}
+        </div>
+        {{ form_end(app['form']) }}  
+    </div>
+    <script type="text/javascript" defer>
+
+        var conf = {
+            form: '#form_',
+            lang : '{{ app.js_validator_language }}',
+            //showHelpOnFocus : true,
+            validateHiddenInputs: true,
+            errorClass: "error",
+            ignore: ['.ignore'],
+            modules: 'jsconf',
+      
+            highlight: function (element, errorClass, validClass) {
+                var select2 = $(element).next().find('.selection').children();
+                if (!select2.hasClass(errorClass)) {
+                    select2.addClass(errorClass);
+                }
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).next().find('.selection').children().removeClass(errorClass);
+            },
+            
+            onSuccess: function () {
+
+            },
+            onError: function () {
+                var _this = this;
+                $(_this.form + " select").each(function(){
+                    if ($(this).hasClass(_this.errorClass)) {
+                        _this.highlight(this, _this.errorClass);
+                    } else {
+                        _this.unhighlight(this, _this.errorClass);
+                    }
+                });
+                return false;
+            }
+        };
+
+        var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+        function InitSelect2() {
+            $('#form_type').select2(select2Opt);
+        }
+
+        function yelp() {
+
+            $(document).ready(function () {
+                $.ajax({
+                    url: "{{app.request_context.baseUrl}}/plugins/tagsinput/jquery.tagsinput.js",
+                    dataType: 'script',
+                    method: 'GET',
+                    cache: true,
+                    success: function(){
+                        $("#form_ips").tagsInput({
+                            'height':'auto',
+                            'width':'100%',
+                            'minInputWidth': 56,
+                            'maxInputWidth': 213,
+                            'defaultText': "{{ 'Add IP'|trans }}",
+                            'onChange' : onChangeTag
+                        });
+                    },
+                    error: function () {
+                        console.log('unavailable jquery.tagsinput.js');
+                    }
+                });
+                $('head').append('<link href="{{ app.request_context.baseUrl }}/plugins/multiselect_transfer/style.css" type="text/css" rel="stylesheet" />');
+                $('head').append('<link href="{{ app.request_context.baseUrl }}/plugins/tagsinput/jquery.tagsinput.css" type="text/css" rel="stylesheet" />');
+
+                $('#form_disabled_countries, #form_countries').find('option[value="0"]').remove();
+
+                if ($('#form_default_zone').val() == 1){
+                    $('#form_default_zone').attr('checked', 'checked');
+                }
+
+                LoadSelect2Script(InitSelect2);
+                $.validate(conf);
+
+                /*toggleZoneType();*/
+
+                $('#form_type').on('change', toggleZoneType);
+
+                $(document).on('click', '#form_save', function(){
+                    if ($("#form_type").val() == 'country' && $.trim($("#form_name").val()) != '' ) {
+                        var sendData =[];
+                        $('#form_disabled_countries').find('option').each(function(index, val){
+                            var _val = $(this);
+                            if (_val.val()) {
+                                sendData.push(_val.val());
+                            }
+                        });
+                        $('#form_disabled_countries').empty().append("<option value='0'></option>");
+                        $('#form_disabled_countries option').attr('selected', 'selected');
+
+                        $('#form_disabled_countries_json').val(JSON.stringify(sendData));
+
+                        var sendData =[];
+                        $('#form_countries').find('option').each(function(index, val){
+                            var _val = $(this);
+                            if (_val.val()) {
+                                sendData.push(_val.val());
+                            }
+                        });
+                        $('#form_countries_json').val(JSON.stringify(sendData));
+                        $('#form_countries').empty().append("<option value='0'></option>");
+                        $('#form_countries option').attr('selected', 'selected');
+                    }
+                });
+
+                $(document).on('submit', '#form_', function(e){
+                    var errorFlag = false;
+                   if ($.trim($("#form_name").val()) == '') {
+                       if (!$("#form_name").parent("div").hasClass('has-error')) {
+                            $("#form_name").parent("div").addClass('has-error');
+                       }
+                       errorFlag = true;
+                       $("#form_name").focus();
+                   } else {
+                       $("#form_name").parent("div").removeClass('has-error');
+                   }
+                   if ($("#form_ips_tagsinput").is(":visible") && $("#form_ips_tagsinput .not_valid").length != 0) {
+                       if (!errorFlag) {
+                           $("#form_ips_tagsinput input").focus();
+                       }
+                       errorFlag = true;
+                   }
+                   if (errorFlag) {
+                       e.stopPropagation();
+                       e.preventDefault();
+                       return false;
+                   }
+                });
+
+                $('#form_ .form-group .i-hint').tooltip({
+                    animation: true,
+                    placement: "right"
+                });
+
+            });
+        }
+
+        var onChangeTag = function(tagInput, tagText){
+            var ip_mask_pattern = /^([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}(\/([1-9]|[1-2]\d|3[0-2]))?$/igm;
+            var validFlag = ip_mask_pattern.test(tagText) && true;
+            if (!validFlag) {
+                $("#" + $(tagInput).attr('id') +"_tagsinput").children('span.tag').each(function(){
+                    if ($.trim($('span', this).text()) == tagText && !validFlag && !$(this).hasClass('not_valid')) {
+                        $(this).addClass('not_valid');
+                        return false;
+                    }
+                });
+            }
+        };
+
+        var toggleZoneType = function(){
+            var checkVal = $('#form_type').val();
+            $("div[data-zonetype]").each(function(){
+                $(this)[$(this).data('zonetype') == checkVal ? 'show': 'hide'](300);
+            });
+        };
+        document.addEventListener("DOMContentLoaded", yelp, false);
+
+    </script>
+{#
+    {% set options = {
+    'source_path': app['assetic_ext_web_path'],
+    'source_file_name': '*.css',
+    'dest_path': '',
+    'dest_file_name': '',
+    'filter': 'yui_css',
+    'type': 'css'
+    } %}
+
+    {% for web_path in compressor(options) %}
+        <link href="{{ web_path }}" rel="stylesheet">
+    {% endfor %}
+
+    {% set options = {
+    'source_path': app['assetic_ext_web_path'],
+    'source_file_name': '*.js',
+    'dest_path': '',
+    'dest_file_name': '',
+    'filter': 'yui_js',
+    'type': 'js'
+    } %}
+
+    {% for web_path in compressor(options) %}
+        <script src="{{ web_path }}"></script>
+    {% endfor %}
+#}
+{% endblock %}

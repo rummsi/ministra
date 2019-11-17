@@ -1,0 +1,204 @@
+
+{% autoescape false %}
+var dataSet = {{ app.allData|json_encode() }}, select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%', allowDuplicates: true};
+var deviceTitles = { deviceTitles: {
+        'mag'    :   "{{ 'MAG Set-Top Box'|trans }}",
+        'pc'     :   "{{ 'Smart TV and Set-Top Box'|trans }}",
+        'laptop' :   "{{ 'Desktop and notebook'|trans }}",
+        'tablet' :   "{{ 'Tablet'|trans }}",
+        'phone'  :   "{{ 'Smartphone'|trans }}"
+    }};
+{% endautoescape %}
+
+function InitDatatable() {
+
+    $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+        if (typeof (json.data) == 'object' && json.data.length > 0) {
+            for (var i in json.data) {
+                json.data[i] = rowDataPrepare(json.data[i]);
+            }
+        }
+    }).dataTable({
+        processing: false,
+        serverSide: false,
+        ajax: null,
+        data: [],
+        language: {
+            url: "{{ app.datatable_lang_file }}"
+        },
+
+        //from macro
+        columns: [
+            {% for key, item in app['dropdownAttribute'] %}
+            {% if 'all' != item.name %}
+            {"data": "{{ item.name }}", "name": "{{ item.name }}" {% if not(item.checked) %}, visible: false, className: 'none'{% endif %}}{% if not loop.last %},{% endif %}
+            {% endif %}
+            {% endfor %}
+        ],
+
+        scrollCollapse: true,
+        bFilter: false,
+        bPaginate: false,
+        lengthChange: true,
+        bInfo:     false,
+        bSort : false,
+
+        fixedHeader: {
+            header: true,
+            headerOffset: $('header.navbar').height()
+        },
+
+        rowId: "RowOrder", // required to restore selected rows on reload
+
+        aoColumnDefs: [
+            { searchable: false},
+            { sortable: false},
+            { width: "20%", targets: [ -1 ] },
+            { className: "action-menu", targets: [ -1 ] },
+            { className: "tooltip-cell", targets: [ -2 ] },
+            { className: "theme-preview", targets: [ 0 ] }
+        ]
+
+    });
+
+    var dtInstance = $('#datatable-1').DataTable(), dtRow;
+    for (var i in dataSet) {
+        dtRow = $("<tr>");
+        $.each(rowDataPrepare(dataSet[i]), function (index, row) {
+            var td = $('<td>');
+            $(row).appendTo(td);
+            td.appendTo(dtRow);
+        });
+        dtRow.attr('id', 'dTRow_' + dataSet[i].alias);
+
+        dtInstance.row.add(dtRow).draw();
+    }
+}
+
+function InitGallery(){
+    $('a.colorbox').colorbox({
+        fixed : true,
+        opacity: 0.69,
+        transition : "none",
+        maxWidth  : "95%",
+        maxHeight : "100%",
+        scrolling : false,
+
+        onOpen : function(){
+            $("body").addClass("modal-open");
+        },
+        onClosed : function(){
+            $("body").removeClass("modal-open");
+        }
+    });
+
+    $('.colorbox-inline').colorbox({
+        inline : true,
+        fixed : true,
+        opacity: 0.69,
+        transition : "none",
+        innerWidth : "800px",
+        innerHeight : "300px",
+        maxWidth  : "100%",
+        maxHeight : "100%",
+        scrolling : false,
+
+        onOpen : function(){
+            var cloneEl = $(this).children().clone();
+            $(this).after(cloneEl);
+            $("body").addClass("modal-open");
+        },
+        onClosed : function(){
+            $(this).next().remove();
+            $(this).removeAttr('style');
+            $("body").removeClass("modal-open");
+        }
+    });
+}
+
+function InitSelect2() {
+    $('#form_ select').select2(select2Opt);
+}
+
+function yelp() {
+    $(document).ready(function () {
+        $(document).on('click', ".main_ajax[disabled!='disabled']", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var objHref = ($(this).attr('href'))? $(this).attr('href'): $(this).data('href');
+            if( objHref.indexOf("themes-reset-to-default") != -1 && !confirm("{{ 'Do theme restore to the initial look'|trans }}?") ){
+                $(this).closest('div.open').removeClass('open');
+                return false;
+            }
+            $("#modalbox").data('complete', 0);
+            var sendData = $(this).data();
+            ajaxPostSend(objHref, sendData, false, false);
+            $(this).closest('div.open').removeClass('open');
+            return false;
+        });
+
+        // Load Fancybox2 and make gallery in callback
+        //LoadFancyboxScript(DemoGallery);
+
+        LoadDataTablesScripts(InitDatatable);
+
+        LoadSelect2Script(InitSelect2);
+
+        InitGallery();
+
+/*        $(document).tooltip({
+            selector: '[data-toggle="tooltip"]',
+            placement: 'top'
+        });*/
+
+        $(document).on('click submit', '#form_', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+
+        $(document).on('click submit', '#form_ button', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            var sendData = {}, parentForm = $(this).closest('form');
+
+            $('select', parentForm).each(function () {
+                sendData[this.name] = this.value;
+            });
+
+            ajaxPostSend(parentForm.attr('action'), sendData);
+            return false;
+        });
+
+    });
+}
+
+document.addEventListener("DOMContentLoaded", yelp, false);
+
+var changeTheme = function(obj){
+    $("button[data-themename]").each(function(){
+        if ($(this).data('themename') == obj.name) {
+            $(this).prop('disabled', 'disabled').attr('disabled', 'disabled');
+            if(!$(this).hasClass('btn-yaly')) {
+                $(this).removeClass('btn-yal').addClass('btn-yaly');
+            }
+            $(this).text('{{ 'Current'|trans }}');
+        } else {
+            $(this).prop('disabled', false).removeAttr('disabled');
+            if(!$(this).hasClass('btn-yal')) {
+                $(this).removeClass('btn-yaly').addClass('btn-yal');
+            }
+            $(this).text('{{ 'Apply'|trans }}');
+        }
+    });
+};
+
+function rowDataPrepare(item){
+    return {
+        preview: $("#item_coll_preview").tmpl(item).get(0).outerHTML,
+        type: $("#item_coll_type").tmpl(item).get(0).outerHTML,
+        name: $("#item_coll_name").tmpl(item).get(0).outerHTML,
+        devices: $("#item_coll_devices").tmpl(item,deviceTitles).get(0).outerHTML,
+        operations: $("#item_coll_operations").tmpl(item).get(0).outerHTML
+    };
+}

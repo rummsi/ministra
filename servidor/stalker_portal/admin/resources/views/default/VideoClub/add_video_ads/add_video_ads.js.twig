@@ -1,0 +1,47 @@
+
+        var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+        var conf = {
+            form: '#form_',
+            lang : '{{ app.js_validator_language }}',
+            showHelpOnFocus : true,
+            validateHiddenInputs: true,
+            ignore: ['.ignore'],
+            modules: 'jsconf',
+            onSuccess: function () {
+                $(this.form).get(0).submit();
+                return false;
+            },
+            onError: function () {
+                return false;
+            }
+        };
+
+        function InitSelect2() {
+            $('#form_denied_categories').select2(select2Opt);
+            $('#form_must_watch').select2(select2Opt);
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+
+                $.validate(conf);
+
+                LoadSelect2Script(InitSelect2);
+
+                $(document).on("click", "#form_save", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    if ($(conf.form).isValid({}, conf, true)) {
+                        conf.onSuccess();
+                    } else {
+                        conf.onError();
+                    }
+                    return false;
+                });
+
+            });
+        }
+        
+        document.addEventListener("DOMContentLoaded", yelp, false);

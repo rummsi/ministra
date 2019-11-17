@@ -1,0 +1,182 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set active_alias = 'smart-application-list' %}
+{% set title = 'Applications'|trans ~ ': ' ~ 'application'|trans ~ ' ' ~ (attribute(app, 'app_info') is defined and app.app_info.info|length > 0 ? app.app_info.info.name : '') %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/dataTables.sortingFormattedVersions.js"></script>
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/ApplicationCatalog/smart_application_detail/smart_application_detail.js.twig") %}
+        </script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class=""></div>
+        <div class="row">
+            <div class="box">
+                <div class="box-content">
+                    {% if attribute(app, 'app_info') is defined and app.app_info.info|length > 0 %}
+                    <div class="form-horizontal" style="padding: 0 15px;">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <span class="col-sm-3 text-right"><b>{{ 'Application'|trans }}</b></span>
+                                    <div class="col-xs-9 col-sm-9">
+                                        <span class="col-xs-12 col-sm-12">
+                                            {{ app.app_info.info.name }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <span class="col-sm-3 text-right"><b>{{ 'About app'|trans }}</b></span>
+                                    <div class="col-xs-9 col-sm-9">
+                                        <span class="col-xs-6 col-sm-6">
+                                            <p>{{ app.app_info.info.description }}</p>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <span class="col-sm-3 text-right"><b>{{ 'URL'|trans }}</b></span>
+                                    <div class="col-xs-9 col-sm-9">
+                                        <span class="col-xs-12 col-sm-12">
+                                            {{ app.app_info.info.url }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <span class="col-sm-3 text-right"><b>{{ 'Active'|trans }}</b></span>
+                                    <div class="col-xs-9 col-sm-9">
+                                        <span class="col-xs-12 col-sm-12">
+                                            <div class="mswitch">
+                                                <input type="checkbox" value="1" name="status" id="app_status" {% if app.app_info.info.status and app.app_info.info.installed %}checked="checked"{% endif %} {% if not app.app_info.info.installed or (app.app_info.info.conflicts|length and not app.app_info.info.status ) %}disabled="disabled" readonly="readonly" {% endif %}>
+                                                <label class="label-success" for="app_status"></label>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <span class="col-sm-3 text-right"><b>{{ 'Auto-update'|trans }}</b></span>
+                                    <div class="col-xs-9 col-sm-9">
+                                        <span class="col-xs-12 col-sm-12">
+                                            <div class="mswitch">
+                                                <input type="checkbox" value="1" name="autoupdate" id="app_autoupdate" {% if app.app_info.info.autoupdate %}checked="checked"{% endif %} {% if not app.app_info.info.installed or (app.app_info.info.conflicts|length and not app.app_info.info.autoupdate ) %}disabled="disabled" readonly="readonly" {% endif %}>
+                                                <label class="label-success" for="app_autoupdate"></label>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                {% if attribute(app.app_info.info, 'icon_big') is defined and app.app_info.info.icon %}
+                                    <img src="{{ app.app_info.info.icon_big }}" style="margin: 20px 0 0; {% if attribute(app.app_info.info, 'backgroundColor') is defined and app.app_info.info.backgroundColor %} background-color: {{ app.app_info.info.backgroundColor }}{% endif %}">
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="col-sm-2 no-modified text-right"><b>{{ 'Versions'|trans }}</b></span>
+                            <div class="col-xs-10 col-sm-10" id="applications_version_table">
+                                <div class="dataTables_processing" style="margin-top: 0; z-index: 321;"></div>
+                                <table class="table  table-hover table-datatable" id="datatable-1">
+                                    {% if attribute(app, 'dropdownAttribute') is defined %}
+                                        {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                                    {% endif %}
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-xs-10 col-sm-10">
+                        <h3 class="txt-danger">
+                            {% if attribute(app,'app_info') is defined and attribute(app['app_info'], 'error') is defined %}
+                                {{ app.app_info.error }}
+                            {% endif %}
+                        </h3>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {# The tamplates for javascript #}
+
+    <script type="text/template" id="modal_option_form_body">
+        <div class="box-content">
+            <form class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-version-save-option">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">{{ 'Version'|trans }}</label>
+                    <div class="col-xs-8 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <h5 id="current_version"></h5>
+                            <input type="hidden" class="own_fields form-control" name="apps[id]" id="apps_id" value="" readonly="readonly">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">{{ 'Whath\'s new'|trans }}</label>
+                    <div class="col-xs-8 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <p id="description"></p>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_form_buttons">
+        <div class="pull-left no-padding">&nbsp;</div>
+        <div class="pull-right no-padding">
+            <button type="reset" class="btn btn-default pull-left">{{ 'Cancel'|trans }}</button>
+            <button type="submit" class="btn btn-success pull-right">{{ 'Save'|trans }}</button>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_form_input">
+        <div class="form-group">
+            <label class="col-sm-3 control-label" data-option-field="name"></label>
+            <div class="col-xs-8 col-sm-8">
+                <span class="col-xs-12 col-sm-12">
+                    <input type="text" class="own_fields form-control" name="" value="" data-option-field="value">
+                </span>
+                <span class="help-inline col-xs-12 col-sm-12">
+                    <span class="small txt-default" data-option-field="desc"></span>
+                </span>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_form_select">
+        <div class="form-group">
+            <label class="col-sm-3 control-label" data-option-field="name"></label>
+            <div class="col-xs-8 col-sm-8">
+                <span class="col-xs-12 col-sm-12">
+                    <select name="" id="" class="populate placeholder own_fields" data-option-field="value">
+                        <option value="" ></option>
+                    </select>
+                </span>
+                <span class="help-inline col-xs-12 col-sm-12">
+                    <span class="small txt-default" data-option-field="desc"></span>
+                </span>
+            </div>
+        </div>
+    </script>
+{% endblock %}

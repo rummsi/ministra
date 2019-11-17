@@ -1,0 +1,73 @@
+
+
+.dataTable i.fa-circle {
+    color: #424242;
+    font-size: 9px;
+}
+
+.dataTable i.fa-calendar,
+.dataTable i.fa-eye-slash {
+    color: #aaa;
+}
+
+.dataTable i.fa-eye,
+.dataTable i.fa-archive {
+    color: #525252;
+}
+
+.dataTable i.fa-calendar,
+.dataTable i.fa-eye,
+.dataTable i.fa-eye-slash,
+.dataTable i.fa-banned,
+.dataTable i.fa-link,
+.dataTable i.fa-archive{
+    font-size: 17px;
+}
+
+.dataTable i.icon{
+    width: 20px;
+    height: 23px;
+    background: no-repeat center center transparent;
+    margin: auto 6px;
+}
+
+.dataTable i.icon-calendar{
+    background-image: url(./img/videoclub_status_icons/calendar.png);
+    /*background-position-y: 3px;*/
+}
+.dataTable i.icon-eye{
+    background-image: url(./img/videoclub_status_icons/eye.png);
+}
+.dataTable i.icon-eye-slash{
+    background-image: url(./img/videoclub_status_icons/eye-no-active.png);
+}
+.dataTable i.icon-banned{
+    background-image: url(./img/videoclub_status_icons/banned.png);
+}
+.dataTable i.icon-link{
+    background-image: url(./img/videoclub_status_icons/link.png);
+}
+.dataTable i.icon-archive{
+    background-image: url(./img/videoclub_status_icons/archive.png);
+}
+
+.dt-status .monitoring-status {
+	margin-left: 2px;
+}
+
+html[lang=en] div.dt-button-collection {
+    width: 109px;
+}
+
+html[lang=ru] div.dt-button-collection {
+    width: 119px;
+}
+
+table.dataTable tbody .dt-status{
+    overflow: visible;
+}
+
+table.dataTable tbody .dt-status .tooltip-inner{
+    padding: 3px 8px;
+    white-space: normal;
+}

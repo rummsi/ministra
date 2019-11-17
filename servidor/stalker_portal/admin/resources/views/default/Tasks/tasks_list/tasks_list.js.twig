@@ -1,0 +1,184 @@
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                var taskState={
+                {% if attribute(app,'taskState') is defined %}
+                    {% for key, item in app.taskState %}
+                        {% if not loop.last %}'{{ key }}':'{{item.title}}',{% else %}'{{ key }}':'{{item.title}}'{% endif %}
+                    {% endfor %}
+                {% endif%}
+                };
+                var taskStateColor=[
+                {% if attribute(app,'taskStateColor') is defined %}
+                    {% for item in app.taskStateColor %}
+                        {% if not loop.last %}'{{item}}',{% else %}'{{item}}'{% endif %}
+                    {% endfor %}
+                {% endif%}
+                ];
+                if (typeof (json.data) == 'object') {
+                    for (var i in json.data) {
+                        var id = json.data[i].id;
+                        var state = json.data[i].state;
+                        var name = json.data[i].name;
+                        var messages = json.data[i].messages;
+                        var archived = '' + json.data[i].archived;
+                        var actionList = 0;
+
+                        if (!isNaN(parseInt(messages))) {
+                            messages = messages + '/' + (json.data[i].not_readed ? json.data[i].not_readed: '0');
+                        }
+
+                        json.data[i].messages = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/task-detail-{% if app['task_type'] == 'karaoke' %}karaoke{% else %}video{% endif %}?id='+ id + '">'+ messages +'</a>';
+                        json.data[i].name = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/task-detail-{% if app['task_type'] == 'karaoke' %}karaoke{% else %}video{% endif %}?id='+ id + '">' +escapeHtml( name )+ '</a>';
+                        
+                        json.data[i].state = '<span class="txt-' + taskStateColor[state] + '">'+taskState[state]+'</span>';
+                        
+                        var dateOn = new Date(json.data[i]['start_time'] * 1000);
+                        json.data[i].start_time = dateOn.toLocaleFormat("%b %d, %Y %H:%M");
+
+                        if ( archived !== '0') {
+                            var titleStr = "{{ 'unknown'|trans }}";
+                            if (json.data[i].archived_time) {
+                                dateOn.setTime(json.data[i].archived_time * 1000)
+                                titleStr = dateOn.toLocaleFormat("%b %d, %Y");
+                            }
+                            json.data[i].archived = "<span class='monitoring-status skyblue'><i data-toggle='tooltip' class='fa fa-cubes' title='{{ 'Archived' |trans }} " + titleStr + "'></i></span>";
+                        } else if (state == 1 || state == 2) {
+                            json.data[i].archived = "<span class='main_ajax monitoring-status green'><i data-toggle='tooltip' class='fa fa-flag-checkered' title='{{ 'Ready for send to archive'|trans }}'></i></span>";
+                        } else if (state == 3) {
+                            json.data[i].archived = "<span class='main_ajax monitoring-status gold'><i data-toggle='tooltip' class='fa fa-flag' title='{{ 'Must be rejected before sending to archive'|trans }}'></i></span>";
+                        } else {
+                            json.data[i].archived = "<span class='main_ajax monitoring-status no-monitoring'><i data-toggle='tooltip' class='fa fa-folder-open-o' title='{{ 'In the work'|trans }}'></i></span>";
+                        }
+
+                        json.data[i].status = "<span class='monitoring-status txt-" + taskStateColor[json.data[i].status] + "'>" + (json.data[i].status == '1' ? '{{ 'Ready'|trans }}': '{{ 'Not ready'|trans }}') + "</span>";
+
+                        json.data[i].media_accessed = "<i data-toggle='tooltip' class='fa icon icon-eye" + (json.data[i].media_accessed ? "' title='{{ 'Published' |trans }}": "-slash' title='{{ 'Unpublished'|trans }}") + "'></i>";
+
+                        if (json.data[i].media_status || (!json.data[i].media_url && json.data[i].item_status)) {
+                            json.data[i].media_status = "<i data-toggle='tooltip' class='fa icon icon-archive' title='{{ 'Available on storages'|trans }}'></i>";
+                        } else if (!json.data[i].media_url) {
+                            json.data[i].media_status = "<i data-toggle='tooltip' class='fa icon icon-banned' title='{{ 'Not available on storages'|trans }}. {{ 'Check file'|trans }}'></i>";
+                        } else {
+                            json.data[i].media_status = '';
+                        }
+
+                        if (json.data[i].media_url) {
+                            json.data[i].media_status += "<i data-toggle='tooltip' class='fa icon icon-link' title='{{ 'Available by custom URL'|trans }}'></i>";
+                        }
+
+                        json.data[i].operations = "<div class='col-xs-3 col-sm-8'>\n\
+                                                        <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                                            <i class='pull-right fa fa-cog'></i>\n\
+                                                        </a>\n\
+                                                        <ul class='dropdown-menu pull-right'>\n";
+                        if (state == 0 ) {
+                            json.data[i].operations +=      "<li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/task-state-change' data-taskid='" + id + "' data-apply='ended'>\n\
+                                                                    <span>{{ 'Done'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n";
+                            actionList++;
+                        }
+                        if ((state == 1 || state == 2) && archived == '0') {
+                            json.data[i].operations +=      "<li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/task-state-change' data-taskid='" + id + "' data-apply='archived'>\n\
+                                                                    <span>{{ 'Send to archive'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n";
+                            actionList++;
+                        }
+                        if (state == 0 || state == 3) {
+                            json.data[i].operations +=     "<li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/task-state-change' data-taskid='" + id + "' data-apply='rejected'>\n\
+                                                                    <span>{{ 'Reject'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n";
+                            actionList++;
+                        }
+                        json.data[i].operations +="</ul>\n\
+                                            </div>";
+
+                        if (actionList == 0) {
+                            json.data[i].operations = '';
+                        }
+                    }
+                }
+            }).dataTable({
+                "processing": true,   
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/tasks-list-json",
+                    "data": function (d) {
+                        d = dataTableDataPrepare(d);
+                        d['task_type'] = '{{ app['task_type'] }}';
+                    }
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+                {% endif %}
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "bInfo": true,
+                "lengthMenu": [ 10, 25, 50, 100, 200 ],
+                "pageLength": 200,
+                "fixedHeader": {
+                    header: true,
+                    headerOffset: $('header.navbar').height()
+                },
+                
+                "order": [[ 4, "desc" ]],
+                "columnDefs": [
+                    { className: "dt-status dt-nowrap", "targets": [ 3, 4, -2 ] },
+                    { className: "action-menu", "targets": [ -1 ] },
+                    {"searchable": false, "targets": [-1, -2, -3, -4, 1]},
+                    {"sortable": false, "targets": [-1, 1]}
+                ]
+            }).prev('.dataTables_processing').hide('');
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+
+                $(document).tooltip({
+                    selector: '[data-toggle="tooltip"]',
+                    placement: 'top'
+                });
+
+                $(document).on('click', "a.main_ajax[disabled!='disabled']", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var sendData = $(this).data();
+                    sendData['task_type'] = '{{ app['task_type'] }}';
+                    ajaxPostSend($(this).attr('href'), sendData, false, false);
+                    $(this).closest('div.open').removeClass('open');
+                    return false;
+                });
+
+                LoadDataTablesScripts(InitDatatable);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);
+
+        var manageTasks = function (obj) {
+            JSSuccessModalBox(obj);
+            $('#datatable-1').DataTable().ajax.reload();
+        };
+
+        var manageTasksError = function (obj) {
+            JSErrorModalBox(obj);
+        };
+
+        var videoinfo = checkSourceKaraoke = function(obj){
+            if (obj.media_id) {
+                ajaxPostSend("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/tasks-list-json", {
+                    task_type: '{{ app['task_type'] }}',
+                    media_id : obj.media_id
+                });
+            }
+        };

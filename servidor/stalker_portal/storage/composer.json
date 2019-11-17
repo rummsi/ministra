@@ -1,0 +1,29 @@
+{
+  "name": "infomir/ministra-middleware",
+  "description": "Ministra TV Platform",
+  "type": "project",
+  "license": "Apache 2.0",
+  "authors": [
+    {
+      "name": "Infomir",
+      "email": "support@infomir.eu"
+    }
+  ],
+  "optimize-autoloader": true,
+  "classmap-authoritative": true,
+  "apcu-autoloader": true,
+  "minimum-stability": "stable",
+  "require": {
+    "ext-json": "*",
+    "ext-posix": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ministra\\Storage\\": "./",
+      "Ministra\\Lib\\": "./../server/Lib"
+    },
+    "files": [
+      "./functions/functions.php"
+    ]
+  }
+}

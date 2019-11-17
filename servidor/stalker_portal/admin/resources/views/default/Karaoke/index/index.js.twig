@@ -1,0 +1,319 @@
+
+        var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+        var conf = {
+            form: '#karaoke_form',
+            lang : '{{ app.js_validator_language }}',
+            showHelpOnFocus : true,
+            validateHiddenInputs: true,
+            scrollToTopOnError: false,
+            errorClass: "error",
+            ignore: ['.ignore'],
+            modules: 'jsconf',
+            
+            onSuccess: function () {
+                var sendData = new Object();
+                var lengthObj = 0;
+                var form_fields = $("#modalbox_ad input.own_fields:not(:disabled), #modalbox_ad select.own_fields:not(:disabled)");
+                form_fields.each(function () {
+                    if ($(this).val()) {
+                        sendData[this.name] = $(this).val();
+                        lengthObj++;
+                    }
+                });
+                if (lengthObj < form_fields.length) {
+                    alert('{{ 'You must fill in all fields'|trans }}');
+                    return false;
+                }
+                ajaxPostSend($("#modalbox_ad form").attr('action'), sendData, false, false);
+                return false;
+            },
+            
+            onError: function () {
+                var _this = this;
+                $(_this.form + " select").each(function(){
+                    if ($(this).hasClass(_this.errorClass)) {
+                        _this.highlight(this, _this.errorClass);
+                    } else {
+                        _this.unhighlight(this, _this.errorClass);
+                    }
+                });
+                return false;
+            },
+
+            highlight: function (element, errorClass, validClass) {
+                if (!$(element).parent().children().find('.selection').children().hasClass(errorClass)) {
+                    $(element).parent().children().find('.selection').children().addClass(errorClass);
+                }
+            },
+            
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).parent().children().find('.selection').children().removeClass(errorClass);
+            }
+        };
+
+        function closeModalBox(){
+            $("#modalbox").hide();
+            $('#modalbox').find('.modal-header-name span').empty();
+            $('#modalbox').find('.devoops-modal-inner').empty();
+            $('#modalbox').find('.devoops-modal-bottom').empty();
+        }
+
+        function InitSelect2() {
+            $('#s2_protocol').select2(select2Opt);
+        }
+
+        function checkModalProtocol(){
+            var value = $("#s2_protocol").val();
+            var urlGroup = $("#s2_protocol").closest('div.form-group').next('div.form-group');
+            if (value == 'custom') {
+                urlGroup.stop(true, true).clearQueue().show().find('input').removeAttr('disabled');
+            } else {
+                urlGroup.stop(true, true).clearQueue().hide().find('input').attr('disabled', 'disabled');
+            }
+        }
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object' && json.data.length >0) {
+                    var date;
+                    for (var i in json.data) {
+                        var id = json.data[i].id;
+                        var status = parseInt(json.data[i].status, 10);
+                        var accessed = json.data[i].accessed;
+                        var done  = json.data[i].done;
+                        var name = json.data[i].name;
+                        json.data[i].rtsp_url = json.data[i].protocol != 'custom'? "<a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/check-karaoke-source' data-karaokeid='" + id + "'>{{ 'in storage'|trans }}</a>": (json.data[i].rtsp_url.length > 0 ? json.data[i].rtsp_url.slice(0, 30)+'...':'');
+
+                        json.data[i].operations = "<div class='col-xs-3 col-sm-8'>\n\
+                                                        <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                                            <i class='pull-right fa fa-cog'></i>\n\
+                                                        </a>\n\
+                                                        <ul class='dropdown-menu pull-right'>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/karaoke-list-json' data-karaokeid='" + id + "'>\n\
+                                                                    <span>{{ 'Edit'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a " + ( status == 0 && accessed == 0 && json.data[i].protocol != 'custom' ?"disabled='disabled'":"") + " class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-karaoke-accessed' data-karaokeid='" + id + "' data-accessed='" + accessed + "'>\n\
+                                                                    <span>" + ( accessed == 0 ?"{{ 'Publish'|trans }}":"{{ 'Unpublish'|trans }}") + "</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/check-karaoke-source' data-karaokeid='" + id + "'>\n\
+                                                                    <span>{{ 'Check file'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-karaoke-done' data-karaokeid='" + id + "' data-done='" + done + "'>\n\
+                                                                    <span>" + ( done != 0 ? "{{ 'Cancel performing of the task'|trans }}" : "{{ 'Confirm performing of the task'|trans }}") + "</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-karaoke' data-karaokeid='" + id + "'>\n\
+                                                                    <span>{{ 'Delete'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                        </ul>\n\
+                                                    </div>";
+                        json.data[i].accessed = accessed != 0 ? "<i data-toggle='tooltip' class='fa icon icon-eye' title='{{ 'Published' |trans }}'></i>" : "<i data-toggle='tooltip' class='fa icon icon-eye-slash' title='{{ 'Unpublished' |trans }}'></i>";
+                        if ( status == 0 && json.data[i].protocol != 'custom') {
+                            json.data[i].accessed += "<i data-toggle='tooltip' class='fa icon icon-" + ( status ? "archive' title='{{ 'Available on storages'|trans }}" : "banned' title='{{ 'Not available on storages'|trans }}. {{ 'Check file'|trans }}") + "'></i>";
+                        }
+                        if (json.data[i].protocol == 'custom' && json.data[i].rtsp_url ) {
+                            json.data[i].accessed += "<i data-toggle='tooltip' class='fa icon icon-link' title='{{ 'Available by custom URL'|trans }}'></i>";
+                        }
+
+                        json.data[i].name = '<a class="main_ajax no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/karaoke-list-json" data-karaokeid="' + id + '">' +escapeHtml( name )+ '</a>';
+                        json.data[i].done = '<a href="{{ app.request_context.baseUrl }}/tasks/task-detail-karaoke?id='+id+'">№' + id + '</a> ' + ( done != 0 ? '<span class="">{{ 'Completed'|trans }}</span>' : '<span class="">{{ 'Do not completed'|trans }}</span>');
+                        json.data[i].singer = escapeHtml( json.data[i].singer );
+
+                        date = json.data[i]['added'];
+                        if (date > 0) {
+                            date = new Date(date * 1000);
+                            json.data[i]['added'] = date.toLocaleFormat("%b %d, %Y");
+                        }
+
+                    }
+                }
+            }).dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/karaoke-list-json"
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                
+                //took out from macro
+                "columns": [
+                {% for key, item in app['dropdownAttribute'] %}
+                    {% if 'all' != item.name %}
+                    {"data": "{{ item.name }}", "name": "{{ item.name }}" {% if not(item.checked) %}, visible: false, className: 'none'{% endif %}}{% if not loop.last %},{% endif %}
+                    {% endif %}
+                {% endfor %}
+                ],
+
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "bInfo": true,
+
+                "fixedHeader": {
+                    header: true,
+                    headerOffset: $('header.navbar').height()
+                },
+                
+                "order": [[ 0, "asc" ]],
+                "columnDefs": [
+                    { className: "action-menu", "targets": [ -1 ] },
+                    { className: "dt-status",   "targets": [ -2 ] },
+                    {"searchable": false, "targets": [-1, -2, -3, -4]},
+                    {"sortable": false, "targets": [-1]}
+                ]
+            }).prev('.dataTables_processing').hide('');
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+
+                $.validate(conf);
+
+                $(document).tooltip({
+                    selector: '[data-toggle="tooltip"]',
+                    placement: 'top'
+                });
+
+                $(document).on('click', "a.main_ajax[disabled!='disabled']", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $(this).closest('div.open').removeClass('open');
+
+                    if( $(this).attr("href").indexOf("remove-karaoke") != -1 && !confirm("{{"Delete this karaoke?"|trans}}") ) {
+                        return;
+                    }
+                    
+                    var sendData = $(this).data();
+                    ajaxPostSend($(this).attr('href'), sendData, false, false);
+                    return false;
+                });
+
+                $("#form_reset").on('click', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $(this).closest('form').get(0).reset();
+                    return false;
+                });
+
+                $("#modalbox_ad button[type='submit']").on('click', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    if ($("#karaoke_form").isValid({}, conf, true)) {
+                        conf.onSuccess();
+                    } else {
+                        conf.onError();
+                    }
+                    return false;
+                });
+
+                $('#s2_protocol').on('change', function(){
+                    checkModalProtocol();
+                    $(this).validate(function(valid, elem) {
+                        if (valid) {
+                            conf.unhighlight(elem, conf.errorClass);
+                        } else {
+                            conf.highlight(elem, conf.errorClass);
+                        }
+                    });
+                });
+
+                $(document).on('click', "#modalbox, #modalbox a.close-link, #modalbox a.close-link *", function(e){
+                    if (e.currentTarget != e.target) {
+                        return;
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+                    closeModalBox();
+                    return false;
+                });
+
+                $("#add_karaoke").on("click", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $.validate();
+                    $('#karaoke_form').get(0).reset();
+                    $("#modalbox_ad").find(".modal-header-name").children('span').text("{{ 'Add'|trans }}");
+                    $("#modalbox_ad input").prop("disabled", false).removeAttr('disabled').val('');
+                    $("#modalbox_ad input[type='hidden']").attr('disabled', 'disabled').val('');
+                    $("#modalbox_ad select").prop("disabled", false).removeAttr('disabled').find('option').prop("selected", false).removeAttr('selected');
+                    $("#modalbox_ad select").trigger('change');
+                    checkModalProtocol();
+                    $("#modalbox_ad").show();
+                    return false;
+                });
+
+                LoadDataTablesScripts(InitDatatable);
+                LoadSelect2Script(InitSelect2);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);
+
+        var setKaraokeModal = function (data) {
+            $.validate();
+            $('#karaoke_form').get(0).reset();
+            $("#modalbox_ad").find(".modal-header-name").children('span').text("{{ 'Edit'|trans }}");
+            if (data.data.length == 1) {
+                var row = data.data[0];
+                for (var field_name in row) {
+                    $("#modalbox_ad [name='" + field_name + "']").val(row[field_name]);
+                }
+                $("#modalbox_ad select").trigger('change');
+            }
+            $("#modalbox_ad input").removeAttr('disabled');
+            checkModalProtocol();
+            $("#modalbox_ad").show();
+        };
+
+        var manageKaraoke = function (obj) {
+            JSSuccessModalBox(obj);
+            $('#datatable-1').DataTable().ajax.reload();
+        };
+
+        var checkSourceKaraoke = function (obj){
+            // make updateTableRow first becouse
+            // it displays JS notty msg which hide modalbox
+            updateTableRow(obj);
+            openModal(obj);
+        };
+
+        var checkSourceKaraokeError = function(obj){
+            JSErrorModalBox(obj);
+        };
+
+        var openModal = function (obj){
+            var baseInfo = obj.base_info;
+
+            $('#modalbox').show();
+            $('#modalbox').find('.devoops-modal-bottom').html('\n\
+                        <div class=" pull-right no-padding">\n\
+                            <a type="reset" class="close-link btn btn-default pull-right" >{{ 'Close'|trans }}</a>\n\
+                        </div>');
+            $('#modalbox').find('.modal-header-name span').text("{{ 'Information about the media source'|trans }}");
+            
+            if (typeof(baseInfo) == 'string') {
+                $('#modalbox').find('.devoops-modal-inner').append('<div class="col-xs-12"><span>' + baseInfo + '</span></div>');
+            } else if (typeof(baseInfo) == 'object') {
+                var table = $('<table class="video_info"></table>').appendTo($('#modalbox').find('.devoops-modal-inner'));
+                table.append("<tr><td>{{ 'Storage'|trans }}</td><td>{{ 'File'|trans }}</td></tr>");
+                table.wrap('<div class="col-xs-12"></div>');
+                $.each(baseInfo, function(index, value){
+                    var trStr = '<tr><td>'+ value.storage_name +'</td><td>'+ value.file +'</td></tr>';
+                    table.append(trStr);
+                });
+            }
+
+        };

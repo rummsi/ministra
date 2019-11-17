@@ -1,0 +1,124 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Video club'|trans ~ ': ' ~ 'moderators list'|trans %}
+
+{% block head %}
+    
+    {{ parent() }}
+    <style type="text/css">
+         {% include (app.twig_theme ~ "/NewVideoClub/video_moderators_addresses/video_moderators_addresses.css") %}
+    </style>
+
+{% endblock %}
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+        
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" src="./js/jquery.tmpl.min.js" defer=""></script>
+        <script type="text/javascript" defer>
+            {% include app.twig_theme ~ "/NewVideoClub/video_moderators_addresses/video_moderators_addresses.js.twig" %}
+        </script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/add-video-moderators" id="add_video_moderator" class="btn btn-success pull-right no_context_menu"><i class="fa fa-plus"></i>{{ 'Add moderator'|trans }}</a>
+            </div>
+        </div>
+        <div class="row">
+            {#
+            <div class="box">
+                <div class="auto-height">
+                    <div class="box-name">
+                        <div class="row">
+                            <div class="col-xs-10 col-sm-8 col-sm-offset-2 text-center bg-warning">
+                                <span class="text_black">{{ 'STB of moderators  allow to show unpublished video and optionally skipping advertising'|trans }}{#Приставки модераторов позволяют показывать неопубликованное видео и опционально пропускают рекламу # }</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="no-move"></div>
+                </div>
+            </div>
+            #}
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/template" id="modal_moderators_inner">
+        <div class="box-content">
+            <form id="form_" class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-video-moderators">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Name'|trans }}<span class="icon-required">*</span></label>
+                    <div class="col-xs-10 col-sm-8">
+                        <div class=" col-xs-10 col-sm-8">
+                            <input id="form_id" class="form-control own_field" type="hidden" name="id" value="${id}">
+                            <input id="form_name" class="form-control own_field" type="text" name="name" required="required" value="${name}"
+                                data-validation = "required"
+                                data-validation-event = "blur" >
+                            <div class="bg-danger"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'MAC address'|trans }}<span class="icon-required">*</span></label>
+                    <div class="col-xs-10 col-sm-8">
+                        <div class=" col-xs-10 col-sm-8">
+                            <input id="form_mac" class="form-control own_field" type="text" name="mac" required="required" value="${mac}"
+                                data-validation = "required, custom, server" 
+                                data-validation-postpone = "200"
+                                data-validation-url = "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/check-moderator-mac"
+                                data-validation-regexp = "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$"
+                                data-validation-error-msg-custom = "{{ 'Enter MAC-address according to the format'|trans }}" >
+                            <div class="bg-danger"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group form-group-checkbox">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Switch off advertising'|trans }}</label>
+                    <div class=" col-xs-10 col-sm-8">
+                        <div class=" col-xs-10 col-sm-8">
+                            <div class="checkbox-inline">
+                                <label>
+                                    <input id="form_disable_vclub_ad" class="own_field" type="checkbox" name="disable_vclub_ad" {{ '{{if disable_vclub_ad}}' }}checked="checked"{{ '{{/if}}' }} >
+                                    <i class="fa fa-square-o small"></i>
+                                </label>
+                            </div>
+                            <div class="bg-danger"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+
+{% endblock %}

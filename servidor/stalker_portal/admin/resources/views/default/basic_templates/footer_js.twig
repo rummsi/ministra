@@ -1,0 +1,16 @@
+
+{# empty Twig template #}
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <!--<script src="//code.jquery.com/jquery.js"></script>-->
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery/jquery-2.1.0.min.js"></script>
+		 <script src="{{app.request_context.baseUrl}}/plugins/noty/packaged/jquery.noty.packaged.js"></script>
+        <script src="{{app.request_context.baseUrl}}/js/jquery.cookies.2.2.0.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/jquery-ui/jquery-ui.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/scrollTo/jquery.scrollTo.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="{{app.request_context.baseUrl}}/plugins/bootstrap/bootstrap.min.js"></script>
+        <script src="{{app.relativePath}}c/version.js{% if attribute(app, 'current_version') is defined and app['current_version']%}?ver={{ app['current_version'] }}{% endif %}"></script>
+        <!-- All functions for this theme + document.ready processing -->
+        <script src="{{app.request_context.baseUrl}}/plugins/form-validator/jquery.form-validator.min.js"></script>
+        <script src="{{app.request_context.baseUrl}}/js/devoops.js{% if attribute(app, 'current_version') is defined and app['current_version']%}?ver={{ app['current_version'] }}{% endif %}"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/notiFeed/notiFeed.js"></script>

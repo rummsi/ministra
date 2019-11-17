@@ -1,0 +1,15 @@
+[Unit]
+Description=Tv archive tasks launcher
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=@STORAGE_PATH@/tvarchive.sh
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=tvarchivetasks
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

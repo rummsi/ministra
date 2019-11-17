@@ -1,0 +1,6 @@
+{#<div class="dropdown">#}
+	<a href="#" id="index_note_list" title="{{ 'Notifications'|trans }}">
+	    <i class="fa fa-bell"></i>
+	    <span class="hidden-xs badge red">{% if app['user_info']['notification_count'] %}{{ app['user_info']['notification_count'] }}{% endif %}</span>
+	</a>
+{#</div>#}

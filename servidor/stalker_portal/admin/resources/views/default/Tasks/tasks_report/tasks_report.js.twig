@@ -1,0 +1,162 @@
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                var taskState={
+                {% if attribute(app,'taskState') is defined %}
+                    {% for key, item in app.taskState %}
+                        {% if not loop.last %}'{{ key }}':'{{item.title}}',{% else %}'{{ key }}':'{{item.title}}'{% endif %}
+                    {% endfor %}
+                {% endif%}
+                };
+                var taskStateColor=[
+                {% if attribute(app,'taskStateColor') is defined %}
+                    {% for item in app.taskStateColor %}
+                        {% if not loop.last %}'{{item}}',{% else %}'{{item}}'{% endif %}
+                    {% endfor %}
+                {% endif%}
+                ];
+                if (typeof (json.data) == 'object'&& json.data.length >0) {
+                    var date;
+                    for (var i in json.data) {
+                        var id = json.data[i].id;
+                        var state = json.data[i].state;
+                        var name = json.data[i].name;
+                        json.data[i].name = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/task-detail-{% if app['task_type'] == 'karaoke' %}karaoke{% else %}video{% endif %}?id='+ id + '">' + name + '</a>';
+                        
+                        json.data[i].state = '<span class="txt-' + taskStateColor[state] + '">'+taskState[state]+'</span>';
+                        if (json.data[i].archived != '0'){
+                            json.data[i].state += '<br><span class="bg-' + taskStateColor[4] + '">'+taskState[4]+'</span>';
+                        }
+                        date = json.data[i]['start_time'];
+                        if (date > 0) {
+                            date = new Date(date * 1000);
+                            json.data[i]['start_time'] = date.toLocaleFormat("%b %d, %Y %H:%M");
+                        }
+                        date = json.data[i]['end_time'];
+                        if (date > 0) {
+                            date = new Date(date * 1000);
+                            json.data[i]['end_time'] = date.toLocaleFormat("%b %d, %Y %H:%M");
+                        }
+                    }
+                }
+                if(typeof(json.videotime != 'undefined') && json.videotime!=-1) {
+                    $('#videoduration').text($('#videoduration').text().replace(/\d+/ig, (json.videotime ? json.videotime: '0')));
+                }
+                
+            }).dataTable({
+                "processing": true,   
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/tasks-report-json",
+                    "data": function (d) {
+                        var table = $('#datatable-1').DataTable();
+                        var DT_qString = table.ajax.url();
+                        if (DT_qString.indexOf("?") == -1){
+                            d = dataTableDataPrepare(d);
+                        }
+                        d['task_type'] = '{{ app['task_type'] }}';
+
+                        $('input[id^="datepicker_"]').each(function () {
+                            d['filters[' + $(this).attr("id").replace("datepicker_", "interval_") + ']'] = $(this).val();
+                        });
+                    }
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+                {% endif %}
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "bInfo": true,
+
+                "fixedHeader": {
+                    header: true,
+                    headerOffset: $('header.navbar').height()
+                },
+
+                "order": [[ 0, "desc" ]],
+                "columnDefs": [
+
+                    {"searchable": false, "targets": [-1, 1, 2, 3]},
+                    {"sortable": false, "targets": [1]}
+                ]
+            });
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+                var dayNamesMin = [
+                    '{{ 'Sun'|trans }}',
+                    '{{ 'Mon'|trans }}',
+                    '{{ 'Tue'|trans }}',
+                    '{{ 'Wed'|trans }}',
+                    '{{ 'Thu'|trans }}',
+                    '{{ 'Fri'|trans }}',
+                    '{{ 'Sat'|trans }}'
+                ];
+                var monthNames  = [
+                    '{{ 'January'|trans }}',
+                    '{{ 'February'|trans }}',
+                    '{{ 'March'|trans }}',
+                    '{{ 'April'|trans }}',
+                    '{{ 'May'|trans }}',
+                    '{{ 'June'|trans }}',
+                    '{{ 'July'|trans }}',
+                    '{{ 'August'|trans }}',
+                    '{{ 'September'|trans }}',
+                    '{{ 'October'|trans }}',
+                    '{{ 'November'|trans }}',
+                    '{{ 'December'|trans }}'
+                ];
+
+                $("#datepicker_from").datepicker({
+                    numberOfMonths: 1,
+                    language: 'ru',
+                    dateFormat: 'dd/mm/yy',
+                    dayNamesMin: dayNamesMin,
+                    monthNames: monthNames,
+                    onClose: function (selectedDate) {
+                        $("#datepicker_to").datepicker("option", "minDate", selectedDate);
+                        $('#datatable-1').DataTable().ajax.reload();
+                    }
+                });
+
+                $("#datepicker_to").datepicker({
+                    numberOfMonths: 1,
+                    language: 'ru',
+                    dateFormat: 'dd/mm/yy',
+                    dayNamesMin: dayNamesMin,
+                    monthNames: monthNames,
+                    onClose: function (selectedDate) {
+                        $("#datepicker_from").datepicker("option", "maxDate", selectedDate);
+                        $('#datatable-1').DataTable().ajax.reload();
+                    }
+                });
+
+                $("#iptv_list").on('click', 'div[data-tvfilter] ul a', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    setActiveFilter(this);
+                    var qString = '';
+                    $("#iptv_list div[data-tvfilter] ul a.active").each(function(){
+                        qString = getURLFilterString(this, qString).split("?").splice(-1)[0] || '';
+                        console.log(qString);
+                    });
+                    var table = $('#datatable-1').DataTable();
+                    var DT_qString = table.ajax.url();
+                    DT_qString = DT_qString.replace(/\??filters[^&]+&?/ig, '');
+                    console.log(DT_qString);
+                    table.ajax.url(DT_qString + '?' + qString);
+                    table.ajax.reload();
+
+                });
+
+                LoadDataTablesScripts(InitDatatable);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);

@@ -1,0 +1,110 @@
+function InitSelect2() {
+    $('#form_rating_mpaa').select2(select2Opt);
+    $('#form_age').select2(select2Opt);
+}
+
+function yelp_step_2() {
+
+    $.validate(conf);
+
+    LoadSelect2Script(InitSelect2);
+
+    $(document).on('click', '#update_rating_kinopoisk', function () {
+        var sendData = {
+            data: $("#form_kinopoisk_id").val() || $("#form_o_name").val() || '',
+            provider: $("#form_autocomplete_provider").val() || 0,
+            type: ($("#form_is_series").val() === '1'?'tv':'movie')
+        };
+
+        $.ajax({
+            url: '{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/update-rating-kinopoisk',
+            type: 'POST',
+            data: sendData,
+            success: function (data) {
+                if (data.success) {
+                    $('#kinopoisk_url').attr('href', '');
+                    $('#kinopoisk_url').html('');
+                    for (var id in data.result) {
+                        if (data.result.hasOwnProperty(id)) {
+                            $("#form_" + id).val(data.result[id]);
+
+                            if (id == 'kinopoisk_url') {
+                                $('#kinopoisk_url').attr('href', data.result[id]);
+                                $('#kinopoisk_url').html(data.result[id]);
+                            }
+                        }
+                    }
+                } else if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert("{{ 'Some server error'|trans }}");
+                }
+            },
+            error: function (data) {
+                if (typeof(data.responseJSON) != 'undefined' && typeof(data.responseJSON.error) != 'undefined') {
+                    alert(data.responseJSON.error);
+                } else {
+                    alert("{{ 'Some network error or access denied'|trans }}");
+                }
+            },
+            dataType: "json",
+            async: false
+        });
+
+    });
+
+    $("#autocomplete_button_container").on('click', 'button', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        var sendData = {
+            data: $("#form_kinopoisk_id").val() || $("#form_o_name").val() || '',
+            provider: $("#form_autocomplete_provider").val() || 0,
+            type: ($("#form_is_series").val() === '1'?'tv':'movie')
+        };
+
+        var searchBy;
+
+        if (($('#form_o_name').val() && $('#form_o_name').val() != $('#form_o_name').data('oldvalue'))) {
+            $('#form_o_name').data('oldvalue', $('#form_o_name').val());
+            sendData.data = $('#form_o_name').val();
+            searchBy = 'name';
+        } else {
+            sendData.data = ($('#form_kinopoisk_id').val() ? $('#form_kinopoisk_id').val() : $('#form_o_name').val());
+            searchBy = ($('#form_kinopoisk_id').val() ? 'id' : 'name');
+        }
+
+        if (!sendData.provider || sendData.provider === ''){
+            JSErrorModalBox({'msg': "{{ 'First, select the search service'|trans }}"});
+        } else if (!sendData.data || sendData.data === '') {
+            JSErrorModalBox({'msg': "{{ 'First enter the name or the movie id'|trans }}"});
+        } else {
+            if ($("#modalbox > div").css('display') != 'none') {
+                $("#modalbox > div").hide();
+            }
+            $("#modalbox").show();
+            JSshowModalBox();
+            ajaxPostSend('{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/get-kinopoisk-info-by-' + searchBy, sendData, false, false, true);
+        }
+    });
+
+    fillFormData();
+
+    var currID = $("#form_id").val(), currOName = $("#form_o_name").val();
+
+    if (currID && currOName) {
+        var addMovieData = localStorage.getItem('add_movie_data') || '[]', timer = new Date();
+        addMovieData = JSON.parse(addMovieData);
+        for (var i in addMovieData){
+            if (addMovieData[i] instanceof Object && ((addMovieData[i].timestamp && (timer.getTime() - addMovieData[i].timestamp) > 1800000) || (addMovieData[i].o_name && addMovieData[i].o_name === currOName))){
+                addMovieData.splice(i, 1);
+            }
+        }
+        addMovieData.push({
+            id: currID,
+            o_name: currOName,
+            timestamp: timer.getTime()
+        });
+        localStorage.setItem('add_movie_data', JSON.stringify(addMovieData));
+    }
+}

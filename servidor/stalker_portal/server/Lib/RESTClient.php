@@ -1,0 +1,119 @@
+<?php
+
+namespace Ministra\Lib;
+
+use Ministra\Lib\S642b6461e59cef199375bfb377c17a39\a777f7659bfaad9ba0acb83e0c546a50;
+class RESTClient
+{
+    public static $from;
+    private static $auth_login;
+    private static $auth_password;
+    private static $access_token;
+    private $resource;
+    private $rest_server;
+    private $method;
+    private $ids;
+    private $data;
+    private $timeout;
+    private $connection_timeout;
+    public function __construct($rest_server)
+    {
+        $this->rest_server = $rest_server;
+        $this->timeout = (int) \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\a777f7659bfaad9ba0acb83e0c546a50::getSafe('rest_client_timeout', 3);
+        $this->connection_timeout = (int) \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\a777f7659bfaad9ba0acb83e0c546a50::getSafe('rest_client_connection_timeout', 1);
+    }
+    public static function setAccessToken($token)
+    {
+        self::$access_token = $token;
+    }
+    public function get()
+    {
+        $this->method = 'GET';
+        return $this->execute();
+    }
+    public function create($data = array())
+    {
+        $this->method = 'POST';
+        $this->data = $data;
+        return $this->execute();
+    }
+    public function update($data = array())
+    {
+        $this->method = 'PUT';
+        $this->data = $data;
+        return $this->execute();
+    }
+    public function delete()
+    {
+        $this->method = 'DELETE';
+        return $this->execute();
+    }
+    public function resource($resource)
+    {
+        $this->resource = $resource;
+        return $this;
+    }
+    public function ids($ids)
+    {
+        if (!\is_array($ids)) {
+            $ids = [$ids];
+        }
+        $this->ids = $ids;
+        return $this;
+    }
+    public function setAuthParams($login, $password)
+    {
+        if (!empty($login) && !empty($password)) {
+            self::$auth_login = $login;
+            self::$auth_password = $password;
+        }
+    }
+    private function execute()
+    {
+        $url = $this->rest_server . $this->resource . '/' . (!empty($this->ids) ? \implode(',', $this->ids) : '');
+        $headers = [];
+        $headers[] = 'Connection: close';
+        $headers[] = 'X-From: ' . self::$from;
+        if (!empty(self::$access_token)) {
+            $headers[] = 'Authorization: Bearer ' . self::$access_token;
+        } elseif (!empty(self::$auth_login) && !empty(self::$auth_password)) {
+            $headers[] = 'Authorization: Basic ' . \base64_encode(self::$auth_login . ':' . self::$auth_password);
+        }
+        $ch = \curl_init($url);
+        \curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        \curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        \curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->method);
+        \curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
+        \curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->connection_timeout);
+        if ($this->method == 'POST' || $this->method == 'PUT') {
+            \curl_setopt($ch, CURLOPT_POSTFIELDS, \http_build_query($this->data));
+        }
+        $json_result = \curl_exec($ch);
+        $this->reset();
+        if ($json_result === false) {
+            if (\curl_errno($ch) == 28) {
+                throw new \Ministra\Lib\RESTClientConnectionTimeout('Connection timeout. url: ' . $url . '; Error: ' . \curl_error($ch));
+            }
+            throw new \Ministra\Lib\RESTClientConnectionFailure('Error get contents from url: ' . $url . '; Error: ' . \curl_error($ch));
+        }
+        $result = \json_decode($json_result, true);
+        if (!empty($result['output'])) {
+            echo $result['output'];
+        }
+        if ($result === null) {
+            throw new \Ministra\Lib\RESTClientUnknownFormat('Result cannot be decoded. Result: ' . $json_result);
+        }
+        if ($result['status'] != 'OK') {
+            $error = !empty($result['error']) ? $result['error'] : 'No description of the error. Result: ' . $json_result;
+            throw new \Ministra\Lib\RESTClientRemoteError($error);
+        }
+        return $result['results'];
+    }
+    private function reset()
+    {
+        $this->ids = [];
+        $this->data = [];
+        $this->resource = '';
+        $this->method = '';
+    }
+}

@@ -1,0 +1,60 @@
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object' && json.data.length >0) {
+                    var date;
+                    for (var i in json.data) {
+                        var id = json.data[i].id;
+                        var mac = json.data[i].mac;
+                        json.data[i].mac = '<a href="{{ app.request_context.baseUrl }}/users/edit-users?id=' + id + '">' + mac + '</a>';
+                        date = json.data[i]['time_last_play'];
+                        if (date > 0 && date != '0000-00-00') {
+                            date = new Date(date * 1000);
+                            json.data[i]['time_last_play'] = date.toLocaleFormat("%b %d, %Y %H:%M");
+                        } else {
+                            json.data[i]['time_last_play'] = '';
+                        }
+
+                    }
+                }
+            }).dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/stat-abonents-unactive-list-json",
+                    "data": function (d) {
+                        d = dataTableDataPrepare(d);
+
+                        $('input[id^="datepicker_"]').each(function () {
+                            d['filters[' + $(this).attr("id").replace("datepicker_", "interval_") + ']'] = $(this).val();
+                        });
+                    }
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+                {% endif %}
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "bInfo": true,
+                
+                "fixedHeader": {
+                    header: true,
+                    headerOffset: $('header.navbar').height()
+                },
+                
+                "columnDefs": [{"searchable": false, "targets": [2]}]
+            }).prev('.dataTables_processing').hide();
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+                {{ main_macro.get_datepicker_js_script() }}
+                LoadDataTablesScripts(InitDatatable);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);

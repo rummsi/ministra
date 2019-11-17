@@ -1,0 +1,153 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Streaming servers'|trans ~ ': ' ~ 'servers list'|trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/BroadcastServers/broadcast_servers_list/broadcast_servers_list.js.twig") %}
+        </script>
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {{ main_macro.get_filter('status', 'Status'|trans, 'id', 'title', app['allServerStatus'], 2) }}
+                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/broadcast-servers-list-json" class="main_ajax btn btn-success pull-right no_context_menu" id="add_server"><i class="fa fa-plus"></i>{{ 'Add server'|trans }}</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalbox_ad">
+        <div class="devoops-modal">
+            <div class="devoops-modal-header">
+                <div class="modal-header-name">
+                    <span></span>
+                </div>
+                <div class="box-icons">
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <form class="form-horizontal" role="form" id="karaoke_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-server">
+                <div class="devoops-modal-inner">
+                    <div class="box">
+                        <div class="box-content">
+                            <!-- track name -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-xs-offset-1">{{ 'Title'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10 ">
+                                        <input type="hidden" name="id" class="own_fields">
+                                        <input type="text" name="name" data-validation="required"  class='own_fields form-control'>
+                                    </div>
+                                    <i class="i-hint"
+                                       title="{{ 'You can use letters, digits and symbols from the list: ! @ # $ % ^ & * ( ) _ - + : ; , . It will be shown in the load balancer.' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+
+                            <!-- address -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-xs-offset-1">{{ 'URL'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input type="text" name="address" data-validation="required,custom" data-validation-regexp="^[a-z0-9\.\-]+(\:\d+)?$" class='form-control own_fields'>
+                                    </div>
+                                    <i class="i-hint"
+                                       title="{{ 'Example: server.example:8080' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                            
+                            <!-- max_sessions -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-xs-offset-1">{{ 'Maximum users'|trans }} <span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input type="text" name="max_sessions" data-validation="required,number"  class='form-control own_fields'>
+                                    </div>
+                                    <i class="i-hint"
+                                       title="{{ 'Maximum quantity of users(load) numeric value' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                            
+                            <!-- zone -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Streaming area'|trans }} </label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-6 ">
+                                        <select class="populate placeholder own_fields" name="stream_zone" id="s2_zone">
+                                            <option value="">&nbsp;</option>
+                                            {% if attribute(app, 'allZones') is defined %}
+                                                {% for key, item in app['allZones'] %}
+                                                    <option value="{{ key }}">{{ item }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                    <i class="i-hint"
+                                       title="{{ 'Choose the streaming area, if the field is clean, there will be set a default streaming area' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                    {#
+                                    <span class="help-inline  col-xs-10 col-sm-10">
+                                        <span class="small txt-default">{{ 'Choose the streaming area, if the field is clean, there will be set a default streaming area'|trans }}</span>
+                                    </span> #}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="devoops-modal-bottom">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+                        <button type="reset"  class="btn btn-default col-sm-2 pull-right" > {{ 'Cancel'|trans }} </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,222 @@
+{% extends (app['twig_theme'] ~ '/' ~ 'layout.twig') %}
+{% import (app['twig_theme'] ~ '/macro/iptw_macro.twig') as main_macro %}
+
+{% set active = 'tv-channels' %}
+{% set title = ('IPTV channels'|trans ~ ': ' ~ 'channels list'|trans) | trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Select/js/dataTables.select.js"></script>
+        
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/js/dataTables.buttons.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/js/buttons.colVis.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/css/buttons.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+        
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/TvChannels/iptv_list/iptv_list.js.twig") %}
+        </script>
+        
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {{ main_macro.get_filter('tv_genre_id', 'Genre'|trans, 'id', 'title', app['allGenres'], 2) }}
+                {{ main_macro.get_filter('languages', 'Languages'|trans, 'id', 'title', app['allLanguages'], 2) }}
+                {{ main_macro.get_filter('tv_archive_type', 'Archive'|trans, 'id', 'title', app['allArchive'], 2) }}
+                {{ main_macro.get_filter('status_id', 'Status'|trans, 'id', 'title', app['allStatus'], 2) }}
+                {{ main_macro.get_filter('monitoring_status', 'Monitoring status'|trans, 'id', 'title', app['allMonitoringStatus'], 2) }}
+                <a href="{{app.request_context.baseUrl}}/{{ app.controller_alias }}/add-channel" class="btn btn-success pull-right"><i class="fa fa-plus"></i>{{ 'Add a channel'|trans }}</a>
+                <a href="{{app.request_context.baseUrl}}/{{ app.controller_alias }}/restart-all-archives" class="btn btn-default pull-right no_context_menu" id="restart_archives_button"><i class="fa fa-repeat"></i>{{ 'Restart all TV archives'|trans }}</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="">
+                <div class="box">
+                    {% if attribute(app, 'dropdownAttribute') is defined %}
+                        {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                    {% endif %}
+                    <div class="box-content">
+                        <div class="box-content no-padding">
+                            <div class="dt-buttons">
+
+                                <div class="dt-group-select-dropdown pull-left">
+                                    <a href="#" class="dropdown-toggle btn-- dt-button" data-toggle="dropdown">                    
+                                        <span><i class="fa "></i>&nbsp;</span>
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-left">
+                                        <li>
+                                            <div id="select_none">
+                                                {{ 'Undo selection'|trans }}
+                                            </div>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li>
+                                            <div id="select_all">
+                                                {{ 'Select all'|trans }}
+                                                {#<i class="fa fa-square-o"></i>#}
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div id="select_inverse">
+                                                 {{ 'Inverse selection'|trans }}
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                            <div class="dataTables_processing"></div>
+                            <table class="table table-hover table-datatable compact" id="datatable-1">
+                                {% if attribute(app, 'dropdownAttribute') is defined %}
+                                    {{ main_macro.get_datatable_head(app['dropdownAttribute'], "\0" ) }}
+                                {% endif %}
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalbox_ad">
+        <div class="devoops-modal">
+            <div class="devoops-modal-header">
+                <div class="modal-header-name">
+                    <span>EPG</span>
+                </div>
+                <div class="box-icons">
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="devoops-modal-inner">
+                <div class="box">
+                    <div class="box-content">
+                        <form class="form-horizontal" role="form" id="epg_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-channel-epg-item">
+                            <!-- name -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-xs-offset-1">{{ 'Channel'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10 ">
+                                        <select class="populate placeholder own_fields" name="ch_id" id="s2_channel" >
+                                            {% if attribute(app, 'allChannels') is defined %}
+                                                {% for item in app.allChannels %}
+                                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-xs-offset-1">{{ 'Date'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <div class="col-sm-6 no-padding-left">
+                                            <input type='text' class='form-control own_fields datepicker' data-date-format='dd-mm-yy' name='epg_date' id="epg_date" readonly="readonly">
+                                        </div>
+                                        <button class="btn btn-success col-sm-5 pull-right" id="get_epg_button">{{ 'Show EPG'|trans }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-xs-offset-1">EPG</label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10 ">
+                                        <textarea name="epg" id="epg_body" class='own_fields form-control' rows="18"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+            <div class="devoops-modal-bottom">
+                <div class="col-xs-12">
+                    <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+                    <button type="reset"  class="btn btn-default col-sm-2 pull-right" >{{ 'Cancel'|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/template" id="change_channel_genre_template">
+        <div class="box-content">
+            <form class="form-horizontal" role="form" action="" id="group_action_form">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Choose genre'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-8">
+                            <input type="hidden" class="own_fields" name="group_key" value="id">
+                            <input type="hidden" class="own_fields form-control" name="id" value="">
+                            <select class="own_fields" name="tv_genre_id" id="tv_genre_id">
+                                <option value="-1" >&nbsp;</option>
+                                {% autoescape false %}
+                                    {% if attribute(app, 'allGenres') is defined %}
+                                        {% for row in app.allGenres %}
+                                            <option value="{{ row.id }}" >{{ row.title ? row.title|escape : '&nbsp;' }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endautoescape %}
+                            </select>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_form_button_template">
+        <div class="col-xs-12">
+            <button type="submit" id="save_channel" class="btn btn-success col-sm-2 pull-right">{{ 'Apply'|trans }}</button>
+            <button type="reset"  class="btn btn-default col-sm-2 pull-right" >{{ 'Cancel'|trans }}</button>
+        </div>
+    </script>
+
+    <script type="text/template" id="change_channel_language_template">
+        <div class="box-content">
+            <form class="form-horizontal" role="form" action="" id="group_action_form">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Choose language'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-8">
+                            <input type="hidden" class="own_fields" name="group_key" value="id">
+                            <input type="hidden" class="own_fields form-control" name="id" value="">
+                            <select class="own_fields" name="languages" id="s2_languages" multiple="multiple">
+                                {% autoescape false %}
+                                    {% if attribute(app, 'allLanguages') is defined %}
+                                        {% for row in app.allLanguages %}
+                                            <option value="{{ row.id }}" >{{ row.title ? row.title|escape : '&nbsp;' }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endautoescape %}
+                            </select>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+
+{% endblock %}

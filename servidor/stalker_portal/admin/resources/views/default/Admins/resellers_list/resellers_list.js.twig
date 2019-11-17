@@ -1,0 +1,469 @@
+
+        var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+        
+        var conf = {
+            form: '#modalbox_ad form',
+            lang : '{{ app.js_validator_language }}',
+            showHelpOnFocus : true,
+            validateHiddenInputs: true,
+            scrollToTopOnError: false,
+            //validateOnEvent: false,
+            modules: 'security',
+            errorClass: "error",
+            isSubmited: false,
+
+            onSuccess: function () {
+                if (conf.isSubmited) {
+                    var sendData = new Object();
+                    var form_fields = $("#modalbox_ad").find(".own_fields");
+                    form_fields.each(function () {
+                        if ($(this).val()) {
+                            sendData[this.name] = $(this).is(':disabled') ? '' : $(this).val();
+                        }
+                    });
+                    var action = $("#modalbox_ad form").attr('action');
+                    ajaxPostSend(action, sendData, false, false);
+                }
+                conf.isSubmited = false;
+                return false;
+            },
+            onError: function () {
+                conf.isSubmited = false;
+                return false;
+            }
+        }
+
+        function InitSelect2() {
+                $.fn.select2.defaults.set('dropdownAutoWidth', 'false');
+                $.fn.select2.defaults.set('width', '100%');
+                $('#target_reseller').select2(select2Opt);
+        }
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object') {
+                    for (var i in json.data) {
+                        var id = json.data[i].id;
+                        var name = json.data[i].name;
+                        json.data[i].operations = "<div class='col-xs-3 col-sm-8'>\n\
+                                                        <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                                            <i class='pull-right fa fa-cog'></i>\n\
+                                                        </a>\n\
+                                                        <ul class='dropdown-menu pull-right'>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/move-users-to-reseller' data-id='" + id +"'>\n\
+                                                                    <span>{{ 'Move all users to another reseller'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                        ";
+                        if (id !== '-') {
+                            json.data[i].name = '<a class="main_ajax no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/resellers-list-json" data-id="' + id + '">' +escapeHtml( name )+ '</a>';
+                            json.data[i].operations += "<li>\n\
+                                                            <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/resellers-list-json' data-id='" + id + "'>\n\
+                                                                    <span>{{ 'Edit'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/resellers-delete' data-id='" + id + "'>\n\
+                                                                    <span> {{ 'Delete'|trans }} </span>\n\
+                                                                </a>\n\
+                                                            </li>";
+                        }
+
+                        json.data[i].operations += "</ul>\n\
+                                                    </div>";
+                        if (json.data[i].max_users <= 0) {
+                            json.data[i].max_users = "&#8734";
+                        }
+                        var possibleDateKeys = ['created', 'modified'], date;
+                        for (var num in possibleDateKeys) {
+                            var key = possibleDateKeys[num];
+                            if (typeof(json.data[i][key]) != 'undefined') {
+                                date = json.data[i][key];
+                                if (date > 0) {
+                                    date = new Date(date * 1000);
+                                    json.data[i][key] = date.toLocaleFormat("%b %d, %Y %H:%M");
+                                } else {
+                                    json.data[i][key] = '';
+                                }
+                            } else {
+                                json.data[i][key] = '';
+                            }
+                        }
+                    }
+                }
+            }).dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/resellers-list-json"
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+                {% endif %}
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "bInfo": true,
+                "columnDefs": [
+                    {className: "action-menu", "targets": [-1]},
+                    {"searchable": false, "targets": [-1, 2, 3, 4, 5]},
+                    {"sortable": false, "targets": [-1]},
+
+                    /*** Renders ***/
+                    {
+                        "render": function ( data, type, row ) {
+                            return row.id == '-' ? '' : row.id;
+                        },
+                        "targets": 0
+                    }
+                ]
+            }).prev('.dataTables_processing').hide('');
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+
+                LoadSelect2Script(InitSelect2);
+                LoadDataTablesScripts(InitDatatable);
+
+                $.formUtils.addValidator(customIPVaidator);
+                $.validate(conf);
+
+                $(document).on('click', "a.main_ajax:not([href*='move-users-to-reseller'])", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var $this = $(this);
+                    $this.closest('div.open').removeClass('open');
+
+                    if( $this.attr("href").indexOf("resellers-delete") !== -1 && !confirm("{{"Remove this reseller?"|trans}}") ) {
+                        return false;
+                    }
+                    
+                    var sendData = $this.data();
+                    ajaxPostSend($this.attr('href'), sendData, false, false);
+                    return false;
+                });
+
+                $('#modalbox_ad').on('click', "[type='reset']", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $(this).closest('form').get(0).reset();
+                    $("#form_ips").trigger('change').closest('div.form-group').hide();
+                    $("#form_use_ip_ranges").val(0).prop('checked', false);
+                    JScloseModalBox();
+                    return false;
+                });
+
+                $(document).on('click', "#modalbox_ad button[type='submit']", function (e) {
+                    if (e.currentTarget != e.target) {
+                        return;
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    if( $(conf.form).isValid({}, conf, true) ) {
+                        conf.isSubmited = true;
+                        conf.onSuccess();
+                    } else {
+                        conf.onError();
+                    }
+                    return false;
+                });
+
+                $(document).on('click', "#modalbox button[type='submit']", function (e) {
+                    if (e.currentTarget != e.target) {
+                        return;
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    var sendData = new Object();
+                    var form_fields = $("#modalbox form").find(".own_fields");
+                    form_fields.each(function () {
+                        sendData[this.name] = $(this).val();
+                    });
+                    var action = $("#modalbox form").attr('action');
+                    ajaxPostSend(action, sendData, false, false);
+                    return false;
+                });
+
+                $("#add_reseller").on("click", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $("#modalbox_ad").find(".modal-header-name").children('span').text('{{ 'Adding reseller'|trans }}');
+                    $('#modalbox_ad form').get(0).reset();
+                    $("#modalbox_ad input").removeAttr('disabled').val('');
+                    $("#modalbox_ad input[name='id']").attr('disabled', 'disabled');
+                    $('#form_ips_tagsinput .tag').remove();
+                    clearServerValidator();
+                    $('#form_ips_tagsinput .not_valid').removeClass('not_valid');
+                    setServerValidationRequestParams('reseller_name');
+                    $("#form_ips").closest('div.form-group').show();
+                    $("#form_use_ip_ranges").val(1).prop('checked', 'checked');
+                    $("#modalbox_ad").show();
+                    return false;
+                });
+
+                $(document).on('click', "a[href*='move-users-to-reseller']", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $("#modalbox").data('complete', 1);
+                    $('#modalbox').find('.modal-header-name span').text("{{ 'Resellers'|trans }}");
+                    var formHtml = '\n\
+                        <div class="box-content">\n\
+                            <form class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/move-users-to-reseller">\n\
+                                <div class="form-group">\n\
+                                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Reseller name'|trans }}</label>\n\
+                                    <div class="col-xs-10 col-sm-8">\n\
+                                        <span class="col-xs-12 col-sm-10">\n\
+                                            <input type="hidden" class="own_fields" name="source_id" value="'+ $(this).data('id') + '">\n\
+                                            <select class="own_fields" name="target_id" id="target_reseller">\n\
+                                    {% autoescape false %}
+                                        {% if attribute(app, 'allResellers') is defined %}
+                                            {% for row in app.allResellers %}
+                                        <option value="{{ row.id }}" >{{ row.name ? row.name|escape : '&nbsp;' }}</option>\n\
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endautoescape %}
+                                        </span>\n\
+                                    </div>\n\
+                                </div>\n\
+                            </form>\n\
+                        </div>';
+                    $('#modalbox').find('.devoops-modal-inner').html(formHtml);
+                    $('#modalbox').find('.devoops-modal-bottom').html('\n\
+                        <div class="col-xs-12">\n\
+                            <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Move'|trans }}</button>\n\
+                            <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>\n\
+                        </div>');
+
+                    $("#target_reseller option[value='"+$(this).data('id')+"']").prop('selected', 'selected');
+                    $("#target_reseller").select2(select2Opt);
+
+                    $("#modalbox").show();
+                    $(this).closest('div.open').removeClass('open');
+                    return false;
+                });
+
+                {% if attribute(app,'allow_resellers_ip_ranges') is defined and app.allow_resellers_ip_ranges %}
+
+                $("#form_ips").tagsInput({
+                    'height':'auto',
+                    'width':'100%',
+                    //'minInputWidth': 90,
+                    'maxInputWidth': 372,
+                    'defaultText': "{{ 'Add IP'|trans }}",
+                    'onAddTag' : onAddTag,
+                    'onRemoveTag' : onRemoveTag
+                    //'onChange' : onChangeTag
+                });
+                // add form-control class to look like control on validation
+                $("#form_ips_tagsinput").addClass("form-control");
+
+                $("#form_use_ip_ranges").on('change', function (e) {
+                    if($(this).is(':checked')) {
+                        $("#form_ips").prop('disabled', false).removeAttr('disabled');
+                        $("#form_ips").trigger('change');
+                    } else {
+                        $("#form_ips").prop('disabled', true).attr('disabled','disabled');
+                    }
+                    $("#form_ips").closest('div.form-group')[$(this).is(':checked') ? 'slideDown': 'slideUp']('fast');
+                    $(this).val($(this).is(':checked') ? 1: 0);
+                });
+
+                // fix tag's input autoresize on Ctrl+V:
+                $("#form_ips_tag").on('input', function() { $(this).trigger('keypress') });
+
+                {% endif %}
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);
+
+        function setServerValidationRequestParams(field) {
+            var param = {
+                'id': $("#reseller_id").val(),
+                'for_validator': true
+            };
+            $('#' + field).attr('data-validation-req-params', JSON.stringify(param) );
+        }
+
+        var setResellerModal = function (data) {
+            $("#modalbox_ad").find(".modal-header-name").children('span').text('{{ 'Editing reseller'|trans }}');
+            $('#modalbox_ad form').get(0).reset();
+            clearServerValidator();
+            if (data.data.length == 1) {
+                var row = data.data[0];
+                for (var field_name in row) {
+                    $("#modalbox_ad input[name='" + field_name + "']").val(row[field_name]);
+                }
+            }
+
+            setServerValidationRequestParams('reseller_name');
+
+            {% if attribute(app,'allow_resellers_ip_ranges') is defined and app.allow_resellers_ip_ranges %}
+            $('#form_use_ip_ranges').prop('checked',(''+data.data[0].use_ip_ranges) == '1');
+
+            if((''+data.data[0].use_ip_ranges) == '1') {
+                $("#form_ips").prop('disabled', false).removeAttr('disabled');
+            } else {
+                $("#form_ips").prop('disabled', true).attr('disabled','disabled');
+            }
+
+            if( $('#form_ips').length ){
+                $('#form_ips').importTags($('#form_ips').val());
+            }
+
+            $("#form_ips").closest('div.form-group')[(''+data.data[0].use_ip_ranges) == '1' ? 'show': 'hide']();
+            if (data.data.length == 1 && data.data[0].ip_ranges) {
+                var ip_ranges = data.data[0].ip_ranges.split(',');
+                if (ip_ranges instanceof Array) {
+                    $.each(ip_ranges, function(index, value){
+                        onAddTag($.trim(value), $('#form_ips').get(0));
+                    });
+                }
+            }
+
+            {% endif %}
+            $("#modalbox_ad input[id!='form_ips']").removeAttr('disabled');
+            $("#modalbox_ad").show();
+
+            conf.isSubmited = false;
+            //$(conf.form).isValid({}, conf, true);
+        };
+
+        // drop assigned server-side validator instance to stop reuse:
+        function clearServerValidator() {
+            $("#modalbox_ad").find("[data-validation~='ip_validate']").each( function(){
+                this.asyncValidators = null;
+            });
+        }
+
+        var serverCheckTag = function(tagInput, sendData){
+            var additionalOptions = {
+                success: function(data) {
+                    setValidTag(tagInput, sendData['ip_ranges'], true);
+                },
+                error: function (response) {
+                    if ((response.readyState == 4 || response.status != 0) && response.responseJSON) {
+                        $(tagInput).attr('data-validation-error-msg-custom', response.responseJSON.message);
+                    } else {
+                        $(tagInput).attr('data-validation-error-msg-custom', "{{ 'Server error. IP-address is not valid' }}");
+                    }
+                    setValidTag(tagInput, sendData['ip_ranges'], false);
+                }
+            };
+            ajaxPostSend("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/check-ip-range-intersection", sendData, null, null, null, additionalOptions);
+        }
+
+        var filterIP = function(ip_ar){
+            var check_local_ip = [
+                function(ip_ar){
+                    return !isNaN(ip_ar[0]) && !isNaN(ip_ar[1]);
+                },
+                function(ip_ar){
+                    return ip_ar[0] !== 127;
+                },
+                function(ip_ar){
+                    return ip_ar[0] !== 192 || ip_ar[1] !== 168;
+                },
+                function(ip_ar){
+                    return ip_ar[0] !== 10;
+                },
+                function(ip_ar){
+                    return ip_ar[0] !== 172 || (ip_ar[1]<16 || ip_ar[1]>31);
+                }
+            ];
+
+            for(var num in check_local_ip) {
+                var func = check_local_ip[num];
+                if (ip_ar && ip_ar.length) {
+                    ip_ar = ip_ar.filter(func)
+                }
+            }
+            return ip_ar.join('.');
+        }
+
+        var setValidTag = function(tagInput, tagText, validFlag){
+            $("#" + $(tagInput).attr('id') + "_tagsinput").children('span.tag').each(function () {
+                if ($.trim($('span', this).text()) == tagText) {
+                    while(!(validFlag ^ $(this).hasClass('not_valid'))) {
+                        $(this)[validFlag ? 'removeClass': 'addClass']('not_valid');
+                    }
+                    return false;
+                }
+            });
+            conf.isSubmited = false;
+            $(tagInput).trigger('change').validate();
+        }
+
+        var onAddTag = function(tagText, tagInput){
+            var tagInput = tagInput ? tagInput: this;
+            tagText = !tagText ? '': tagText;
+
+            if (!tagText) {
+                return false;
+            }
+
+            var ip_mask_pattern  = /^([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}(\/([1-9]|[1-2]\d|3[0-2]))?$/igm;
+            var ip_mask_pattern2 = /^([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}\-([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}$/gm;
+            var validFlag = (ip_mask_pattern.test(tagText) && true) || (ip_mask_pattern2.test(tagText) && true);
+            if (!validFlag) {
+                $(tagInput).attr('data-validation-error-msg-custom', '{{ "Wrong format for ip-address or subnet"|trans }}');
+                setValidTag(tagInput, tagText, false);
+                return false;
+            }
+
+            var filtered = tagText.replace(/\s/, '').split('-').map(function (item) {
+                return filterIP([item.split('.').map(function (value) { return parseInt(value, 10) })]) ? item : null;
+            }).filter(function(item){return item && item.length}).join('-');
+
+            if (filtered) {
+                var sendData = {
+                    'ip_ranges': filtered,
+                    'reseller_id': $('#reseller_id').val(),
+                    'for_validator': true
+                };
+                serverCheckTag(tagInput, sendData);
+                return false;
+            }
+            setValidTag(tagInput, tagText, true);
+        };
+
+        var onRemoveTag = function(tagText){
+            var ip_ranges = $(this).val().split(',');
+            if (ip_ranges instanceof Array) {
+                $.each(ip_ranges, function(index, value){
+                    onAddTag($.trim(value), $('#form_ips').get(0));
+                });
+            }
+            $(this).trigger('change').validate();
+        };
+
+// Add custom validation rule
+var customIPVaidator = {
+    name : 'ip_validate',
+
+    validatorFunction : function (value, el, config, language, form) {
+        var isValid;
+        if(config.isSubmited && $(el).is(':disabled')) {
+            isValid = true
+        } else if (!value) {
+            $(el).attr('data-validation-error-msg-custom', '{{ "Wrong format for ip-address or subnet"|trans }}');
+            isValid = false;
+        } else {
+            isValid = !$("#" + $(el).attr('id') + "_tagsinput").children('span.tag').hasClass('not_valid');
+        }
+
+        this.errorMessage = !isValid ? $(el).attr('data-validation-error-msg-custom') :'';
+
+        return isValid;
+   },
+
+    errorMessage : '{{ "Wrong format for ip-address or subnet"|trans }}',
+    errorMessageKey: 'badCmd'
+};

@@ -1,0 +1,174 @@
+{% extends app['twig_theme'] ~ '/layout.twig' %}
+
+{% set title = 'Radio'|trans ~ ': ' ~ (app.radioEdit ? 'Edit radio'|trans ~ " '"~ app.radioName ~ "'" : 'Add radio'|trans) %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+{% endblock footer_js %}
+
+{% block footer %}
+    {{ parent() }}
+    
+    <script type="text/javascript" defer>
+       
+        {% include (app.twig_theme ~ "/Radio/add_radio/add_radio.js.twig") %}
+
+    </script>
+{% endblock %}
+
+
+{% block content %}
+
+    <div id="add_channel">
+        {{ form_start(app['form'], {'method': 'POST', 'action': (app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias) | trans, 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
+        <div class="bg-danger">
+            <div class="bg-danger">
+                {{ form_errors(app['form']) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+                <h4 class="section-header"><span>{{ app.radioEdit ? 'Edit radio'|trans ~ " '"~ app.radioName ~ "'" : 'Add radio'|trans }}</span></h4>
+                <div class="box">
+                    <div class="box-content">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label ">{{ 'Order'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {{ form_widget(app['form'].id, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_widget(app['form'].number, {'attr': {'class': 'form-control',
+                                        'data-validation': 'required, number, server',
+                                        'data-validation-postpone': '200',
+                                        'data-validation-url': app.request_context.baseUrl ~ '/'~ app.controller_alias ~'/radio-check-number',
+                                        'data-validation-param-name': 'param'
+                                    }}) }}
+                                    {# app['form'].number field has default value, so 'data-validation-event': 'blur' is added after change #}
+                                    <div class="name-check "></div>
+                                </div>
+                                <i class="i-hint"
+                                    title="{{ 'Should be unique, can contain only numbers'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                                <div>
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].number) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label ">{{ 'Title'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {{ form_widget(app['form'].name, {'attr': {'class': 'form-control',
+                                        'data-validation': 'required, server',
+                                        'data-validation-postpone': '200',
+                                        'data-validation-url': app.request_context.baseUrl ~ '/'~ app.controller_alias ~'/radio-check-name',
+                                        'data-validation-param-name': 'param',
+                                        'data-validation-event': 'blur'
+                                    }}) }}
+                                    <div class="name-check "></div>
+                                </div>
+                                <i class="i-hint"
+                                    title="{{ 'Should be unique'|trans }}. {{ 'You can use letters, digits and symbols from the list: ! @ # $ % ^ & * ( ) _ - + : ; , .'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                                <div>
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].name) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label ">{{ 'URL'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {{ form_widget(app['form'].cmd, {'attr': {'class': 'form-control',
+                                        'data-validation': 'required, custom',
+                                        'data-validation-regexp': '^(\\w+\\s)?\\w+\\:\\/\\/.+$',
+                                        'data-validation-error-msg-custom': 'Invalid format links'|trans,
+                                        'data-validation-event': 'blur'
+                                    }}) }}
+                                </div>
+                                <i class="i-hint"
+                                    title="{{ 'Format:  solution+URL. Example: ifm http://radiotest.example:10040'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                                <div>
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].cmd) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-checkbox">
+                            <label class="col-sm-2 control-label ">{{ 'Monitoring'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    <div class="checkbox-inline">
+                                        <label>
+                                            {{ form_widget(app['form'].enable_monitoring) }}
+                                            <i class="fa fa-square-o small"></i>
+                                        </label>
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{{ 'Turn on monitoring service for this URL'|trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].enable_monitoring) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label ">{{ 'Volume'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-3">
+                                    {{ form_widget(app['form'].volume_correction, {'attr': {'class': 'populate placeholder'} }) }}
+                                </div>
+                                <i class="i-hint"
+                                    title="{{ 'Stream volume adjustment'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                                <div>
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].volume_correction) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-buttons col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="box">
+                    <div class="box-content">
+                        <div class="row">
+                            <div class="col-xs-10 col-sm-4 pull-right">
+                                <div class="pull-right">
+                                    {{ form_widget(app['form'].save, { 'label': 'Save'|trans , attr: {'class': 'btn btn-success pull-right'}}) }}
+                                    <a id="form_reset" href="{{app.request_context.baseUrl}}/{{app.controller_alias}}" class="btn btn-default pull-right">{{ 'Cancel'|trans }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="">
+            {{ form_rest(app.form) }}
+        </div>
+        
+        {{ form_end(app['form']) }}  
+    
+    </div>
+
+{% endblock %}

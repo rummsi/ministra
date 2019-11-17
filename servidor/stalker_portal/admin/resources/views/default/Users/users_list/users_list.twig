@@ -1,0 +1,205 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro2.twig' as main_macros %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig'  as main_macro %}
+
+{% set title = 'Users'|trans ~ ': ' ~ 'list of users'|trans %}
+
+{% block head %}
+
+    {{ parent() }}
+    <style type="text/css">
+        {% include (app.twig_theme ~ "/Users/users_list/users_list.css") %}
+    </style>
+
+{% endblock %}
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Select/js/dataTables.select.js"></script>
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/js/dataTables.buttons.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/css/buttons.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+        
+        {{ parent() }}
+        {% include (app['twig_theme'] ~ "/basic_templates/events_menu.twig") %}
+
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/Users/users_list/users_list.js.twig") %}
+        </script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {% if attribute(app, 'filters_set') is defined %}
+                    {% for filter in app.filters_set %}
+                        {% if filter.default == '1' %}
+                            {% if filter.values_set|length != 0 %}
+                                {{ main_macro.get_filter_value_set_input(filter.text_id, filter.title, 'value', 'title', filter.values_set, 1) }}
+                            {% elseif filter.type == 'STRING' %}
+                                {{ main_macro.get_filter_string_input(filter.text_id, filter.title, 'value', 'title', filter.values_set, 1) }}
+                            {% elseif filter.type == 'DATETIME' %}
+                                {{ main_macro.get_filter_datetime_input(filter.text_id, filter.title, 'value', 'title', filter.values_set, 1) }}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% if attribute(app, 'filters_template') is defined %}
+                    {{ main_macros.get_dropdown_attribute(app['filters_template'], 'filter_param', 'Add parametr'|trans, 6, 1, 'true') }}
+                {% endif %}
+                <a id="apply_filter_button" href="#" class="btn btn-success no_context_menu">{{ 'Apply filter'|trans }}</a>
+                <a id="form_filter_button" href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/save-filter" class="btn btn-default no_context_menu" data-filter_set_id="{% if attribute(app, 'filter_set') is defined %}{{ app.filter_set.id }}{% endif %}">{{ 'Save filter'|trans }}</a>
+
+                <a id="add_button" href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/add-users" class="btn btn-success pull-right" {% if not app.resellerUserLimit %}style="display: none;"{% endif %}><i class="fa fa-plus"></i>{{ 'Add user'|trans }}</a>
+                <span id="limit_message" class="btn btn-default pull-right" {% if app.resellerUserLimit %}style="display: none;"{% endif %}>{{ 'Limit of number of the users has been reached'|trans }}</span>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="filter_block">
+                {% if attribute(app, 'filters_set') is defined %}
+                    {% for filter in app.filters_set %}
+                        {% if filter.default == '0' %}
+                            {% if filter.values_set|length != 0 %}
+                                {{ main_macro.get_filter_value_set_input(filter.text_id, filter.title, 'value', 'title', filter.values_set, 0) }}
+                            {% elseif filter.type == 'STRING' %}
+                                {{ main_macro.get_filter_string_input(filter.text_id, filter.title, 'value', 'title', filter.values_set, 0) }}
+                            {% elseif filter.type == 'DATETIME' %}
+                                {{ main_macro.get_filter_datetime_input(filter.text_id, filter.title, 'value', 'title', filter.values_set, 0) }}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute'], "\0" ) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/template" id="save_filter_template">
+        <div class="box-content">
+            <form class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-filter">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Filter name'|trans }}<span class="icon-required">*</span></label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-10">
+                            <input type="hidden" class="own_fields" name="filter_set[id]" value="">
+                            <input type="hidden" class="own_fields" name="filter_set[admin_id]" value="">
+                            <input type="hidden" class="own_fields" name="filter_set[filter_set]" value="">
+                            <input type="text" class="own_fields form-control" name="filter_set[title]" value="" data-validation="required">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group form-group-checkbox">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'For all'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" class="own_fields" name="filter_set[for_all]">
+                                    <i class="fa fa-square-o small"></i>
+                                </label>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Description'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-10">
+                            <textarea class="own_fields form-control" name="filter_set[description]"></textarea>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_form_button_template">
+        <div class="col-xs-12">
+            <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+            <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+        </div>
+    </script>
+
+    {% if attribute(app, 'reseller') is defined and not app['reseller'] %}
+    <script type="text/template" id="move_user_to_reseller_template">
+        <div class="box-content">
+            <form class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/move-user-to-reseller">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Reseller name'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-10">
+                            <input type="hidden" class="own_fields" name="id" value="">
+                            <input type="hidden" class="own_fields" name="source_id" value="">
+                            <select class="own_fields" name="target_id" id="target_reseller">
+                                {% autoescape false %}
+                                    {% if attribute(app, 'allResellers') is defined %}
+                                        {% for row in app.allResellers %}
+                                            <option value="{{ row.id }}" >{{ row.name ? row.name|escape : 'Not selected'|trans }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endautoescape %}
+                            </select>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+    {% endif %}
+
+    {% if attribute(app, 'enableBilling') is defined and app.enableBilling %}
+    <script type="text/template" id="expire_date_template">
+        <form class='form-horizontal' role='form' action='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/set-expire-billing-date'>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <div class="col-sm-12">
+                        <input type='hidden' class='own_fields' name='setaction' value='set'>
+                        <input type='hidden' class='own_fields' name='userid' value=''>
+                        <input type='text' name='expire_date' class='form-control own_fields datepicker-field' data-date-format='dd-mm-yy' readonly='readonly' id='expire_date_datepicker'>
+                        <div class="datepicker-inline" data-date-format="dd-mm-yy"></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </script>
+    <script type="text/template" id="modal_expire_date_buttons_template">
+        <div class="pull-right no-padding">
+            <button type="submit" class="btn btn-success pull-right">{{ 'Set date'|trans }}</button>
+            <button type="reset"  class="btn btn-default pull-right">{{ 'Cancel'|trans }}</button>
+        </div>
+    </script>
+    {% endif %}
+
+
+{% endblock %}

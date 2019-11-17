@@ -1,0 +1,211 @@
+/* redefine modalbox standart styles */
+#modalbox_ad .devoops-modal {
+	width: 802px;
+	margin-left: -401px;
+}
+
+#modalbox_ad .modal-header-name {
+	padding-left: 20px;
+}
+#modalbox_ad .devoops-modal-bottom {
+	height: 65px;
+	padding: 15px 20px;
+}
+
+#modalbox_ad .devoops-modal .devoops-modal-inner {
+	padding: 0;
+	height: 295px;
+	overflow-y: auto;
+}
+
+#modalbox_ad .statusbar {
+    padding-top: 7px;
+    min-height: 34px;
+}
+#modalbox_ad .statusbar .status-icon {
+    margin-top: 2px;
+    margin-right: 8px;
+}
+
+#modalbox_ad .statusbar .status-icon-spinner {
+    margin-top: 1px;
+}
+
+.status-icon-spinner {
+  height: 18px;
+  width: 18px;
+  /*margin: 40vh auto;*/
+  border: 2px solid rgba(0,0,0,0.45);
+  border-top: 2px solid rgb(0,0,0);
+  border-right: 2px solid rgb(0,0,0);
+  border-radius: 50%;
+  animation: rotate 1s infinite linear;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+#modalbox_ad .statusbar .status-icon .fa {
+	color: #fff;
+  	text-align: center;
+  	font-size: 9px;
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+	position: relative;
+	top: -2px;
+}
+
+#modalbox_ad .statusbar .status-icon-success {
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    border-radius: 50%;
+    background-color: #66bb6a;
+}
+#modalbox_ad .statusbar .status-icon-error {
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    border-radius: 50%;
+    background-color: #f44336;
+}
+
+.lk-result-inner {
+	text-align: center;
+	font-size: 13px;
+	padding: 138px 20px;
+}
+
+table.results-list {
+	margin: 20px;
+	margin-right: 0;
+	width: 760px;
+	border-collapse: collapse;
+	border: 1px solid #ddd;
+	border-bottom: 0 none;
+}
+table.results-list tr {
+	border-bottom: 1px solid #ddd;
+}
+table.results-list td {
+	color: #000;
+	font-size: 13px;
+	line-height: 1.2em;
+	padding: 10px;
+	height: 36px;
+}
+table.results-list td.key {
+	width: 208px;
+}
+table.results-list td.last {
+	width: 36px;
+}
+
+table.results-list tr.success {
+	background-color: #e8f5e9;
+}
+table.results-list tr.skiped {
+	background-color: #fafafa;
+}
+table.results-list tr.error {
+	background-color: #ffebee;
+}
+
+.results-list .fa-check ,
+.results-list .fa-times {
+	text-align: center;
+	font-size: 8px;
+	line-height: 15px;
+
+	width: 16px;
+	height: 16px;
+	padding-left: 1px;
+	border-radius: 50%;
+	border: 1px solid #ddd;
+}
+
+#modalbox_ad .results-list .fa-check {
+	color: #66bb6a;
+	border-color: #66bb6a;
+}
+#modalbox_ad .results-list .fa-times {
+	color: #f44336;
+	border-color: #f44336;
+}
+
+.devoops-modal-confirm {
+	/*position: absolute !important;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 10;*/
+	margin-top: -65px;
+}
+.devoops-modal-inner-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 65px;
+	background: rgba(0,0,0,0.4);
+	z-index: 10;
+}
+
+.devoops-modal-confirm,
+.devoops-modal-inner-overlay {
+	display: none;
+}
+
+.confirm .devoops-modal-confirm,
+.confirm .devoops-modal-inner-overlay,
+.confirm .devoops-modal-confirm > div,
+.confirm .devoops-modal-confirm > button
+{
+	display: block;
+}
+
+/*** modal states ***/
+.devoops-modal-inner  > div,
+.devoops-modal-bottom > div,
+.devoops-modal-bottom > button,
+.devoops-modal-bottom .statusbar .status-icon
+{
+	display: none;
+}
+
+.state-connection .modal-inner-connection,
+
+.state-connection-error #btn-restart,
+.state-connection-error .modal-inner-connection-error,
+
+.state-process .modal-inner-process,
+
+.state-process-error #btn-save,
+.state-process-error #btn-restart,
+.state-process-error .modal-inner-process-error,
+
+.state-success #btn-finish,
+.state-success .modal-inner-success,
+
+.state-connection       .statusbar-connection,
+.state-connection-error .statusbar-connection-error,
+.state-process          .statusbar-process,
+.state-process-error    .statusbar-process-error,
+.state-success          .statusbar-success,
+
+.state-connection 		.statusbar .status-icon-spinner,
+.state-connection-error .statusbar .status-icon-error,
+.state-process 			.statusbar .status-icon-spinner,
+.state-process-error 	.statusbar .status-icon-error,
+.state-success		 	.statusbar .status-icon-success
+{
+	display: block;
+}

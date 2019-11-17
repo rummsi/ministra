@@ -1,0 +1,51 @@
+
+    function InitDatatable() {
+        $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object' && json.data.length >0) {
+                    var date;
+                    for (var i in json.data) {
+                        date = json.data[i]['actiontime'];
+                        if (date > 0) {
+                            date = new Date(date * 1000);
+                            json.data[i]['actiontime'] = date.toLocaleFormat("%b %d, %Y %H:%M");
+                        }
+                        json.data[i]['action'] = json.data[i]['action'].ucfirst();
+                    }
+                }
+            }).dataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/video-logs-json",
+                "data": function ( d ) {
+                    var RegExp = /video_id=(\d+)/;
+                    if (video_id = RegExp.exec(window.location.href)) {
+                        d.video_id = video_id[1];
+                    }
+                }
+            },
+            "language": {
+                "url": "{{ app.datatable_lang_file }}"
+            },
+            {% if attribute(app, 'dropdownAttribute') is defined %}
+            {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+            {% endif %}
+            "bFilter": true,
+            "bPaginate": true,
+            "lengthChange": true,
+			"scrollCollapse": true,
+            "bInfo":     true,
+            "order": [[ 1, "desc" ]],
+            "aoColumnDefs": [ 
+                { "searchable": false, "targets": [1, 4 ] }
+            ]
+        }).prev('.dataTables_processing').hide('');
+    }
+
+    function yelp() {
+        $(document).ready(function () {
+            LoadDataTablesScripts(InitDatatable);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", yelp, false);

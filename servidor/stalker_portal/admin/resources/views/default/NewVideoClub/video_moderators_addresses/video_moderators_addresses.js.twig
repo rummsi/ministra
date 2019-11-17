@@ -1,0 +1,238 @@
+
+
+var conf = {
+    form: '#form_',
+    lang : '{{ app.js_validator_language }}',
+    showHelpOnFocus : true,
+    validateHiddenInputs: true,
+    scrollToTopOnError: false,
+    modules: 'security',
+
+    onSuccess: function () {
+        var sendData = {};
+        $('.own_field', this.form).each(function () {
+            sendData[$(this).attr('name')] = $(this).is(':checkbox') ? ($(this).is(':checked') ? 1 : 0) : $(this).val();
+        });
+        JScloseModalBox();
+        ajaxPostSend($(this.form).attr('action'), sendData, false, false, true);
+        return false;
+    },
+
+    onError: function () {
+        return false;
+    }
+};
+
+    function InitDatatable() {
+        $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+            if (typeof (json.data) == 'object') {
+                var id, name, status;
+                for (var i in json.data) {
+                    id = json.data[i].id;
+                    name = json.data[i].name;
+                    status = json.data[i].status;
+
+                    json.data[i]['name'] = '<a class="main_ajax no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/video-moderators-addresses-list-json" data-id="'+id+'">'+escapeHtml( name )+'</a>';
+                    json.data[i]['disable_vclub_ad'] = ( json.data[i]['disable_vclub_ad'] ? "<span class=''>{{ 'Yes'|trans }}</span>" : "<span class=''>-</span>");
+                    
+                    //json.data[i]['status'] = ( status ? "<span class=''>{{ 'Switched on'|trans }}</span>" : "<span class=''>{{ 'Switched off'|trans }}</span>");
+                    json.data[i].status = '\
+                       <div class="mswitch">\
+                            <input type="checkbox" \
+                                   id="mod_status_'+ json.data[i].id +'"\
+                                   name="form[status]" readonly="readonly" class="form-control" \
+                                   ' + ( json.data[i].status ? 'checked="checked"' : '' ) +'\
+                                   data-modid="' + json.data[i].id + '"\
+                                   data-modstatus="' + (1 - json.data[i].status) +'">\
+                            <label class="label-success" \
+                                   title="' + ( json.data[i].status ? "{{'Switched on'|trans}}" : "{{'Switched off'|trans}}" ) + '" \
+                                   for="mod_status_'+ json.data[i].id +'"></label>\
+                        </div>\
+                        ';
+
+                    json.data[i].operations = '<div class="col-xs-3 col-sm-8 ddd">\n\
+                                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">\n\
+                                                            <i class="pull-right fa fa-cog"></i>\n\
+                                                        </a>\n\
+                                                        <ul class="dropdown-menu pull-right">\n\
+                                                            <li>\n\
+                                                                <a class="main_ajax no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/video-moderators-addresses-list-json" data-id="'+id+'">\n\
+                                                                    <span>{{ 'Edit'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class="main_ajax no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-video-moderators-status" data-modstatus="'+(status ? 0: 1)+'" data-modid="'+id+'">\n\
+                                                                    <span>'+ (status ? "{{ 'Switch off'|trans }}":"{{ 'Switch on'|trans }}") +'</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class="main_ajax no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-video-moderators" data-modid="'+id+'">\n\
+                                                                    <span>{{ 'Delete'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                        </ul>\n\
+                                                    </div>';
+
+                }
+            }
+        }).dataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/video-moderators-addresses-list-json"
+            },
+            "language": {
+                "url": "{{ app.datatable_lang_file }}"
+            },
+            "bFilter": true,
+            "bPaginate": true,
+            "lengthChange": true,
+            "bInfo":     true,
+            
+            {% if attribute(app, 'dropdownAttribute') is defined %}
+            {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+            {% endif %}
+
+            fixedHeader: {
+                header: true,
+                headerOffset: $('header.navbar').height()
+            },
+
+            "aoColumnDefs": [ 
+                { "orderable" : false, "targets": [ -1 ] },
+                { "searchable": false, "targets": [ -1, -2, -3 ] },
+                { "width": "10%", "targets": [ 1, 2, -2 ] },
+                { className: "dt-center", "targets": [ 2 ] },
+                { className: "action-menu", "targets": [ -1 ] }
+            ]
+        }).prev('.dataTables_processing').hide('');
+    }
+
+    function yelp() {
+        $(document).ready(function () {
+            
+            LoadDataTablesScripts(InitDatatable);
+
+            $(document).on('click', "a.main_ajax", function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var _this = $(this);
+
+                ajaxPostSend($(this).attr('href'), _this.data());
+
+                _this.closest('div.open').removeClass('open');
+                return false;
+            });
+
+            $(document).on('change', ".mswitch input", function(e){
+                ajaxPostSend('{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-video-moderators-status', $(this).data() );
+            });
+
+
+            $(document).on('click', '#add_video_moderator', function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                openModalBox();
+                return false
+            });
+
+            $(document).on('click', '#form_save', function(e){
+                e.stopPropagation();
+                e.preventDefault();
+
+                if ($(conf.form).isValid({}, conf, true)) {
+                    conf.onSuccess();
+                } else {
+                    conf.onError();
+                }
+                return false;
+            });
+
+        });
+    }
+    
+    document.addEventListener("DOMContentLoaded", yelp, false);
+
+
+
+function openModalBox(obj){
+    var regExp = /([0-9a-fA-F]{2}([:]|$)){6}$/ig;
+    if (obj && obj.data && obj.data.length) {
+        $('#modalbox').find('.modal-header-name span').text( "{{'Edit'|trans}}" + " {{'video moderator'|trans}}" );
+        $('#modalbox').find('.devoops-modal-inner').html( $("#modal_moderators_inner").tmpl(obj.data) );
+        $("select", conf.form).each(function(){
+            var objKey = $(this).attr('id').replace('form_', '');
+            if (obj.data[0][objKey]) {
+                $(this).val(obj.data[0][objKey]).trigger('change');
+            }
+        });
+
+    } else {
+        $('#modalbox').find('.modal-header-name span').text( "{{'Add'|trans }}" + " {{'video moderator'|trans}}" );
+        $('#modalbox').find('.devoops-modal-inner').html( $("#modal_moderators_inner").tmpl() );
+    }
+
+    $('#modalbox').find('.devoops-modal-bottom').html('\n\
+                <div class="col-xs-12">\n\
+                    <input type="submit" id="form_save"  class="btn btn-success col-sm-2 pull-right" value="{{ 'Save'|trans }}" />\n\
+                    <button type="reset" id="form_reset" class="btn btn-default col-sm-2 pull-right" >{{ 'Cancel'|trans }}</button>\n\
+                </div>');
+
+
+    // set up validator for the form
+    if (obj && obj.data && obj.data.length) {
+        clearServerValidator();
+        setEditValidationConfig(conf);
+        $("#form_mac").removeAttr('data-validation-event');
+        $.validate(conf);
+        setServerValidationRequestParams();
+    } else {
+        clearServerValidator();
+        setDefaultValidationConfig(conf);
+        $("#form_mac").removeAttr('data-validation-event');
+        $.validate(conf);
+        setServerValidationRequestParams();
+    }
+
+    $("#modalbox").show();
+}
+
+
+function setServerValidationRequestParams() {
+    var param = {
+        'id': $("#form_id").val(),
+        'for_validator': true,
+    };
+    $('#form_mac').attr('data-validation-req-params', JSON.stringify(param) );
+}
+
+// drop assigned server-side validator instance to stop reuse:
+function clearServerValidator() {
+    $("#modalbox").find("[data-validation~='server']").each( function(){
+        this.asyncValidators = null;
+    });
+}
+
+function setDefaultValidationConfig(conf) {
+    conf.ignore = [];
+    conf.validateOnBlur = true;
+    conf.validateOnEvent = false;
+    
+    $("#form_mac").off('change');
+}
+
+function setEditValidationConfig(conf) {
+    conf.ignore = ['mac'];
+    conf.validateOnBlur = false;
+    conf.validateOnEvent = true;
+
+    $("#form_mac").one('change', function (e) {
+        var ignore = conf.ignore;
+        var index = ignore.indexOf(this.name);
+        if( index !== -1 ){
+            $(this).attr('data-validation-event', "blur");
+            ignore.splice( index, 1 );
+            $.validate(conf);
+        }
+    });
+}

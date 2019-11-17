@@ -1,0 +1,159 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Video club'|trans ~ ': ' ~ 'advertising list'|trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" src="./js/jquery.tmpl.min.js" defer=""></script>
+        <script type="text/javascript" defer>
+            {% include app.twig_theme ~ "/NewVideoClub/video_advertise/video_advertise.js.twig" %}
+        </script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/add-video-ads" id="add_video_ads" class="btn btn-success pull-right no_context_menu"><i class="fa fa-plus"></i>{{ 'Add commercial'|trans }}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/template" id="modal_video_ads_inner">
+        <div class="box">
+            <div class="box-content">
+            <form id="form_" class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-video-ads">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Title'|trans }}<span class="icon-required">*</span></label>
+                    <div class="col-xs-10 col-sm-8">
+                        <div class=" col-xs-10 col-sm-10">
+                            <input type="hidden" id="form_id" name="id" class="form-control own_field" value="${id}">
+                            <input type="text" id="form_title" name="title" class="form-control own_field" data-validation="required" value="${title}" required="required">
+                            <div class="bg-danger"></div>
+                        </div>
+                        <i class="i-hint"
+                            title="{{ 'You can use letters, digits' |trans }}" >
+                            <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                        </i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Address'|trans }}<span class="icon-required">*</span></label>
+                    <div class="col-xs-10 col-sm-8">
+                        <div class=" col-xs-10 col-sm-10">
+                            <input type="text" id="form_url" name="url" required="required" class="form-control own_field" data-validation="required" value="${url}">
+                            <div class="bg-danger"></div>
+                        </div>
+                        <i class="i-hint"
+                            title="{{ 'Format: solution+URL. Example: ffmpeg http://example_of_link' |trans }}" >
+                            <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                        </i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Weight'|trans }}<span class="icon-required">*</span></label>
+                    <div class="col-xs-10 col-sm-8">
+                        <div class=" col-xs-10 col-sm-10">
+                            <input type="text" id="form_weight" name="weight" required="required" class="form-control valid own_field" data-validation="required" value="${weight}">
+                            <div class="bg-danger"></div>
+                        </div>
+                        <i class="i-hint"
+                            title="{{ 'Display frequency rate' |trans }}" >
+                            <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                        </i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Forbidden for categories'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <div class=" col-xs-10 col-sm-10">
+                            <select id="form_denied_categories" name="denied_categories" class="populate placeholder own_field" multiple="multiple">
+                                {% for category in app.video_categories %}
+                                <option value="{{ category.id }}">{{ category.category_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="bg-danger"></div>
+                        </div>
+                        <i class="i-hint"
+                            title="{{ "Show categories that won't see the advertising" |trans }}" >
+                            <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                        </i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Necessary to see'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <div class=" col-xs-10 col-sm-10">
+                            <select id="form_must_watch" name="must_watch" class="populate placeholder own_field">
+                                <option value="all">{{ 'All'|trans }}</option>
+                                {% for val in range(90, 10, 10)|merge([5, 0]) %}
+                                <option value="{{ val }}">{{ val }}%</option>
+                                {% endfor %}
+                            </select>
+
+                            <div id="slider" class="pull-left">
+                                 <div id="slider-handle" class="ui-slider-handle"></div>
+                            </div>
+
+                            <i class="i-hint"
+                                title="{{ 'Percentage of the total length of video that user has to watch to skip commercials.' |trans }}" >
+                                <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                            </i>
+
+                            <div class="bg-danger"></div>
+                        </div>
+                    </div>
+                </div>
+
+                {#
+                <div class="pull-right no-padding">
+                    <input type="submit" id="save_ads" class="btn btn-success pull-right" value="{{ 'Save'|trans }}" />
+                    <input type="reset" id="form_reset" class="btn btn-default pull-right" value="{{ 'Cancel'|trans }}" />
+                </div>
+                #}
+            </form>
+            </div>
+        </div>
+    </script>
+
+{% endblock %}

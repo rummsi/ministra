@@ -1,0 +1,29 @@
+{
+    "name": "umpirsky/twig-gettext-extractor",
+    "type": "application",
+    "description": "The Twig Gettext Extractor is Poedit friendly tool which extracts translations from twig templates.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Саша Стаменковић",
+            "email": "umpirsky@gmail.com"
+        }
+    ],
+    "require": {
+        "php":                 ">=5.3.3",
+        "twig/twig":           "~1.2",
+        "twig/extensions":     "~1.0",
+        "symfony/twig-bridge": "~2.0",
+        "symfony/routing":     "~2.0",
+        "symfony/filesystem":  "~2.0",
+        "symfony/translation": "~2.0",
+        "symfony/form":        "~2.0"
+    },
+    "require-dev": {
+        "symfony/config":      "2.1.*"
+    },
+    "autoload": {
+        "psr-0": { "Twig\\Gettext": "." }
+    },
+    "bin": ["twig-gettext-extractor"]
+}

@@ -1,0 +1,87 @@
+{% extends app['twig_theme'] ~ '/layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro2.twig' as main_macro %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig'  as main_macros %}
+
+{% set title = 'Storage'|trans ~ ': ' ~ 'video search'|trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+        
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include app.twig_theme ~ "/Storages/storages_video_search/storages_video_search.js.twig" %}
+        </script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <form class="form-inline" role="form" id="video_search_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/storages-video-search-json" method="POST" target="_blank">
+                <div class="col-sm-12 col-xs-12 col-md-12 no-padding">
+                    <div class="form-group">
+                        {% if attribute(app, 'dropdownStorages') is defined %}
+                            {{ main_macro.get_dropdown_attribute(app['dropdownStorages'], 'on_storages', 'Available on the serves'|trans, 6, 1, 'true') }}
+                        {% endif %}
+                    </div>
+					<div class="form-group">
+                        {% if attribute(app, 'dropdownStorages') is defined %}
+                           {{ main_macro.get_dropdown_attribute(app['dropdownStorages'], 'not_on_storages', 'Not available on the servers'|trans, 6, 1, 'true') }}
+                        {% endif %} 
+                    </div>
+					
+					 <div class="form-group">
+                        <label class="form-label" for="total_storages">{{ 'Quantity of the storages'|trans }}: </label>
+                        <input type="hidden" name="textview" value="0">
+                        <input class="form-control" type="text" name="total_storages" id="total_storages">
+                    </div>
+
+					<div class="form-group">
+                        {{ main_macro.get_dropdown_attribute(app['dropdownQuality'], 'quality', 'Video quality'|trans, 4, 0, 'true') }}
+                    </div>
+					<div class="form-group">
+                     {{ main_macro.get_dropdown_attribute(app['dropdownStatus'], 'status', 'Status'|trans, 4, 0, 'true') }}
+					</div>
+					
+				    <div class="pull-right">
+                        <a class="btn btn-success pull-right no_context_menu" id="video_search_submit">{{ 'Search'|trans }}</a>
+                        <button class="btn btn-default pull-right no_context_menu" id="textshow" type="submit" form="video_search_form">{{ 'In text format'|trans }}</button>
+                    </div>
+                </div>
+      
+            </form>
+        </div>
+
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macros.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macros.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,328 @@
+
+var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'};
+
+var isEditing = {{ app.userEdit ? "true" : "false" }}
+var tariff_and_service_control = {{ app['tariff_and_service_control'] }}
+
+var conf = {
+    form: '#form_',
+    lang : '{{ app.js_validator_language }}',
+    showHelpOnFocus : true,
+    validateOnBlur: true,
+    validateOnEvent: false,
+    validateHiddenInputs: true,
+    ignore: [],
+    modules: 'jsconf, date, security',
+
+    onSuccess: function () {
+        $(this.form).get(0).submit();
+        return false;
+    },
+    onError: function () {
+        return false;
+    }
+};
+
+var dayNamesMin = [
+        '{{ 'Sun'|trans }}',
+        '{{ 'Mon'|trans }}',
+        '{{ 'Tue'|trans }}',
+        '{{ 'Wed'|trans }}',
+        '{{ 'Thu'|trans }}',
+        '{{ 'Fri'|trans }}',
+        '{{ 'Sat'|trans }}'
+    ],
+    monthNames = [
+        '{{ 'January'|trans }}',
+        '{{ 'February'|trans }}',
+        '{{ 'March'|trans }}',
+        '{{ 'April'|trans }}',
+        '{{ 'May'|trans }}',
+        '{{ 'June'|trans }}',
+        '{{ 'July'|trans }}',
+        '{{ 'August'|trans }}',
+        '{{ 'September'|trans }}',
+        '{{ 'October'|trans }}',
+        '{{ 'November'|trans }}',
+        '{{ 'December'|trans }}'
+    ];
+
+
+function InitSelect2() {
+    $('#form_group_id').select2(select2Opt);
+    $('#form_tariff_plan_id, #form_tariff_id_instead_expired').select2(select2Opt);
+    $('#form_additional_services_on').select2(select2Opt);
+    $('#form_status').select2(select2Opt);
+    $('#form_theme').select2(select2Opt);
+    {% if attribute(app, 'reseller') is defined and not app['reseller'] %}
+    $('#form_reseller_id').select2(select2Opt);
+    {% endif %}
+}
+
+function InitDatatable() {
+    $('.table-datatable').dataTable({
+        "processing": false,
+        "serverSide": false,
+        "ajax": null,
+        "language": {
+            "url": "{{ app.datatable_lang_file }}"
+        },
+        {% if attribute(app, 'tracert_attr') is defined %}
+        {{ main_macro.get_datatable_column(app['tracert_attr']) }}
+        {% endif %}
+        "bFilter": false,
+        "bPaginate": false,
+        "bInfo": false,
+        "aoColumnDefs": [
+            {"searchable": false},
+            {"orderable": false, "targets": [ 0 ]}
+        ]
+    });
+}
+
+function yelp() {
+    $(document).ready(function () {
+
+        // set up validator config
+        if (isEditing) {
+            setEditValidationConfig(conf);
+        } else {
+            setDefaultValidationConfig(conf);
+        }
+        
+        $.validate(conf);
+        setServerValidationRequestParams();
+
+        $('[data-toggle="tooltip"]').tooltip();
+        $("#form_tariff_expired_date").datepicker({
+                minDate: new Date(),
+                onClose: null,
+                numberOfMonths: 1,
+                firstDay : 1,
+                language: '{% if attribute(app, 'locale') is defined and app['locale']|length == 2 %}{{ app['locale'] }}{% else %}en{% endif %}',
+                dateFormat  : 'dd-mm-yy',
+                dayNamesMin : dayNamesMin,
+                monthNames  : monthNames,
+                showOn: "both",
+                buttonImage: "{{app.request_context.baseUrl}}/img/calendar.gif",
+                buttonImageOnly: true,
+                buttonText: "{{ 'Select date'|trans }}"
+            }
+        );
+
+        LoadSelect2Script(InitSelect2);
+        LoadDataTablesScripts(InitDatatable);
+
+        {% if attribute(app, 'enableBilling') is defined and app.enableBilling %}
+        $("#form_expire_billing_date").datepicker({
+                language: 'ru',
+                dateFormat: 'dd-mm-yy',
+                firstDay: 1,
+                minDate: new Date(),
+                dayNamesMin: dayNamesMin,
+                monthNames: monthNames,
+                showOn: "both",
+                buttonImage: "{{app.request_context.baseUrl}}/img/calendar.gif",
+                buttonImageOnly: true,
+                buttonText: "{{ 'Select date'|trans }}"
+            }
+        );
+        {% endif %}
+
+        /*
+        $(document).on('change keydown', '#form_login', debounce( 500, function (e) {
+            var $this = $(this);
+            $this.next('div').removeClass('bg-danger').css('visibility', 'hidden').empty();
+
+            if( $this.val() ) {
+                var sendData = {
+                    id :    $("#form_id").val(),
+                    login : $this.val()
+                };
+                ajaxPostSend('{{app.request_context.baseUrl}}/{{app.controller_alias}}/check-login', sendData);
+            }
+        }));
+
+        $(document).on('input', "#form_mac:not(:disabled)", function(){
+            if ((/^([0-9A-Fa-f]{2}\:){5}([0-9A-Fa-f]{2})$/ig).test($(this).val())) {
+                $(this).next('div.ajax-check').show();
+                ajaxPostSend('{{app.request_context.baseUrl}}/{{app.controller_alias}}/check-console-item', {mac: $(this).val(), input_id: $(this).attr('id'), form_page: 'add_user_form'});
+            } else {
+                $(this).next('div.ajax-check').hide();
+            }
+        });*/
+
+        $(document).on('click', "a.main_ajax", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            ajaxPostSend($(this).attr('href'), $(this).data(), false, false);
+
+            return false;
+        });
+
+        $(document).on('change', '#form_tariff_plan_id', function(){
+            var $tbody = $("#tariff_plan_table tbody");
+            var sendData = {
+                'user_id' : $('#form_id').val(),
+                'plan_id' : $(this).val()
+            };
+            $tbody.empty();
+            ajaxPostSend("{{app.request_context.baseUrl}}/{{app.controller_alias}}/user-tariff-plan", sendData, false, false, true, {success: function( data ) {
+                    $.each(data, function(idx, item){
+                        $('#service_package_row').tmpl( item, {tariff_and_service_control:tariff_and_service_control})
+                            .appendTo($tbody);
+                    });
+                    $tbody.find('[data-toggle="tooltip"]').tooltip();
+                }
+            });
+            if($(this).val() != $("#tariff_plan_table").data('planid')){
+                var expirestime = parseInt($('#form_tariff_plan_id option:selected').data('expirestime'));
+                if (expirestime) {
+                    var tariff_expired_date = new Date();
+                    tariff_expired_date.setDate(tariff_expired_date.getDate() + expirestime);
+                    $("#form_tariff_expired_date").val(tariff_expired_date.toLocaleFormat('%d-%m-%Y'));
+                } else {
+                    $("#form_tariff_expired_date").val('');
+                }
+            } else {
+                $("#form_tariff_expired_date").val($("#form_tariff_expired_date").data('oldvalue'));
+            }
+        });
+
+        $(document).on('click', '#form_save', function(e){
+            if (!$("#tariff_plan_table").is(':visible')) {
+                $("#tariff_plan_table input").attr('disabled', 'disabled');
+            }
+
+            e.stopPropagation();
+            e.preventDefault();
+
+            if ($(conf.form).isValid({}, conf, true)) {
+                conf.onSuccess();
+            } else {
+                conf.onError();
+            }
+            return false;
+        });
+
+        $('#form_ .i-hint').tooltip({
+            animation: true,
+            placement: "right"
+        });
+
+        {% if app.userEdit and (not app['tariffPlanFlag'] or app['tariffPlanSubscriptionFlag']) %}
+        $(document).on('click', "#tv_subscription", function (e){
+            e.stopPropagation();
+            e.preventDefault();
+            ajaxPostSend($(this).attr('href'), $(this).data());
+        });
+
+        $("#modalbox_ad").on('click', 'button[type="submit"]', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            var sendData = {
+                user_id: $('#form_id').val(),
+                sub_ch: []
+            };
+            $("#subscribed_tv option").each(function(){
+                sendData.sub_ch.push($(this).val())
+            });
+            ajaxPostSend($(this).closest('form').attr('action'), sendData);
+        });
+        {% endif %}
+    });
+}
+document.addEventListener("DOMContentLoaded", yelp, false);
+
+var resetUsersParentPassword = function (obj) {
+    $("#form_parent_password").val( obj.newpass );
+    JSSuccessModalBox(obj);
+};
+
+var resetUserSettingsPassword = function (obj) {
+    $("#form_settings_password").val( obj.newpass );
+    JSSuccessModalBox(obj);
+};
+
+var resetUserFavTv = function (obj) {
+    $("#form_fav_itv").val(0);
+    JSSuccessModalBox(obj);
+};
+
+
+function setServerValidationRequestParams() {
+    var param = {
+        'id': $("#form_id").val(),
+        'for_validator': true
+    };
+    $('#form_login').attr('data-validation-req-params', JSON.stringify(param) );
+
+    param = {
+        'id': $("#form_id").val(),
+        'input_id': "form_mac",
+        'form_page': "add_user_form",
+        'for_validator': true
+    };
+    $('#form_mac').attr('data-validation-req-params', JSON.stringify(param) );
+}
+
+function setDefaultValidationConfig(conf) {
+    conf.ignore = [];
+    conf.validateOnBlur = true;
+    conf.validateOnEvent = false;
+
+    $("#form_login, #form_mac").off('change');
+}
+
+function setEditValidationConfig(conf) {
+    conf.ignore = ['form[login]','form[mac]'];
+    conf.validateOnBlur = false;
+    conf.validateOnEvent = true;
+
+    $("#form_login, #form_mac").one('change', function (e) {
+        var ignore = conf.ignore;
+        var index = ignore.indexOf(this.name);
+        if( index !== -1 ){
+            //$(this).attr('data-validation-event', "blur");
+            ignore.splice( index, 1 );
+            conf.validateOnBlur = true;
+            conf.validateOnEvent = false;
+            $.validate(conf);
+        }
+    });
+}
+
+
+{% if app.userEdit and (not app['tariffPlanFlag'] or app['tariffPlanSubscriptionFlag']) %}
+var setSubscribedTVModal = function(data){
+    var subscribed_tv_list = $("#subscribed_tv"),
+        not_subscribed_tv_list = $("#not_subscribed_tv");
+    subscribed_tv_list.empty();
+    not_subscribed_tv_list.empty();
+
+    if (data.not_subscribed_tv) {
+        $.each(data.not_subscribed_tv, function(){
+            $('<option value="'+this.id+'"></option>').text(this.name).appendTo(not_subscribed_tv_list);
+        });
+    }
+
+    if (data.subscribed_tv) {
+        $.each(data.subscribed_tv, function(){
+            $('<option value="'+this.id+'"></option>').text(this.name).appendTo(subscribed_tv_list);
+        });
+    }
+
+    $("#modalbox_ad").show();
+};
+
+var hideSubscribedTVModal = function(data){
+    $("#modalbox_ad").hide();
+    JSSuccessModalBox(data);
+};
+
+var hideSubscribedTVModalError = function(data){
+    JSErrorModalBox(data);
+};
+
+{% endif %}

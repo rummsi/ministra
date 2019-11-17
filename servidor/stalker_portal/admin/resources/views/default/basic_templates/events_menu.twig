@@ -1,0 +1,509 @@
+<div id="modalbox_ad">
+    <div class="devoops-modal">
+        <div class="devoops-modal-header">
+            <div class="modal-header-name">
+                <span>{{ 'New event'|trans }}</span>
+            </div>
+            <div class="box-icons">
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <form class="form-horizontal" role="form" id="event_form">
+            <div class="devoops-modal-inner">
+                <div class="box">
+                    <div class="box-content">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Recipient'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-7 col-sm-shifted">
+                                    <select class="populate placeholder" name="user_list_type" id="s2_user_list_type" data-validation="required">
+                                        <option value="to_all">{{ 'All'|trans }}</option>
+                                        <option value="by_user_list">{{ 'List'|trans }}</option>
+                                        <option value="by_group">{{ 'Group'|trans }}</option>
+                                        <option value="by_pattern">{{ 'On the preset'|trans }}</option>
+                                        <option value="to_single">{{ 'One'|trans }}</option>
+                                        <option value="by_filter">{{ 'Filter'|trans }}</option>
+                                    </select>
+                                </div>
+                                <i class="i-hint"
+                                    title="{{ 'Example: to one, to all, on the list, on the preset, to the group'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                                <span class="help-inline col-xs-12 col-sm-8 col-sm-shifted">
+                                    <span class="small txt-default">{{ 'Choose recipient'|trans }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group" data-list-type="by_user_list">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'List of MAC-addresses'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-10 col-sm-shifted">
+                                    <input type="hidden" name="file_name" id="file_name">
+                                    <!-- The file upload form used as target for the file upload widget -->
+                                    <div id="fileupload" class="pull-left">
+                                        <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                                        <div class="fileupload-buttonbar">
+                                            <div class="fileupload-buttons">
+                                                <!-- The fileinput-button span is used to style the file input field as button -->
+                                                <span class="fileinput-button btn btn-success">
+                                                    <span>{{ 'File'|trans }}</span>
+                                                    <input type="file" name="files" style="opacity: 0;">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="help-inline col-xs-12 no-padding">
+                                        <span class="small txt-default">{{ 'The file must contain pre-compiled list of MAC-addresses in the txt extension or another text format'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" data-list-type="by_group">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Group'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    <select class="populate placeholder" name="group_id" id="s2_group_id" data-validation="required">
+                                        {% for item in app.consoleGroup %}
+                                            <option value="{{ item.id }}">{{ item.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-12">
+                                    <span class="small txt-default">{{ 'Select a group of users that will be delivered message'|trans }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group" data-list-type="by_pattern">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Preset'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    <select class="populate placeholder" name="pattern" id="s2_pattern" data-validation="required">
+                                        <option value="MAG100">MAG100</option>
+                                        {% if attribute(app, 'allowed_stb') is defined %}
+                                            {% for model in app.allowed_stb %}
+                                                <option value="{{ model }}">{{ model }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-12">
+                                    <span class="small txt-default">{{ 'Select preset for STB type'|trans }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group" data-list-type="to_single">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'MAC-address'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-8 col-sm-shifted">
+                                    <input class="form-control with-error-space" type="text" data-validation="required,custom" data-validation-regexp='^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$' data-validation-error-msg-custom="{{ 'Enter MAC-address according to the format'|trans }}" title="" value="{% if attribute(app, 'currentUser') is defined %}{{ app.currentUser.mac }}{% endif %}" name="mac">
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-12">
+                                    <span class="small txt-default">{{ 'Input user MAC-address'|trans }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group" data-list-type="by_filter">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Filter name'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    <select class="populate placeholder" id="s2_filter" name="filter_set" data-validation="required">
+                                        <option value="" data-filter-descriprion=""></option>
+                                        {% if attribute(app,'allFilters') is defined and app['allFilters']|length > 0 %}
+                                            {% if attribute(app, 'user_id') is defined %}
+                                                {% set check_id = app['user_id'] %}
+                                            {% else %}
+                                                {% set check_id = -1 %}
+                                            {% endif %}
+                                            {% for filter in app['allFilters'] %}
+                                                {% if filter['for_all'] == 1 or filter['for_all'] == check_id or (attribute(app, 'userlogin') is defined and app['userlogin'] == 'admin') %}
+                                                    <option value="{{ filter['id'] }}" data-filter-descriprion="{{ filter['filter_set'] }}">{{ filter['title'] }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" data-list-type="by_filter">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Filter description'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <span class="help-inline col-xs-12 col-sm-12">
+                                    <span class="small txt-default" id="filter_description_input"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Actions'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-7 col-sm-shifted">
+                                    <select class="populate placeholder" data-validation="required" name="event" id="s2_event" required="required">
+                                        {% for type in app['formEvent'] %}
+                                            <option value="{{ type['id'] }}">{{ type['title'] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-12">
+                                    <span class="small txt-default">{{ 'Select one of the actions'|trans }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group" data-event-type="play_channel;play_radio_channel">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Channel'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-8 col-sm-shifted">
+                                    <input class="form-control" type="text" title="" value="" name="channel" data-validation="required">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label col-sm-offset-1">TTL<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-7 col-sm-shifted">
+                                    <input id="ttl" name="ttl" class="form-control with-error-space" type="text" title="" data-validation="required" value="">
+                                </div>
+                                <i class="i-hint"
+                                    title="{{ 'Time to live, measured in seconds'|trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                        </div>
+                        <div class="form-group " data-event-type="send_msg">
+                            <div class="separator"></div>
+                        </div>
+                        <div class="form-group  form-group-checkbox" data-event-type="send_msg">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Reboot'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-8 col-sm-shifted">
+                                    <div class="checkbox-inline">
+                                        <label>
+                                            <input type="checkbox" value="1" name="reboot_after_ok">
+                                            <i class="fa fa-square-o small"></i>
+                                        </label>
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{{ 'Reboot the STB after OK button is pressed'|trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" data-event-type="send_msg">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Message templates'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-7 col-sm-shifted">
+                                    <select class="populate placeholder" id="s2_msg_pattern" name="">
+                                        <option value="" data-template-header=""></option>
+                                        {% if attribute(app,'messagesTemplates') is defined and app['messagesTemplates']|length > 0 %}
+                                            {% for item in app['messagesTemplates'] %}
+                                                <option value="{{ item['id'] }}" data-template-header="{{ item['header'] }}">{{ item['title'] }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" data-event-type="send_msg">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Message header'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-10">
+                                    <input class="form-control" type="text" title="" value="" name="header" id="msg_header" data-validation="required">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" data-event-type="send_msg">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Message text'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-10">
+                                    <textarea id="msg_textarea" class="form-control" rows="4" name="msg" data-validation="required"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group  form-group-checkbox" data-event-type="send_msg" id="add_post_function_container">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Add post-function'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-8 col-sm-shifted">
+                                    <div class="checkbox-inline">
+                                        <label>
+                                            <input type="checkbox" value="1" name="add_post_function" id="add_post_function">
+                                            <i class="fa fa-square-o small"></i>
+                                        </label>
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{{ 'The function to be executed when pressing the "OK" button'|trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" data-event-type="post_function_type" id="post_function_type">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Post-function'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-10 col-sm-shifted">
+                                    <select class="populate placeholder" id="s2_post_function" name="post_function" data-validation="required" data-validation-depends-on="add_post_function">
+                                        <option value="send_msg_with_video">{{ 'Send message with video'|trans }}</option>
+                                        {#<option value="run_application">{{ 'Run application'|trans }}</option>#}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" data-event-type="post_function_video_url" id="send_msg_with_video">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Video URL'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-12">
+                                    <input class="form-control" type="text" name="param1" value="" data-validation="required" data-validation-depends-on="add_post_function">
+                                </div>
+                            </div>
+                        </div>
+                        {#<div class="form-group" data-event-type="post_function_run_application" id="run_application">
+                            <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Application'|trans }}</label>
+                            <div class="col-xs-10 col-sm-8">
+                                <div class=" col-xs-10 col-sm-6">
+                                    <select class="populate placeholder" data-validation="required" name="param1" id="s2_applications">
+                                        <option value="youtube">{{ 'YouTube'|trans }}</option>
+                                        <option value="itv">{{ 'TV'|trans }}</option>
+                                        <option value="radio">{{ 'Radio'|trans }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>#}
+                    </div>
+                </div>
+            </div>
+            <div class="devoops-modal-bottom">
+                <div class="col-xs-12">
+                    <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+                    <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% include app['twig_theme'] ~ "/basic_templates/scripts-select2.twig" %}
+{% include app['twig_theme'] ~ "/basic_templates/file-uploader-scripts.twig" %}
+
+<script type="text/javascript" defer>
+
+    var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'}
+    var no_table_operations = true;
+
+    var confEvent = {
+        form: '#event_form',
+        lang : '{{ app.js_validator_language }}',
+        showHelpOnFocus : true,
+        validateHiddenInputs: true,
+        scrollToTopOnError: false,
+        errorClass: "error",
+        ignore: [],
+        modules: 'jsconf, date',
+        // $.formUtils.dialogs.removeInputStylingAndMessage()
+        // works correctly when this default keys are setup here
+        errorElementClass: "error", inputParentClassOnError: "has-error", errorMessageClass: "form-error",
+
+        onSuccess: function () {
+            $("#modalbox_ad .form-group:visible").find("select[disabled]").removeAttr('disabled');
+            var formData = $("#modalbox_ad form").serialize();
+            formData['no_table_operations'] = no_table_operations;
+            ajaxPostSend("{{app.request_context.baseUrl}}/events/add-event", formData);
+            $("#modalbox_ad form").get(0).reset();
+            return false;
+        },
+        onError: function () {
+            var _that = this;
+            $(_that.form + " select").each(function(){
+                if ($(this).hasClass(_that.errorClass)) {
+                    _that.highlight(this, _that.errorClass);
+                } else {
+                    _that.unhighlight(this, _that.errorClass);
+                }
+            });
+            return false;
+        },
+
+        highlight: function (element, errorClass, validClass) {
+            if (!$(element).parent().children().find('.selection').children().hasClass(errorClass)) {
+                $(element).parent().children().find('.selection').children().addClass(errorClass);
+            }
+        },
+
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).parent().children().find('.selection').children().removeClass(errorClass);
+        }
+    };
+
+    function initFileUploader(){
+        $('#fileupload').fileupload({
+            url: '{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/upload-list-addresses',
+            type: 'POST',
+            autoUpload: true,
+            multipart: true,
+            /*acceptFileTypes: /(\.|\/)(jpe?g|png)$/i,*/
+            maxFileSize: 1000000,
+            maxNumberOfFiles: 1
+        }).bind('fileuploaddone', function (e, data) {
+            var response;
+            if (data && data.jqXHR && data.jqXHR.status && data.jqXHR.status == 200 && data.jqXHR.responseJSON) {
+                response = data.jqXHR.responseJSON;
+            } else {
+                JSErrorModalBox();
+                return false;
+            }
+
+            if (response.success) {
+                $('#file_name').val(response.fname);
+                if ($.isFunction(window[response.action]) && !response.error) {
+                    window[response.action](response);
+                }
+            } else if (response.error && $.isFunction(window[response.action + "Error"])) {
+                window[response.action + "Error"](response);
+            } else {
+                alert("{{ 'Some server error'|trans }}");
+            }
+            return false;
+        });
+        return true;
+    }
+
+    function eventsMenuHandlers(events_page) {
+
+    /*
+     *  Note: popup open initialization is at page script
+     */
+
+        if (typeof (events_page) !== 'undefind' && events_page) {
+            no_table_operations = false;
+        }
+        $.validate(confEvent);
+
+        LoadSelect2Script(InitSelect2);
+
+        setEventTTL();
+
+        $("[data-list-type], [data-event-type]").hide().find('input, select, textarea').attr('disabled', 'disabled');
+        
+        $(document).on('change', "#s2_user_list_type", function (e) {
+            checkFields($(this), e);
+        });
+
+        $(document).on('change', "#s2_event", function (e) {
+            checkFields($(this), e);
+            setEventTTL();
+            // remove error message and styling
+            $.formUtils.dialogs.removeInputStylingAndMessage( $("#ttl"), confEvent );
+        });
+
+        $(document).on('change', "#s2_user_list_type, #s2_event, #s2_group_id, #s2_pattern, #s2_filter", function (e) {
+            var $this = $(this);
+            $this.validate( confEvent );
+            if ($this.hasClass(confEvent.errorClass)) {
+                confEvent.highlight(this, confEvent.errorClass);
+            } else {
+                confEvent.unhighlight(this, confEvent.errorClass);
+            }
+        });
+
+        $(document).on('change', "#s2_filter", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var filter_description_text = $(this).find('option:selected').data('filter-descriprion');
+            $('#filter_description_input').text(filter_description_text);
+            return false;
+        });
+
+        $(document).on('change', "#s2_msg_pattern", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            $('#msg_textarea').val($.trim($('#msg_textarea_pattern_'+$(this).val()).html()));
+            $('#msg_header').val($(this).find('option:selected').data('template-header'));
+            $.formUtils.dialogs.removeInputStylingAndMessage( $("#msg_textarea"), confEvent );
+            $.formUtils.dialogs.removeInputStylingAndMessage( $("#msg_header"), confEvent );
+            return false;
+        });
+
+        $(document).on('click', "#modalbox_ad button[type='submit']", function (e) {
+
+            e.stopPropagation();
+            e.preventDefault();
+
+            if ($(confEvent.form).isValid({}, confEvent, true)) {
+                confEvent.onSuccess();
+            } else {
+                confEvent.onError();
+            }
+            return false;
+        });
+
+        $(document).on('hide', "#add_post_function_container", function(e){
+            $("[data-event-type^='post_function']").hide().find('select, input').attr('disabled', 'disabled');
+        });
+
+        $(document).on('change show', "#add_post_function, #add_post_function_container", function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            if ($("#add_post_function").is(':checked')) {
+                $("#post_function_type").show().find('select').removeAttr('disabled');
+            } else {
+                $("#post_function_type").hide().find('select').attr('disabled', 'disabled');
+                $("[data-event-type^='post_function']").hide().find('select, input').attr('disabled', 'disabled');
+            }
+            return false;
+        });
+
+        $(document).on('change show', "#s2_post_function, #post_function_type", function(e){
+            $("[data-event-type^='post_function']").filter("[data-event-type!='post_function_type']").hide().find('select, input').attr('disabled', 'disabled');
+            $("#" + $("#s2_post_function").val()).show().find('select, input').removeAttr('disabled');
+        });
+
+        if (typeof (loadFileUploadScripts) != 'function' || !loadFileUploadScripts(initFileUploader)){
+            JSErrorModalBox({msg: "{{ 'Cannot load File Upload plugin'|trans }}"})
+        }
+
+        $('#event_form .i-hint').tooltip({
+            animation: true,
+            placement: "right"
+        });
+    }
+
+    function InitSelect2() {
+        $("[id^='s2_']").select2(select2Opt);
+    }
+
+    function checkFields(obj, e) {
+        //$(obj).select2(select2Opt); // ?reset errors
+        var dataName = $(obj).attr('id') == 's2_user_list_type' ? 'data-list-type' : 'data-event-type';
+        $("[" + dataName + "]").hide().find('input, select, textarea').attr('disabled', 'disabled');
+        $(obj).find('option:selected').each(function () {
+            var searchVal = $(this).val();
+            var dataNameIn = dataName.replace('data-', '').replace('-', ' ').camelCase();
+            $('[' + dataName + '*="' + searchVal + '"]').each(function() {
+                if ($(this).data(dataNameIn) && $(this).data(dataNameIn).split(";").indexOf(searchVal) !== -1) {
+                    $(this).show().find('input, select, textarea').removeAttr('disabled');
+                }
+            });
+        });
+        return false;
+    }
+
+    function setEventTTL() {
+        switch ($("#s2_event").val()) {
+        {% if attribute(app, 'defTTL') is defined %}
+            {% for key, val in app['defTTL'] %}
+                {% if key != 'other' %}
+            case '{{ key }}': { $("#ttl").val("{{ val }}"); break; }
+                {% endif %}
+            {% endfor %}
+            default : { $("#ttl").val("{{ app['defTTL']['other'] }}"); break; }
+        {% endif %}
+        }
+    }
+
+</script>
+{% if attribute(app, 'messagesTemplates') is defined and app.messagesTemplates|length> 0%}
+    {% for item in app.messagesTemplates %}
+<script type="text/template" id="msg_textarea_pattern_{{ item.id }}">
+    {{ item.body }}
+</script>
+    {% endfor %}
+{% endif %}

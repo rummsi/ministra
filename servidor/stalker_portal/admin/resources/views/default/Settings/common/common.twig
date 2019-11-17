@@ -1,0 +1,244 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set active = 'settings' %}
+{% set title =  'Settings'|trans ~ ': ' ~ 'firmware update'|trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+        
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/Settings/common/common.js.twig") %}
+        </script>
+        
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/add-common-item" class="btn btn-success pull-right no_context_menu" id="add_common_item"><i class="fa fa-plus"></i>{{ 'Add update'|trans }}</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalbox_ad">
+        <div class="devoops-modal save_storage">
+            <div class="devoops-modal-header">
+                <div class="modal-header-name">
+                    <span></span>
+                </div>
+                <div class="box-icons">
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <form class="form-horizontal" role="form" action="{{app.request_context.baseUrl}}/{{app.controller_alias}}/save-common-item" id="karaoke_form">
+                <div class="devoops-modal-inner">
+                    <div class="box">
+                        <a class="collapse-link">
+                            <div class="box-header">
+                                <div class="box-name">
+                                    <div class="row">
+                                        <div class="col-xs-10 col-sm-4">
+                                            <span>{{ 'General information'|trans }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-icons">
+                                    <i class="fa fa-chevron-down"></i>
+                                </div>
+                                <div class="no-move"></div>
+                            </div>
+                        </a>
+                        <div class="box-content">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'STB model'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input class="form-control own_fields" type="hidden" title="" value="" name="id">
+                                        <select name="stb_type" class="populate placeholder own_fields" data-validation="required" id="s2_stb_type" required="required">
+                                            <option value="MAG100">MAG100</option>
+                                            {% if attribute(app, 'allowed_stb') is defined %}
+                                            {% for model in app.allowed_stb %}
+                                                <option value="{{ model }}">{{ model }}</option>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="alert alert-warning well-- well-sm col-xs-8 col-sm-8 col-xs-offset-2 bg-warning text_black" role="alert">
+                                    {{ 'Number and date of image due to be updated. Taken from the image. For automatic search of firmware it is enough to fill in version or date of image (one of fields).Number must be numeric.'|trans }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'Image version'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input class="form-control own_fields" type="text" title="" value="" name="require_image_version">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'Image date'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input class="form-control own_fields" type="text" title="" value="" name="require_image_date" id="require_image_date">
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'Update type'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <select name="update_type" id="s2_update_type" data-validation="required" class="populate   placeholder own_fields" required="required">
+                                            <option value="http_update">http update</option>
+                                            <option value="reboot_dhcp">reboot dhcp</option>
+                                        </select>
+                                    </div>
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default">{{ 'Update type: http update (load the image from HTTP) or reboot DHCP (reboot the STB to the DHCP boot mode)'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-checkbox">
+                                <label class="col-sm-3 control-label">{{ 'Automatic update'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-12">
+                                        <div class="checkbox-inline">
+                                            <label>
+                                                <input type="checkbox" name="enable" value="1" class="own_fields">
+                                                <i class="fa fa-square-o small"></i>
+                                            </label>
+                                        </div>
+                                        <i class="i-hint"
+                                            title="{{ 'Firmware is automatically updated is the version does not match to the current one.'|trans }}" >
+                                            <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                        </i>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="box">
+                        <a class="collapse-link">
+                            <div class="box-header">
+                                <div class="box-name">
+                                    <div class="row">
+                                        <div class="col-xs-10 col-sm-4">
+                                            <span>{{ 'Additional'|trans }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-icons">
+                                    <i class="fa fa-chevron-up"></i>
+                                </div>
+                                <div class="no-move"></div>
+                            </div>
+                        </a>
+                        <div class="box-content" id="Additional">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'Prefix'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input class="form-control own_fields" type="text" title="" value="" name="prefix">
+                                    </div>
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default">{{ 'If you have several firmware files in one catalogue, please specify the file prefix. For example: if you input tr_ prefix, file tr_imageupdate will be loaded'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="alert alert-warning well-- well-sm col-xs-8 col-sm-8 col-xs-offset-2 bg-warning text_black" role="alert">
+                                    {{ "Filter the STB by set parameters. Update will be installed on STB matching the following parameters only. In 'Image descriptor, it is enough to specify the part of description or key word. Fill-in data can be found in the interface of user profile in the corresponding fields."|trans }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'Required image description'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input class="form-control own_fields" type="text" title="" value="" name="image_description_contains">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'Required image version'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input class="form-control own_fields" type="text" title="" value="" name="image_version_contains">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'Required hardware version'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input class="form-control own_fields" type="text" title="" value="" name="hardware_version_contains">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">{{ 'User groups'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <select name="stb_group_id" id="s2_stb_group_id" class="populate placeholder own_fields">
+                                            <option value="">&nbsp;</option>
+                                            {% if attribute(app, 'stbGroups') is defined and app['stbGroups'] %}
+                                                {% for item in app['stbGroups'] %}
+                                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="devoops-modal-bottom">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success col-sm-2 pull-right" id="save_button">{{ 'Save'|trans }}</button>
+                        <button type="reset"  class="btn btn-default col-sm-2 pull-right" >{{ 'Cancel'|trans }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

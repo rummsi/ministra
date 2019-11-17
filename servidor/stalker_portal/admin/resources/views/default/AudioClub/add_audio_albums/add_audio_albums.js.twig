@@ -1,0 +1,54 @@
+
+var select2Opt = {/*minimumResultsForSearch: -1, minimumInputLength: 0,*/ dropdownAutoWidth: false, width: '100%', placeholder: ''};
+
+var conf = {
+    lang : '{{ app.js_validator_language }}',
+    showHelpOnFocus : true,
+    validateHiddenInputs: true,
+    modules: 'jsconf, logic, security',
+    onkeyup: false,
+    errorClass: "error", //"myErrorClass",
+
+    onError: function () {
+        var _this = this;
+        $(_this.form + " select").each(function(){
+
+            if ($(this).hasClass(_this.errorClass)) {
+                _this.highlight(this, _this.errorClass);
+            } else {
+                _this.unhighlight(this, _this.errorClass);
+            }
+        });
+        return false;
+    },
+
+    errorPlacement: function (error, element) {
+        var elem = $(element);
+        error.insertAfter(element);
+    },
+
+    highlight: function (element, errorClass, validClass) {
+        if (!$(element).parent().children().find('.selection').children().hasClass(errorClass)) {
+            $(element).parent().children().find('.selection').children().addClass(errorClass);
+        }
+    },
+    unhighlight: function (element, errorClass, validClass) {
+        $(element).parent().children().find('.selection').children().removeClass(errorClass);
+    }
+};
+
+var deferred_js_function = ['yelp_step_1', 'yelp_step_2'];
+
+function yelp() {
+
+    $(document).ready(function () {
+
+        $.each(deferred_js_function, function(key, func_name){
+            if ($.isFunction(window[func_name])) {
+                window[func_name]();
+            }
+        });
+    });
+}
+
+document.addEventListener("DOMContentLoaded", yelp, false);

@@ -1,0 +1,27 @@
+
+
+    function yelp() {
+        $(document).ready(function () {
+
+            $("#form_save").on('click', function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                ajaxPostSend('{{ (app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/watched-settings-save') | trans }}', $("#form_").serializeArray());
+
+                return false;
+            });
+            checkDisabled();
+            $("input[name='form[history_option]']").on('change', function(){
+                checkDisabled();
+            })
+
+        });
+    }
+
+    function checkDisabled(){
+        var historyDisabled = $("input[name='form[history_option]']:checked").val() == '0_0';
+        $("input[name='form[not_ended_history_size]']").attr('disabled', historyDisabled).parent('label')[historyDisabled? 'addClass': 'removeClass']('disabled_opacity');
+    }
+    document.addEventListener("DOMContentLoaded", yelp, false);
+

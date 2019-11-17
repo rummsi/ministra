@@ -1,0 +1,811 @@
+{% extends app['twig_theme'] ~ '/layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Video club'|trans ~ ': ' ~ (app.videoEdit ? ('Edit movie'|trans ~ " '"~ app.videoName ~ "'"): 'Add movie'|trans) %}
+{% set active_alias = 'video-list' %}
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/file-uploader-scripts.twig" %}
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" src="./plugins/scrollTo/jquery.scrollTo.min.js" defer=""></script>
+        <script type="text/javascript">
+           
+            {% include app.twig_theme ~ "/NewVideoClub/add_video/add_video.js.twig" %}
+
+        </script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="add_channel" class="new_video_club">
+        {{ form_start(app['form'], {'method': 'POST', 'action': (app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias) | trans, 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
+        <div class="bg-danger">
+            <div class="bg-danger">
+                {{ form_errors(app['form']) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="box">
+
+                <ol class="step-wizard-progress-bar active-2 clearfix">
+                    <li class=" step-1 complete ">{{ 'Basic'|trans }}</li>
+                    <li class=" step-2 complete ">{{ 'Movie information'|trans }}</li>
+                    <li class=" step-3 ">{{ 'Screenshots'|trans }}</li>
+                    <li class=" step-4 ">{{ 'Files'|trans }}</li>
+                </ol>
+
+
+                <a class="collapse-link">
+                    <div class="box-header">
+                        <div class="box-name">
+                            <div class="row">
+                                <div class="col-xs-10 col-sm-2">
+                                    <span>{{ 'Basic'|trans }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-icons">
+                            <i class="fa fa-chevron-up"></i>
+                        </div>
+                        <div class="no-move"></div>
+                    </div>
+                </a>
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Title'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-6">
+                                    <div class=" col-xs-10 col-sm-6">
+                                        {{ form_widget(app['form'].id) }}
+                                        {{ form_widget(app['form'].rating_count_kinopoisk) }}
+                                        {{ form_widget(app['form'].rating_imdb) }}
+                                        {{ form_widget(app['form'].rating_count_imdb) }}
+                                        {{ form_widget(app['form'].name, {'attr': {'class': 'form-control', 'data-validation':'required'}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].name) }}
+                                            {% if app['error_local'] and attribute(app['error_local'], 'name') is defined %}
+                                                <span> {{ app['error_local']['name'] }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <i class="i-hint"
+                                        title="{{ 'You can use letters, digits and symbols from the list: ! @ # $ % ^ & * ( ) _ - + : ; , .' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+
+                                    {# old hint
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default">{{ 'You can use letters, digits and symbols from the list: ! @ # $ % ^ & * ( ) _ - + : ; , .'|trans }}</span>
+                                    </span>
+                                    #}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Category'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-6">
+                                    <div class=" col-xs-10 col-sm-3">
+                                        {{ form_widget(app['form'].category_id, {'attr': {'class': 'populate placeholder', 'data-validation':'required'} }) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].category_id) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Genre'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-6">
+                                    <div class=" col-xs-10 col-sm-6">
+                                        {{ form_widget(app['form'].cat_genre_id, {'attr': {'class': 'populate placeholder', 'data-validation':'required'}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].cat_genre_id) }}
+                                        </div>
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{{ 'You can choose up to 4 genres' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Type'|trans }}</label>
+                                <div class="col-xs-10 col-sm-6">
+                                    <div class=" col-xs-10 col-sm-3">
+                                        {{ form_widget(app['form'].is_series, {'attr': {'class': 'populate placeholder'}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].is_series) }}
+                                        </div>
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{{ 'Type Serial adds seasons and episodes structure' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Parent control'|trans }}</label>
+                                <div class="col-xs-10 col-sm-9">
+                                    <div class=" col-xs-10 col-sm-9">
+                                        <div class="checkbox-inline">
+                                            <label>
+                                                {{ form_widget(app['form'].censored) }}
+                                                <i class="fa fa-square-o small"></i>
+                                            </label>
+                                        </div>
+                                        <i class="i-hint"
+                                            title="{{ 'Adds the restriction for movie access (password set in the "Parental advisory"). Default password 0000' |trans }}" >
+                                            <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                        </i>
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].censored) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <a class="collapse-link">
+                    <div class="box-header">
+                        <div class="box-name">
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4">
+                                    <span>{{ 'Movie information'|trans }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-header-btn" id="autocomplete_button_container">
+                            <button class="btn btn-default btn-add-video-rating" data-provider="tmdb">{{ 'Autocomplete'|trans }} TMDB</button>
+                            <button class="btn btn-default btn-add-video-rating" data-provider="kinopoisk">{{ 'Autocomplete'|trans }} {{ 'Kinopoisk'|trans }}</button>
+                        </div>
+                        <div class="box-icons">
+                            <i class="fa fa-chevron-up"></i>
+                        </div>
+                        <div class="no-move"></div>
+                    </div>
+                </a>
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Autocomplete'|trans }}</label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        <div class="radio-inline">
+                                            <label>
+                                                <input type="radio" name="autocomplite[]">
+                                                <i class="fa fa-dot-circle-o"></i>
+                                                {{ 'TMDB' |trans }}
+                                            </label>
+                                        </div>
+                                        <div class="radio-inline">
+                                            <label>
+                                                <input type="radio" name="autocomplite[]">
+                                                <i class="fa fa-dot-circle-o"></i>
+                                                {{ 'Kinopoisk' |trans }}
+                                            </label>
+                                        </div>
+                                        <button class="btn btn-default col-sm-offset-1">{{ 'Autocomplete'|trans }}</button>
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].censored) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Original title'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].o_name, {'attr': {'class': 'form-control', 'data-oldvalue': app['form'].o_name.vars.value, 'data-validation':'required' }}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].o_name) }}
+                                            {% if app['error_local'] and attribute(app['error_local'], 'o_name') is defined %}<span> {{ app['error_local']['o_name'] }}</span> {% endif %}
+                                        </div>
+                                        <div>
+                                            <a href="" id="kinopoisk_url"></a>
+                                        </div>
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{{ 'Title on the native language. Autocomplete is available' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{% if app['form'].autocomplete_provider.vars.value and app['form'].autocomplete_provider.vars.value == 'tmdb' %}{{ 'TMDB ID'|trans }}{% else %}{{ 'Kinopoisk ID'|trans }}{% endif %}</label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].autocomplete_provider) }}
+                                        {{ form_widget(app['form'].kinopoisk_id, {'attr': {'class': 'form-control'}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].kinopoisk_id) }}
+                                        </div>
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{% if app['form'].autocomplete_provider.vars.value and app['form'].autocomplete_provider.vars.value == 'tmdb' %}{{ 'ID of movie on the TMDB'|trans }}{% else %}{{ 'ID of movie on the Kinopoisk'|trans }}{% endif %}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{% if app['form'].autocomplete_provider.vars.value and app['form'].autocomplete_provider.vars.value == 'tmdb' %}{{ 'TMDB rating'|trans }}{% else %}{{ 'Kinopoisk rating'|trans }}{% endif %}</label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class="col-xs-9 col-sm-11 col-md-11 col-lg-11">
+                                        {{ form_widget(app['form'].rating_kinopoisk, {'attr': {'class': 'form-control', 'readonly': 'readonly'}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].rating_kinopoisk) }}
+                                        </div>
+                                    </div>
+                                    <div class=" col-xs-3 col-sm-1 no-padding">
+                                        <button class="btn btn-default btn-app-mini btn-circle" type="button" id="update_rating_kinopoisk"><i class="fa fa-refresh"></i></button>
+                                    </div>
+                                </div>
+                                <i class="i-hint"
+                                    title="{% if app['form'].autocomplete_provider.vars.value and app['form'].autocomplete_provider.vars.value == 'tmdb' %}{{ 'Film rating on the TMDB. Autocomplete only'|trans }}{% else %}{{ 'Film rating on the Kinopoisk. Autocomplete only'|trans }}{% endif %}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label uniseries">{{ 'Year'|trans }}</label>
+                                <label class="col-sm-2 control-label ">{{ 'Period of showing '|trans }}</label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].year, {'attr': {'class': 'form-control pull-left', 'data-validation':'compare_number', 'data-validation-compare-element': '#form_year_end', 'data-validation-compare-operation': '<=', 'data-validation-regexp' : '^\\d{4}$', 'data-validation-optional' : 'true'}}) }}
+                                        {{ form_widget(app['form'].year_end, {'attr': {'class': 'form-control  pull-left add-video-year', 'data-validation' : 'compare_number', 'data-validation-compare-element': '#form_year', 'data-validation-compare-operation': '>=' , 'data-validation-regexp' : '^(?:\\d{4})$', 'data-validation-optional' : 'true', 'disabled': 'disabled' }}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].year) }}
+                                        </div>
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].year_end) }}
+                                        </div>
+                                    </div>
+                                    <i class="i-hint uniseries"
+                                        title="{{ 'Year of the film creation Example: 2014' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                    <i class="i-hint"
+                                        title="{{ 'The period of showing of the episodes' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                    {#
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default uniseries">{{ 'Year of the film creation Example: 2014'|trans }}</span>
+                                        <span class="small txt-default">{{ 'The period of showing of the episodes'|trans }}</span>
+                                    </span>
+                                    #}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label uniseries">{{ 'Length'|trans }}</label>
+                                <label class="col-sm-2 control-label ">{{ 'Approximate duration'|trans }}</label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].duration, {'attr': {'class': 'form-control', 'data-validation':'number', 'data-validation-optional' : 'true'}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].duration) }}
+                                        </div>
+                                    </div>
+                                    <i class="i-hint uniseries"
+                                        title="{{ 'Film length in minutes Example: 102' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                    <i class="i-hint"
+                                        title="{{ 'Approximate duration(format)  of episode of serial on minutes. Example: 24' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                    {#
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default uniseries">{{ 'Film length in minutes Example: 102'|trans }}</span>
+                                        <span class="small txt-default">{{ 'Approximate duration(format)  of episode of serial on minutes. Example: 24'|trans }}</span>
+                                    </span>
+                                    #}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Country'|trans }}</label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].country, {'attr': {'class': 'form-control'}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].country) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Director'|trans }}</label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].director, {'attr': {'class': 'form-control'}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].director) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Actors'|trans }}</label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].actors, {'attr': {'class': 'form-control'}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].actors) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Movie description'|trans }}</label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].description, {'attr': {'class': 'form-control'}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].description) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Comments'|trans }}:</label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].comments, {'attr': {'class': 'form-control'}}) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].comments) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'MPAA rating'|trans }}</label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class=" col-xs-10 col-sm-4">
+                                        {{ form_widget(app['form'].rating_mpaa, {'attr': {'class': 'populate placeholder'} }) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].rating_mpaa) }}
+                                        </div>
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{{ 'MPAA age restriction' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Age restriction'|trans }}</label>
+                                <div class="col-xs-8 col-sm-7">
+                                    <div class=" col-xs-10 col-sm-4">
+                                        {{ form_widget(app['form'].age, {'attr': {'class': 'populate placeholder'} }) }}
+                                        <div class="bg-danger">
+                                            {{ form_errors(app['form'].age) }}
+                                        </div>
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{{ 'Recommended viewer age' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="form-group">
+                                <div class=" col-xs-6 col-sm-6 col-sm-offset-2 no-padding">
+                                    {{ form_widget(app['form'].cover_big) }}
+                                    {{ form_widget(app['form'].cover_id) }}
+                                    <div id="cover_container" data-id="{% if app['form'].cover_id.vars.value %}{{ app['form'].cover_id.vars.value }}{% else %}new{% endif %}" data-file_num="0">
+                                        <input type="file" name="files" style="opacity: 0;" multiple>
+                                    </div>
+                                    <img class="img-rounded channel-logo" src="{% if app['form'].cover_id.vars.value %}{{ app['curr_cover_dir'] }}/{{ app['form'].cover_id.vars.value }}{{ app['cover_ext'] }}{% elseif app['form'].cover_big.vars.value %}{{ app['form'].cover_big.vars.value }}{% endif %}" alt="" style="width: 100%;">
+                                    <a id="delete_cover" class="no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/delete-cover" data-cover_id="{% if app['form'].cover_id.vars.value %}{{ app['form'].cover_id.vars.value }}{% endif %}">
+                                        <span class="txt-primary">{{ 'Delete cover'|trans }}</span>
+                                    </a>
+                                </div>
+                                <div class=" col-xs-6 col-sm-6 col-sm-offset-2 no-padding" style="line-height: 22px;"><br></div>
+                                {% if app.videoEdit %}
+                                <div class=" col-xs-6 col-sm-6 col-sm-offset-2 " id="fileupload_episodes">
+                                    <ul class="video_episodes">
+                                        {% for key in 1..9 %}
+                                            {% if attribute(app, 'videoImages') is defined and attribute(app.videoImages, key) is defined %}
+                                        <li class="col-xs-4 col-sm-4">
+                                            <div id="video_episodes_{{ key }}" data-id="{{ app.videoImages[key].id }}" data-file_num="{{ key }}">
+                                                <input type="file" name="files" style="opacity: 0;" multiple>
+                                            </div>
+                                            <img class="img-rounded" src="{{ app.videoImages[key].curr_cover_dir }}/{{ app.videoImages[key].name }}" alt="">
+                                            <div class="clear_video_episodes"></div>
+                                        </li>
+                                            {% else %}
+                                        <li class="col-xs-4 col-sm-4">
+                                            <div id="video_episodes_{{ key }}" data-id="new" data-file_num="{{ key }}">
+                                                <input type="file" name="files" style="opacity: 0;" multiple>
+                                            </div>
+                                            <img class="img-rounded" src="" alt="">
+                                            <div class="clear_video_episodes"></div>
+                                        </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+                                <div class=" col-xs-6 col-sm-6 col-sm-offset-2 no-padding">
+                                    <span class="txt-default">
+                                        {{ 'Available formats - jpg, jpeg, png. Maximum file size - 1MB.'|trans }}
+                                    </span>
+                                    <span class="txt-default">
+                                        {{ 'For cover recommended portrait orientation picture (aspect ratio 3:4).'|trans }}
+                                    </span>
+                                    <span class="txt-default">
+                                        {{ 'For screenshots recommended landscape orientation picture (aspect ratio 4:3)'|trans }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="season_button_container" style="display: none">
+                <div class="col-xs-6 col-sm-6 col-xs-offset-6 col-sm-offset-6">
+                    <div class="box">
+                        <div class="box-content">
+                            <button id="update_season" class="btn btn-success col-xs-6 col-sm-4 col-md-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-1 pull-right">{{ 'Update season data'|trans }}</button>
+                            <button id="add_season_structure" class="btn btn-default col-xs-6 col-sm-4 col-md-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-1 pull-right">{{ 'Create season structure'|trans }}</button>
+                            <button id="add_season" class="btn btn-default col-xs-6 col-sm-4 col-md-5 col-xs-offset-0 col-sm-offset-1 col-md-offset-1 pull-right">{{ 'Add one season'|trans }}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12"><div class="box"></div></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12">
+                    <div id="files_container" data-video_id="{% if attribute(app, 'video_id') is defined %}{{ app['video_id'] }}{% endif %}"></div>
+                </div>
+            </div>
+            <div class="form-buttons col-xs-12 col-sm-12">
+                <div class="box">
+                    <div class="box-content">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-right">
+                                {{ form_widget(app['form'].save, { 'label': 'Save'|trans, attr: {'class': 'btn btn-success   pull-right'}}) }}
+                                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/video-list" class="btn btn-default  pull-right"> {{ 'Cancel'|trans }} </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="">
+            {{ form_rest(app.form) }}
+        </div>
+        {{ form_end(app['form']) }}
+    </div>
+
+
+    {# The tamplates for javascript #}
+
+    <script type="text/template" id="files_box_content">
+        <div class="box-content">
+            <div class="dataTables_processing"></div>
+            <table class="table  table-hover table-datatable">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                {% endif %}
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </script>
+
+    <script type="text/template" id="files_box_header">
+        <a class="collapse-link">
+            <div class="box-header">
+                <div class="box-name">
+                    <div class="row">
+                        <div class="col-xs-4 col-sm-3">
+                            <span data-files-title="">{{ 'Files'|trans }}</span>
+                        </div>
+                        <div class="col-xs-4 col-sm-3">
+                            <span data-files-count="">{{ 'files'|trans }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-header-btn">
+                    <button class="btn btn-default btn-add-video-rating" data-add-files="1">{{ 'Add file'|trans }}</button>
+                </div>
+                <div class="box-icons">
+                    <i class="fa fa-chevron-up"></i>
+                </div>
+                <div class="no-move"></div>
+            </div>
+        </a>
+    </script>
+
+    <script type="text/template" id="series_box_header">
+        <a class="collapse-link">
+            <div class="box-header">
+                <div class="box-name">
+                    <div class="row">
+                        <div class="col-lg-1 col-md-1 no-padding-right">
+                            <span data-series-number=""></span>
+                        </div>
+                        <div class="col-lg-1 col-md-1 no-padding-right">
+                            <span data-files-count=""></span>
+                        </div>
+                        <div class="col-lg-4 col-md-4 no-padding-right">
+                            <span class="col-lg-4 col-md-4 text-right">{{ 'Title'|trans }}:</span>
+                            <div class="mod_input col-lg-8 col-md-8 no-padding">
+                                <input class="col-lg-12 col-md-12  no-padding" type="text" name="series_name" placeholder="{{ 'Add episodes name'|trans }}">
+                                <i class="fa fa-pencil"></i>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 no-padding-left">
+                            <span class="col-lg-5 col-md-4 text-right no-padding-left">{{ 'Original title'|trans }}:</span>
+                            <div class="mod_input col-lg-7 col-md-6 no-padding">
+                                <input class="col-lg-12 col-md-12  no-padding" type="text" name="series_original_name" placeholder="{{ 'Add original name'|trans }}">
+                                <i class="fa fa-pencil"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-header-btn">
+                    <button class="btn btn-default btn-add-video-rating" data-add-files="1"><i class="fa fa-plus-square-o"  data-original-title="{{ 'Add file'|trans }}" data-toggle="tooltip" data-placement="left"></i></button>
+                    <button class="btn btn-default btn-add-video-rating" data-delete-episode="1" ><i class="fa fa-trash-o" data-original-title="{{ 'Delete episode'|trans }}" data-toggle="tooltip" data-placement="left"></i></button>
+                </div>
+                <div class="box-icons">
+                    <i class="fa fa-chevron-down"></i>
+                </div>
+                <div class="no-move"></div>
+            </div>
+        </a>
+    </script>
+
+    <script type="text/template" id="season_box_header">
+        <a class="collapse-link">
+            <div class="box-header">
+                <div class="box-name">
+                    <div class="row">
+                        <div class="col-lg-1 col-md-1 no-padding-right">
+                            <span data-season-number=""></span>
+                        </div>
+                        <div class="col-lg-1 col-md-1 no-padding-right">
+                            <span data-series-count=""></span>
+                        </div>
+                        <div class="col-lg-4 col-md-4 no-padding-right">
+                            <span class="col-lg-3 col-md-4 text-right">{{ 'Title'|trans }}:</span>
+                            <div class="mod_input col-lg-9 col-md-8 no-padding">
+                                <input class="col-lg-12 col-md-12  no-padding" type="text" name="season_name" placeholder="{{ 'Add season name'|trans }}">
+                                <i class="fa fa-pencil"></i>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 no-padding-right">
+                            <span class="col-lg-5 col-md-4 text-right no-padding-left ">{{ 'Original title'|trans }}:</span>
+                            <div class="mod_input col-lg-7 col-md-6 no-padding">
+                                <input class="col-lg-12 col-md-12  no-padding" type="text" name="season_original_name" placeholder="{{ 'Add original name'|trans }}">
+                                <i class="fa fa-pencil"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-header-btn">
+                    <button class="btn btn-default btn-add-video-rating" data-add-series="1" ><i class="fa fa-plus-square-o" data-original-title="{{ 'Add episodes'|trans }}" data-toggle="tooltip" data-placement="left"></i></button>
+                    <button class="btn btn-default btn-add-video-rating" data-delete-season="1" ><i class="fa fa-trash-o" data-original-title="{{ 'Delete season'|trans }}" data-toggle="tooltip" data-placement="left"></i></button>
+                </div>
+                <div class="box-icons">
+                    <i class="fa fa-chevron-down"></i>
+                </div>
+                <div class="no-move"></div>
+            </div>
+        </a>
+    </script>
+
+    <script type="text/template" id="modal_save_form_body">
+        <div class="box-content no-padding">
+            <form id="file_form" class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-video-files">
+                    <div class="col-sm-8 col-sm-offset-2" id="file_form_input_container">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'File type'|trans }}</label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <input type="hidden" class="own_fields form-control" name="id" id="file_id" value="" readonly="readonly">
+                                    <input type="hidden" class="own_fields form-control" name="video_id" id="video_id" value="" readonly="readonly">
+                                    <input type="hidden" class="own_fields form-control" name="season_id" id="season_id" value="" readonly="readonly">
+                                    <input type="hidden" class="own_fields form-control" name="series_id" id="series_id" value="" readonly="readonly">
+                                    <input type="hidden" class="own_fields form-control" name="file_name" id="file_name" value="" readonly="readonly">
+                                    <input type="hidden" class="own_fields form-control" name="status" id="status" value="" readonly="readonly">
+                                    <select id="file_type" name="file_type" class="own_fields populate placeholder">
+                                        <option value="video">{{ 'Video'|trans }}</option>
+                                        <option value="sub">{{ 'Subs'|trans }}</option>
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Quality'|trans }}</label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <select id="file_quality" name="quality" class="own_fields populate placeholder">
+                                        {% if attribute(app, 'quality') is defined and app['quality'] %}
+                                            {% for item in app['quality'] %}
+                                                <option value="{{ item.id }}">{{ item.num_title }}{{ item.text_title ? (' (' ~ item.text_title ~ ')')|trans : '' }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Languages'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <select id="file_languages" name="languages" class="own_fields populate placeholder" multiple="multiple" data-validation='required'>
+                                        {% if attribute(app, 'allLanguages') is defined %}
+                                            {% for key, item in app.allLanguages %}
+                                                <option value="{{ key }}">{{ item }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Volume level'|trans }}</label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <select id="file_volume_level" name="volume_level" class="own_fields populate placeholder">
+                                        {% for item in -20..20 %}
+                                            <option value="{{ item }}">{{ item * 5 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Protocol'|trans }}</label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <select id="file_protocol" name="protocol" class="own_fields populate placeholder">
+                                        <option value="http">HTTP</option>
+                                        <option value="custom">Custom URL</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <span class="help-inline col-xs-9 col-sm-9 col-xs-offset-3 col-sm-offset-3">
+                                <span class="small txt-default col-xs-11 col-sm-11">{{ 'Selecting the method of content delivery to the user (http, custom url, nfs). When using HTTP or NFS variants do not link to the content, in which case the content is stored on the server.'|trans }}</span>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'URL'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <input type="text" class="own_fields form-control" name="url" id="video_url" value="" data-validation = 'custom' data-validation-regexp = '^(\w+\s)?\w+\:\/\/.+$' data-validation-error-msg = "{{ 'Invalid format links'|trans }}">
+                                </span>
+                            </div>
+                            <span class="help-inline col-xs-9 col-sm-9 col-xs-offset-3 col-sm-offset-3">
+                                <span class="small txt-default col-xs-11 col-sm-11">{{ 'Example: ffmpeg http://anon.nasa-global.edgesuite.net/HD_downloads/135_launch_720p.wmv'|trans }}</span>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Temporary link'|trans }}</label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <select id="file_tmp_link_type" name="tmp_link_type" class="populate placeholder own_fields">
+                                        <option value="">&nbsp;</option>
+                                        <option value="flussonic">Flussonic</option>
+                                        <option value="nginx">Nginx secire link</option>
+                                        <option value="wowza">Wowza</option>
+                                        <option value="edgecast_auth">EdgeCast auth</option>
+                                        <option value="akamai_auth">Akamai</option>
+                                        <option value="nimble">Nimble</option>
+                                        <option value="wowza_securetoken">Wowza SecureToken</option>
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ 'Status'|trans }}</label>
+                            <div class="col-xs-9 col-sm-9">
+                                <span class="col-xs-12 col-sm-12">
+                                    <select id="file_accessed" name="accessed" class="own_fields populate placeholder">
+                                        <option value="0">{{ 'Not published'|trans }}</option>
+                                        <option value="1">{{ 'Published'|trans }}</option>
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </script>
+
+    <script type="text/template" id="media_info_body">
+        <div class="col-sm-4" id="media_info">
+            <button class="btn btn-success btn-block disabled" disabled="disabled">{{ 'Autofill'|trans }}</button>
+        </div>
+    </script>
+
+    <script type="text/template" id="media_info_info">
+        <span class="col-sm-12 center" data-info-key="" data-info-val=""></span>
+    </script>
+
+    <script type="text/template" id="modal_save_form_buttons">
+        <div class="pull-right no-padding">
+            <button type="submit" class="btn btn-success pull-right">{{ 'Save'|trans }}</button>
+            <button type="reset" class="btn btn-default pull-right">{{ 'Cancel'|trans }}</button>
+        </div>
+    </script>
+
+    <script type="text/template" id="season_counter_template">
+        <form id="season_counter_form" class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/add-video-season">
+            <input type="hidden" class="own_fields form-control" name="video_id" id="video_id" value="{% if attribute(app, 'video_id') is defined %}{{ app['video_id'] }}{% endif %}" readonly="readonly">
+            <div class="form-group">
+                <label class="col-sm-2 control-label col-sm-offset-2 ">{{ 'Seasons'|trans }}</label>
+                <div class="col-xs-10 col-sm-6">
+                    <select name='season_counter' id='season_counter'>
+                        <option value='1'>1</option>
+                        <option value='2'>2</option>
+                        <option value='3'>3</option>
+                        <option value='4'>4</option>
+                        <option value='5'>5</option>
+                        <option value='6'>6</option>
+                        <option value='7'>7</option>
+                        <option value='8'>8</option>
+                        <option value='9'>9</option>
+                        <option value='10'>10</option>
+                        <option value='11'>11</option>
+                        <option value='12'>12</option>
+                        <option value='13'>13</option>
+                        <option value='14'>14</option>
+                        <option value='15'>15</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </script>
+
+    <script type="text/template" id="series_counter_template">
+        <div class="form-group">
+            <label class="col-sm-2 control-label col-sm-offset-2">{{ 'Season'|trans }} </label>
+            <div class="col-xs-10 col-sm-6">
+                <select name='' id='series_counter_' class="populate placeholder own_fields">
+                    <option value='1'>1 {{ 'episodes'|trans }}</option>
+                    <option value='2'>2 {{ 'episodes'|trans }}</option>
+                    <option value='3'>3 {{ 'episodes'|trans }}</option>
+                    <option value='4'>4 {{ 'episodes'|trans }}</option>
+                    <option value='5'>5 {{ 'episodes'|trans }}</option>
+                    <option value='6'>6 {{ 'episodes'|trans }}</option>
+                    <option value='7'>7 {{ 'episodes'|trans }}</option>
+                    <option value='8'>8 {{ 'episodes'|trans }}</option>
+                    <option value='9'>9 {{ 'episodes'|trans }}</option>
+                    <option value='10'>10 {{ 'episodes'|trans }}</option>
+                    <option value='11'>11 {{ 'episodes'|trans }}</option>
+                    <option value='12'>12 {{ 'episodes'|trans }}</option>
+                    <option value='13'>13 {{ 'episodes'|trans }}</option>
+                    <option value='14'>14 {{ 'episodes'|trans }}</option>
+                    <option value='15'>15 {{ 'episodes'|trans }}</option>
+                </select>
+            </div>
+            <br><br>
+        </div>
+    </script>
+
+{% endblock %}

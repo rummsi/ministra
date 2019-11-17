@@ -1,0 +1,145 @@
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited{
+    color: #000;
+}
+
+#add_channel .form-group .btn:not(.btn-circle) .fa {
+    vertical-align: baseline;
+}
+
+#tabs [id^='ui-tabs-']{
+    position: relative;
+    height: 408px;
+}
+
+#tabs img.launcher-bg-screen {
+    position: absolute;
+    width: 466px;
+    top: 25px;
+    left: 0;
+}
+
+#tabs div.launcher-preview{
+    overflow: hidden;
+    position: absolute;
+    width: 466px;
+    height: 380px;
+    top: 54px;
+    z-index: -1;
+}
+
+#tabs div.launcher-preview > div {
+    position: absolute;
+}
+
+#tabs div.launcher-preview img.launcher-bg{
+    position: absolute;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+#tabs div.launcher-preview .res-1080 {
+    top: 181px;
+    left: 149px;
+    width: 306px;
+    height: 173px;
+    z-index: -4;
+}
+
+#tabs div.launcher-preview .res-720 {
+    top: 258px;
+    left: 34px;
+    width: 166px;
+    height: 106px;
+    z-index: -3;
+}
+
+#tabs div.launcher-preview .res-576 {
+    top: 7px;
+    right: 22px;
+    width: 143px;
+    height: 110px;
+    z-index: -2;
+}
+
+#tabs div.launcher-preview .res-480 {
+    top: 59px;
+    right: 181px;
+    width: 103px;
+    height: 61px;
+    z-index: -1;
+}
+
+#tabs img.launcher-logo{
+    max-width: 15.62%;
+    max-height: 13%;
+    margin-top: 5%;
+    margin-left: 4.53%;
+    display: block;
+}
+
+
+#tabs .res-1080 img.launcher-logo {
+    max-width: 15.5%;
+    margin-top: 2%;
+    margin-left: 5.5%;
+}
+
+#tabs .res-1080 img.launcher-logo.align-right{
+    margin-right: 14.2%;
+}
+
+#tabs .res-720 img.launcher-logo{
+    max-width: 15.7%;
+    margin-top: 3.7%;
+    margin-left: 5.9%;
+}
+
+#tabs .res-720 img.launcher-logo.align-right{
+    margin-right: 14.2%;
+}
+
+#tabs .res-576 img.launcher-logo{
+    margin-top: 5.21%;
+    margin-left: 5.21%;
+}
+
+#tabs .res-576 img.launcher-logo.align-right{
+    margin-right: 5.21%;
+}
+
+#tabs .res-480 img.launcher-logo{
+    margin-top: 5.21%;
+    margin-left: 5.21%;
+}
+
+#tabs .res-480 img.launcher-logo.align-right{
+    margin-right: 5.21%;
+}
+
+#tabs img.launcher-logo.align-right{
+    margin-left: auto;
+}
+
+#tabs img.launcher-logo.align-center{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div.fileupload-buttons span.fileinput-button.delete {
+    display: none;
+}
+
+div.fileupload-buttons span.fileinput-button.delete[data-visible='0'],
+div.fileupload-buttons span.fileinput-button.delete[data-visible='1'] + .btn {
+    display: none;
+}
+
+div.fileupload-buttons span.fileinput-button.delete[data-visible='1'],
+div.fileupload-buttons span.fileinput-button.delete[data-visible='0'] + .btn {
+    display: inline-block;
+}

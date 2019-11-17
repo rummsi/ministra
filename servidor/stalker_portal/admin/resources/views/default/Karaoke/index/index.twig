@@ -1,0 +1,149 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Karaoke'|trans ~ ': ' ~ 'karaoke list'|trans %}
+
+{% block head %}
+    
+    {{ parent() }}
+    <style type="text/css">
+         {% include (app.twig_theme ~ "/Karaoke/index/index.css") %}
+    </style>
+
+{% endblock %}
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/Karaoke/index/index.js.twig") %}
+        </script>
+        
+{% endblock %}
+    
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {{ main_macro.get_filter('protocol', 'Protocol'|trans, 'id', 'title', app['allProtocols'], 3) }}
+                {{ main_macro.get_filter('status', 'State'|trans, 'id', 'title', app['allStatus'], 3) }}
+                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/add-karaoke" class="btn btn-success pull-right no_context_menu" id="add_karaoke"><i class="fa fa-plus"></i>{{ 'Add composition'|trans }}</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalbox_ad">
+        <div class="devoops-modal">
+            <div class="devoops-modal-header">
+                <div class="modal-header-name">
+                    <span></span>
+                </div>
+                <div class="box-icons">
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <form class="form-horizontal" role="form" id="karaoke_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-karaoke">
+                <div class="devoops-modal-inner">
+                    <div class="box">
+                        <div class="box-content">
+                            <!-- track name -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">{{ 'Title'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10 ">
+                                        <input type="hidden" name="id" class="own_fields">
+                                        <input type="text" name="name"  data-validation="required" class='own_fields form-control'>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- singer -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">{{ 'Artist'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input type="text" name="singer"  data-validation="required" class='form-control own_fields'>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- protocol -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">{{ 'Protocol'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10 ">
+                                        <select  data-validation=required class="populate placeholder own_fields" name="protocol" id="s2_protocol">
+                                            {% if attribute(app, 'allProtocols') is defined %}
+                                                {% for s_item in app['allProtocols'] %}
+                                                    {% if s_item.id != 'nfs' %}
+                                                        <option value="{{s_item.id}}" >{{s_item.title}}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                    <span class="help-inline col-xs-10 col-sm-10">
+                                        <span class="small txt-default">{{ 'Content delivery type: http or custom url. When selecting HTTP, the file will be stored on the server. A unique title will be generated, which you should then use to rename the file. Custom URL means that you are downloading the file from the network. In this case, you have to indicate a direct link to the file using the format: solution + url.'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- URL -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">RTSP/HTTP URL<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input type="text" name="rtsp_url" class='form-control own_fields' data-validation = 'required, custom' data-validation-regexp = '^(\w+\s)?\w+\:\/\/.+$' data-validation-error-msg-custom = "{{ 'Invalid format links'|trans }}">
+                                    </div>
+                                    <span class="help-inline col-xs-10 col-sm-10">
+                                        <span class="small txt-default">{{ 'Format solution + URL. Example fmpeg http://anon.nasa.net/download_135_720p.wmv'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="devoops-modal-bottom">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+                        <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,373 @@
+{# empty Twig template #}
+
+<footer>
+    <div class="text">
+        <a href="http://www.infomir.eu/{% if app.language=="ru" %}rus{% else %}eng{% endif %}/about/profile/" target=_blank>{{ 'Powered by'|trans }} Infomir</a> &bull;
+        <a href="http://www.infomir.eu/{% if app.language=="ru" %}rus{% else %}eng{% endif %}/products/iptv-stb/" target=_blank>{{ 'IPTV/OTT Set-Top Boxes'|trans }}</a> &bull;
+        <a href="#" id="contact_support" class="contact_support" target=_blank>{{ 'Contact support'|trans }}</a> &bull;
+        {#<a href="http://www.infomir.eu/eng/press-center/" target=_blank>{{ 'Infomir News'|trans }}</a> -#}
+        <a href="https://wiki.infomir.eu/{% if app.language == "ru" %}rus/{% endif %}" target=_blank>{{ 'Documentation'|trans }}</a> &bull;
+        {# temporary comment the Language Dropdown
+        {% if attribute(app, 'allowed_locales') is defined %}
+        <div class="dropup">
+            <a id="dropdownMenu2" data-toggle="dropdown"><span class="lang-xs" lang="{{ app.language }}"></span> {{ 'Language'|trans }}</a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2" id="allowed_locales">
+                {% for key, item in app.allowed_locales %}
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-locale="{{ item }}"><span class="lang-xs" lang="{{ item|slice(0,2) }}"></span>{{ key }}</a></li>
+                {% endfor %}
+            </ul>
+        </div> -
+        {% endif %}
+        #}
+        <span id="portal_version_srt" class="text-default"></span>
+    </div>
+
+
+    <script type="text/javascript" defer="defer">
+        var words = [];
+        var lang = $.cookies.get('language');
+        lang = lang ? lang.substr(0, 2): 'en';
+        $.ajax({
+            type: "GET",
+            url: "./js/js_translate.php",
+            async: false,
+            data: {language: lang},
+            dataType: "json",
+            success: function(data){
+                for (var key in data){
+                    words[key] = data[key];
+                }
+            }
+        });
+
+        $('#datatable-1').on( 'draw.dt', function () {
+            $('#wrapper').css({minHeight: heightCalculate()});
+        } );
+        if (typeof (ver) != 'undefined') {
+            $("#portal_version_srt").text(" v " + ver);
+        }
+
+        {% if attribute(app, 'new_version') is defined and app['new_version']%}
+        var update = {
+            {% for key, val in app['new_version'] %}
+            '{{ key }}': '{{ val }}'{% if not loop.last %},{% endif %}
+            {% endfor %}
+        };
+
+        if (typeof(update.version) != 'undefined' && ver != update.version) {
+            $("#portal_version_srt").after('<span id="new_version" class="text-default"><a class="text-primary" href="' + update.url + '">{{ 'Available new version'|trans }} ' + update.version + '</a></span>').after(' - ');
+        }
+        {% endif %}
+
+        $(document).on('click', '#contact_support', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            footer_modal($(this));
+            return false
+        });
+
+        function footer_modal(obj){
+            var modalContainer;
+            if ($('#modalbox_clone').length) {
+                modalContainer = $('#modalbox_clone');
+            } else {
+                modalContainer = $('#modalbox').clone(true);
+                modalContainer.attr('id', 'modalbox_clone');
+                $('#modalbox').after(modalContainer);
+            }
+            modalContainer.find('.modal-header-name span').text('{{ 'Technical questions form'|trans }}');
+            modalContainer.find('.devoops-modal-inner').html('\n\
+                <div class="box-content">\n\
+                     <iframe src="//www.infomir.eu/eng/support/form/stalker.php?lang={{ app.language }}" width="734" height="400" frameborder="0" allowtransparency="true"></iframe>  \n\
+                </div>');
+            modalContainer.find('.devoops-modal-bottom').empty();
+            modalContainer.show();
+            obj.closest('div.open').removeClass('open');
+        }
+
+        function topModalMsg(obj){
+            if (!obj || !obj.data) {
+                obj['data'] = [];
+            }
+            var certificateCheck = localStorage.getItem('certificateCheck'), showed, cTime = new Date();
+            if (!certificateCheck) {
+                certificateCheck = {
+                    showed: {},
+                    closed: true,
+                    timestamp: 0
+                };
+            } else {
+                certificateCheck = $.parseJSON(certificateCheck);
+            }
+            showed = certificateCheck.showed;
+            for (var i in obj.data) {
+                if (obj.data[i].expires_30_days && !showed[obj.data[i].id] && (obj.data[i].cert_end * 1000) >= cTime.getTime() ) {
+                    showed[obj.data[i].id] = false;
+                    certificateCheck.closed = false;
+                }
+            }
+
+            certificateCheck.showed = showed;
+            certificateCheck.timestamp = cTime.getTime();
+            localStorage.setItem('certificateCheck', JSON.stringify(certificateCheck));
+            if (!certificateCheck.closed) {
+                createCertModal();
+            }
+        }
+
+        function createCertModal(){
+            $('body').prepend("\n\
+                    <div id='certificate_warn' class='box-content ' style='z-index: 100000; position: fixed; top: 0; left: 0; width: 100%;'>\n\
+                        <div class='row'>\n\
+                            <div class='col-xs-6 col-xs-offset-3'>\n\
+                                <h4 class='text-center'>\n\
+                                    <img src='{{app.request_context.baseUrl}}/img/warning-icon.png'/>\n\
+                                    &nbsp;&nbsp;\n\
+                                    <strong>{{ 'Reminder: One of your certificates is expiring'|trans }}</strong>\n\
+                                    &nbsp;&nbsp;\n\
+                                    <small><a href='{{app.request_context.baseUrl}}/certificates/current' class='txt-primary'>{{ 'Details'|trans }}</a></small>\n\
+                                </h4>\n\
+                            </div>\n\
+                            <div id='warn_close' class='col-xs-3 txt-center pull-right'>\n\
+                                <i class='fa fa-times'></i>\n\
+                            </div>\n\
+                        </div>\n\
+                    </div>");
+
+            $("#certificate_warn").on("click", "#warn_close i", function(){
+                var certificateCheck = localStorage.getItem('certificateCheck'), cTime = new Date();
+                if (!certificateCheck) {
+                    certificateCheck = {
+                        showed: {},
+                        closed: false,
+                        timestamp: 0
+                    };
+                } else {
+                    certificateCheck = $.parseJSON(certificateCheck);
+                }
+
+                for (var i in certificateCheck.showed) {
+                    certificateCheck.showed[i] = true;
+                }
+                certificateCheck.closed = true;
+                certificateCheck.timestamp = cTime.getTime();
+                localStorage.setItem('certificateCheck', JSON.stringify(certificateCheck));
+                $("#certificate_warn").remove();
+            });
+        }
+
+        $(document).ready(function(){
+
+            {% if attribute(app, 'certificate_server_health_check') is not defined or app['certificate_server_health_check']  %}
+
+            serverHealthCheckFunc();
+            var serverHealthCheck = setTimeout(function () {
+                serverHealthCheckFunc();
+            }, 3600000);
+
+            {% endif %}
+
+            var certificateCheck = localStorage.getItem('certificateCheck');
+            if (!certificateCheck) {
+                certificateCheck = {
+                    showed: {},
+                    closed: false,
+                    timestamp: 0
+                };
+            } else {
+                certificateCheck = $.parseJSON(certificateCheck);
+            }
+            var cTime = new Date();
+            if ((cTime.getTime() - certificateCheck.timestamp) > 86400000 ) {
+                ajaxPostSend('{{app.request_context.baseUrl}}/certificates/current-list-json', {notty_check: 1}, false, false, true);
+            } else if (!certificateCheck.closed){
+                createCertModal();
+            }
+
+            {% if attribute(app, 'npmVersionError') is defined %}
+
+            var npmVersionError = localStorage.getItem('npm-version-error');
+            if (!npmVersionError) {
+                npmVersionError = {
+                    timescounter: 0,
+                    closed: false,
+                    timestamp: 0
+                };
+            } else {
+                npmVersionError = $.parseJSON(npmVersionError);
+            }
+            if (!cTime) {
+                var cTime = new Date();
+            }
+            if ((cTime.getTime() - npmVersionError.timestamp) > 86400000 || (!npmVersionError.closed && npmVersionError.timescounter <= 20)){
+                npmVersionAlert();
+            }
+
+            {% endif %}
+
+            {% if attribute(app, 'userlogin') is defined and app['userlogin'] == 'admin' %}
+
+            var notiFeedObj = $("#index_note_list").parent().notiFeed({
+                ajax_link: "{{ app.request_context.baseUrl }}/index/note-list",
+                title: "<label>{{ 'Notifications'|trans }}</label>",
+                linkText: "{{ 'Read more'|trans }}",
+                emptyListText: "<div>{{ 'No new notifications'|trans }}</div>",
+                titleDelete  : "{{ 'Delete notification'|trans }}"
+                /* Remove popup for notification
+                openFeedItemCallback: function(feedItemId){
+                    JScloseModalBox();
+                    if (typeof (feedItemId) != 'undefined') {
+                        $("#modalbox .modal-header-name span").text(notiFeedObj.feedList[feedItemId].title);
+                        $("#modalbox .devoops-modal-inner").html("<div class='col-xs-12'>" + notiFeedObj.feedList[feedItemId].description + "</div>");
+                        $("#modalbox .devoops-modal-bottom").html("<div class='col-xs-12'>" +
+                            '<a id="feed_remind" href="' + notiFeedObj.defaults.set_remind_link + '" class="btn btn-default col-sm-3 col-sm-offset-1 no-padding-left no-padding-right pull-right" data-feeditemid="'+ feedItemId +'">{{ 'Remind me later'|trans }}</a>'+
+                            '<button type="reset" id="feed_close" class="btn btn-default col-sm-3 col-sm-offset-1 no-padding-left no-padding-right pull-right">{{ 'Close'|trans }}</button>'+
+                            "</div>");
+                        $("#modalbox").show();
+                        notiFeedObj.setReadedItem(feedItemId);
+                    }
+                }*/
+            });
+
+            $("#index_note_list").on('click', function (e) {
+                notiFeedObj.setReadedAll();
+            });
+
+            /*$(document).on('click', "#feed_remind", function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var sendData = $(this).data();
+                ajaxPostSend($(this).attr('href'), sendData, false, false);
+                JScloseModalBox();
+                return false;
+            });*/
+
+            {% endif %}
+        });
+
+        {% if attribute(app, 'certificate_server_health_check') is not defined or app['certificate_server_health_check']  %}
+        var serverHealthCheckFunc = function(){
+            var curTime = new Date().getTime(), lastCheck = parseInt(localStorage.getItem('check_health_time'), 10);
+            if (isNaN(lastCheck) || (curTime - lastCheck) > 3600000) {
+                ajaxPostSend('{{app.request_context.baseUrl}}/index/check-certificate-server-health', {check_health_time: isNaN(lastCheck)? 0: curTime});
+                localStorage.setItem('check_health_time', curTime);
+            }
+        };
+
+        var healthServerAlert = function(){
+
+            var zIndex = 200000;
+
+            $("div[id^='server_error_warn_']").each(function(){
+                var cZIndex = $(this).css('zIndex');
+                if (zIndex <= cZIndex) {
+                    zIndex = cZIndex + 1;
+                }
+            });
+            var errorTmplObj = {
+                zIndex: zIndex,
+                alertMsg: "{{ 'There is no connection to the server of certificates. The operation of some client\'s applications and devices can be suspended.'|trans }}",
+                alertLink: {
+                    link: "http://www.infomir.eu/{{ app['language'] == 'ru' ? 'rus' : 'eng' }}/payments/",
+                    text: "{{ 'More information here'|trans }}"
+                }
+            };
+
+            if (!$.isFunction($.tmpl)){
+                $.ajax({
+                    url: "{{app.request_context.baseUrl}}/js/jquery.tmpl.min.js",
+                    dataType: "script",
+                    cache: true,
+                    async: false
+                });
+            }
+
+            $("#server_error_warn_tmpl").tmpl(errorTmplObj).prependTo('body');
+
+            $(document).on("click", "#warn_close_"+zIndex+" i", function(){
+                $("#server_error_warn_"+ zIndex ).remove();
+            });
+        };
+
+        {% endif %}
+
+        var npmVersionAlert = function(){
+
+            var zIndex = 200000;
+
+            $("div[id^='server_error_warn_']").each(function(){
+                var cZIndex = $(this).css('zIndex');
+                if (zIndex <= cZIndex) {
+                    zIndex = cZIndex + 1;
+                }
+            });
+            var link = {
+                ru: "https://wiki.infomir.eu/rus/ministra-tv-platform/administrativnaya-panel/priloyoeniya/priloyoeniya-smart-launcher/kak-ustanovit-priloyoenie-smart-launcher",
+                en: "https://wiki.infomir.eu/eng/ministra-tv-platform/administrative-panel/applications/smart-launcher-apps/how-to-install-smart-launcher-app"
+            };
+
+            var errorTmplObj = {
+                zIndex: zIndex,
+                alertMsg: "{{ 'The npm version does not match the required one. For correct operation, install npm version 2.15.11'|trans }}",
+                alertLink: {
+                    link: link["{{ app['language'] == 'ru' ? 'ru' : 'en' }}"],
+                    text: "{{ 'More information here'|trans }}"
+                }
+            };
+
+            if (!$.isFunction($.tmpl)){
+                $.ajax({
+                    url: "{{app.request_context.baseUrl}}/js/jquery.tmpl.min.js",
+                    dataType: "script",
+                    cache: true,
+                    async: false
+                });
+            }
+
+            $("#server_error_warn_tmpl").tmpl(errorTmplObj).prependTo('body');
+
+            $(document).on("click", "#warn_close_"+zIndex+" i", function(){
+                var npmVersionError = localStorage.getItem('npm-version-error'), cTime = new Date();
+                if (!npmVersionError) {
+                    npmVersionError = {
+                        timescounter: 0,
+                        closed: false,
+                        timestamp: 0
+                    };
+                } else {
+                    npmVersionError = $.parseJSON(npmVersionError);
+                }
+
+                npmVersionError.timescounter++;
+                npmVersionError.closed = true;
+                npmVersionError.timestamp = cTime.getTime();
+                localStorage.setItem('npm-version-error', JSON.stringify(npmVersionError));
+                $("#server_error_warn_"+ zIndex ).remove();
+            });
+        };
+
+    </script>
+
+    <script type="text/template" id="server_error_warn_tmpl">
+        <div id='server_error_warn_${zIndex}' class='box-content ' style='z-index: ${zIndex}; position: fixed; top: 0; left: 0; width: 100%;'>
+            <div class='row'>
+                <div class='col-xs-6 col-xs-offset-3'>
+                    <h4 class='text-center'>
+                        <img src='{{app.request_context.baseUrl}}/img/warning-icon.png'/>
+                        &nbsp;&nbsp;
+                        <strong>${alertMsg}</strong>
+                        &nbsp;&nbsp;
+                        {{ "{{if alertLink}}" }}
+                        <br>
+                        <small><a href='${alertLink.link}' target="_blank" class='txt-primary'>${alertLink.text}</a></small>
+                        {{ '{{/if}}' }}
+                    </h4>
+                </div>
+                <div id='warn_close_${zIndex}' class='col-xs-3 txt-center pull-right'>
+                    <i class='fa fa-times'></i>
+                </div>
+            </div>
+        </div>
+    </script>
+
+</footer>

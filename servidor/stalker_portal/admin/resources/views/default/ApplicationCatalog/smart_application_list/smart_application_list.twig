@@ -1,0 +1,299 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Applications'|trans ~ ': ' ~ 'applications catalog'|trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/file-uploader-scripts.twig" %}
+
+{% endblock %}
+{% block footer %}
+       
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include app.twig_theme ~ "/ApplicationCatalog/smart_application_list/smart_application_list.js.twig" %}
+        </script>
+        
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {{ main_macro.get_filter('type', 'Type'|trans, 'id', 'title', app['allType'], 3) }}
+                {{ main_macro.get_filter('category', 'Category'|trans, 'id', 'title', app['allCategory'], 3) }}
+                {{ main_macro.get_filter('installed', 'State'|trans, 'id', 'title', app['allInstalled'], 3) }}
+                {{ main_macro.get_filter('status', 'Status'|trans, 'id', 'title', app['allStatus'], 3) }}
+                {#{{ main_macro.get_filter('conflicts', 'Compatibility'|trans, 'id', 'title', app['allCompatibility'], 3) }}#}
+
+                {#
+                <div class="dropdown filter black pull-right">
+                    <a data-toggle="dropdown" class="dropdown-toggle btn-success no_context_menu" href="#">
+                        <span>{{ 'List of installed'|trans }}</span>
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu" style="">
+                        <li>
+                            <a id="upload_list" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-upload-list" class="btn btn-success no_context_menu">{{ 'Upload the list'|trans }}</a>
+                        </li>
+                        <li>
+                             <a id="download_list" href="#" class="btn btn-success no_context_menu">{{ 'Save the list'|trans }}</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dropdown filter black pull-right">
+                    <a data-toggle="dropdown" class="dropdown-toggle btn-success no_context_menu" href="#">
+                        <span>{{ 'Updates'|trans }}</span>
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu" style="">
+                        <li>
+                            <a id="check_update_apps" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-check-update" data-info = '1' data-id="all" class="main_ajax btn btn-success no_context_menu">{{ 'Check updates'|trans }}</a>
+                        </li>
+                        <li>
+                            <a id="update_all_apps" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-update" data-info = '1' data-id="all" class="main_ajax btn btn-success no_context_menu">{{ 'Update all'|trans }}</a>
+                        </li>
+                    </ul>
+                </div>
+                #}
+
+                <div class="btn-group pull-right">
+                    <a href="#" class="dropdown-toggle btn btn-default no_context_menu" data-toggle="dropdown">
+                        <span>{{ 'List of installed'|trans }}</span>
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a id="upload_list" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-upload-list" class="btn-- no_context_menu">{{ 'Upload the list'|trans }}</a>
+                        </li>
+                        <li>
+                             <a id="download_list" href="#" class="btn-- no_context_menu">{{ 'Save the list'|trans }}</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="btn-group pull-right">
+                    <a href="#" class="dropdown-toggle btn btn-default no_context_menu" data-toggle="dropdown">
+                        <span>{{ 'Updates'|trans }}</span>
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu pull-left">
+                        <li>
+                            <a id="check_update_apps" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-check-update" data-info = '1' data-id="all" class="main_ajax btn-- no_context_menu">{{ 'Check updates'|trans }}</a>
+                        </li>
+                        <li>
+                            <a id="update_all_apps" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-update" data-info = '1' data-id="all" class="main_ajax btn-- no_context_menu">{{ 'Update all'|trans }}</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <a id="reset_all_apps" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-reset-all" data-info = '1' class="main_ajax btn btn-default pull-right no_context_menu"><i class="fa fa-times"></i>{{ 'Reset all'|trans }}</a>
+                <a id="add_apps" href="#" class="btn btn-success pull-right no_context_menu"><i class="fa fa-plus"></i>{{ 'Add new'|trans }}</a>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {# The tamplates for javascript #}
+
+    <script type="text/template" id="modal_get_form_body">
+        <div class="box-content">
+            <form class="form-horizontal" role="form" id="form_" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-get-data-from-repo">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'Package name'|trans }}<span class="icon-required">*</span></label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <input type="text" class="own_fields form-control error-befor-hint" name="apps[url]" value="" id="apps_url" data-validation=required>
+                        </span>
+                        <span class="help-inline col-xs-12 col-sm-12">
+                            <span class="small txt-default">{{ 'Enter the package name'|trans }}</span>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_get_form_buttons">
+        <div class="col-xs-12">
+            <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Next'|trans }}</button>
+            <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_save_form_body">
+        <div class="box-content">
+            <form class="form-horizontal" role="form" id="form_"  action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-add">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'Package name'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <input type="text" class="own_fields form-control" name="apps[url]" id="apps_url" value="" readonly="readonly">
+                        </span>
+{#                        <span class="help-inline col-xs-12 col-sm-12">
+                            <span class="small txt-default">{{ 'Enter the package name'|trans }}</span>
+                        </span>#}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'Application'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <input type="hidden" class="own_fields form-control" name="apps[name]" id="apps_name" value="" readonly="readonly">
+                            <h5></h5>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'Type'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <input type="hidden" class="own_fields form-control" name="apps[type]" id="apps_type" value="" readonly="readonly">
+                            <h5></h5>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'Category'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <input type="hidden" class="own_fields form-control" name="apps[category]" id="apps_category" value="" readonly="readonly">
+                            <h5></h5>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'Version'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <input type="hidden" class="own_fields form-control" name="apps[options]" id="apps_options" value="" readonly="readonly" disabled="disabled">
+                            <input type="hidden" class="own_fields form-control" value="" id="apps_version" readonly="readonly" disabled="disabled">
+                            <h5></h5>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'Author'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <input type="hidden" class="own_fields form-control" name="apps[author]" id="apps_author" value="" readonly="readonly">
+                            <h5></h5>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'Dependencies'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <textarea class="own_fields form-control" name="apps[dependencies]" id="apps_dependencies" readonly="readonly" rows="5" disabled="disabled"></textarea>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'About app'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <textarea class="own_fields form-control" name="apps[description]" id="apps_description" readonly="readonly" rows="5" disabled="disabled"></textarea>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_info_body">
+        <div class="col-md-2 col-md-offset-1">
+            <img src="img/no_image.png" style="background-color: #ffffff">
+        </div>
+        <div class="col-md-9">
+            <h3 class="col-md-12"><strong data-item="name"></strong></h3>
+            <span class="col-md-12" data-item="current_version">{{ 'Current version'|trans }} </span>
+            <p class="col-md-12 text-danger" data-item="conflicts">{{ 'The current version of package is conflicts with'|trans }}<br/></p>
+            <span class="col-md-12" data-item="available_version">{{ 'Available version'|trans }} </span>
+            <p class="col-md-12 text-danger" data-item="available_version_conflicts">{{ 'The available version of package is conflicts with'|trans }}<br/></p>
+            <span class="col-md-12" data-item="author">{{ 'Author'|trans }} </span>
+            <p class="col-md-12" data-item="description"></p>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_info_buttons">
+        <div class="pull-right no-padding">
+            <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-version-install" id="info_apps_action" class="main_ajax btn btn-success pull-right no_context_menu">{{ 'Install'|trans }}</a>
+            <button type="reset" class="btn btn-default pull-right">{{ 'Close'|trans }}</button>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_save_form_buttons">
+        <div class="pull-left no-padding">
+            <button type="reset" class="btn btn-default pull-left">{{ 'Cancel'|trans }}</button>
+        </div>
+        <div class="pull-right no-padding">
+            <button type="submit" class="btn btn-success pull-right">{{ 'Save'|trans }}</button>
+            <button type="button" id="add_apps_back" class="btn btn-success pull-right">{{ 'Back'|trans }}</button>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_reset_all_body">
+        <div class="col-md-12">
+            <span class="col-md-12 txt-default">{{ 'Do you really want reset all applications?'|trans }}</span>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_reset_all_buttons">
+        <div class="col-xs-12">
+            <a id="reset_all_apps_btn" type="button" class="btn btn-danger col-sm-2 pull-right no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/smart-application-reset-all">{{ 'Reset'|trans }}</a>
+            <button type="reset" id="reset_all_apps_button" class="btn btn-success col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_fileupload">
+        <div id="fileupload" class="pull-left" style="margin-left: 15px;">
+            <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+            <div class="fileupload-buttonbar">
+                <div class="fileupload-buttons">
+                    <!-- The fileinput-button span is used to style the file input field as button -->
+                    <span class="fileinput-button btn btn-success">
+                        <span>{{ 'Select file'|trans }}</span>
+                        <input type="file" name="files" style="opacity: 0;">
+                    </span>
+                </div>
+            </div>
+        </div>
+        <span class="col-md-6 fileupload-message"></span>
+    </script>
+
+    <script type="text/template" id="modal_fileupload_buttons">
+        <div class="pull-right no-padding">
+            <button id="fileupload_button_send" type="button" class="btn btn-danger pull-right">{{ 'Send'|trans }}</button>
+            <button id="fileupload_button_reset" type="reset" class="btn btn-success pull-right">{{ 'Clean'|trans }}</button>
+            <button id="fileupload_button_cancel" type="button" class="btn btn-success pull-right">{{ 'Cancel'|trans }}</button>
+        </div>
+    </script>
+
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Applications'|trans ~ ': ' ~ 'applications catalog'|trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+{% endblock %}
+{% block footer %}
+
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/ApplicationCatalog/application_list/application_list.js.twig") %}
+        </script>
+
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <a id="add_apps" href="#" class="btn btn-success pull-right no_context_menu"><i class="fa fa-plus"></i>{{ 'Add application by URL'|trans }}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {# The tamplates for javascript #}
+
+    <script type="text/template" id="modal_get_form_body">
+        <div class="box-content">
+            <form class="form-horizontal" id="form_" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/application-get-data-from-repo">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'URL'|trans }}<span class="icon-required">*</span></label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <input type="text" class="own_fields form-control error-befor-hint" name="apps[url]" value="" id="apps_url" data-validation=required>
+                        </span>
+                        <span class="help-inline col-xs-12 col-sm-12">
+                            <span class="small txt-default">{{ 'Enter URL to the application repository'|trans }}</span>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_get_form_buttons">
+        <div class="col-xs-12">
+            <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Next'|trans }}</button>
+            <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_save_form_body">
+        <div class="box-content">
+            <form class="form-horizontal" role="form" id="form_" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/application-add">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'URL'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <input type="text" class="own_fields form-control" name="apps[url]" id="apps_url" value="" readonly="readonly">
+                        </span>
+                        <span class="help-inline col-xs-12 col-sm-12">
+                            <span class="small txt-default">{{ 'Enter URL to the application repository'|trans }}</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'Application'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <input type="hidden" class="own_fields form-control" name="apps[name]" id="apps_name" value="" readonly="readonly">
+                            <h5></h5>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'Version'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <input type="hidden" class="own_fields form-control" name="apps[current_version]" value="" id="apps_version" readonly="readonly" disabled="disabled">
+                            <h5></h5>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label col-sm-offset-1">{{ 'About app'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-12">
+                            <textarea class="own_fields form-control" name="apps[description]" id="apps_description" readonly="readonly" rows="10" disabled="disabled"></textarea>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_save_form_buttons">
+        <div class="pull-left no-padding">
+            <button type="reset" class="btn btn-default pull-left">{{ 'Cancel'|trans }}</button>
+        </div>
+        <div class="pull-right no-padding">
+            <button type="submit" class="btn btn-success pull-right">{{ 'Save'|trans }}</button>
+            <button type="button" id="add_apps_back" class="btn btn-success pull-right">{{ 'Back'|trans }}</button>
+        </div>
+    </script>
+{% endblock %}

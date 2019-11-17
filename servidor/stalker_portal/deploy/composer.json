@@ -1,0 +1,79 @@
+{
+    "config": {
+        "vendor-dir": "../admin/vendor"
+    },
+    "require": {
+        "php": ">=5.5.9",
+        "ext-json": "*",
+        "ext-zlib": "*",
+        "ext-openssl": "*",
+        "ext-exif": "*",
+        "ext-posix": "*",
+        "ext-zip": "*",
+        "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-mysqli": "*",
+        "ext-pdo": "*",
+        "ext-sqlite3": "*",
+        "ext-imagick": "*",
+        "ext-soap": "*",
+        "doctrine/cache": "<=1.5.4",
+        "silex/silex": "2.0",
+        "symfony/console": "~3.4",
+        "symfony/config": "~3.4",
+        "symfony/yaml": "~3.4",
+        "symfony/filesystem": "~2.3",
+        "symfony/finder": "~3.4",
+        "symfony/form": "~2.3",
+        "symfony/locale": "~2.3",
+        "symfony/process": "~3.4",
+        "symfony/security": "~2.3",
+        "symfony/serializer": "~2.3",
+        "symfony/translation": "~2.3",
+        "symfony/validator": ">=2.5",
+        "symfony/monolog-bridge": "~2.3",
+        "symfony/twig-bridge": "~2.3",
+        "twig/twig": "~1.8",
+        "doctrine/dbal": "^2.5",
+        "swiftmailer/swiftmailer": "5.*",
+        "imagine/imagine": "*",
+        "w6/silex-imagine-provider": "dev-master",
+        "nymo/silex-twig-breadcrumb-extension": "~2.0",
+        "umpirsky/twig-gettext-extractor": "1.1.*",
+        "codeguy/upload": ">=1",
+        "php-ffmpeg/php-ffmpeg": "0.6.1",
+        "doctrine/migrations": "^1.5",
+        "moust/silex-cache": "^2.0",
+        "mtdowling/cron-expression": "^1.2",
+        "vlucas/phpdotenv": "^3.3",
+        "leafo/scssphp": "^0.7.7",
+        "websvc/php-rocketchat-webhooks": "1.0.0",
+        "symfony/dependency-injection": "~3.4",
+        "guzzlehttp/guzzle": "^6.3",
+        "jarjak/dbal-manager": "^v2.1.2"
+    },
+    "autoload": {
+        "files": [
+            "../server/Lib/funcs/functions.php",
+            "../admin/functions.php"
+        ],
+        "psr-4": {
+            "Ministra\\Admin\\": "../admin/src",
+            "Ministra\\": "./../server"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ministra\\Admin\\Tests\\": "../admin/tests"
+        }
+    },
+    "require-dev": {
+        "symfony/browser-kit": "~3.4",
+        "symfony/dom-crawler": "~3.4",
+        "sorien/silex-pimple-dumper": "~2.0",
+        "phpunit/phpunit": "<6.0",
+        "sonrac/silex-functional-tests-coverage": "^2.4",
+        "sonrac/symfony-seed-command": "^1.6",
+        "fzaninotto/faker": "^1.8"
+    }
+}

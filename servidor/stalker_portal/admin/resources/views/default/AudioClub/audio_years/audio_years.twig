@@ -1,0 +1,71 @@
+{% extends app['twig_theme'] ~ '/layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Audio club'|trans ~ ': ' ~ 'years list'|trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+        
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/AudioClub/audio_years/audio_years.js.twig") %}
+        </script>
+        
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/add-audio-years" class="btn btn-success pull-right no_context_menu" id="add_audio_years"><i class="fa fa-plus"></i>{{ 'Add year'|trans }}</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="box">
+                    <div class="box-content">
+                        <div class="box-content no-padding">
+                            <div class="row">
+                                <div class="dataTables_processing"></div>
+                                <table class="table  table-hover table-datatable" id="datatable-1">
+                                    {% if attribute(app, 'dropdownAttribute') is defined %}
+                                        {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                                    {% endif %}
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/template" id="modal_del_body">
+        <div class="col-md-12">
+            <span class="col-md-12 txt-default">{{ 'Do you really want delete this year?'|trans }}</span>
+        </div>
+    </script>
+
+    <script type="text/template" id="modal_del_buttons">
+        <div class="col-xs-12">
+            <a id="del_year_btn" type="button" class="main_ajax btn btn-danger col-sm-2 pull-right no_context_menu" href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-audio-years'>{{ 'Delete'|trans }}</a>
+            <button type="reset" id="del_year_button" class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+        </div>
+    </script>
+    
+{% endblock %}

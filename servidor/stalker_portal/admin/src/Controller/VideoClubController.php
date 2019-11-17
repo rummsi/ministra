@@ -1,0 +1,1582 @@
+<?php
+
+namespace Ministra\Admin\Controller;
+
+use Imagine\Image\Box;
+use Ministra\Lib\S642b6461e59cef199375bfb377c17a39\a777f7659bfaad9ba0acb83e0c546a50;
+use Ministra\Lib\S642b6461e59cef199375bfb377c17a39\Z860a165ed018f157fd40ef2297209b46\O29f79fdee870487fdf0c508ebd65b3c1;
+use Ministra\Lib\KinopoiskException;
+use Ministra\Lib\Logger;
+use Ministra\Lib\MasterException;
+use Ministra\Lib\VclubAdvertising;
+use Ministra\Lib\VClubinfo;
+use Ministra\Lib\Video;
+use Ministra\Lib\VideoCategory;
+use Ministra\Lib\VideoMaster;
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Response as Response;
+use Symfony\Component\Validator\Constraints as Assert;
+class VideoClubController extends \Ministra\Admin\Controller\BaseMinistraController
+{
+    protected $db;
+    private $logoHost;
+    private $logoDir;
+    private $oneVideo;
+    private $ads;
+    private $ad;
+    private $mod;
+    private $video_categories;
+    public function __construct(\Silex\Application $app)
+    {
+        parent::__construct($app, __CLASS__);
+        $this->logoHost = $this->baseHost . \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\a777f7659bfaad9ba0acb83e0c546a50::getSafe('portal_url', '/stalker_portal/') . 'misc/logos';
+        $this->logoDir = \str_replace('/admin', '', $this->baseDir) . '/misc/logos';
+        $this->app['error_local'] = [];
+        $this->app['baseHost'] = $this->baseHost;
+    }
+    public function index()
+    {
+        if (empty($this->app['action_alias'])) {
+            return $this->app->redirect($this->app['controller_alias'] . '/video-list');
+        }
+        return $this->app['twig']->render($this->getTemplateName(__METHOD__));
+    }
+    public function video_list()
+    {
+        $allYears = $this->db->getAllFromTable('video', 'year', 'year');
+        $this->app['allYears'] = \array_filter(\array_map(function ($val) {
+            if ((int) $val['year'] >= 1895) {
+                return ['id' => $val['year'], 'title' => $val['year']];
+            }
+            return false;
+        }, $allYears));
+        $this->app['allGenre'] = $this->prepareNewGenresListIds($this->db->getVideoCategories());
+        $this->app['allStatus'] = [['id' => 1, 'title' => $this->setLocalization('Unpublished')], ['id' => 2, 'title' => $this->setLocalization('Published')], ['id' => 3, 'title' => $this->setLocalization('Scheduled')]];
+        $this->app['allModerators'] = $this->db->getAllAdmins();
+        $attribute = $this->getVideoListDropdownAttribute();
+        $this->checkDropdownAttribute($attribute);
+        $this->app['dropdownAttribute'] = $attribute;
+        return $this->app['twig']->render($this->getTemplateName(__METHOD__));
+    }
+    private function prepareNewGenresListIds($all_genre_list = array())
+    {
+        $all_genre_list = $this->setLocalization($all_genre_list, 'title');
+        $return_list = [];
+        foreach ($all_genre_list as $row) {
+            $row['title'] = $this->mb_ucfirst($row['title']);
+            if (\array_key_exists($row['title'], $return_list)) {
+                $return_list["{$row['title']}"]['id'] .= ",{$row['id']}";
+            } else {
+                $return_list["{$row['title']}"] = ['id' => $row['id'], 'title' => $row['title']];
+            }
+        }
+        \ksort($return_list);
+        return \array_combine(\range(0, \count($return_list) - 1), \array_values($return_list));
+    }
+    private function getVideoListDropdownAttribute()
+    {
+        return [['name' => 'id', 'title' => $this->setLocalization('ID'), 'checked' => true], ['name' => 'path', 'title' => $this->setLocalization('Catalogue'), 'checked' => true], ['name' => 'name', 'title' => $this->setLocalization('Title'), 'checked' => true], ['name' => 'o_name', 'title' => $this->setLocalization('Original title'), 'checked' => false], ['name' => 'time', 'title' => $this->setLocalization('Length, min'), 'checked' => true], ['name' => 'series', 'title' => $this->setLocalization('Episodes'), 'checked' => true], ['name' => 'cat_genre', 'title' => $this->setLocalization('Genre'), 'checked' => true], ['name' => 'year', 'title' => $this->setLocalization('Year'), 'checked' => true], ['name' => 'added', 'title' => $this->setLocalization('Date'), 'checked' => true], ['name' => 'tasks', 'title' => $this->setLocalization('Tasks'), 'checked' => true], ['name' => 'count', 'title' => $this->setLocalization('Views lifetime'), 'checked' => false], ['name' => 'counter', 'title' => $this->setLocalization('Views last month'), 'checked' => false], ['name' => 'complaints', 'title' => $this->setLocalization('Complaints'), 'checked' => true], ['name' => 'accessed', 'title' => $this->setLocalization('Status'), 'checked' => true], ['name' => 'operations', 'title' => $this->setLocalization('Operations'), 'checked' => true]];
+    }
+    public function add_video()
+    {
+        $this->prepareFormVideoCategories();
+        $form = $this->buildForm();
+        if ($this->saveVideoData($form)) {
+            return $this->app->redirect('video-list');
+        }
+        $this->app['form'] = $form->createView();
+        $data = $form->getData();
+        if (!empty($data['cover_id'])) {
+            $this->app['curr_cover_dir'] = $this->baseHost . \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\a777f7659bfaad9ba0acb83e0c546a50::getSafe('portal_url', '/stalker_portal/') . 'screenshots/' . \ceil((int) \str_replace('.jpg', '', $data['cover_id']) / 100);
+        } else {
+            $this->app['curr_cover_dir'] = '';
+        }
+        $this->app['videoEdit'] = false;
+        $this->app['breadcrumbs']->addItem($this->setLocalization('Movie list'), $this->app['controller_alias'] . '/video-list');
+        $this->app['breadcrumbs']->addItem($this->setLocalization('Add movie'));
+        return $this->app['twig']->render($this->getTemplateName(__METHOD__));
+    }
+    private function prepareFormVideoCategories()
+    {
+        $videoGenres = $this->db->getVideoGenres();
+        $this->app['videoGenres'] = $this->getUCArray($this->setLocalization($videoGenres, 'title'), 'title');
+        $catGenres = $this->db->getCategoriesGenres();
+        $this->app['catGenres'] = $this->getUCArray($this->setLocalization($catGenres, 'category_name'), 'category_name');
+        $videoCategories = $this->db->getVideoCategories();
+        $this->app['videoCategories'] = $this->getUCArray($this->setLocalization($videoCategories, 'title'), 'title');
+        $this->app['videoEdit'] = false;
+        $prepared_cat_genre = [];
+        foreach ($this->app['videoCategories'] as $row) {
+            if (!\array_key_exists($row['category_alias'], $prepared_cat_genre)) {
+                $prepared_cat_genre[$row['category_alias']] = [];
+            }
+            $prepared_cat_genre[$row['category_alias']][] = $row;
+        }
+        $this->app['preparedCatGenre'] = $prepared_cat_genre;
+    }
+    private function buildForm($data = array())
+    {
+        $builder = $this->app['form.factory'];
+        $ages = ['0+' => '0+', '6+' => '6+', '12+' => '12+', '14+' => '14+', '16+' => '16+', '18+' => '18+', '21+' => '21+'];
+        $rating_mpaa = ['G' => 'G', 'PG' => 'PG', 'PG-13' => 'PG-13', 'R' => 'R', 'NC-17' => 'NC-17'];
+        $protocol = ['http' => 'HTTP', 'custom' => 'Custom URL', 'nfs' => 'NFS'];
+        $genres = [];
+        foreach ($this->app['videoGenres'] as $row) {
+            $genres[$row['id']] = $row['title'];
+        }
+        $cat_genres = ['' => ''];
+        foreach ($this->app['catGenres'] as $row) {
+            $cat_genres[$row['id']] = $row['category_name'];
+        }
+        $cat_video = [];
+        foreach ($this->app['videoCategories'] as $row) {
+            $cat_video[$row['id']] = $row['title'] . $row['id'];
+        }
+        $for_sd_stb = $this->getConfigOptionalyFormField('for_sd_stb', 'vclub_mag100_filter');
+        $high_quality = $this->getConfigOptionalyFormField('high_quality', 'enable_video_high_quality_option');
+        $low_quality = $this->getConfigOptionalyFormField('low_quality', 'enable_video_low_quality_option');
+        $form = $builder->createBuilder('form', $data)->add('name', 'text', ['constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank()], 'required' => true])->add('id', 'hidden')->add('rating_count_kinopoisk', 'hidden')->add('rating_imdb', 'hidden')->add('rating_count_imdb', 'hidden')->add('o_name', 'text', ['required' => false])->add('kinopoisk_id', 'text', ['constraints' => [new \Symfony\Component\Validator\Constraints\Type(['type' => 'numeric'])], 'required' => false])->add('rating_kinopoisk', 'text', ['constraints' => [new \Symfony\Component\Validator\Constraints\Type(['type' => 'numeric'])], 'required' => false])->add('age', 'choice', ['choices' => $ages, 'constraints' => [new \Symfony\Component\Validator\Constraints\Choice(['choices' => $ages]), new \Symfony\Component\Validator\Constraints\NotBlank()], 'required' => true])->add('rating_mpaa', 'choice', ['choices' => $rating_mpaa, 'constraints' => [new \Symfony\Component\Validator\Constraints\Choice(['choices' => $rating_mpaa]), new \Symfony\Component\Validator\Constraints\NotBlank()], 'required' => true])->add('protocol', 'choice', ['choices' => $protocol, 'constraints' => [new \Symfony\Component\Validator\Constraints\Choice(['choices' => \array_keys($protocol)]), new \Symfony\Component\Validator\Constraints\NotBlank()], 'required' => true])->add('rtsp_url', 'text')->add('censored', 'checkbox', ['required' => false])->add($for_sd_stb['name'], $for_sd_stb['type'], $for_sd_stb['option'])->add($high_quality['name'], $high_quality['type'], $high_quality['option'])->add($low_quality['name'], $low_quality['type'], $low_quality['option'])->add('hd', 'checkbox', ['required' => false])->add('genres', 'choice', ['choices' => $genres, 'constraints' => [new \Symfony\Component\Validator\Constraints\Choice(['choices' => \array_keys($genres), 'multiple' => true])], 'multiple' => true])->add('category_id', 'choice', ['choices' => $cat_genres, 'constraints' => [new \Symfony\Component\Validator\Constraints\Choice(['choices' => \array_keys($cat_genres)]), new \Symfony\Component\Validator\Constraints\NotBlank()], 'required' => true])->add('cat_genre_id', 'choice', ['choices' => $cat_video, 'constraints' => [new \Symfony\Component\Validator\Constraints\Choice(['choices' => \array_keys($cat_video), 'multiple' => true]), new \Symfony\Component\Validator\Constraints\NotBlank()], 'multiple' => true, 'required' => true])->add('year', 'text', ['required' => true, 'constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank(), new \Symfony\Component\Validator\Constraints\Regex(['pattern' => '/\\d{4}/', 'match' => true])]])->add('country', 'text', ['required' => true, 'constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank(), new \Symfony\Component\Validator\Constraints\Type(['type' => 'string'])]])->add('duration', 'text', ['required' => true, 'constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank(), new \Symfony\Component\Validator\Constraints\Type(['type' => 'numeric'])]])->add('director', 'text', ['required' => true, 'constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank()]])->add('actors', 'textarea', ['required' => true, 'constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank()]])->add('description', 'textarea', ['required' => true, 'constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank()]])->add('volume_correction', 'choice', ['choices' => \array_combine(\range(-20, 20, 1), \range(-100, 100, 5)), 'constraints' => [new \Symfony\Component\Validator\Constraints\Range(['min' => -20, 'max' => 20]), new \Symfony\Component\Validator\Constraints\NotBlank()], 'required' => true, 'data' => empty($data['volume_correction']) ? 0 : $data['volume_correction']])->add('comments', 'textarea')->add('cover_id', 'hidden')->add('cover_big', 'hidden')->add('save', 'submit');
+        return $form->getForm();
+    }
+    private function getConfigOptionalyFormField($field_name, $config_option)
+    {
+        $return_opt = ['name' => $field_name, 'type' => 'hidden', 'option' => []];
+        if (\Ministra\Lib\S642b6461e59cef199375bfb377c17a39\a777f7659bfaad9ba0acb83e0c546a50::getSafe($config_option, false)) {
+            $return_opt['type'] = 'checkbox';
+            $return_opt['option'] = ['required' => false];
+        }
+        return $return_opt;
+    }
+    private function saveVideoData(&$form, $edit = false)
+    {
+        if (!empty($this->method) && $this->method == 'POST') {
+            $form->handleRequest($this->request);
+            $data = $form->getData();
+            if ($form->isValid()) {
+                if (empty($data['id'])) {
+                    $is_repeating_name = $this->db->checkName($data);
+                    $operation = 'insertVideo';
+                } elseif (isset($this->oneVideo)) {
+                    $check_name = (bool) $this->db->checkName(['id<>' => $data['id'], 'name' => $data['name']]);
+                    $is_repeating_name = empty($this->oneVideo['name']) || $check_name;
+                    $operation = 'updateVideo';
+                }
+                if (!$is_repeating_name) {
+                    $series = [];
+                    if ($data['protocol'] == 'custom') {
+                        if (empty($data['rtsp_url'])) {
+                            $error_local = [];
+                            $error_local['rtsp_url'] = $is_repeating_name ? $this->setLocalization('If the protocol') . " - '{$data['protocol']}', " . $this->setLocalization('then this field must be filled') : '';
+                            $this->app['error_local'] = $error_local;
+                            return false;
+                        } elseif (!\preg_match('/^(\\w+\\s)?\\w+\\:\\/\\/.*$/i', $data['rtsp_url'])) {
+                            $error_local = [];
+                            $error_local['rtsp_url'] = $is_repeating_name ? $this->setLocalization('Invalid format links') : '';
+                            $this->app['error_local'] = $error_local;
+                            return false;
+                        }
+                        if (\preg_match("/s\\d+e(\\d+).*\$/i", $data['rtsp_url'], $tmp_arr)) {
+                            $series = \range(1, (int) $tmp_arr[1], 1);
+                        }
+                    }
+                    $data['trans_name'] = $this->transliterate(@\urldecode($data['name']));
+                    if ($data['hd']) {
+                        $data['trans_name'] .= '_HD';
+                    }
+                    $db_data = ['name' => \trim($data['name']), 'series' => \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\Z860a165ed018f157fd40ef2297209b46\O29f79fdee870487fdf0c508ebd65b3c1::H62b6690510bd2660999bb4e5c5e18316($series), 'o_name' => \trim($data['o_name']), 'censored' => $data['censored'], 'hd' => $data['hd'], 'for_sd_stb' => $data['for_sd_stb'], 'protocol' => $data['protocol'], 'rtsp_url' => \trim($data['rtsp_url']), 'time' => @$data['duration'], 'description' => $data['description'], 'genre_id_1' => \array_key_exists(0, $data['genres']) ? $data['genres'][0] : 0, 'genre_id_2' => \array_key_exists(1, $data['genres']) ? $data['genres'][1] : 0, 'genre_id_3' => \array_key_exists(2, $data['genres']) ? $data['genres'][2] : 0, 'genre_id_4' => \array_key_exists(3, $data['genres']) ? $data['genres'][3] : 0, 'cat_genre_id_1' => \array_key_exists(0, $data['cat_genre_id']) ? $data['cat_genre_id'][0] : 0, 'cat_genre_id_2' => \array_key_exists(1, $data['cat_genre_id']) ? $data['cat_genre_id'][1] : 0, 'cat_genre_id_3' => \array_key_exists(2, $data['cat_genre_id']) ? $data['cat_genre_id'][2] : 0, 'cat_genre_id_4' => \array_key_exists(3, $data['cat_genre_id']) ? $data['cat_genre_id'][3] : 0, 'category_id' => $data['category_id'], 'director' => $data['director'], 'actors' => $data['actors'], 'status' => (int) (!empty($data['rtsp_url'])), 'year' => $data['year'], 'volume_correction' => (int) $data['volume_correction'], 'kinopoisk_id' => $data['kinopoisk_id'], 'rating_kinopoisk' => $data['rating_kinopoisk'], 'rating_count_kinopoisk' => $data['rating_count_kinopoisk'], 'rating_imdb' => $data['rating_imdb'], 'rating_count_imdb' => $data['rating_count_imdb'], 'age' => $data['age'], 'rating_mpaa' => $data['rating_mpaa'], 'high_quality' => $data['high_quality'], 'low_quality' => $data['low_quality'], 'comments' => $data['comments'], 'country' => $data['country']];
+                    if ($operation == 'insertVideo') {
+                        $this->createMediaStorage($data['trans_name'], $data['year']);
+                        $db_data['path'] = $data['trans_name'] . (!empty($data['year']) ? "_{$data['year']}" : '');
+                        $db_data['added'] = 'NOW()';
+                        $id = $this->db->{$operation}($db_data);
+                        $db_data['id'] = $id;
+                        $this->db->videoLogWrite($db_data, 'added');
+                    } else {
+                        $id = $data['id'];
+                        $this->db->{$operation}($db_data, $id);
+                        $db_data['id'] = $id;
+                        $this->db->videoLogWrite($db_data, 'edited');
+                    }
+                    $cover_id = !empty($data['cover_big']) ? $this->getExternalImage($data['cover_big']) : (!empty($data['cover_id']) ? $data['cover_id'] : false);
+                    if ($cover_id !== false) {
+                        $this->db->updateScreenshotData($id, $cover_id);
+                    }
+                    return true;
+                }
+                $error_local = [];
+                $error_local['name'] = $is_repeating_name ? $this->setLocalization('This name already exists') : '';
+                $this->app['error_local'] = $error_local;
+                return false;
+            }
+        }
+        return false;
+    }
+    private function createMediaStorage($trans_name, $additional = '')
+    {
+        $existed = $this->db->getVideoByParam(['path' => $trans_name]);
+        if (!empty($existed)) {
+            $error = $this->setLocalization('Error: The folder with that name already exists');
+        } else {
+            $_SERVER['TARGET'] = 'ADM';
+            $master = new \Ministra\Lib\VideoMaster();
+            try {
+                $master->createMediaDir($trans_name, $additional);
+            } catch (\Ministra\Lib\MasterException $e) {
+                $moderator_storages = $master->getModeratorStorages();
+                if (!empty($moderator_storages[$e->getStorageName()])) {
+                    $error = $this->setLocalization('Error creating the folder on moderator storage');
+                }
+            }
+        }
+    }
+    private function getExternalImage($url)
+    {
+        $cover_blob = @\file_get_contents($url);
+        if ($cover_blob !== false) {
+            try {
+                $s_data = [];
+                $s_data['name'] = \substr($url, \strrpos($url, '/') + 1);
+                $s_data['size'] = 0;
+                $s_data['type'] = '';
+                $cover_id = $this->db->saveScreenshotData($s_data);
+                $ext = \end(\explode('.', $s_data['name']));
+                $img_path = $this->getCoverFolder($cover_id);
+                \umask(0);
+                $this->app['imagine']->load($cover_blob)->resize(new \Imagine\Image\Box(240, 320))->save($img_path . "/{$cover_id}.{$ext}");
+                \chmod($img_path . "/{$cover_id}.{$ext}", 0644);
+                $tmp = \getimagesize($img_path . "/{$cover_id}.{$ext}");
+                $s_data['type'] = $tmp['mime'];
+                $s_data['size'] = \filesize($img_path . "/{$cover_id}.{$ext}");
+                $this->db->updateScreenshotData($s_data, $cover_id);
+            } catch (\ImagickException $e) {
+                $error = $this->setLocalization('Error: could not save cover image') . '. ' . $e->getMessage();
+            } catch (\Exception $e) {
+                $error = $this->setLocalization('Error: could not save cover image') . '. ' . $e->getMessage();
+            }
+        }
+        return isset($cover_id) ? $cover_id : false;
+    }
+    public function edit_video()
+    {
+        if ($this->method == 'POST' && !empty($this->postData['form']['id'])) {
+            $id = $this->postData['form']['id'];
+        } else {
+            if ($this->method == 'GET' && !empty($this->data['id'])) {
+                $id = $this->data['id'];
+            } else {
+                return $this->app->redirect('add-video');
+            }
+        }
+        $this->oneVideo = $this->db->getVideoById($id);
+        if (empty($this->oneVideo['id'])) {
+            $this->oneVideo['id'] = $id;
+        }
+        $screenshot = $this->db->getScreenshotData(['media_id' => $this->oneVideo['id']]);
+        if (!empty($screenshot)) {
+            $this->oneVideo['cover_id'] = $screenshot[0]['id'];
+            $this->app['curr_cover_dir'] = $this->baseHost . \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\a777f7659bfaad9ba0acb83e0c546a50::getSafe('portal_url', '/stalker_portal/') . 'screenshots/' . \ceil((int) $this->oneVideo['cover_id'] / 100);
+            $this->app['cover_ext'] = '.' . \end(\explode('.', $screenshot[0]['name']));
+        } else {
+            $this->app['curr_cover_dir'] = '';
+            $this->app['cover_ext'] = '';
+        }
+        $this->prepareFormVideoCategories();
+        $this->prepareOneVideo();
+        $form = $this->buildForm($this->oneVideo);
+        if ($this->saveVideoData($form, true)) {
+            return $this->app->redirect('video-list');
+        }
+        $this->app['form'] = $form->createView();
+        $this->app['videoEdit'] = true;
+        $this->app['videoName'] = $this->oneVideo['name'];
+        $this->app['breadcrumbs']->addItem($this->setLocalization('Movie list'), $this->app['controller_alias'] . '/video-list');
+        $this->app['breadcrumbs']->addItem($this->setLocalization('Edit movie'));
+        return $this->app['twig']->render($this->getTemplateName('VideoClub::add_video'));
+    }
+    private function prepareOneVideo()
+    {
+        $this->catFieldsToArray('genre_id_', 'genres', 4);
+        $this->catFieldsToArray('cat_genre_id_', 'cat_genre_id', 4);
+        if (empty($this->oneVideo['age'])) {
+            $this->oneVideo['age'] = '0+';
+        }
+        if (empty($this->oneVideo['rating_mpaa'])) {
+            $this->oneVideo['rating_mpaa'] = 'G';
+        }
+        $this->oneVideo['duration'] = !empty($this->oneVideo['time']) ? $this->oneVideo['time'] : 0;
+        $this->oneVideo['cover_id'] = $this->db->getScreenshotData($this->oneVideo['id']);
+        $this->getBoolVal($this->oneVideo);
+    }
+    private function catFieldsToArray($field_prefix, $array_name, $fields_count)
+    {
+        if (empty($this->oneVideo)) {
+            return;
+        }
+        $return_array = [];
+        for ($i = 0; $i < $fields_count; ++$i) {
+            if (\array_key_exists($field_prefix . $i, $this->oneVideo) && !empty($this->oneVideo[$field_prefix . $i])) {
+                $return_array[] = $this->oneVideo[$field_prefix . $i];
+            }
+        }
+        $this->oneVideo[$array_name] = $return_array;
+    }
+    private function getBoolVal(&$data)
+    {
+        while (list($key, $val) = \each($data)) {
+            if (\is_string($val) || \is_numeric($val) || \is_null($val)) {
+                $data[$key] = empty($val) ? false : ((int) $val == 1 ? true : $val);
+            }
+        }
+    }
+    public function video_schedule()
+    {
+        $attribute = $this->getVideoScheduleDropdownAttribute();
+        $this->checkDropdownAttribute($attribute);
+        $this->app['dropdownAttribute'] = $attribute;
+        return $this->app['twig']->render($this->getTemplateName(__METHOD__));
+    }
+    private function getVideoScheduleDropdownAttribute()
+    {
+        return [['name' => 'task_added', 'title' => $this->setLocalization('Date'), 'checked' => true], ['name' => 'name', 'title' => $this->setLocalization('Title'), 'checked' => true], ['name' => 'o_name', 'title' => $this->setLocalization('Original title'), 'checked' => true], ['name' => 'time', 'title' => $this->setLocalization('Length, min'), 'checked' => true], ['name' => 'tasks', 'title' => $this->setLocalization('Date of publication'), 'checked' => true], ['name' => 'year', 'title' => $this->setLocalization('Year'), 'checked' => true], ['name' => 'operations', 'title' => $this->setLocalization('Operations'), 'checked' => true]];
+    }
+    public function video_advertise()
+    {
+        $attribute = $this->getVideoAdvertiseDropdownAttribute();
+        $this->checkDropdownAttribute($attribute);
+        $this->app['dropdownAttribute'] = $attribute;
+        return $this->app['twig']->render($this->getTemplateName(__METHOD__));
+    }
+    private function getVideoAdvertiseDropdownAttribute()
+    {
+        return [['name' => 'title', 'title' => $this->setLocalization('Title'), 'checked' => true], ['name' => 'url', 'title' => $this->setLocalization('Address'), 'checked' => true], ['name' => 'weight', 'title' => $this->setLocalization('Weight'), 'checked' => true], ['name' => 'started', 'title' => $this->setLocalization('Views started'), 'checked' => true], ['name' => 'ended', 'title' => $this->setLocalization('Views counted'), 'checked' => true], ['name' => 'must_watch', 'title' => $this->setLocalization('Necessary to view') . ' (%)', 'checked' => true], ['name' => 'status', 'title' => $this->setLocalization('Status'), 'checked' => true], ['name' => 'operations', 'title' => $this->setLocalization('Operations'), 'checked' => true]];
+    }
+    public function add_video_ads()
+    {
+        $this->ads = new \Ministra\Lib\VclubAdvertising();
+        $video_category = new \Ministra\Lib\VideoCategory();
+        $this->video_categories = $video_category->getAll();
+        $this->getVideoCatForAds();
+        $form = $this->buildAdsForm();
+        if ($this->saveVideoAdsData($form)) {
+            return $this->app->redirect('video-advertise');
+        }
+        $this->app['form'] = $form->createView();
+        $this->app['adsEdit'] = false;
+        $this->app['breadcrumbs']->addItem($this->setLocalization('Advertising'), $this->app['controller_alias'] . '/video-advertise');
+        $this->app['breadcrumbs']->addItem($this->setLocalization('Add commercial'));
+        return $this->app['twig']->render($this->getTemplateName(__METHOD__));
+    }
+    private function getVideoCatForAds()
+    {
+        $keys = $this->getFieldFromArray($this->video_categories, 'id');
+        $values = $this->getFieldFromArray($this->video_categories, 'category_name');
+        $this->video_categories = \array_combine($keys, $values);
+    }
+    private function buildAdsForm($data = array())
+    {
+        $builder = $this->app['form.factory'];
+        $must_watch = ['all' => $this->setLocalization('All'), '90' => '90%', '80' => '80%', '70' => '70%', '60' => '60%', '50' => '50%', '40' => '40%', '30' => '30%', '20' => '20%', '10' => '10%', '5' => '5%', '0' => '0%'];
+        $form = $builder->createBuilder('form', $data)->add('id', 'hidden')->add('title', 'text', ['constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank()], 'required' => true])->add('url', 'text', ['constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank()], 'required' => true])->add('weight', 'text', ['constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank(), new \Symfony\Component\Validator\Constraints\Type(['type' => 'numeric'])], 'required' => true])->add('denied_categories', 'choice', ['choices' => $this->video_categories, 'constraints' => [new \Symfony\Component\Validator\Constraints\Choice(['choices' => \array_keys($this->video_categories), 'multiple' => true])], 'multiple' => true, 'required' => false])->add('must_watch', 'choice', ['choices' => $must_watch, 'constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank(), new \Symfony\Component\Validator\Constraints\Choice(['choices' => \array_keys($must_watch), 'multiple' => false])], 'multiple' => false, 'required' => true])->add('save', 'submit');
+        return $form->getForm();
+    }
+    private function saveVideoAdsData(&$form)
+    {
+        if (!empty($this->method) && $this->method == 'POST') {
+            $form->handleRequest($this->request);
+            $data = $form->getData();
+            $action = isset($this->ad) ? 'updateById' : 'add';
+            if ($form->isValid()) {
+                if ($action == 'add') {
+                    if ($this->ads->{$action}($data)) {
+                        return true;
+                    }
+                } else {
+                    if ($this->ads->{$action}($data['id'], $data)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    public function edit_video_ads()
+    {
+        if ($this->method == 'POST' && !empty($this->postData['form']['id'])) {
+            $id = $this->postData['form']['id'];
+        } else {
+            if ($this->method == 'GET' && !empty($this->data['id'])) {
+                $id = $this->data['id'];
+            } else {
+                return $this->app->redirect('add-video-ads');
+            }
+        }
+        $this->ads = new \Ministra\Lib\VclubAdvertising();
+        $this->ad = $this->ads->getById($id);
+        $this->ad['denied_categories'] = $this->ads->getDeniedVclubCategoriesForAd($id);
+        $video_category = new \Ministra\Lib\VideoCategory();
+        $this->video_categories = $video_category->getAll();
+        $this->getVideoCatForAds();
+        $form = $this->buildAdsForm($this->ad);
+        if ($this->saveVideoAdsData($form)) {
+            return $this->app->redirect('video-advertise');
+        }
+        $this->app['form'] = $form->createView();
+        $this->app['adsEdit'] = true;
+        $this->app['adsTitle'] = $this->ad['title'];
+        $this->app['breadcrumbs']->addItem($this->setLocalization('Advertising'), $this->app['controller_alias'] . '/video-advertise');
+        $this->app['breadcrumbs']->addItem($this->setLocalization('Edit commercial'));
+        return $this->app['twig']->render($this->getTemplateName('VideoClub::add_video_ads'));
+    }
+    public function video_moderators_addresses()
+    {
+        $attribute = $this->getVideoModeratorsAddressesDropdownAttribute();
+        $this->checkDropdownAttribute($attribute);
+        $this->app['dropdownAttribute'] = $attribute;
+        return $this->app['twig']->render($this->getTemplateName(__METHOD__));
+    }
+    private function getVideoModeratorsAddressesDropdownAttribute()
+    {
+        return [['name' => 'name', 'title' => $this->setLocalization('Name'), 'checked' => true], ['name' => 'mac', 'title' => $this->setLocalization('MAC address'), 'checked' => true], ['name' => 'disable_vclub_ad', 'title' => $this->setLocalization('Advertising is disabled'), 'checked' => true], ['name' => 'status', 'title' => $this->setLocalization('Status'), 'checked' => true], ['name' => 'operations', 'title' => $this->setLocalization('Operation'), 'checked' => true]];
+    }
+    public function add_video_moderators()
+    {
+        $form = $this->buildModForm();
+        if ($this->saveVideoModData($form)) {
+            return $this->app->redirect('video-moderators-addresses');
+        }
+        $this->app['form'] = $form->createView();
+        $this->app['modEdit'] = false;
+        $this->app['active_alias'] = 'video-moderators-addresses';
+        $this->app['breadcrumbs']->addItem($this->setLocalization('Moderators'), $this->app['controller_alias'] . '/video-moderators-addresses');
+        $this->app['breadcrumbs']->addItem($this->setLocalization('Add moderator'));
+        return $this->app['twig']->render($this->getTemplateName(__METHOD__));
+    }
+    private function buildModForm($data = array())
+    {
+        $builder = $this->app['form.factory'];
+        $form = $builder->createBuilder('form', $data)->add('id', 'hidden')->add('name', 'text', ['constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank()], 'required' => true])->add('mac', 'text', ['constraints' => [new \Symfony\Component\Validator\Constraints\NotBlank(), new \Symfony\Component\Validator\Constraints\Regex('/([0-9a-fA-F]{2}([:]|$)){6}$/')], 'required' => true])->add('disable_vclub_ad', 'checkbox', ['required' => false])->add('save', 'submit');
+        return $form->getForm();
+    }
+    private function saveVideoModData(&$form)
+    {
+        if (!empty($this->method) && $this->method == 'POST') {
+            $form->handleRequest($this->request);
+            $data = $form->getData();
+            $action = isset($this->mod) ? 'updateModeratorsById' : 'insertModerators';
+            if (\array_key_exists('disable_vclub_ad', $data)) {
+                $data['disable_vclub_ad'] = (int) $data['disable_vclub_ad'];
+            } else {
+                $data['disable_vclub_ad'] = 0;
+            }
+            if ($form->isValid()) {
+                if ($action == 'insertModerators') {
+                    if ($this->db->{$action}($data)) {
+                        return true;
+                    }
+                } else {
+                    if ($this->db->{$action}($data['id'], $data)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    public function edit_video_moderators()
+    {
+        if ($this->method == 'POST' && !empty($this->postData['form']['id'])) {
+            $id = $this->postData['form']['id'];
+        } else {
+            if ($this->method == 'GET' && !empty($this->data['id'])) {
+                $id = $this->data['id'];
+            } else {
+                return $this->app->redirect('add-video-moderators');
+            }
+        }
+        $this->mod = $this->db->getModerators(['where' => ['id' => $id]]);
+        $this->mod['disable_vclub_ad'] = (bool) $this->mod['disable_vclub_ad'];
+        $form = $this->buildModForm($this->mod);
+        if ($this->saveVideoModData($form)) {
+            return $this->app->redirect('video-moderators-addresses');
+        }
+        $this->app['form'] = $form->createView();
+        $this->app['modEdit'] = true;
+        $this->app['modName'] = $this->mod['name'];
+        $this->app['breadcrumbs']->addItem($this->setLocalization('Moderators'), $this->app['controller_alias'] . '/video-moderators-addresses');
+        $this->app['breadcrumbs']->addItem($this->setLocalization('Edit moderator'));
+        return $this->app['twig']->render($this->getTemplateName('VideoClub::add_video_moderators'));
+    }
+    public function video_logs()
+    {
+        $attribute = $this->getVideoLogsDropdownAttribute();
+        $this->checkDropdownAttribute($attribute);
+        $this->app['dropdownAttribute'] = $attribute;
+        $param = !empty($this->data) ? $this->data : [];
+        if (!empty($param['video_id'])) {
+            $video = $this->db->getVideoByParam(['id' => $param['video_id']]);
+            $this->app['breadcrumbs']->addItem($video['name']);
+        }
+        return $this->app['twig']->render($this->getTemplateName(__METHOD__));
+    }
+    private function getVideoLogsDropdownAttribute()
+    {
+        return [['name' => 'video_id', 'title' => $this->setLocalization('ID'), 'checked' => true], ['name' => 'actiontime', 'title' => $this->setLocalization('Date'), 'checked' => true], ['name' => 'video_name', 'title' => $this->setLocalization('Title'), 'checked' => true], ['name' => 'login', 'title' => $this->setLocalization('Moderator'), 'checked' => true], ['name' => 'action', 'title' => $this->setLocalization('Status'), 'checked' => true]];
+    }
+    public function video_categories()
+    {
+        $attribute = $this->getVideoCategoriesDropdownAttribute();
+        $this->checkDropdownAttribute($attribute);
+        $this->app['dropdownAttribute'] = $attribute;
+        return $this->app['twig']->render($this->getTemplateName(__METHOD__));
+    }
+    private function getVideoCategoriesDropdownAttribute()
+    {
+        return [['name' => 'num', 'title' => $this->setLocalization('Number'), 'checked' => true], ['name' => 'category_name', 'title' => $this->setLocalization('Title'), 'checked' => true], ['name' => 'localized_title', 'title' => $this->setLocalization('Localized title'), 'checked' => true], ['name' => 'genre_in_category', 'title' => $this->setLocalization('Genres in category'), 'checked' => true], ['name' => 'movie_in_category', 'title' => $this->setLocalization('Movies in category'), 'checked' => true], ['name' => 'censored', 'title' => $this->setLocalization('Age restriction'), 'checked' => true], ['name' => 'operations', 'title' => $this->setLocalization('Operation'), 'checked' => true]];
+    }
+    public function video_genres()
+    {
+        $attribute = $this->getVideoGenresDropdownAttribute();
+        $this->checkDropdownAttribute($attribute);
+        $this->app['dropdownAttribute'] = $attribute;
+        $allCategories = $this->db->getCategoriesGenres();
+        if (isset($allCategories) && \is_array($allCategories) && \count($allCategories) > 0) {
+            $this->app['allCategories'] = $this->setLocalization($allCategories, 'category_name');
+        } else {
+            $this->app['allCategories'] = [];
+        }
+        return $this->app['twig']->render($this->getTemplateName(__METHOD__));
+    }
+    private function getVideoGenresDropdownAttribute()
+    {
+        return [['name' => 'title', 'title' => $this->setLocalization('Title'), 'checked' => true], ['name' => 'localized_title', 'title' => $this->setLocalization('Localized title'), 'checked' => true], ['name' => 'category', 'title' => $this->setLocalization('Category'), 'checked' => true], ['name' => 'movie_in_genre', 'title' => $this->setLocalization('Movies in genre'), 'checked' => true], ['name' => 'operations', 'title' => $this->setLocalization('Operation'), 'checked' => true]];
+    }
+    public function video_list_json()
+    {
+        if (!$this->isAjax) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $response = ['data' => [], 'recordsTotal' => 0, 'recordsFiltered' => 0];
+        $filds_for_select = ['id' => '`video`.`id` as `id`', 'path' => '`video`.`path` as `path`', 'name' => '`video`.`name` as `name` ', 'o_name' => '`video`.`o_name` as `o_name`', 'time' => '`video`.`time` as `time`', 'cat_genre' => "'' as `cat_genre`", 'series' => '`video`.`series` as `series`', 'tasks' => '(select count(*) from moderator_tasks where media_id = video.id) as `tasks`', 'task_id' => '`video_on_tasks`.`id` as `task_id`', 'count' => '`video`.`count` as `count`', 'counter' => '(`video`.count_second_0_5 + `video`.count_first_0_5) as `counter`', 'year' => '`video`.`year` as `year`', 'added' => 'CAST(`video`.`added` as CHAR) as `added`', 'complaints' => 'media_claims.sound_counter + media_claims.video_counter as `complaints`', 'accessed' => '`video`.`accessed` as `accessed`'];
+        $error = $this->setLocalization('Error');
+        $param = !empty($this->data) ? $this->data : [];
+        $query_param = $this->prepareDataTableParams($param, ['operations', 'RowOrder', '_']);
+        if (!isset($query_param['where'])) {
+            $query_param['where'] = [];
+        }
+        $filter = $this->getVideoListFilters();
+        $query_param['where'] = \array_merge($query_param['where'], $filter);
+        if (empty($query_param['select'])) {
+            $query_param['select'] = \array_values($filds_for_select);
+        } else {
+            $query_param['select'][] = 'video.id as id';
+        }
+        $this->cleanQueryParams($query_param, \array_keys($filds_for_select), $filds_for_select);
+        $query_param['select'][] = 'media_claims.sound_counter as `sound_counter`';
+        $query_param['select'][] = 'media_claims.video_counter as `video_counter`';
+        $query_param['select'][] = '`video_on_tasks`.`id` as `task_id`';
+        $query_param['select'][] = 'UNIX_TIMESTAMP(`video_on_tasks`.`date_on`) as `task_date_on`';
+        $query_param['select'][] = 'cat_genre_id_1';
+        $query_param['select'][] = 'cat_genre_id_2';
+        $query_param['select'][] = 'cat_genre_id_3';
+        $query_param['select'][] = 'cat_genre_id_4';
+        if (empty($query_param['order'])) {
+            $query_param['order']['id'] = 'DESC';
+        }
+        $response['recordsTotal'] = $this->db->getTotalRowsVideoList();
+        $response['recordsFiltered'] = $this->db->getTotalRowsVideoList($query_param['where'], $query_param['like']);
+        if (empty($query_param['limit']['limit'])) {
+            $query_param['limit']['limit'] = 50;
+        } elseif ($query_param['limit']['limit'] == -1) {
+            $query_param['limit']['limit'] = false;
+        }
+        $response['data'] = $this->db->getVideoList($query_param);
+        $tmp_allTasks = $this->db->getAllModeratorTasks($this->app['userlogin'] != 'admin' ? $this->app['user_id'] : false);
+        $allTasks = [];
+        if (\is_array($tmp_allTasks)) {
+            while (list($num, $row) = \each($tmp_allTasks)) {
+                $row['end_time'] = (int) $row['end_time'] * ($this->isAjax ? 1000 : 1);
+                $row['ended'] = (int) $row['ended'];
+                $row['rejected'] = (int) $row['rejected'];
+                $row['expired'] = \time() - \strtotime($row['start_time']) > 864000;
+                $allTasks[$row['media_id']][] = $row;
+            }
+        }
+        if (!empty($response['data'])) {
+            $cat_genres = $this->db->getVideoCategories();
+            $cat_genres = $this->setLocalization($cat_genres, 'title');
+            $cat_genres = \array_combine($this->getFieldFromArray($cat_genres, 'id'), $this->getFieldFromArray($cat_genres, 'title'));
+            \reset($response['data']);
+            while (list($key, $row) = \each($response['data'])) {
+                $response['data'][$key]['RowOrder'] = 'dTRow_' . $row['id'];
+                $response['data'][$key]['cat_genre'] = [];
+                if (!empty($row['cat_genre_id_1'])) {
+                    $response['data'][$key]['cat_genre'][] = $this->mb_ucfirst($cat_genres[$row['cat_genre_id_1']]);
+                }
+                if (!empty($row['cat_genre_id_2'])) {
+                    $response['data'][$key]['cat_genre'][] = $this->mb_ucfirst($cat_genres[$row['cat_genre_id_2']]);
+                }
+                if (!empty($row['cat_genre_id_3'])) {
+                    $response['data'][$key]['cat_genre'][] = $this->mb_ucfirst($cat_genres[$row['cat_genre_id_3']]);
+                }
+                if (!empty($row['cat_genre_id_4'])) {
+                    $response['data'][$key]['cat_genre'][] = $this->mb_ucfirst($cat_genres[$row['cat_genre_id_4']]);
+                }
+                $response['data'][$key]['cat_genre'] = \implode(', ', $response['data'][$key]['cat_genre']);
+                $response['data'][$key]['added'] = (int) \strtotime($response['data'][$key]['added']) * ($this->isAjax ? 1000 : 1);
+                $response['data'][$key]['task_date_on'] = (int) $response['data'][$key]['task_date_on'] * ($this->isAjax ? 1000 : 1);
+                $response['data'][$key]['accessed'] = !empty($response['data'][$key]['accessed']) ? (int) $response['data'][$key]['accessed'] : 0;
+                $response['data'][$key]['series'] = \count(\Ministra\Lib\S642b6461e59cef199375bfb377c17a39\Z860a165ed018f157fd40ef2297209b46\O29f79fdee870487fdf0c508ebd65b3c1::d4a074f5a08e1a553d9ba42fd52addac($row['series']));
+                if (!\array_key_exists('tasks', $response['data'][$key]) || !\is_array($response['data'][$key]['tasks'])) {
+                    $response['data'][$key]['tasks'] = [];
+                }
+                if (\array_key_exists($row['id'], $allTasks)) {
+                    $response['data'][$key]['tasks'] = $allTasks[$row['id']];
+                }
+                $response['data'][$key]['on_storages'] = (int) $this->check_video_status($row['id']);
+            }
+        }
+        $response['draw'] = !empty($this->data['draw']) ? $this->data['draw'] : 1;
+        $error = '';
+        if ($this->isAjax) {
+            $response = $this->generateAjaxResponse($response);
+            return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+        }
+        return $response;
+    }
+    private function getVideoListFilters()
+    {
+        $filters = [];
+        if (\array_key_exists('filters', $this->data)) {
+            if (\array_key_exists('status_id', $this->data['filters']) && $this->data['filters']['status_id'] != 0) {
+                if ($this->data['filters']['status_id'] != 3) {
+                    $filters['`accessed`'] = $this->data['filters']['status_id'] - 1;
+                } else {
+                    $filters["not isnull(`video_on_tasks`.`id`) and '1'"] = '1';
+                }
+            }
+            if (\array_key_exists('year', $this->data['filters']) && $this->data['filters']['year'] != 0) {
+                $filters['`year`'] = $this->data['filters']['year'];
+            }
+            if (\array_key_exists('genre_id', $this->data['filters']) && $this->data['filters']['genre_id'] != 0) {
+                $genre_id = $this->data['filters']['genre_id'];
+                $filters["(`cat_genre_id_1` in ({$genre_id}) OR `cat_genre_id_2` in ({$genre_id}) OR `cat_genre_id_3` in ({$genre_id}) OR `cat_genre_id_4` in ({$genre_id})) AND 1"] = '1';
+            }
+            if (\array_key_exists('category_id', $this->data['filters']) && $this->data['filters']['category_id'] != 0) {
+                $filters['media_category.id'] = $this->data['filters']['category_id'];
+            }
+            $this->app['filters'] = $this->data['filters'];
+        } else {
+            $this->app['filters'] = [];
+        }
+        return $filters;
+    }
+    private function check_video_status($id)
+    {
+        $video = \Ministra\Lib\Video::getById($id);
+        if (!empty($video['rtsp_url'])) {
+            return 2;
+        }
+        return $video['status'];
+    }
+    public function video_info()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['videoid']) || !\is_numeric($this->postData['videoid'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $media_id = (int) $this->postData['videoid'];
+        $video = $this->db->getVideoById($media_id);
+        $data = [];
+        $data['action'] = 'videoinfo';
+        $data['title'] = $this->setLocalization('Information about the video source');
+        $data['base_info'] = $this->setLocalization('information not available');
+        $data['add_info'] = [];
+        $error = '';
+        if (empty($video['rtsp_url'])) {
+            $path = $video['path'];
+            if (empty($_SERVER['TARGET'])) {
+                $_SERVER['TARGET'] = 'ADM';
+            }
+            $master = new \Ministra\Lib\VideoMaster();
+            $good_storages = $master->getAllGoodStoragesForMediaFromNet($media_id, true);
+            if (!empty($good_storages)) {
+                $data['base_info'] = [];
+            }
+            foreach ($good_storages as $name => $data_s) {
+                \sort($data_s['files']);
+                $data['base_info'][] = ['storage_name' => $name, 'path' => $path, 'series' => \count($data_s['series']), 'files' => $data_s['files'], 'for_moderator' => $data_s['for_moderator']];
+            }
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function remove_video()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['videoid']) || !\is_numeric($this->postData['videoid'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $media_id = (int) $this->postData['videoid'];
+        $video = $this->db->getVideoById($media_id);
+        $data = [];
+        $data['action'] = 'videoremove';
+        $error = $this->setLocalization('Information not available');
+        if ($this->db->videoLogWrite($video, 'video deleted')) {
+            $result = $this->db->removeVideoById($media_id);
+            if (\is_numeric($result)) {
+                $error = '';
+                if ($result === 0) {
+                    $data['nothing_to_do'] = true;
+                }
+            }
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function disable_video()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['videoid']) || !\is_numeric($this->postData['videoid'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $media_id = (int) $this->postData['videoid'];
+        $video = $this->db->getVideoById($media_id);
+        $data = [];
+        $data['action'] = 'videodisable';
+        $data['title'] = $this->setLocalization('Publish');
+        $error = $this->setLocalization('Information not available');
+        if ($this->db->videoLogWrite($video, 'Unpublished')) {
+            $this->db->deleteVideoTask(['video_id' => $media_id]);
+            $result = $this->db->disableVideoById($media_id);
+            if (\is_numeric($result)) {
+                $this->db->toggleDisableForHDDevices($video, 0);
+                $error = '';
+                if ($result === 0) {
+                    $data['nothing_to_do'] = true;
+                }
+            }
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function enable_video()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['videoid']) || !\is_numeric($this->postData['videoid']) || empty($this->postData['video_on_date'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'videoenable';
+        $data['title'] = $this->setLocalization('Unpublished');
+        $error = $this->setLocalization('Information not available');
+        $media_id = (int) $this->postData['videoid'];
+        $date_on = \date('Y-m-d', \strtotime($this->postData['video_on_date']));
+        if ($date_on == \date('Y-m-d')) {
+            $error = !(bool) $this->db->deleteVideoTask(['video_id' => $media_id]);
+            $video = $this->db->getVideoById($media_id);
+            if ($this->db->videoLogWrite($video, 'Published')) {
+                $result = $this->db->enableVideoById($media_id);
+                if (\is_numeric($result)) {
+                    $this->db->toggleDisableForHDDevices($video, 1);
+                    $error = '';
+                    if ($result === 0) {
+                        $data['nothing_to_do'] = true;
+                    }
+                }
+            }
+            $data['status'] = "<span class='txt-success'>" . $this->setLocalization('Published') . '<span>';
+        } else {
+            $data_in = ['video_id' => $media_id, 'date_on' => $date_on];
+            $video_id = $this->db->getVideoTaskByVideoId($media_id);
+            if (empty($video_id)) {
+                $error = !(bool) $this->db->addVideoTask($data_in);
+            } else {
+                $this->db->updateVideoTask($data_in, ['video_id' => $media_id]);
+                $error = '';
+            }
+            $data_in['date_on'] = \strftime('%e-%m-%Y', \strtotime($data_in['date_on']));
+            $data['status'] = "<span class='txt-info'>" . $this->setLocalization('Scheduled') . ' ' . $this->setLocalization('on') . ' ' . "{$data_in['date_on']}</span>";
+            $data = \array_merge($data_in, $data);
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function get_md5()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['storage_name']) || empty($this->postData['media_name'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'setMD5';
+        $error = $this->setLocalization('Information not available');
+        if (empty($_SERVER['TARGET'])) {
+            $_SERVER['TARGET'] = 'ADM';
+        }
+        $master = new \Ministra\Lib\VideoMaster();
+        \ob_start();
+        try {
+            $data['data'] = $master->startMD5Sum($this->postData['storage_name'], $this->postData['media_name']);
+            $error = '';
+        } catch (\Exception $exception) {
+            $error = $exception->getMessage();
+        }
+        $data['md5_data'] = \ob_get_contents();
+        \ob_end_clean();
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function create_tasks()
+    {
+        if (!$this->isAjax || $this->method != 'POST') {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'createtasks';
+        $error = $this->setLocalization('Information not available');
+        if (empty($this->postData['sendData']['id']) || empty($this->postData['sendData']['to_usr']) || empty($this->postData['sendData']['comment'])) {
+            $error = $this->setLocalization('Not all fields are filled');
+        } else {
+            $data_in = $this->postData['sendData'];
+            $data_in['task_id'] = $this->db->setModeratorTask($data_in);
+            $data_in['uid'] = $this->admin->getId();
+            $video = $this->db->getVideoById($data_in['id']);
+            if ($data_in['task_id'] && $this->db->setModeratorHistory($data_in)) {
+                $this->db->videoLogWrite($video, \Ministra\Lib\S642b6461e59cef199375bfb377c17a39\Z860a165ed018f157fd40ef2297209b46\O29f79fdee870487fdf0c508ebd65b3c1::H62b6690510bd2660999bb4e5c5e18316(['task' => $data_in['task_id'], 'event' => 'task open']), $data_in['to_usr']);
+                $error = '';
+                $data['task_id'] = $data_in['task_id'];
+            }
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function check_name()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['name'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'checkName';
+        $error = $this->setLocalization('Name is busy');
+        if ($this->db->checkName($this->postData)) {
+            $data['chk_rezult'] = $this->setLocalization('Name is busy');
+        } else {
+            $data['chk_rezult'] = $this->setLocalization('Name is available');
+            $error = '';
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function check_moderator_mac()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['mac'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'checkModMac';
+        $error = $this->setLocalization('Address is busy');
+        if (\preg_match('/([0-9a-fA-F]{2}([:]|$)){6}$/', \trim($this->postData['mac']))) {
+            $params = ['mac' => \trim($this->postData['mac'])];
+            if (!empty($this->postData['id'])) {
+                $params['id<>'] = $this->postData['id'];
+            }
+            if ($this->db->checkModMac($params)) {
+                $data['chk_rezult'] = $this->setLocalization('Address is busy');
+            } else {
+                $data['chk_rezult'] = $this->setLocalization('Address is available');
+                $error = '';
+            }
+        } else {
+            $data['chk_rezult'] = $this->setLocalization('Error: Not valid mac address');
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function edit_cover()
+    {
+        if (empty($this->data['id']) || !\is_numeric($this->data['id']) && \strpos($this->data['id'], 'new') === false) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'editCover';
+        $error = $this->setLocalization('Information not available');
+        if (!empty($_FILES)) {
+            list($f_key, $tmp) = \each($_FILES);
+            if (\is_uploaded_file($tmp['tmp_name']) && \preg_match('/jpeg|jpg|png/', $tmp['type'])) {
+                if ($this->data['id'] != 'new' && \is_numeric($this->data['id'])) {
+                    $screenshot = $this->db->getScreenshotData(['id' => $this->data['id']]);
+                    if (!empty($screenshot)) {
+                        $file_info = \pathinfo($screenshot[0]['name']);
+                        $this->db->removeScreenshotData($this->data['id']);
+                        $img_path = $this->getCoverFolder($this->data['id']);
+                        $img_path = \str_replace(\str_replace('/admin', '', $this->baseDir), '', $img_path);
+                        @\unlink($this->baseDir . \rtrim(\Ministra\Lib\S642b6461e59cef199375bfb377c17a39\a777f7659bfaad9ba0acb83e0c546a50::getSafe('portal_url', '/stalker_portal/'), '/') . $img_path . '/' . $this->data['id'] . '.' . $file_info['extension']);
+                    }
+                }
+                $s_data = ['name' => $tmp['name'], 'size' => $tmp['size'], 'type' => $tmp['type']];
+                $upload_id = $this->db->saveScreenshotData($s_data);
+                $img_path = $this->getCoverFolder($upload_id);
+                \umask(0);
+                try {
+                    $uploaded = $this->request->files->get($f_key)->getPathname();
+                    $ext = \end(\explode('.', $s_data['name']));
+                    $this->app['imagine']->open($uploaded)->resize(new \Imagine\Image\Box(240, 320))->save($img_path . "/{$upload_id}.{$ext}");
+                    \chmod($img_path . "/{$upload_id}.{$ext}", 0644);
+                    $error = '';
+                } catch (\ImagickException $e) {
+                    $error = \sprintf(\_('Error during file moving from %s to %s'), $tmp['tmp_name'], $img_path . "/{$upload_id}.{$ext}");
+                }
+            }
+        }
+        $img_path = \str_replace(\str_replace('/admin', '', $this->baseDir), '', $img_path);
+        $response = $this->generateAjaxResponse(['pic' => $this->baseHost . \rtrim(\Ministra\Lib\S642b6461e59cef199375bfb377c17a39\a777f7659bfaad9ba0acb83e0c546a50::getSafe('portal_url', '/stalker_portal/')) . $img_path . "/{$upload_id}.{$ext}"], $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function delete_cover()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['cover_id'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'deleteCover';
+        $error = $this->setLocalization('Failed');
+        $img_path = $this->getCoverFolder($this->postData['cover_id']);
+        $screenshot = $this->db->getScreenshotData(['id' => $this->postData['cover_id']]);
+        $ext = !empty($screenshot[0]['name']) ? \end(\explode('.', $screenshot[0]['name'])) : '';
+        $filename = $img_path . '/' . $this->postData['cover_id'] . ".{$ext}";
+        if ($this->db->removeScreenshotData($this->postData['cover_id']) && \is_file($filename)) {
+            try {
+                \unlink($img_path . '/' . $this->postData['cover_id'] . ".{$ext}");
+                $error = '';
+                $data['msg'] = $this->setLocalization('Deleted');
+            } catch (\Exception $e) {
+                $error = $this->setLocalization('image file has not been deleted') . ', ';
+                $error .= $this->setLocalization('image name') . ' - "' . $this->postData['cover_id'] . ".{$ext}" . '", ';
+                $error .= $this->setLocalization('file can be deleted manually from screenshot directory');
+                $data['msg'] = $error;
+            }
+        } else {
+            $data['msg'] = $error = $this->setLocalization('No information about') . ' - "' . $this->postData['cover_id'] . ".{$ext}\" " . $this->setLocalization('or file is not exists');
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function update_rating_kinopoisk()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['data'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'updateRatingKinopoisk';
+        $error = $this->setLocalization('No data');
+        try {
+            $data['result'] = \Ministra\Lib\VClubinfo::getRatingByName($this->postData['data']);
+            $error = '';
+        } catch (\Ministra\Lib\KinopoiskException $e) {
+            $error = $e->getMessage();
+            $logger = new \Ministra\Lib\Logger();
+            $logger->setPrefix('kinopoisk_');
+            $logger->error(\sprintf("[%s] - %s - \"%s\"\n", \date('r'), $e->getMessage(), \base64_encode($e->getResponse())));
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function get_kinopoisk_info_by_name()
+    {
+        $data = [];
+        $data['action'] = 'getKinopoiskInfoByName';
+        $error = $this->setLocalization('No data');
+        try {
+            $data['result'] = \Ministra\Lib\VClubinfo::getInfoByName($this->postData['data']);
+            $error = '';
+        } catch (\Ministra\Lib\KinopoiskException $e) {
+            $error = $e->getMessage();
+            $logger = new \Ministra\Lib\Logger();
+            $logger->setPrefix('kinopoisk_');
+            $logger->error(\sprintf("[%s] - %s - \"%s\"\n", \date('r'), $e->getMessage(), \base64_encode($e->getResponse())));
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function get_kinopoisk_info_by_id()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['data'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'getKinopoiskInfoById';
+        $error = $this->setLocalization('No data');
+        try {
+            $data['result'] = \Ministra\Lib\VClubinfo::getInfoById($this->postData['data']);
+            $error = '';
+        } catch (\Ministra\Lib\KinopoiskException $e) {
+            $error = $e->getMessage();
+            $logger = new \Ministra\Lib\Logger();
+            $logger->setPrefix('kinopoisk_');
+            $logger->error(\sprintf("[%s] - %s - \"%s\"\n", \date('r'), $e->getMessage(), \base64_encode($e->getResponse())));
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function get_image()
+    {
+        if ($this->method != 'GET' || empty($this->data['url'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'getImage';
+        $error = $this->setLocalization('No data');
+        if (\strpos($this->data['url'], 'http://') === 0 && (\strpos($this->data['url'], 'kinopoisk.ru/') || \strpos($this->data['url'], 'image.tmdb.org/'))) {
+            $img = \file_get_contents($this->data['url']);
+            if (!empty($img)) {
+                echo $img;
+                exit;
+            }
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function video_schedule_list_json()
+    {
+        if (!$this->isAjax) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $response = ['data' => [], 'recordsTotal' => 0, 'recordsFiltered' => 0];
+        $error = $this->setLocalization('Error');
+        $param = empty($param) ? !empty($this->data) ? $this->data : $this->postData : $param;
+        $query_param = $this->prepareDataTableParams($param, ['operations', 'RowOrder', '_']);
+        if (!isset($query_param['where'])) {
+            $query_param['where'] = [];
+        }
+        $filds_for_select = $this->getVideoScheduleFields();
+        $query_param['select'] = \array_values($filds_for_select);
+        $this->cleanQueryParams($query_param, \array_keys($filds_for_select), $filds_for_select);
+        foreach ($query_param['order'] as $key => $val) {
+            if ($search = \array_search($key, $filds_for_select)) {
+                $new_key = \str_replace(" as {$search}", '', $key);
+                unset($query_param['order'][$key]);
+                $query_param['order'][$new_key] = $val;
+            }
+        }
+        if (!isset($query_param['like'])) {
+            $query_param['like'] = [];
+        } elseif (\array_key_exists('video_on_tasks.added', $query_param['like'])) {
+            $query_param['like']['CAST(`video_on_tasks`.`added` as CHAR)'] = $query_param['like']['video_on_tasks.added'];
+            unset($query_param['like']['video_on_tasks.added']);
+        }
+        $response['recordsTotal'] = $this->db->getTotalRowsAllVideoTasks();
+        $response['recordsFiltered'] = $this->db->getTotalRowsAllVideoTasks($query_param['where'], $query_param['like']);
+        if (empty($query_param['limit']['limit'])) {
+            $query_param['limit']['limit'] = 50;
+        } elseif ($query_param['limit']['limit'] == -1) {
+            $query_param['limit']['limit'] = false;
+        }
+        $allTasks = $this->db->getAllVideoTasks($query_param);
+        $scheduled_on = $this->setLocalization('scheduled') . ' ' . $this->setLocalization('on');
+        if (\is_array($allTasks)) {
+            \reset($allTasks);
+            while (list($num, $row) = \each($allTasks)) {
+                $allTasks[$num]['date_on'] = \strtotime($row['date_on']);
+                if ($allTasks[$num]['date_on'] < 0) {
+                    $allTasks[$num]['date_on'] = 0;
+                }
+                $allTasks[$num]['task_added'] = \strtotime($row['task_added']);
+                if ($allTasks[$num]['task_added'] < 0) {
+                    $allTasks[$num]['task_added'] = 0;
+                }
+                $allTasks[$num]['tasks'] = "<span data-task-state=1>{$scheduled_on} " . \strftime('%d-%m-%Y', $allTasks[$num]['date_on']) . '</span>';
+            }
+            $response['data'] = $allTasks;
+        }
+        $response['draw'] = !empty($this->data['draw']) ? $this->data['draw'] : 1;
+        $error = '';
+        if ($this->isAjax) {
+            $response = $this->generateAjaxResponse($response);
+            return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+        }
+        return $response;
+    }
+    private function getVideoScheduleFields()
+    {
+        return ['task_added' => 'video_on_tasks.added as `task_added`', 'name' => 'video.name as `name`', 'o_name' => 'video.o_name as `o_name`', 'time' => 'video.time as `time`', 'tasks' => '"" as `tasks`', 'year' => 'video.year as `year`', 'task_id' => 'video_on_tasks.id as `task_id`', 'video_id' => 'video_on_tasks.video_id as `video_id`', 'date_on' => 'DATE_FORMAT(video_on_tasks.date_on, "%Y-%m-%d %H:%i:%s") as `date_on`', 'id' => 'video_on_tasks.id as `id`'];
+    }
+    public function video_advertise_list_json()
+    {
+        if (!$this->isAjax) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $error = $this->setLocalization('Error');
+        $param = empty($param) ? !empty($this->data) ? $this->data : $this->postData : $param;
+        $query_param = $this->prepareDataTableParams($param, ['operations', 'RowOrder', '_']);
+        if (!isset($query_param['where'])) {
+            $query_param['where'] = [];
+        }
+        $filds_for_select = $this->getVideoAdvertiseFields();
+        $query_param['select'] = \array_values($filds_for_select);
+        if (!empty($query_param['like'])) {
+            if (\array_key_exists('started', $query_param['like'])) {
+                unset($query_param['like']['started']);
+            }
+            if (\array_key_exists('ended', $query_param['like'])) {
+                unset($query_param['like']['ended']);
+            }
+        }
+        $this->cleanQueryParams($query_param, \array_keys($filds_for_select), $filds_for_select);
+        foreach ($query_param['order'] as $key => $val) {
+            if (\array_key_exists($key, $filds_for_select)) {
+                $new_key = \preg_replace('/\\s+as\\s+`?' . $key . '`?', '', $filds_for_select[$key]);
+                unset($query_param['order'][$key]);
+                $query_param['order'][$new_key] = $val;
+            }
+        }
+        $response['recordsTotal'] = $this->db->getAdsTotalRows();
+        $response['recordsFiltered'] = $this->db->getAdsTotalRows($query_param['where'], $query_param['like']);
+        $must_watch = $this->setLocalization('all');
+        $response['data'] = \array_map(function ($row) use($must_watch) {
+            if (!\is_numeric($row['must_watch'])) {
+                $row['must_watch'] = $must_watch;
+            }
+            \settype($row['status'], 'int');
+            return $row;
+        }, $this->db->getAdsList($query_param));
+        $response['draw'] = !empty($this->data['draw']) ? $this->data['draw'] : 1;
+        $error = '';
+        if ($this->isAjax) {
+            $response = $this->generateAjaxResponse($response);
+            return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+        }
+        return $response;
+    }
+    private function getVideoAdvertiseFields()
+    {
+        return ['id' => 'V_A.`id` as `id`', 'title' => 'V_A.`title` as `title`', 'url' => 'V_A.`url` as `url`', 'weight' => 'V_A.`weight` as `weight`', 'started' => 'CAST(SUM(V_A_L.`watch_complete`) as UNSIGNED) as `started`', 'ended' => 'CAST(COUNT(V_A_L.`vclub_ad_id`) as UNSIGNED) as `ended`', 'must_watch' => 'V_A.`must_watch` as `must_watch`', 'status' => 'V_A.`status` as `status`'];
+    }
+    public function remove_tasks()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['taskid'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'removeTasks';
+        $error = $this->setLocalization('Failed');
+        $result = $this->db->deleteVideoTask(['id' => $this->postData['taskid']]);
+        if (\is_numeric($result)) {
+            $error = '';
+            if ($result === 0) {
+                $data['nothing_to_do'] = true;
+            }
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function remove_video_ads()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['adsid'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'removeAds';
+        $error = $this->setLocalization('Failed');
+        $ad = new \Ministra\Lib\VclubAdvertising();
+        $result = $ad->delById($this->postData['adsid'])->total_rows();
+        if (\is_numeric($result)) {
+            $error = '';
+            if ($result === 0) {
+                $data['nothing_to_do'] = true;
+            }
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function toggle_video_ads_status()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['adsid']) || !isset($this->postData['adsstatus'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'toggleVideoAdsStatus';
+        $error = $this->setLocalization('Failed');
+        $ad = new \Ministra\Lib\VclubAdvertising();
+        if ($ad->updateById((int) $this->postData['adsid'], ['status' => (int) $this->postData['adsstatus'], 'denied_categories' => $ad->getDeniedVclubCategoriesForAd((int) $this->postData['adsid'])])) {
+            $error = '';
+            $data['title'] = $this->postData['adsstatus'] ? $this->setLocalization('Unpublish') : $this->setLocalization('Publish');
+            $data['status'] = '<span data-filter="status" >' . ($this->postData['adsstatus'] ? $this->setLocalization('Published') : $this->setLocalization('Not published')) . '</span>';
+            $data['adsstatus'] = (int) (!$this->postData['adsstatus']);
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function video_moderators_addresses_list_json()
+    {
+        if (!$this->isAjax) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $response = ['data' => [], 'recordsTotal' => 0, 'recordsFiltered' => 0];
+        $error = $this->setLocalization('Error');
+        $param = empty($param) ? !empty($this->data) ? $this->data : $this->postData : $param;
+        $query_param = $this->prepareDataTableParams($param, ['operations', 'RowOrder', '_']);
+        if (!isset($query_param['where'])) {
+            $query_param['where'] = [];
+        }
+        $filds_for_select = $this->getVideoModeratorsAddressesFields();
+        $query_param['select'] = \array_values($filds_for_select);
+        $this->cleanQueryParams($query_param, \array_keys($filds_for_select), $filds_for_select);
+        foreach ($query_param['order'] as $key => $val) {
+            if ($search = \array_search($key, $filds_for_select)) {
+                $new_key = \str_replace(" as {$search}", '', $key);
+                unset($query_param['order'][$key]);
+                $query_param['order'][$new_key] = $val;
+            }
+        }
+        if (!isset($query_param['like'])) {
+            $query_param['like'] = [];
+        }
+        if (empty($query_param['limit']['limit'])) {
+            $query_param['limit']['limit'] = 50;
+        } elseif ($query_param['limit']['limit'] == -1) {
+            $query_param['limit']['limit'] = false;
+        }
+        $response['recordsTotal'] = $this->db->getTotalRowsModerators();
+        $response['recordsFiltered'] = $this->db->getTotalRowsModerators($query_param['where'], $query_param['like']);
+        $allModerators = $this->db->getModerators($query_param);
+        if (\is_array($allModerators)) {
+            $response['data'] = \array_map(function ($row) {
+                \settype($row['status'], 'int');
+                \settype($row['disable_vclub_ad'], 'int');
+                return $row;
+            }, $allModerators);
+        }
+        $response['draw'] = !empty($this->data['draw']) ? $this->data['draw'] : 1;
+        $error = '';
+        if ($this->isAjax) {
+            $response = $this->generateAjaxResponse($response);
+            return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+        }
+        return $response;
+    }
+    private function getVideoModeratorsAddressesFields()
+    {
+        return ['id' => 'moderators.id as `id`', 'name' => 'moderators.name as `name`', 'mac' => 'moderators.mac as `mac`', 'disable_vclub_ad' => 'moderators.disable_vclub_ad as `disable_vclub_ad`', 'status' => 'moderators.status as `status`'];
+    }
+    public function remove_video_moderators()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['modid'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'manageList';
+        $error = '';
+        $this->db->deleteModeratorsById($this->postData['modid']);
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function toggle_video_moderators_status()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['modid']) || !isset($this->postData['modstatus'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'manageList';
+        $error = $this->setLocalization('Failed');
+        if ($this->db->updateModeratorsById((int) $this->postData['modid'], ['status' => (int) $this->postData['modstatus']])) {
+            $error = '';
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function video_logs_json($param = array())
+    {
+        if (!$this->isAjax) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $response = [];
+        $fields = ['id' => '`video_log`.`id` as `id`', 'video_id' => '`video_log`.`video_id` as `video_id`', 'login' => '`administrators`.`login` as `login`', 'actiontime' => '`actiontime`', '`video`.`name`' => 'IF(ISNULL(`video`.`name`), `video_log`.`video_name`, `video`.`name`) as `video_name`', 'action' => '`action`'];
+        if ($this->isAjax) {
+        }
+        $param = !empty($this->data) ? $this->data : [];
+        $query_param = $this->prepareDataTableParams($param);
+        if (!\array_key_exists('where', $query_param)) {
+            $query_param['where'] = [];
+        }
+        if ($this->app['userlogin'] == 'admin') {
+            $query_param['where']['moderator_id'] = $this->app['user_id'];
+        }
+        if (!empty($this->data['video_id'])) {
+            $query_param['where']['video_id'] = $this->data['video_id'];
+        }
+        $query_param['select'] = \array_merge($query_param['select'], \array_diff($fields, $query_param['select']));
+        if (empty($query_param['order'])) {
+            $query_param['order']['actiontime'] = 'desc';
+        }
+        $this->cleanQueryParams($query_param, \array_keys($fields), $fields);
+        if (!empty($query_param['like']) && \array_key_exists('`actiontime`', $query_param['like'])) {
+            $query_param['like']['CAST(`actiontime` as CHAR)'] = $query_param['like']['`actiontime`'];
+            unset($query_param['like']['`actiontime`']);
+        }
+        $response['recordsTotal'] = $this->db->getTotalRowsVideoLog($query_param['where']);
+        $response['recordsFiltered'] = $this->db->getTotalRowsVideoLog($query_param['where'], $query_param['like']);
+        if (empty($query_param['limit']['limit'])) {
+            $query_param['limit']['limit'] = 50;
+        }
+        $response['data'] = $this->db->getVideoLog($query_param);
+        $response['data'] = \array_map(function ($row) {
+            $row['actiontime'] = (int) \strtotime($row['actiontime']);
+            return $row;
+        }, $response['data']);
+        $response['data'] = $this->setLocalization($response['data'], 'action');
+        $this->setLinksForVideoLog($response['data']);
+        $response['draw'] = !empty($this->data['draw']) ? $this->data['draw'] : 1;
+        if ($this->isAjax) {
+            $response = $this->generateAjaxResponse($response);
+            return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+        }
+        return $response;
+    }
+    private function setLinksForVideoLog(&$data)
+    {
+        $action_link_template = "<a href='{$this->workURL}/tasks/task-detail-video?id={action[task]}'>{action[event]}</a>";
+        $video_name_link_template = "<a href='{$this->workURL}/tasks/task-detail-video?id={match[0]}'>{match[1]}</a>";
+        \reset($data);
+        while (list($key, $row) = \each($data)) {
+            $data[$key]['video_name'] = "<a href='{$this->workURL}/" . $this->app['controller_alias'] . "/edit-video?id={$row['video_id']}'>{$row['video_name']}</a>";
+            if ($action = @\Ministra\Lib\S642b6461e59cef199375bfb377c17a39\Z860a165ed018f157fd40ef2297209b46\O29f79fdee870487fdf0c508ebd65b3c1::d4a074f5a08e1a553d9ba42fd52addac($row['action'])) {
+                $data[$key]['action'] = \strtr($action_link_template, ['{action[task]}' => $action['task'], '{action[event]}' => $this->mb_ucfirst($this->setLocalization($action['event']))]);
+            } else {
+                $matches = [];
+                $c = \preg_match_all("/task\\=(\\d*)[^\\>]*\\>([^\\<]*)\\</i", \stripcslashes($row['action']), $matches);
+                if (\count($matches) >= 2 && !empty($matches[1][0]) && !empty($matches[2][0])) {
+                    $data[$key]['action'] = \strtr($action_link_template, ['{action[task]}' => $matches[1][0], '{action[event]}' => $this->mb_ucfirst($this->setLocalization($matches[2][0]))]);
+                }
+            }
+        }
+    }
+    public function video_categories_list_json()
+    {
+        if (!$this->isAjax) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $response = ['data' => [], 'recordsTotal' => 0, 'recordsFiltered' => 0];
+        $error = $this->setLocalization('Error');
+        $param = !empty($this->data) ? $this->data : [];
+        $query_param = $this->prepareDataTableParams($param, ['operations', '_', 'localized_title', 'RowOrder']);
+        if (!isset($query_param['where'])) {
+            $query_param['where'] = [];
+        }
+        $filds_for_select = $this->getVideoCategoryFields();
+        $query_param['select'] = \array_values($filds_for_select);
+        $this->cleanQueryParams($query_param, \array_keys($filds_for_select), $filds_for_select);
+        $response['recordsTotal'] = $this->db->getTotalRowsCategoriesGenresList();
+        $response['recordsFiltered'] = $this->db->getTotalRowsCategoriesGenresList($query_param['where'], $query_param['like']);
+        if (empty($query_param['limit']['limit'])) {
+            $query_param['limit']['limit'] = 50;
+        } elseif ($query_param['limit']['limit'] == -1) {
+            $query_param['limit']['limit'] = false;
+        }
+        if (!empty($query_param['select']) && !\in_array('id', $query_param['select'])) {
+            $query_param['select'][] = 'id';
+        }
+        $query_param['order']['num'] = 'ASC';
+        $self = $this;
+        $response['data'] = \array_map(function ($row) use($self) {
+            $row['censored'] = (int) $row['censored'];
+            $row['localized_title'] = $self->setLocalization($row['category_name']);
+            $row['RowOrder'] = 'dTRow_' . $row['id'];
+            return $row;
+        }, $this->db->getCategoriesGenres($query_param));
+        $response['draw'] = !empty($this->data['draw']) ? $this->data['draw'] : 1;
+        $error = '';
+        if ($this->isAjax) {
+            $response = $this->generateAjaxResponse($response);
+            return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+        }
+        return $response;
+    }
+    private function getVideoCategoryFields()
+    {
+        return ['num' => '`media_category`.`num` as `num`', 'category_name' => '`media_category`.`category_name` as `category_name`', 'genre_in_category' => 'CAST((SELECT  COUNT(*) FROM `cat_genre` WHERE `cat_genre`.`category_alias` = `media_category`.`category_alias`) as CHAR) as `genre_in_category`', 'movie_in_category' => 'CAST((SELECT  COUNT(*) FROM `video` WHERE `video`.`category_id` = `media_category`.`id`) as CHAR) as `movie_in_category`', 'censored' => '`media_category`.`censored` as `censored`'];
+    }
+    public function video_categories_reorder()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['id'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $matches = [];
+        $data = [];
+        $data['action'] = 'reorder';
+        $data['msg'] = $error = $this->setLocalization('error');
+        if (\preg_match("/(\\d+)/i", $this->postData['id'], $matches) && \preg_match("/(\\d+)/i", $this->postData['target_id'], $matches_1)) {
+            if ($this->db->mowingCategoriesRows($matches[1], $this->postData['fromPosition'], $this->postData['toPosition'], $this->postData['direction'])) {
+                $error = '';
+            }
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function add_video_categories()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['category_name']) || empty($this->postData['num'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'addVideoCategory';
+        $error = $this->setLocalization('Failed');
+        $category_alias = $this->transliterate($this->postData['category_name']);
+        $check = $this->db->getCategoriesGenres(['where' => ['category_name' => $this->postData['category_name'], 'category_alias' => $category_alias, 'num' => $this->postData['num']]]);
+        if (empty($check)) {
+            $data['id'] = $this->db->insertCategoriesGenres(['category_name' => $this->postData['category_name'], 'num' => $this->postData['num'], 'category_alias' => $category_alias, 'censored' => !empty($this->postData['censored'])]);
+            $data['category_name'] = $this->postData['category_name'];
+            $error = '';
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function edit_video_categories()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['category_name']) || empty($this->postData['id'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'editVideoCategory';
+        $error = $this->setLocalization('Failed');
+        $check = $this->db->getCategoriesGenres(['select' => ['*'], 'where' => ['category_name' => $this->postData['category_name'], 'num' => $this->postData['num'], 'id<>' => $this->postData['id']], 'order' => ['category_name' => 'ASC'], 'like' => []]);
+        if (empty($check)) {
+            $this->db->updateCategoriesGenres(['category_name' => $this->postData['category_name'], 'num' => $this->postData['num'], 'censored' => !empty($this->postData['censored'])], ['id' => $this->postData['id']]);
+            $error = '';
+            $data['id'] = $this->postData['id'];
+            $data['category_name'] = $this->postData['category_name'];
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function remove_video_categories()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['categoriesid'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'removeVideoCategory';
+        $data['id'] = $this->postData['categoriesid'];
+        $this->db->mowingCategoriesRows($this->postData['categoriesid'], $this->postData['curr_pos'], 1000000, 'forward');
+        $this->db->deleteCategoriesGenres(['id' => $this->postData['categoriesid']]);
+        $response = $this->generateAjaxResponse($data, '');
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function check_video_categories_name()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['category_name'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'checkVideoCategory';
+        $error = $this->setLocalization('Name already used');
+        $add = \array_key_exists('edit', $this->postData) && (\strtolower((string) $this->postData['edit']) == 'false' || $this->postData['edit'] === false);
+        if ($this->db->getCategoriesGenres(['where' => [' BINARY category_name' => $this->postData['category_name']]]) || ($add ? $this->db->getCategoriesGenres(['where' => [' BINARY category_alias' => $this->transliterate($this->postData['category_name'])]]) : 0)) {
+            $data['chk_rezult'] = $this->setLocalization('Name already used');
+        } else {
+            $data['chk_rezult'] = $this->setLocalization('Name is available');
+            $error = '';
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function video_genres_list_json()
+    {
+        if (!$this->isAjax) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $response = ['data' => [], 'recordsTotal' => 0, 'recordsFiltered' => 0, 'action' => 'openModalBox'];
+        $error = $this->setLocalization('Error');
+        $param = !empty($this->data) ? $this->data : [];
+        $query_param = $this->prepareDataTableParams($param, ['operations', '_', 'localized_title', 'category_name', 'RowOrder']);
+        if (!isset($query_param['where'])) {
+            $query_param['where'] = [];
+        }
+        if (!empty($this->postData['id'])) {
+            $query_param['where']['cat_genre.id'] = $this->postData['id'];
+        }
+        $filter = $this->getVideoListFilters();
+        $query_param['where'] = \array_merge($query_param['where'], $filter);
+        $filds_for_select = $this->getVideoCategoryGenresFields();
+        $query_param['select'] = \array_values($filds_for_select);
+        $order = [];
+        if (!empty($query_param['order']['movie_in_genre'])) {
+            $order = $query_param['order'];
+        }
+        if (!empty($query_param['like']['movie_in_genre'])) {
+            unset($query_param['like']['movie_in_genre']);
+        }
+        $this->cleanQueryParams($query_param, \array_keys($filds_for_select), $filds_for_select);
+        $response['recordsTotal'] = $this->db->getTotalRowsVideoCatGenresList();
+        $response['recordsFiltered'] = $this->db->getTotalRowsVideoCatGenresList($query_param['where'], $query_param['like']);
+        if (empty($query_param['limit']['limit'])) {
+            $query_param['limit']['limit'] = 50;
+        } elseif ($query_param['limit']['limit'] == -1) {
+            $query_param['limit']['limit'] = false;
+        }
+        if (empty($query_param['select'])) {
+            $query_param['select'][] = '*';
+        }
+        if (!empty($order)) {
+            $query_param['order'] = $order;
+        }
+        $cat_genre = $this->setLocalization($this->db->getAllFromTable('cat_genre', 'id'), 'title');
+        $cat_genre_localised = \array_combine($this->getFieldFromArray($cat_genre, 'id'), $this->getFieldFromArray($cat_genre, 'title'));
+        $media_category = $this->setLocalization($this->db->getAllFromTable('media_category', 'id'), 'category_name');
+        $media_category_localised = \array_combine($this->getFieldFromArray($media_category, 'id'), $this->getFieldFromArray($media_category, 'category_name'));
+        $response['data'] = \array_map(function ($row) use($cat_genre_localised, $media_category_localised) {
+            $row['localized_title'] = $cat_genre_localised[$row['id']];
+            $row['category'] = $media_category_localised[$row['category_id']];
+            $row['RowOrder'] = 'dTRow_' . $row['id'];
+            return $row;
+        }, $this->db->getVideoCatGenres($query_param));
+        $response['draw'] = !empty($this->data['draw']) ? $this->data['draw'] : 1;
+        $error = '';
+        if ($this->isAjax) {
+            $response = $this->generateAjaxResponse($response);
+            return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+        }
+        return $response;
+    }
+    private function getVideoCategoryGenresFields()
+    {
+        return ['title' => '`cat_genre`.`title` as `title`', 'category' => '`media_category`.`category_name` as `category`', 'movie_in_genre' => '(SELECT  COUNT(*) FROM `video` WHERE `video`.`category_id` = `media_category`.`id` AND (`cat_genre`.`id` = `video`.`cat_genre_id_1` || `cat_genre`.`id` = `video`.`cat_genre_id_2` || `cat_genre`.`id` = `video`.`cat_genre_id_3` || `cat_genre`.`id` = `video`.`cat_genre_id_4`)) as `movie_in_genre`', 'id' => '`cat_genre`.`id` as `id`', 'category_id' => '`media_category`.`id` as `category_id`', 'category_name' => '`media_category`.`category_name` as `category_name`', 'category_alias' => '`media_category`.`category_alias` as `category_alias`'];
+    }
+    public function save_video_genres()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['title']) || empty($this->postData['category_alias'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'manageGenre';
+        $error = $this->setLocalization('Failed');
+        $where = ['cat_genre.title' => $this->postData['title'], 'cat_genre.category_alias' => $this->postData['category_alias']];
+        $operation_params = ['data' => \array_filter($this->postData)];
+        if (!empty($this->postData['id'])) {
+            $operation = 'update';
+            $where['cat_genre.id<>'] = $this->postData['id'];
+            $operation_params['where'] = ['cat_genre.id' => $operation_params['data']['id']];
+            unset($operation_params['data']['id']);
+        } else {
+            $operation = 'insert';
+        }
+        $check = $this->db->getVideoCatGenres(['where' => $where]);
+        if (empty($check)) {
+            $error = '';
+            $data['msg'] = $this->setLocalization($operation == 'insert' ? 'Inserted' : 'Updated') . ' ' . \call_user_func([$this->db, $operation . 'VideoCatGenres'], $operation_params);
+        } else {
+            $error = $this->setLocalization('In this category already exists such a genre');
+        }
+        $response = $this->generateAjaxResponse($data, $error);
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+    public function remove_video_genres()
+    {
+        if (!$this->isAjax || $this->method != 'POST' || empty($this->postData['genresid'])) {
+            $this->app->abort(404, $this->setLocalization('Page not found'));
+        }
+        $data = [];
+        $data['action'] = 'deleteGenre';
+        $error = $this->setLocalization('Failed');
+        if ($result = $this->db->deleteVideoCatGenres(['id' => $this->postData['genresid']])) {
+            $error = '';
+            $data['msg'] = $this->setLocalization('Deleted') . ' ' . $result;
+        }
+        $response = $this->generateAjaxResponse($data, '');
+        return new \Symfony\Component\HttpFoundation\Response(\json_encode($response), empty($error) ? 200 : 500);
+    }
+}

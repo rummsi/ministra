@@ -1,0 +1,4 @@
+<a href="{{ app.request_context.baseUrl }}/tasks/tasks-list" title="{{ 'Tasks'|trans }}">
+    <i class="fa fa-check"></i>
+    {% if app['user_info']['task_count'] %}<span class="hidden-xs badge">{{ app['user_info']['task_count'] }}</span>{% endif %}
+</a>

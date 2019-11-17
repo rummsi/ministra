@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html lang="{% if attribute(app, 'language') is defined and app['language']|length == 2 %}{{ app['language'] }}{% else %}en{% endif %}">
+    <head>
+        {% block head %}
+            <meta charset="utf-8">
+            <title>{{title}}</title>
+            {% include app['twig_theme'] ~ '/' ~ "basic_templates/meta.twig" %}
+            {% include app['twig_theme'] ~ '/' ~ "basic_templates/css.twig" %}
+        {% endblock head %}
+    </head>
+    <body {{ app.COOKIE.get('menuSidebarState') ?('class=\"sidebar-'~ app.COOKIE.get('menuSidebarState') ~'\"')|raw : '' }}>
+        {% block container %}
+        {% block maincontainer %}
+                
+                {% block header %}
+                    {% include app['twig_theme'] ~ '/' ~ "basic_templates/frgHeader/frgHeader.twig" %}
+                {% endblock header %}
+
+                {% block sidebar %}
+                    {% include app['twig_theme'] ~ '/' ~ "basic_templates/frgSidebar/frgSidebar.twig" %}
+                {% endblock sidebar %}
+                
+                <!--Start Container-->
+                <div id="wrapper">
+                    
+                    <div id="main" class="container-fluid">
+
+                        <div class="row">
+
+                            <!--Start Content-->
+                            <div id="main-wrapper" >
+                                <div id="content" class="content">
+                                    <div class="preloader">
+                                        <img src="img/devoops_getdata.gif" class="devoops-getdata" alt="preloader"/>
+                                    </div>
+                                    <div id="ajax-content">
+                                        {% block content %}
+                                        {% endblock content %}
+                                    </div>
+                                </div>
+                            </div>
+                            <!--End Content-->
+
+                        </div>
+                    </div>
+
+                    {# need to be before frgFooter, couse jQuery used in frgFooter #}
+                    {% block footer_js %}
+                        {% include app['twig_theme'] ~ '/' ~ "basic_templates/footer_js.twig" %}
+                    {% endblock %}
+                 
+                    {% block footer %}
+                        {% include app['twig_theme'] ~ '/' ~ "basic_templates/frgFooter/frgFooter.twig" %}
+                    {% endblock footer %}
+
+                <!--End Container--></div>
+        
+        {% endblock maincontainer %}
+        {% endblock container %}
+			
+    </body>
+</html>

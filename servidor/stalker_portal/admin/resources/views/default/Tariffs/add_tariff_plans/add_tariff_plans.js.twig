@@ -1,0 +1,456 @@
+
+var select2Opt = {minimumResultsForSearch: -1, dropdownAutoWidth: false, width: '100%'},
+    select2OptPH = Object.assign({}, select2Opt, {allowClear: true, placeholder: ""
+        {#placeholder: {
+            id: "-1",
+            text:"",
+            selected:'selected'
+        }#}
+    });
+
+var isEditing = {{ app.servicePlanEdit ? "true" : "false" }}
+
+var conf = {
+    form: '#form_',
+    is_ajax: false,
+    lang : '{{ app.js_validator_language }}',
+    showHelpOnFocus : true,
+    validateHiddenInputs: true,
+    ignore: [],
+    modules: 'jsconf, logic, security',
+    errorClass: "error",
+
+    onSuccess: function () {
+        if (!this.is_ajax) {
+            $(this.form).get(0).submit();
+        } else {
+            var sendData = {};
+            $('input.own_fields, textarea.own_fields', this.form).each(function(){
+                sendData[$(this).attr('name')] = $(this).val();
+            });
+            ajaxPostSend($(this.form).attr('action'), sendData, false, false);
+        }
+        return false;
+    },
+
+    onError: function () {
+        var _this = this;
+        $(_this.form + " select").each(function(){
+            if ($(this).hasClass(_this.errorClass)) {
+                _this.highlight(this, _this.errorClass);
+            } else {
+                _this.unhighlight(this, _this.errorClass);
+            }
+        });
+        return false;
+    },
+
+    highlight: function (element, errorClass, validClass) {
+        var select2 = $(element).next().find('.selection').children();
+        if (!select2.hasClass(errorClass)) {
+            select2.addClass(errorClass);
+        }
+    },
+    unhighlight: function (element, errorClass, validClass) {
+        $(element).next().find('.selection').children().removeClass(errorClass);
+    }
+};
+
+
+var confModal = $.extend({}, conf, {
+    form: '#save_message_template',
+    scrollToTopOnError: false,
+    is_ajax: true
+});
+
+
+function InitSelect2() {
+
+    {#$('select option:empty').text('&nbsp;');#}
+
+    $('#form_packages').select2(select2Opt);
+    select2OptPH.placeholder = "{{ 'Time until the end of the tariff'|trans }}";
+    $('select[id^="form_notification"]').select2(select2OptPH);
+    select2OptPH.placeholder = "{{ 'Message template'|trans }}";
+    $('select[id^="form_template"]').select2(select2OptPH);
+    select2OptPH.placeholder = "";
+}
+
+function yelp() {
+    $(document).ready(function () {
+
+        // set up validator for the form
+        if (isEditing) {
+            setEditValidationConfig(conf);
+        } else {
+            setDefaultValidationConfig(conf);
+        }
+        $.validate(conf);
+        setServerValidationRequestParams();
+
+        LoadSelect2Script(InitSelect2);
+
+        /*
+        $(document).on('change', '#form_external_id', function (e) {
+            var _this = $(this);
+            _this.next('div').html('').hide();
+
+            if ($.trim(_this.val()).length) {
+                ajaxPostSend('{{app.request_context.baseUrl}}/{{app.controller_alias}}/check-external-id', {externalid: _this.val(), selfid: $('#form_id').val(), plans: true}, false);
+            }
+        });*/
+
+        $(document).on('change', '.has-error select', function(){
+            $(this).validate(function(valid, elem) {
+                if (valid) {
+                    conf.unhighlight(elem, conf.errorClass);
+                } else {
+                    conf.highlight(elem, conf.errorClass);
+                }
+            });
+        });
+
+        $("#add_noti_row").click(function(e){
+            e.stopPropagation();
+            e.preventDefault();
+
+            var lastRow = $('[id^="form_notification_delay_in_hours"]:last'), newRowNum = 0, cloneRow;
+
+            if (lastRow.length != 0) {
+                newRowNum = parseInt(lastRow.attr('id').replace(/[^\d]/ig, ''), 10) + 1;
+                cloneRow = $('#noti_row_tmpl').tmpl({num: newRowNum}).insertAfter( lastRow.closest('div.noti_row'));
+            } else {
+                cloneRow = $('#noti_row_tmpl').tmpl({num: newRowNum}).prependTo( $(this).closest('div.form-group>div') );
+                $('#add_noti_template').removeAttr("disabled").fadeIn(250);
+            }
+
+            select2OptPH.placeholder = "{{ 'Time until the end of the tariff'|trans }}";
+            $('select[id^="form_notification"]', cloneRow).select2(select2OptPH);
+            select2OptPH.placeholder = "{{ 'Message template'|trans }}";
+            $('select[id^="form_template"]', cloneRow).select2(select2OptPH);
+            select2OptPH.placeholder = "";
+            disableSelect2Options( $('select[id^="form_notification"]',cloneRow) );
+            $.validate();
+
+            ajaxPostSend("{{ app.request_context.baseUrl }}/events/message-templates-list-json", {action: 'updateFormField'});
+
+        });
+
+        $(document).on('click', 'button.del_noti_row', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            var $this = $(this);
+            var select1 = $("#form_notification_delay_in_hours_"+ $this.data('rownum') ),
+                select2 = $("#form_template_id_"+ $this.data('rownum') ),
+                rowContainer = $('[id^="form_notification_delay_in_hours_' + $this.data('rownum') + '"]').closest('div.noti_row');
+
+            if ( (select1.val()!="" || select2.val()!="") && !confirm("{{ 'Delete this notification?'|trans }}") ){
+                return;
+            }
+
+            // if it is the last one - hide template button
+            if( $(".form_notification_delay_in_hours").length == 1 ){
+                $('#add_noti_template').attr('disabled',"disabled").fadeOut(250);
+            }
+
+            rowContainer.hide(400, function() {
+                $('select', rowContainer).select2('destroy');
+                rowContainer.remove();
+            });
+
+        });
+
+        checkSelect2Options();
+        $('#form_days_to_expires').on('change', checkSelect2Options );
+
+        $(document).on("click", "#add_noti_template", function(e){
+            if (e.currentTarget != e.target) {
+                return;
+            }
+            e.stopPropagation();
+            e.preventDefault();
+
+            getTemplateForm();
+            $('#modalbox').show();
+            return false;
+        });
+
+        $(document).on('click', '#form_save', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            conf.form = '#form_';
+            conf.is_ajax = false;
+            if ($(conf.form).isValid({}, conf, true)) {
+                conf.onSuccess();
+            } else {
+                conf.onError();
+            }
+            return false;
+        });
+
+        $(document).on('click', "#modalbox button[type='submit']", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            if ($("#save_message_template").isValid({}, confModal, true)) {
+                confModal.onSuccess();
+            } else {
+                confModal.onError();
+            }
+
+            return false;
+        });
+
+        $(document).on('click', "#modalbox button[type='reset']", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            JScloseModalBox();
+            return false;
+        });
+
+        //--------------------------------------------------------------------------------------------------------
+
+        (function($){
+            $.fn.packagePicker = function(options){
+
+                var _this = $(this);
+
+                var defaults = {
+                    optional_title : 'optional',
+                    packages_optional : '#form_packages_optional',
+                    container_id: "opt_container",
+                    row_container_format: "<div class='row'></div>",
+                    block_container_format: "<div class='col-xs-10 col-sm-6'><div class='checkbox-inline'><label></label></div></div>",
+                    package_chbox_format: "<input type='checkbox' name='packages[]' disabled checked='checked' value=''>",
+                    optional_chbox_format: "<input type='checkbox' name='optionals[]' value=''>",
+                    package_icon_format: "<i class='fa fa-square-o txt-success'></i>",
+                    optional_icon_format: "<i class='fa fa-square-o'></i>"
+                };
+
+                _this.opts = $.extend(defaults, options);
+
+                _this.getPackOpt = function(){
+                    return JSON.parse($(_this.opts.packages_optional).val());
+                };
+
+                _this.setPackOpt = function(input){
+                    $(_this.opts.packages_optional).val(JSON.stringify(input));
+                };
+
+                _this.getOptChBox = function(key){
+                    var currVal = key + '';
+                    var opt = $(this.opts.block_container_format);
+                    $(this.opts.optional_chbox_format + this.opts.optional_title + this.opts.optional_icon_format).appendTo(opt.find('label'));
+                    opt.find('input').val(currVal).attr('checked', (currVal != '' && currVal != 'off' && currVal != '0' && currVal != 0));
+                    return opt;
+                };
+
+                _this.getPackChBox = function(key){
+                    var item = this.find('option:selected[value="' + key + '"]')
+                    var pack = '';
+                    if (item.length) {
+                        pack =  $(this.opts.block_container_format);
+                        pack.find('label').text( item.text() );
+                        $(this.opts.package_chbox_format).prependTo(pack.find('label'));
+                        pack.find('input').val(item.val()).attr('checked', true);
+                    }
+                    return pack;
+                };
+
+                _this.getOptRow = function(key, val){
+                    var row =  $(this.opts.row_container_format);
+                    var packChBox = this.getPackChBox(key),
+                        optChBox = this.getOptChBox(val);
+                    if( packChBox ) {
+                        $(packChBox).appendTo(row);
+                        $(optChBox).appendTo(row);
+                        return row;
+                    }
+                };
+
+                _this.checkOptArr = function(){
+                    var _this = this;
+                    var packages_optional_arr = {};
+                    this.find('option:selected').each(function(){
+                        var currPackVal = $(this).val();
+                        var currOptVal = 0;
+                        var pack = $("#" + _this.opts.container_id).find("input[name^='packages'][value='" + currPackVal + "']");
+                        if (pack.length != 0){
+                            currOptVal = pack.closest(".row").find("input[name^='optionals']").get(0).checked ? "1": "0";
+                        }
+                        packages_optional_arr[currPackVal] = currOptVal;
+                    });
+                    this.setPackOpt(packages_optional_arr);
+                };
+
+                _this.render = function(){
+                    if ($("#" + this.opts.container_id).length == 0) {
+                        _this.init();
+                    } else {
+                        this.checkOptArr();
+                    }
+                    $("#" + this.opts.container_id).empty();
+                    var packages_optional_arr = this.getPackOpt();
+                    $.each(packages_optional_arr, function(key, val){
+                        $(_this.getOptRow(key, val)).appendTo($("#" + _this.opts.container_id));
+                    });
+                };
+
+                $(_this).on("change", _this.find('option'), function(){
+                    _this.render();
+                });
+
+                _this.init = function(){
+                    $(this.opts.packages_optional).before("<div id='" + this.opts.container_id + "'></div>")
+                    $("#" + _this.opts.container_id).on("click", "input[name^='packages']", function(){
+                        var currPackVal = $(this).val();
+                        $(this).closest('.row').remove();
+                        _this.find('option[value="' + currPackVal + '"]').removeAttr('selected').change();
+                    });
+
+                    $("#" + _this.opts.container_id).on("change", "input[name^='optionals']", function(){
+                        var packages_optional_arr = _this.getPackOpt();
+                        var currPackVal = $(this).closest('.row').find("input[name^='packages']").val()+"";
+                        var currOptVal = $(this).is(":checked");
+                        packages_optional_arr[currPackVal] = currOptVal ? "1": "0";
+                        _this.setPackOpt(packages_optional_arr);
+                    })
+                };
+
+                _this.closest("form").on("submit", function(){
+                    _this.render();
+                    $("#" + _this.opts.container_id + " input").attr("disabled", "disabled");
+                });
+
+                _this.render();
+
+                return _this;
+            }
+        })(jQuery);
+
+        $('#form_packages').packagePicker({});
+
+        $('#form_ .form-group .i-hint').tooltip({
+            animation: true,
+            placement: "right"
+        });
+    });
+}
+document.addEventListener("DOMContentLoaded", yelp, false);
+
+/**** useless ****/
+var checkExternalId = function(data){
+    $('#form_external_id').next('div').append('<i class="txt-success fa fa-check"></i> ' + data.chk_rezult).css('visibility', 'visible');
+};
+
+var checkExternalIdError = function(data){
+    var msg = '';
+    msg = (typeof(data.responseJSON) != 'undefined') ? data.responseJSON.error: data.chk_rezult;
+    $('#form_external_id').next('div').append('<i class="txt-danger fa fa-ban"></i> ' + msg).css('visibility', 'visible');
+};
+/*****************/
+
+
+function setServerValidationRequestParams() {
+    var param = {
+        'selfid': $("#form_id").val(),
+        'plans': true,
+        'for_validator': true,
+    };
+    $('#form_external_id').attr('data-validation-req-params', JSON.stringify(param) );
+
+    param = {
+        'id': $("#form_id").val(),
+        'for_validator': true,
+    };
+    $('#form_name').attr('data-validation-req-params', JSON.stringify(param) );
+}
+
+function setDefaultValidationConfig(conf) {
+    conf.ignore = [];
+    conf.validateOnBlur = true;
+    conf.validateOnEvent = false;
+}
+
+function setEditValidationConfig(conf) {
+    conf.ignore = ['form[name]','form[external_id]'];
+    conf.validateOnBlur = false;
+    conf.validateOnEvent = true;
+
+    $('#form_name, #form_external_id').one('change', function (e) {
+        var ignore = conf.ignore;
+        var index = ignore.indexOf(this.name);
+        if( index !== -1 ){
+            $(this).attr('data-validation-event', "blur");
+            ignore.splice( index, 1 );
+        }
+        if( ignore.length == 0 ){
+            conf.validateOnBlur = true;
+            conf.validateOnEvent = false;
+        }
+        $.validate(conf);
+    });
+}
+
+
+function checkSelect2Options() {
+    var $selects = $(".noti_row .form_notification_delay_in_hours");
+    disableSelect2Options($selects);
+
+    $selects.each( function() {
+        // clear value if selected option becomes disabled
+        if( $(this).val() == null ) {
+            $(this).select2("val", "");
+        }
+    });
+}
+
+function disableSelect2Options($selects) {
+    // Disable select's unavaliable options
+    var tariff_expire = $('#form_days_to_expires').val()*24;
+
+    $("option", $selects).each( function() {
+        var option = $(this);
+        if( tariff_expire > 0 && this.value !='' && parseInt(option.val(),10) > tariff_expire ) {
+            option.attr('disabled','disabled');
+        } else {
+            option.removeAttr('disabled');
+        }
+    });
+
+    select2OptPH.placeholder = "{{ 'Time until the end of the tariff'|trans }}";
+    // trigger('change.select2') doesn't redraw options in our case. So use next:
+    $selects.select2(select2OptPH);
+    select2OptPH.placeholder = "";
+}
+
+var getTemplateForm = function(templateName){
+    $("#modalbox").data('complete', 1);
+    if (templateName) {
+        $('#modalbox').find('.modal-header-name span').text('{{ 'Editing template'|trans }} "' + templateName + '"');
+    } else {
+        $('#modalbox').find('.modal-header-name span').text('{{ 'New template'|trans }}');
+    }
+
+    $('#modalbox').find('.devoops-modal-inner').html($("#modal_form_body").text());
+    $('#modalbox').find('.devoops-modal-bottom').html($("#modal_form_buttons").text());
+    $.validate(confModal);
+};
+
+var updateFormField = function(obj){
+    $('select[id^="form_template"]').each(function(e){
+        var selected = $('option:selected', this).val();
+        $(this).select2('destroy').empty();
+        var _this = $(this);
+        _this.append('<option value="" ' + (!selected ? '': 'selected="selected"') + '>&nbsp;</option>');
+        $.each(obj.data, function(){
+            var optStr = '<option value="' + this.id + '" ' + (this.id == selected ? 'selected="selected"': '') + '>'+ this.title +'</option>';
+            _this.append(optStr);
+        });
+        select2OptPH.placeholder = "{{ 'Message template'|trans }}";
+        $(this).select2(select2OptPH);
+        select2OptPH.placeholder = "";
+    });
+
+    JScloseModalBox();
+};

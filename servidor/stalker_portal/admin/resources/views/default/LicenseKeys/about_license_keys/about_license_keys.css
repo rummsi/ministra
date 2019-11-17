@@ -1,0 +1,92 @@
+#license_keys_first {
+	max-width: 1200px;
+	padding-right: 85px;
+}
+
+#license_keys_first h3 {
+	color: #404040;
+	font-size: 17px;
+	font-weight: bold;
+	text-transform: uppercase;
+	padding: 14px 0 9px;
+	margin-right: -85px;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #ccc;
+}
+
+#license_keys_first p {
+	margin: 0 0 22px;
+	line-height: 22px;
+}
+
+#license_keys_first .header {
+	font-weight: bold;
+	text-align: center;
+	width: 624px;
+}
+
+#license_keys_first .main-image {
+	float: right;
+	margin-top: 24px;
+	margin-left: 20px;
+}
+
+#license_keys_first .block-bordered {
+	float: left;
+	text-align: center;
+	padding: 10px 25px 21px;
+	margin: 10px 30px 30px 0;
+	border: 1px solid #e3e3e3;
+}
+
+#license_keys_first .block-bordered:last-of-type {
+
+}
+
+#license_keys_first .block-bordered h5 {
+	color: #37474f;
+	font-weight: bold;
+	margin: 10px 0 17px;
+}
+
+#license_keys_first .block-bordered .link-box {
+	display: inline-block;
+	text-align: center;
+	width: 150px;
+}
+
+#license_keys_first .block-bordered .link-box img {
+	margin: 0 auto 6px;
+}
+
+#license_keys_first .block-block {
+	padding: 0 0 0 100px;
+}
+
+#license_keys_first .block-block .picture-device {
+	float: left;
+	margin-top: 24px;
+	margin-left: -100px;
+}
+
+#license_keys_first .block-block h4 {
+	color: #37474f;
+	font-size: 1em;
+	line-height: 22px;
+	font-weight: bold;
+	margin: 10px 0 0;
+}
+
+#license_keys_first .block-block p {
+	font-size: 1em;
+}
+
+#license_keys_first .button-block {
+	margin: 12px 0;
+}
+
+#license_keys_first .button-block .btn {
+	height: auto; /* need to overwrite */
+	padding: 10px 55px;
+	/*background: #388e3c;*/
+}

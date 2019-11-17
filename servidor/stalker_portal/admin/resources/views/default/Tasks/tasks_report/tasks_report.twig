@@ -1,0 +1,79 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = ('Tasks'|trans ~ ': ' ~ 'Report'|trans) %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/Tasks/tasks_report/tasks_report.js.twig") %}
+        </script>
+        
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {{ main_macro.get_filter('state', 'State'|trans, 'id', 'title', app['taskState'], 2, 8) }}
+                {{ main_macro.get_filter('task_type', 'Type'|trans, 'id', 'title', app['taskType'], 2, 8, 1) }}
+                {{ main_macro.get_filter('video_quality', 'Quality'|trans, 'id', 'title', app['videoQuality'], 2, 8) }}
+                <div class="col-xs-6 col-sm-10 col-md-6 col-lg-5 filter no-padding" data-tvfilter="time_period">
+                    <div class="col-sm-1 tfilter">
+                        {{ 'Closed'|trans }}:
+                    </div>
+                    <div class="col-sm-3 filter no-padding leftbordercircle" data-tvfilter="time_period">
+                        <input class="col-xs-12 col-sm-12 filter" placeholder="{{ 'from'|trans }}" type="text" id="datepicker_from" name="interval_from" value="{% if attribute(app['filters'], 'interval_from') is defined %}{{ app['filters']['interval_from'] }}{% endif %}">
+                    </div>
+                    <div class="col-sm-3 filter no-padding" data-tvfilter="time_period">
+                        <input class="col-xs-12 col-sm-12 filter" placeholder="{{ 'to'|trans }}" type="text" id="datepicker_to" name="interval_to" value="{% if attribute(app['filters'], 'interval_to') is defined %}{{ app['filters']['interval_to'] }}{% endif %}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-10 col-sm-8 col-sm-offset-2 box-name text-center bg-warning">
+                <span class="text_black">{{ 'Report is formed due to done and rejected tasks'|trans }}</span>
+            </div>
+        </div>
+        <div class="row">
+            {% if attribute(app, 'allVideoDuration') is defined %}
+                <div class=" text-center" style="z-index: 100;">
+                    <h4 id="videoduration">{{ 'Summary length, min'|trans }}: {{ app['allVideoDuration'] }}</h4>
+                </div>
+            {% endif %}
+        </div>
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

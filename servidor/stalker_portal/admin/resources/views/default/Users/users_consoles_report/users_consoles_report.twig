@@ -1,0 +1,67 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Users'|trans ~ ': ' ~ 'STB statuses report '|trans ~ app.now_time %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/js/dataTables.buttons.min.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/Buttons/js/buttons.print.min.js"></script>
+
+        <link href="{{ app.request_context.baseUrl }}/plugins/datatables/extensions/Buttons/css/buttons.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/Users/users_consoles_report/users_consoles_report.js.twig") %}
+        </script>
+        
+{% endblock %}
+
+
+{% block content %}
+    <style type="text/css">
+        @media print{
+            #datatable-1{
+                max-width: 180mm;
+            }
+            #datatable-1 th, #datatable-1 td{
+                max-width: 60mm;
+            }
+        }
+    </style>
+    <div id="iptv_list">
+        <div class="row row_no_padding">
+            <div class="box">
+					{% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                    {% endif %}	
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="" id="table_container">
+                            <div class="dataTables_processing"></div>
+                            <table class="table dataTable table-hover table-datatable" id="datatable-1">
+                                {% if attribute(app, 'dropdownAttribute') is defined %}
+                                    {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                                {% endif %}
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

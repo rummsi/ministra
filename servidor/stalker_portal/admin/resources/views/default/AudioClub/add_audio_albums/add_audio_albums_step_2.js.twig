@@ -1,0 +1,442 @@
+
+conf.form = '#track_form';
+conf.onSuccess = function () {
+    var sendData = {};
+    $("#modalbox_ad input, #modalbox_ad select").each(function () {
+        sendData[this.name] = $(this).val();
+    });
+    sendData['album_id'] = '{{ app['audioAlbumID'] }}';
+    ajaxPostSend($("#modalbox_ad form").attr('action'), sendData, false, false);
+    return false;
+};
+
+function InitSelect2() {
+    $('#s2_track_lang').select2( select2Opt );
+}
+
+function InitDatatable() {
+    $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+        if (typeof (json.data) == 'object') {
+            for (var i in json.data) {
+                var id = json.data[i].id;
+                var name = json.data[i].name;
+                var status = json.data[i].status;
+                var duration = json.data[i].duration;
+
+                json.data[i].operations = "<div class='col-xs-3 col-sm-8'>\n\
+                                               <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                                   <i class='pull-right fa fa-cog'></i>\n\
+                                               </a>\n\
+                                               <ul class='dropdown-menu pull-right'>\n\
+                                                   <li>\n\
+                                                       <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/audio-albums-composition-list-json' data-trackid='" + id + "'>\n\
+                                                           <span>{{ 'Edit'|trans }}</span>\n\
+                                                       </a>\n\
+                                                   </li>\n\
+                                                   <li>\n\
+                                                       <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-audio-album-track' data-trackid='" + id + "' data-trackstatus='" + status + "'>\n\
+                                                           <span>" + (status != 0 ? "{{ 'Unpublish'|trans }}" : "{{ 'Publish'|trans }}") + "</span>\n\
+                                                       </a>\n\
+                                                   </li>\n\
+                                                   <li>\n\
+                                                       <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-audio-album-track' data-trackid='" + id + "' data-track-name='" + name + "'>\n\
+                                                           <span>{{ 'Delete'|trans }}</span>\n\
+                                                       </a>\n\
+                                                   </li>\n\
+                                               </ul>\n\
+                                           </div>";
+
+                json.data[i].status = '\
+                           <div class="mswitch">\
+                                <input type="checkbox" \
+                                       id="album_status_'+ json.data[i].id +'"\
+                                       name="form[status]" readonly="readonly" class="form-control" \
+                                       ' + ( json.data[i].status != 0 ? 'checked="checked"' : '' ) +'\
+                                       data-trackid="' + id + '" \
+                                       data-trackstatus="' + status +'">\
+                                <label class="label-success" \
+                                       title="' + ( json.data[i].status != 0 ? "{{'Published'|trans}}" : "{{'Unpublished'|trans}}" ) + '" \
+                                       for="album_status_'+ json.data[i].id +'"></label>\
+                            </div>';
+
+                json.data[i].name = '<a class="main_ajax no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/audio-albums-composition-list-json" data-trackid="' + id + '" >' + name + '</a>';
+                json.data[i].duration = formatDuration(duration);
+            }
+        }
+    }).dataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/audio-albums-composition-list-json",
+            "data": function (d) {
+                d['album_id'] = $("#datatable-1").data("album_id");
+            }
+        },
+        "language": {
+            "url": "{{ app.datatable_lang_file }}"
+        },
+        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            nRow.setAttribute('id', aData.RowOrder);  //Initialize row id for every row
+        },
+
+        {% if attribute(app, 'dropdownAttribute') is defined %}
+        {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+        {% endif %}
+
+        "lengthMenu": [-1],
+        "bFilter": true,
+        "bPaginate": false,
+        "bInfo": true,
+        "ordering": false,
+        rowReorder: true, // don't use {selector: 'tr'} or you couldn't access action menu
+        "columnDefs": [
+            { orderable: true, className: 'row-reorder', targets: 0 },
+            { className: "action-menu", "targets": [ -1 ] },
+            {"searchable": false, "targets": [-1, -2]},
+            {"sortable": false, "targets": [-1]},
+            { className: "data-filter-status", "targets": [-2]}
+        ]
+    })
+    /*.rowReordering({  // replaced with table.on( 'row-reorder', function ( e, diff, edit ) {...})
+        iIndexColumn: 0,
+        sURL: "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/audio-track-reorder"
+    })*/
+    .prev('.dataTables_processing').hide('');
+}
+
+function yelp_step_2() {
+
+    LoadSelect2Script(InitSelect2);
+
+    $.validate(conf);
+
+    $("#add_track").on("click", function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        cleanMediaInfo();
+        $("#media_info").hide();
+
+        if ($("#file_form_input_container").length && !$("#file_form_input_container").hasClass('col-sm-offset-2')) {
+            $("#file_form_input_container").addClass('col-sm-offset-2')
+        }
+
+        // useless couse devoops.js:630
+        //$('#modalbox_ad form').get(0).reset();
+
+        $("#modalbox_ad").find(".modal-header-name").children('span').text('{{ 'Add track'|trans }}');
+        $("#modalbox_ad input").prop("disabled", false).removeAttr('disabled').val('');
+        $("#modalbox_ad select").prop("disabled", false).removeAttr('disabled').find('option').removeAttr('selected');
+        //$('#s2_track_lang').select2("val","");
+        $("#modalbox_ad select").trigger("change");
+        /*
+        conf.form = '#track_form';
+        $("#track_form").validate();
+        $("#track_form").find('input, select').each(function(){
+            conf.unhighlight(this, conf.errorClass);
+        });
+        */
+
+        $("#modalbox_ad").show();
+
+        return false;
+    });
+
+    $(document).on('click', "a.main_ajax", function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $(this).closest('div.open').removeClass('open');
+        
+        var sendData = $(this).data();
+        sendData['album_id'] = '{{ app['audioAlbumID'] }}';
+        
+        if( $(this).attr("href").indexOf("remove-audio-album-track") != -1 && !confirm("{{"Delete track"|trans}} \"" +$(this).data("trackName")+ "\" {{"from this album"|trans}}?") ) {
+            return false;
+        }
+        ajaxPostSend($(this).attr('href'), sendData, false, false);
+        
+        return false;
+    });
+
+    $("#modalbox_ad button[type='submit']").on('click', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if ($(conf.form).isValid({}, conf, true)) {
+            conf.onSuccess();
+        } else {
+            conf.onError();
+        }
+        return false;
+    });
+
+    $("#modalbox_ad").on('change keypress', '#audio_url', function(e){
+        if (e && e.type && (e.type == "change" || (e.type == "keypress" && e.keyCode && e.keyCode == 13))) {
+            
+            // how to validate just 1 field:
+            var isValid;
+            $(this).validate(function(valid, elem){isValid=valid;});
+
+            if (isValid) {
+                getMediaInfo();
+            }
+        }
+    });
+
+    $("#modalbox_ad").on('click', '#media_info button', function(e){
+        e.stopPropagation();
+        e.preventDefault();
+
+        var fieldData = [{}];
+
+        $("#media_info span").each(function(){
+            $this = $(this);
+            if ($this.data('info-key') && $this.data('info-key') != "" && $this.data('info-val') && $this.data('info-val') !="" ) {
+                fieldData[0][$this.data('info-key')] = $this.data('info-val');
+            }
+        });
+
+        setCompositionModal({data: fieldData}, true);
+    });
+
+    $(document).on('hide', '#modalbox_ad', function(){
+        cleanMediaInfo();
+    });
+
+    $(document).on('change', ".mswitch input", function(e){
+        var sendData = $(this).data();
+        sendData['album_id'] = '{{ app['audioAlbumID'] }}';
+        ajaxPostSend('{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/toggle-audio-album-track', sendData );
+    });
+
+    $('#track_form .i-hint').tooltip({
+        animation: true,
+        placement: "left"
+    });
+
+    LoadDataTablesScripts(InitDatatable);
+
+    var table = $('#datatable-1').DataTable( );
+    table.on( 'row-reorder', function ( e, diff, edit ) {
+
+        if( diff.length < 2 ){
+            // shutdown table.redraw() for this situation
+            if( table.RowReorder )
+                table.RowReorder.c.update = false;
+            return false;
+        }
+
+        var bubbleUp = ( diff[0].oldPosition == edit.triggerRow[0]["0"] ) ? true : false;
+
+        var sendData = {
+            id: edit.triggerRow.data().RowOrder,
+            // defined in experimental way:
+            toPosition:    bubbleUp ? table.row( diff[1].node ).data().number : table.row( diff[diff.length-2].node ).data().number,
+            fromPosition:  edit.triggerRow.data().number
+        };
+
+        //console.log(sendData);
+        //table.RowReorder.c.update = true;
+        ajaxPostSend( '{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/audio-track-reorder', sendData );
+
+    } );
+
+    var currID = $("#form_id").val() || '', currStoreData = $("#form_store_data").val() || '';
+
+    if (currID && currStoreData) {
+        var addAlbumData = localStorage.getItem('add_album_data') || '[]', timer = new Date();
+        addAlbumData = JSON.parse(addAlbumData);
+        for (var i in addAlbumData){
+            if (addAlbumData[i] instanceof Object && (addAlbumData[i].store_data && addAlbumData[i].store_data === currStoreData)){
+                addAlbumData[i].id = currID;
+            }
+        }
+
+        localStorage.setItem('add_album_data', JSON.stringify(addAlbumData));
+    }
+}
+
+var setCompositionModal = function (data, localFilling) {
+
+    if (!localFilling) {
+        $("#modalbox_ad").find(".modal-header-name").children('span').text('{{ 'Edit track'|trans }}');
+        $('#track_form').get(0).reset();
+    }
+
+    if (data.data.length == 1 ) {
+        var row = data.data[0];
+        for (var field_name in row) {
+            $("#modalbox_ad [name='" + field_name + "']").val(row[field_name]);
+        }
+        $("#modalbox_ad select[name='language_id']").trigger("change");
+        /*
+        $("#modalbox_ad select[name='language_id'] option").each(function () {
+            $(this).prop('selected', $(this).val().toString() == data.data[0]['language_id'].toString());
+        });
+        */
+    }
+    $("#modalbox_ad input").removeAttr('disabled');
+    
+    //$(conf.form).isValid({}, conf, true);
+    // dead code ??:
+    /*
+    conf.form = '#track_form';
+    $("#track_form").validate();
+    $("#track_form").find('input, select').each(function(){
+        conf.unhighlight(this, conf.errorClass);
+    });
+    */
+
+    $("#modalbox_ad").show();
+    if (!localFilling) {
+        getMediaInfo();
+    }
+};
+
+var setCompositionModalError = function (data) {
+    JSErrorModalBox(data);
+};
+
+var getMediaInfo = function() {
+    var sendData = {};
+
+    $("#file_form_input_container").find("input,select").each(function(i){
+        var val = this.tagName.toUpperCase() == 'INPUT' ? $(this).val(): $(this).find('option:selected').val();
+        if (val) {
+            sendData[$(this).attr('name')] = val;
+        }
+    });
+
+    $("#file_form_input_container").find('input,select').prop('readonly', 'readonly').prop('disabled', 'disabled');
+    $("#modalbox_ad div.devoops-modal-bottom").find('button').addClass('disabled').prop('disabled', 'disabled').removeClass("hidden");
+
+    if ( $("#media_info").is(":hidden") ) {
+        $("#file_form_input_container").removeClass('col-sm-offset-2');
+        $("#file_form_input_container")
+            .delay(600)  // do not combine delayed actions with parallel one - always put them in separate code lines
+            //.after( $("#media_info_body").html() )
+            .promise().done(function(){
+                //$("#media_info").css({opacity: 1, width: '29%'});
+                $("#media_info").show();
+            });
+
+    } else {
+        cleanMediaInfo();
+    }
+
+    ajaxPostSend("{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/get-media-info-json", sendData, false, false, true);
+
+};
+
+var cleanMediaInfo = function(){
+    $("#file_form_input_container").find('input,select').prop('readonly', false).prop('disabled', false).removeAttr('readonly').removeAttr('disabled');
+    $("#modalbox_ad div.devoops-modal-bottom").find('button').removeClass('disabled').prop('disabled', false).removeAttr('disabled');
+    $("#media_info").removeClass('filled').find('button').addClass('disabled').prop('disabled', 'disabled').addClass("hidden");
+    $("#media_info").children().not('button').remove();
+};
+
+var setMediaInfo = function(data){
+    cleanMediaInfo();
+    if (data.id && $('#file_id').length == 0) {
+        $("#video_id").before("<input type='hidden' class='own_fields form-control' name='id' id='file_id' value='' readonly='readonly'>");
+    }
+    if($('#file_id').length && (!$('#file_id').val() || $('#file_id').val() == '0')) {
+        $('#file_id').val(data.id ? data.id: 0);
+    }
+    if (data.data) {
+        $("#media_info").addClass('filled').find('button').removeClass('disabled').prop('disabled', false).removeAttr('disabled');
+        var infoField = $($("#media_info_info").html()).prependTo("#media_info");
+        if (!data.error){
+            infoField.addClass('bg-default').addClass('txt-default').text("{{ 'Media info from source'|trans }}");
+        }
+        if (data.data.datatable) {
+            $("#" + data.data.datatable).DataTable().ajax.reload();
+            delete data.data.datatable;
+        }
+        for(var key in data.data){
+            var infoField = $($("#media_info_info").html()).insertAfter(infoField);
+            var textVal = data.data[key];
+            var textLabel = words && words[key] ? words[key]: key;
+            if (key == 'languages') {
+                textVal = [];
+                $.each(data.data[key], function(){
+                    textVal.push($("#file_" + key + " option[value='" + this + "']").text());
+                });
+                textVal = textVal.join(', ');
+            } else if (key == 'quality') {
+                textVal = $("#file_" + key + " option[value='" + textVal + "']").text();
+            }
+            infoField.addClass('bg-default').addClass('txt-default').text(textLabel + ": " + textVal);
+            infoField.data({'info-key': key, 'info-val': data.data[key] instanceof Array? data.data[key].join(','): data.data[key]});
+        }
+        $("#media_info button").removeClass("hidden");
+    }
+};
+
+var setMediaInfoError = function(data) {
+    setMediaInfo(data);
+    $("#media_info").addClass('filled');
+    var infoField = $($("#media_info_info").html()).prependTo("#media_info");
+    infoField.addClass('bg-warning').addClass('txt-danger').text("{{ 'No media info'|trans }}");
+    var addMessage = data.msg || data.error;
+    if (addMessage) {
+        var infoField2 = $($("#media_info_info").html()).insertAfter(infoField);
+        infoField2.addClass('bg-warning').addClass('txt-danger').text(addMessage);
+    }
+    $("#media_info button").addClass("hidden");
+};
+
+var closeModalBox = function(){
+    $("#modalbox").hide();
+    $('#modalbox .i-hint').tooltip("destroy");
+    $('#modalbox').find('.modal-header-name span').empty();
+    $('#modalbox').find('.devoops-modal-inner').empty();
+    $('#modalbox').find('.devoops-modal-bottom').empty();
+};
+
+
+/* Array.filter polyfill */
+if (!Array.prototype.filter) {
+  Array.prototype.filter = function(fun/*, thisArg*/) {
+    'use strict';
+
+    if (this === void 0 || this === null) {
+      throw new TypeError();
+    }
+
+    var t = Object(this);
+    var len = t.length >>> 0;
+    if (typeof fun !== 'function') {
+      throw new TypeError();
+    }
+
+    var res = [];
+    var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+    for (var i = 0; i < len; i++) {
+      if (i in t) {
+        var val = t[i];
+
+        if (fun.call(thisArg, val, i, t)) {
+          res.push(val);
+        }
+      }
+    }
+
+    return res;
+  };
+}
+
+
+var formatDuration = function(seconds){
+    var seconds = parseInt(seconds,10);
+    var h = Math.floor(seconds / 3600);
+    var m = Math.floor((seconds % 3600) / 60);
+    var s = seconds % 60;
+
+    return [
+        h,
+        m > 9 ? m : (h ? '0' + m : m || '0'),
+        s > 9 ? s : '0' + s,
+      ].filter( function(a) {return a;} ).join(':');
+
+};

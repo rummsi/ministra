@@ -1,0 +1,9 @@
+{# empty Twig template #}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/jquery.dataTables.js"></script>
+{# 		now is unnecessary:
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/ZeroClipboard.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/TableTools.js"></script>
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/fnReloadAjax.js"></script> #}
+		<script src="{{app.request_context.baseUrl}}/plugins/datatables/dataTables.bootstrap.js?{#ver={{ random() }}#}{% if 0 and attribute(app, 'current_version') is defined and app['current_version']%}?ver={{ app['current_version'] }}{% endif %}"></script>
+        {#<script src="{{app.request_context.baseUrl}}/plugins/datatables/jquery.dataTables.rowReordering.js"></script>#}

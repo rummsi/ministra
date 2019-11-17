@@ -1,0 +1,212 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Administrators'|trans ~ ': ' ~ 'administrators list'|trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+        <script src="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.js"></script>
+        <link  href="{{app.request_context.baseUrl}}/plugins/datatables/extensions/FixedHeader/css/fixedHeader.dataTables.css" rel="stylesheet">
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+           
+            {% include (app.twig_theme ~ "/Admins/admins_list/admins_list.js.twig") %}
+
+        </script>
+        
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/add-admin" class="btn btn-success pull-right no_context_menu" id="add_admin"><i class="fa fa-plus"></i>{{ 'Add administrator'|trans }}</a>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="">
+                <div class="box">
+                    {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                    {% endif %}
+                    <div class="box-content">
+                        <div class="box-content no-padding">
+                            <div class="">
+                                <div class="">
+                                    <div class="dataTables_processing"></div>
+                                    <table class="table  table-hover table-datatable" id="datatable-1">
+                                        {% if attribute(app, 'dropdownAttribute') is defined %}
+                                        {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                                        {% endif %}
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalbox_ad">
+        <div class="devoops-modal">
+            <div class="devoops-modal-header">
+                <div class="modal-header-name">
+                    <span></span>
+                </div>
+                <div class="box-icons">
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <form class="form-horizontal" role="form" id="karaoke_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/save-admin">
+                <div class="devoops-modal-inner">
+                    <div class="box">
+                        <div class="box-content">
+                            <!-- Login -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-xs-offset-1">{{ 'Login'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input type="hidden" name="id" id="adm_id" class="own_fields" data-name="id">
+                                        <input  id="adm_login" class="form-control own_fields with-error-space" type="text" name="login" data-name="login" required="required" 
+                                            data-validation = "required, custom, server"
+                                            data-validation-regexp = "^[A-Za-z0-9_]+$"
+                                            data-validation-error-msg-custom = "{{ 'Invalid login name'|trans }}"
+                                            data-validation-url = "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/check-admins-login"
+                                            data-validation-postpone = "200"
+                                            >
+                                        <div class="name-check" style="display: none;"></div>
+                                    </div>
+                                    <span class="help-inline col-xs-12 col-sm-10">
+                                        <span class="small txt-default">{{ 'Should be unique'|trans }}. {{ 'You can use letters, digits and _'|trans }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- Group -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-xs-offset-1">{{ 'Group'|trans }}</label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10 ">
+                                        <select class="populate placeholder own_fields" name="gid" data-name="gid" id="gid" required="required">
+                                            {% if attribute(app, 'allAdminGroups') is defined %}
+                                                {% for item in app.allAdminGroups %}
+                                                    <option value="{{item.id}}">{{item.name}}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Password -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-xs-offset-1">{{ 'Password'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input id="adm_pass" class="form-control own_fields" type="password" name="pass_confirmation" data-name="pass"
+                                            data-validation="required" >
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Password confirm -->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-xs-offset-1">{{ 'Repeat the password'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-8 no-padding">
+                                    <div class=" col-xs-10 col-sm-10">
+                                        <input id="adm_re_pass" class="form-control own_fields" type="password" name="pass" data-name="re_pass"
+                                            data-validation = "confirmation"
+                                            data-validation-confirm = "pass_confirmation"
+                                            data-validation-error-msg-confirmation = "{{ 'Passwords do not match'|trans }}"
+                                            >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="devoops-modal-bottom">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+                        <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+
+    {# The tamplates for javascript #}
+
+    <script type="text/template" id="modal_move_reseller_form_body">
+        <div class="box-content">
+            <form class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/move-admin-to-reseller">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Reseller name'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-10">
+                            <input type="hidden" class="own_fields" name="id" value="">
+                            <input type="hidden" class="own_fields" name="source_id" value="">
+                            <select class="own_fields" name="target_id" id="target_reseller">
+                                {% autoescape false %}
+                                    {% if attribute(app, 'allResellers') is defined %}
+                                        {% for row in app.allResellers %}
+                                            <option value="{{ row.id }}" >{{ row.name ? row.name|escape : '&nbsp;' }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endautoescape %}
+                            </select>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+    
+    {% if attribute(app,'userlogin') is defined and app.userlogin == 'admin' %}
+    <script type="text/template" id="modal_move_group_form_body">
+        <div class="box-content">
+            <form class="form-horizontal" role="form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/move-admin-to-group">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-sm-offset-1">{{ 'Group'|trans }}</label>
+                    <div class="col-xs-10 col-sm-8">
+                        <span class="col-xs-12 col-sm-10">
+                            <input type="hidden" class="own_fields" name="id" value="">
+                            <input type="hidden" class="own_fields" name="source_id" value="">
+                            <select class="own_fields" name="target_id" id="target_group">
+                                {% if attribute(app, 'allGroups') is defined %}
+                                    {% for row in app.allGroups %}
+                                        <option value="{{ row.id }}" >{{ row.name|escape }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </script>
+    {% endif %}
+
+    <script type="text/template" id="modal_move_form_buttons">
+        <div class="col-xs-12">
+            <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Move'|trans }}</button>
+            <button type="reset"  class="btn btn-default col-sm-2 pull-right">{{ 'Cancel'|trans }}</button>
+        </div>
+    </script>
+
+{% endblock %}

@@ -1,0 +1,85 @@
+
+        function InitDatatable() {
+            $('#datatable-1').on('xhr.dt', function (e, settings, json) {
+                if (typeof (json.data) == 'object') {
+                    for (var i in json.data) {
+                        var id = json.data[i].id;
+
+                        json.data[i].operations = "<div class='col-xs-3 col-sm-8'>\n\
+                                                        <a href='#' class='dropdown-toggle no_context_menu' data-toggle='dropdown'>\n\
+                                                            <i class='pull-right fa fa-cog'></i>\n\
+                                                        </a>\n\
+                                                        <ul class='dropdown-menu pull-right'>\n\
+                                                            <li>\n\
+                                                                <a href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-tariff-plan?id=" + id + "'>\n\
+                                                                    <span>{{ 'Edit'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                            <li>\n\
+                                                                <a class='main_ajax no_context_menu' href='{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/remove-tariff-plan' data-planid='" + id + "'>\n\
+                                                                    <span>{{ 'Delete'|trans }}</span>\n\
+                                                                </a>\n\
+                                                            </li>\n\
+                                                        </ul>\n\
+                                                    </div>";
+
+                        var name = json.data[i].name;
+                        json.data[i].name = '<a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-tariff-plan?id=' + id + '" >' +escapeHtml( name )+ '</a>';
+                        json.data[i].external_id = escapeHtml( json.data[i].external_id );
+
+                        if (json.data[i].user_default == '1') {
+                            json.data[i].name += ' ({{ 'default'|trans }})';
+                        }
+                    }
+                }
+            }).dataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/tariff-plans-list-json"
+                },
+                "language": {
+                    "url": "{{ app.datatable_lang_file }}"
+                },
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                {{ main_macro.get_datatable_column(app['dropdownAttribute']) }}
+                {% endif %}
+                "bFilter": true,
+                "bPaginate": true,
+                "lengthChange": true,
+                "bInfo": true,
+
+                "fixedHeader": {
+                    header: true,
+                    headerOffset: $('header.navbar').height()
+                },
+                
+                "aoColumnDefs": [
+                    { className: "action-menu", "targets": [ -1 ] },
+                    {"searchable": false, "targets": [-1, 3]},
+                    {"sortable": false, "targets": [-1, -2]}
+                ]
+            }).prev('.dataTables_processing').hide('');
+        }
+
+        function yelp() {
+            $(document).ready(function () {
+                $(document).on('click', "a.main_ajax", function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var $this = $(this);
+                    $this.closest('div.open').removeClass('open');
+
+                    if( $this.attr("href").indexOf("remove-tariff-plan") !== -1 && !confirm("{{"Delete this tariff plan?"|trans}}") ) {
+                        return false;
+                    }
+
+                    ajaxPostSend($this.attr('href'), $this.data(), false);
+                    return false;
+                });
+
+                LoadDataTablesScripts(InitDatatable);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", yelp, false);

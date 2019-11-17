@@ -1,0 +1,10 @@
+{% if attribute(app, 'allowed_locales') is defined %}
+    <div class="dropdown">
+        <a id="dropdown2" data-toggle="dropdown" href="#"><span class="lang-lg" lang="{{ app.language }}"></span></a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown2" id="allowed_locales">
+            {% for key, item in app.allowed_locales %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-locale="{{ item }}"><span class="lang-lg" lang="{{ item|slice(0,2) }}"></span>{{ key }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

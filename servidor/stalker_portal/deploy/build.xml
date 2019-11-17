@@ -1,0 +1,453 @@
+<?xml version="1.0" ?>
+<project name="stalker_portal" basedir="." default="build">
+
+    <tstamp/>
+
+    <property file="../server/custom.ini"/>
+    <property file="../server/config.ini"/>
+
+    <target name="build" description="Build task">
+
+        <exec
+                command="lsb_release -r -s"
+                returnProperty="execReturn"
+                outputProperty="ubuntuVersion"
+                level="info"/>
+
+
+        <property
+                name="progs.mysql"
+                value="/usr/bin/mysql"/>
+
+        <property
+                name="build.dir"
+                value="../"/>
+
+        <resolvepath propertyName="project_path" file="${build.dir}"/>
+
+        <echo msg="Ubuntu version: ${ubuntuVersion}" level="info"/>
+        <echo msg="Project path: ${project_path}" level="info" />
+
+        <php expression="substr(phpversion(), 0, 3);" returnProperty="php_version"/>
+
+        <echo msg="PHP version: ${php_version}" level="info"/>
+
+        <exec command="apt-get update" level="info" outputProperty="install.error.msg" returnProperty="install.error.code"/>
+        <if>
+            <and>
+                <versioncompare version="${ubuntuVersion}" desiredVersion="15.10" operator="lt" />
+                <versioncompare version="${php_version}" desiredVersion="5.6" operator="lt" />
+            </and>
+            <then>
+                <exec command="apt-get -y install zlibc curl php5-sqlite php-soap php5-intl php-gettext php5-memcache php5-curl php5-mysql php5-mcrypt php5-tidy php5-imagick php5-geoip curl npm git zip unzip"
+                      level="info" outputProperty="install.error.msg" returnProperty="install.error.code"/>
+                <exec command="phpenmod mcrypt" level="info"/>
+                <exec command="phpdismod opcache" level="info"/>
+                <exec
+                        command="cp -r -v ${project_path}/deploy/composer/locks/composer-5.5.9.lock ${project_path}/deploy/composer.lock"
+                        returnProperty="copyReturn"
+                        outputProperty="copyOutput"
+                        level="info"/>
+                <exec
+                        command="cp -r -v ${project_path}/deploy/composer/locks/composer-5.5.9-ministra.lock ${project_path}/deploy/ministra/composer.lock"
+                        returnProperty="copyReturn"
+                        outputProperty="copyOutput"
+                        level="info"/>
+            </then>
+            <elseif>
+                <and>
+                    <versioncompare version="${ubuntuVersion}" desiredVersion="16.04" operator=">=" />
+                    <versioncompare version="${php_version}" desiredVersion="7.0" operator=">=" />
+                </and>
+                <then>
+                    <exec command="apt-get -y install zlibc curl php-sqlite3 php-soap php-intl php-gettext php-memcache php-memcached php-curl php-mysql php-mcrypt php-tidy php-imagick php-geoip curl npm git zip unzip php-zip"
+                          level="info" outputProperty="install.error.msg" returnProperty="install.error.code"/>
+                    <exec command="php5enmod mcrypt" level="info"/>
+                    <exec command="php5dismod opcache" level="info"/>
+                    <exec
+                            command="cp -r -v ${project_path}/deploy/composer/locks/composer-7.0.lock ${project_path}/deploy/composer.lock"
+                            returnProperty="copyReturn"
+                            outputProperty="copyOutput"
+                            level="info"/>
+                </then>
+            </elseif>
+            <else>
+                <echo msg="You have a non-standard bundle of versions of Ubuntu and PHP." level="warning"/>
+                <echo msg="You must manualy install php modules (php-soap, php-intl, php-gettext, php-memcache, php-curl, php-mysql, php-mcrypt, php-tidy, php-imagick, php-zip and php-geoip) of the correspondent version and additional packages(curl, npm, git, zip and unzip)" level="warning"/>
+            </else>
+        </if>
+
+        <exec command="a2enmod rewrite" level="info"/>
+
+        <if>
+            <not>
+                <equals arg1="${install.error.code}" arg2="0"/>
+            </not>
+            <then>
+                <echo msg="${install.error.msg}" level="warning"/>
+            </then>
+        </if>
+
+        <exec command="curl -sS https://getcomposer.org/installer | php -- --install-dir=${project_path}/deploy/composer/ --filename=composer.deploy.phar" level="info" outputProperty="install.error.msg" returnProperty="install.error.code"/>
+        <exec command="chmod +x ${project_path}/storage/tvarchive.sh" level="info"/>
+        <exec command="rm -f ${project_path}/deploy/ministra/composer.lock" level="info"/>
+        <exec command="php ${project_path}/deploy/composer/composer.deploy.phar global require hirak/prestissimo --no-interaction" level="info" outputProperty="install.error.msg" returnProperty="install.error.code"/>
+        <exec command="php ${project_path}/deploy/composer/composer.deploy.phar --working-dir=${project_path}/deploy/ install --no-dev --no-suggest --no-interaction" level="info" outputProperty="install.error.msg" returnProperty="install.error.code"/>
+        <exec command="rm -f /tmp/D80723C9E8F9E86B5BF968A3CC7272D0.sock"/>
+        <if>
+            <not>
+                <equals arg1="${install.error.code}" arg2="0"/>
+            </not>
+            <then>
+                <echo msg="${install.error.msg}" level="warning"/>
+            </then>
+        </if>
+        <exec command="php ${project_path}/deploy/composer/composer.deploy.phar --working-dir=${project_path}/deploy/ dump-autoload --no-dev" level="info" outputProperty="install.error.msg" returnProperty="install.error.code"/>
+        <exec command="php ${project_path}/deploy/composer/composer.deploy.phar --working-dir=${project_path}/deploy/ministra install --no-dev --no-suggest --no-interaction" level="info" outputProperty="install.error.msg" returnProperty="install.error.code"/>
+        <if>
+            <not>
+                <equals arg1="${install.error.code}" arg2="0"/>
+            </not>
+            <then>
+                <echo msg="${install.error.msg}" level="warning"/>
+            </then>
+        </if>
+        <exec command="php ${project_path}/deploy/composer/composer.deploy.phar --working-dir=${project_path}/deploy/ministra dump-autoload --no-dev" level="info" outputProperty="install.error.msg" returnProperty="install.error.code"/>
+        <exec command="php ${project_path}/deploy/composer/composer.deploy.phar --working-dir=${project_path}/storage install --no-dev --no-suggest --no-interaction" level="info" outputProperty="install.error.msg" returnProperty="install.error.code"/>
+        <if>
+            <not>
+                <equals arg1="${install.error.code}" arg2="0"/>
+            </not>
+            <then>
+                <echo msg="${install.error.msg}" level="warning"/>
+            </then>
+        </if>
+        <exec command="php ${project_path}/deploy/composer/composer.deploy.phar --working-dir=${project_path}/storage dump-autoload --no-dev" level="info" outputProperty="install.error.msg" returnProperty="install.error.code"/>
+
+        <exec command="stop stalkerd" level="info"/>
+
+        <property
+                name="nodejs.bin"
+                value="nodejs"/>
+
+        <exec command="${nodejs.bin} -v" level="info" outputProperty="nodejs_bin_probe.error.msg" returnProperty="nodejs_bin_probe.error.code"/>
+
+        <if>
+            <not>
+                <equals arg1="${nodejs_bin_probe.error.code}" arg2="0"/>
+            </not>
+            <then>
+                <echo msg="${nodejs_bin_probe.error.msg}" level="info"/>
+                <echo msg="using node as binary" level="info"/>
+                <property
+                        name="nodejs.bin"
+                        value="node"
+                        override="true"/>
+            </then>
+        </if>
+
+        <!-- remove deprecated daemon -->
+        <delete file="/etc/init/stalkerd.conf" quiet="true" />
+
+        <!-- removing stalker tasks from crontab -->
+        <exec command="crontab -l | grep -v ${project_path} > /tmp/crontab; crontab /tmp/crontab" checkreturn="true"/>
+
+        <!-- create stalker tasks in /etc/cron.d/ -->
+        <delete file="/etc/cron.d/stalker" quiet="true" />
+
+        <exec command="echo -n ${project_path} | md5sum | cut -f1 -d' '" outputProperty="path_crc" checkreturn="true" />
+
+        <copy file="./src/cron" tofile="/etc/cron.d/stalker_${path_crc}" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="STALKERD_INDEX_PATH" value="${project_path}"/>
+                </replacetokens>
+            </filterchain>
+        </copy>
+
+        <chmod file="/etc/cron.d/stalker_${path_crc}" mode="0755"/>
+
+        <copy file="./src/stalkerd" tofile="/etc/logrotate.d/stalkerd" overwrite="true"/>
+
+        <property name="mysql_host" value="${mysql_host}" override="true">
+            <filterchain>
+                <replaceregexp>
+                    <regexp pattern="p:" replace="" ignoreCase="true"/>
+                </replaceregexp>
+            </filterchain>
+        </property>
+
+        <property name="protocol_str" value="--protocol=TCP"/>
+        <if>
+            <and>
+                <equals arg1="${mysql_host}" arg2="localhost"/>
+                <not>
+                    <equals arg1="${mysql_port}" arg2="3306"/>
+                </not>
+            </and>
+            <then>
+                <property name="mysql_host" value="127.0.0.1" override="true"/>
+            </then>
+        </if>
+
+        <if>
+            <equals arg1="${mysql_host}" arg2="localhost"/>
+            <then>
+                <property name="protocol_str" value="" override="true"/>
+            </then>
+        </if>
+
+        <echo msg="${project_path}"/>
+
+        <copy file="./src/init_db.sql" tofile="/tmp/init_db.sql" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="DB_NAME" value="${db_name}"/>
+                </replacetokens>
+            </filterchain>
+        </copy>
+
+        <exec command="export MYSQL_PWD=${mysql_pass}; ${progs.mysql} -P${mysql_port} ${protocol_str} -h${mysql_host} -u${mysql_user} &lt; /tmp/init_db.sql"
+              dir="${build.dir}" checkreturn="false" outputProperty="mysql_init.error.msg" returnProperty="mysql_init.error.code" />
+
+        <if>
+            <not>
+                <equals arg1="${mysql_init.error.code}" arg2="0"/>
+            </not>
+            <then>
+                <fail message="Mysql - ${mysql_init.error.msg}" />
+            </then>
+        </if>
+
+        <if>
+            <isset property="customization_path"/>
+            <then>
+                <resolvepath propertyName="clear_customization_path" file="${customization_path}/"/>
+                <exec
+                        command="cp -r -v ${clear_customization_path}/* ${project_path}"
+                        returnProperty="copyReturn"
+                        outputProperty="copyOutput"
+                        level="info"/>
+
+                <if>
+                    <equals arg1="${copyReturn}" arg2="0"/>
+                    <then>
+                        <echo msg="Copying: ${copyOutput}"/>
+                    </then>
+                </if>
+            </then>
+        </if>
+
+        <php expression="ini_get('extension_dir');" returnProperty="extension_dir"/>
+
+        <echo msg="PHP extension dir: ${extension_dir}" level="info"/>
+
+        <php expression="PHP_INT_SIZE === 8 ? 64 : 32" returnProperty="os_bit"/>
+
+        <echo msg="OS: ${os_bit} bit" level="info"/>
+
+        <copy file="${project_path}/deploy/src/ioncube/${os_bit}/ioncube_loader_lin_${php_version}.so" tofile="${extension_dir}/ioncube_loader_lin_${php_version}.so" overwrite="true"/>
+
+        <chmod file="${extension_dir}/ioncube_loader_lin_${php_version}.so" mode="0644" />
+
+        <exec command="php -v | grep -i ioncube | wc -l" outputProperty="ioncube_installed" level="info" />
+        <echo level="info" msg="IonCube installed: ${ioncube_installed}" />
+        <if>
+            <not>
+                <equals arg1="${ioncube_installed}" arg2="1"/>
+            </not>
+            <then>
+                <if>
+                    <available file="/etc/php/7.0/apache2/php.ini" property="extension_ini_path" type="file" />
+                    <then>
+                        <exec command="cat /etc/php/7.0/apache2/php.ini | grep '^zend_extension' | grep -v 'ioncube_loader' | wc -l" outputProperty="zend_extension_available" level="info" />
+                        <echo level="info" msg="Zend extensions available: ${zend_extension_available}" />
+                        <if>
+                            <not>
+                                <equals arg1="${zend_extension_available}" arg2="0"/>
+                            </not>
+                            <then>
+                                <echo message="Please add the following line to your php.ini file as first Zend extension and restart apache" level="warning"/>
+                                <echo message="zend_extension=${extension_dir}/ioncube_loader_lin_${php_version}.so" level="warning"/>
+                            </then>
+                            <else>
+                                <if>
+                                    <available file="/etc/php/7.0/mods-available" property="extension_ini_path" type="dir" />
+                                    <then>
+                                        <touch file="/etc/php/7.0/mods-available/ioncube.ini" />
+                                        <chmod file="/etc/php/7.0/mods-available/ioncube.ini" mode="0644" />
+                                        <echo file="/etc/php/7.0/mods-available/ioncube.ini" message="zend_extension=${extension_dir}/ioncube_loader_lin_${php_version}.so" />
+                                        <symlink target="/etc/php/7.0/mods-available/ioncube.ini" link="/etc/php/7.0/apache2/conf.d/00-ioncube.ini" />
+                                        <symlink target="/etc/php/7.0/mods-available/ioncube.ini" link="/etc/php/7.0/cli/conf.d/00-ioncube.ini" />
+                                    </then>
+                                    <else>
+                                        <echo message="Please add the following line to your php.ini file as first Zend extension and restart apache" level="warning"/>
+                                        <echo message="zend_extension=${extension_dir}/ioncube_loader_lin_${php_version}.so" level="warning"/>
+                                    </else>
+                                </if>
+                            </else>
+                        </if>
+                    </then>
+                    <elseif>
+                        <available file="/etc/php5/apache2/php.ini" property="apache_ini_path" type="file" />
+                        <then>
+                            <exec command="cat /etc/php5/apache2/php.ini | grep '^zend_extension' | grep -v 'ioncube_loader' | wc -l" outputProperty="zend_extension_available" level="info" />
+                            <echo level="info" msg="Zend extensions available: ${zend_extension_available}" />
+                            <if>
+                                <not>
+                                    <equals arg1="${zend_extension_available}" arg2="0"/>
+                                </not>
+                                <then>
+                                    <echo message="Please add the following line to your php.ini file as first Zend extension and restart apache" level="warning"/>
+                                    <echo message="zend_extension=${extension_dir}/ioncube_loader_lin_${php_version}.so" level="warning"/>
+                                </then>
+                                <else>
+                                    <if>
+                                        <available file="/etc/php5/conf.d" property="extension_ini_path" type="dir" />
+                                        <then>
+                                            <touch file="/etc/php5/conf.d/00-ioncube.ini" />
+                                            <chmod file="/etc/php5/conf.d/00-ioncube.ini" mode="0644" />
+                                            <echo file="/etc/php5/conf.d/00-ioncube.ini" message="zend_extension=${extension_dir}/ioncube_loader_lin_${php_version}.so" />
+                                        </then>
+                                        <elseif>
+                                            <available file="/etc/php5/mods-available" property="extension_ini_path" type="dir" />
+                                            <then>
+                                                <touch file="/etc/php5/mods-available/ioncube.ini" />
+                                                <chmod file="/etc/php5/mods-available/ioncube.ini" mode="0644" />
+                                                <echo file="/etc/php5/mods-available/ioncube.ini" message="zend_extension=${extension_dir}/ioncube_loader_lin_${php_version}.so" />
+                                                <symlink target="/etc/php5/mods-available/ioncube.ini" link="/etc/php5/apache2/conf.d/00-ioncube.ini" />
+                                                <symlink target="/etc/php5/mods-available/ioncube.ini" link="/etc/php5/cli/conf.d/00-ioncube.ini" />
+                                            </then>
+                                        </elseif>
+                                        <else>
+                                            <echo message="Please add the following line to your php.ini file as first Zend extension and restart apache" level="warning"/>
+                                            <echo message="zend_extension=${extension_dir}/ioncube_loader_lin_${php_version}.so" level="warning"/>
+                                        </else>
+                                    </if>
+                                </else>
+                            </if>
+                        </then>
+                    </elseif>
+                    <else>
+                        <echo message="Please add the following line to your php.ini file as first Zend extension and restart apache" level="warning"/>
+                        <echo message="zend_extension=${extension_dir}/ioncube_loader_lin_${php_version}.so" level="warning"/>
+                    </else>
+                </if>
+            </then>
+        </if>
+
+        <if>
+            <versioncompare version="${php_version}" desiredVersion="5.6" operator="ge" />
+            <then>
+                <exec
+                        command="cp -r -v ${project_path}/deploy/src/core/56/* ${project_path}"
+                        returnProperty="copyReturn"
+                        outputProperty="copyOutput"
+                        level="info"/>
+            </then>
+            <else>
+                <exec
+                        command="cp -r -v ${project_path}/deploy/src/core/53/* ${project_path}"
+                        returnProperty="copyReturn"
+                        outputProperty="copyOutput"
+                        level="info"/>
+            </else>
+        </if>
+        <exec command="php ${project_path}/admin/bin/console mtv:migrations:upgrade --no-interaction"
+              checkreturn="true"
+              level="info" outputProperty="migrate.upgrade.error.msg" returnProperty="migrate.upgrade.error.code"/>
+        <exec command="php ${project_path}/admin/bin/console mtv:migrations:deploy --no-interaction"
+              level="info" outputProperty="migrate.error.msg" returnProperty="migrate.error.code"/>
+
+        <if>
+            <not>
+                <equals arg1="${migrate.error.code}" arg2="0"/>
+            </not>
+            <then>
+                <echo msg="${migrate.error.msg}" level="error"/>
+                <fail msg="Migrations run failed" />
+            </then>
+        </if>
+
+        <if>
+            <not>
+                <equals arg1="${migrate.error.code}" arg2="0"/>
+            </not>
+            <then>
+                <echo msg="${migrate.error.msg}" level="error"/>
+            </then>
+        </if>
+
+        <if>
+            <not>
+                <equals arg1="${copyReturn}" arg2="0"/>
+            </not>
+           <then>
+                <echo msg="Failed to update the core!" level="warning"/>
+                <echo msg="Reason: ${copyOutput}" level="warning"/>
+            </then>
+            <else>
+                <echo msg="The core was successfully updated!" level="info"/>
+            </else>
+        </if>
+
+        <chmod file="${project_path}/screenshots" mode="0777" />
+        <chmod file="${project_path}/misc/logos" mode="0777" />
+        <chmod file="${project_path}/deploy/clear_key_util" mode="0775" />
+        <chmod file="${project_path}/misc/audio_covers" mode="0777" />
+        <chmod file="${project_path}/misc/themes" mode="0777" />
+
+        <chmod file="${project_path}/cert" mode="0777" />
+
+        <exec command="mkdir -p --mode=0777 ${project_path}/admin/logs" level="info"/>
+        <exec command="mkdir -p --mode=0777 ${project_path}/admin/resources/cache/twig" level="info"/>
+        <exec command="find ${project_path}/admin/resources/cache/twig/ -type f -name '*.php' -delete" level="info"/>
+
+        <exec command="mkdir -p --mode=0777 ${project_path}/admin/resources/cache/sidebar" level="info"/>
+        <exec command="find ${project_path}/admin/resources/cache/sidebar/ -type f -name '*_bar' -delete" level="info"/>
+        <delete file="${project_path}/admin/resources/views/breadcrumbs.html.twig" quiet="true" />
+
+        <exec command="mkdir -p --mode=0777 ${project_path}/admin/resources/cache/assetic" level="info"/>
+        <exec command="mkdir -p --mode=0777 ${project_path}/server/adm/css/min/default" level="info"/>
+        <exec command="mkdir -p --mode=0777 ${project_path}/server/adm/js/min/default" level="info"/>
+
+        <exec command="mkdir ${project_path}/deploy/composer" level="info"/>
+        <exec command="mkdir ${project_path}/../${apps_path}" level="info"/>
+        <chmod file="${project_path}/../${apps_path}" mode="0777" />
+        <exec command="mkdir ${project_path}/../${launcher_apps_path}" level="info"/>
+        <chmod file="${project_path}/../${launcher_apps_path}" mode="0777" />
+
+        <exec command="mkdir -p --mode=0777 ${project_path}/../.npm" level="info"/>
+
+        <exec command="cd ${project_path}/server/tools/; php ./init_apps.php" level="info"/>
+        <exec command="cd ${project_path}/server/tasks/; php ./reset_paused.php nodelay" level="info"/>
+
+        <echo msg="Now you will be asked to specify MySQL root password." level="warning"/>
+
+        <exec command="mysql_tzinfo_to_sql /usr/share/zoneinfo 2>/dev/null | mysql -u root -p mysql" level="info" outputProperty="zoneinfo.error.msg" returnProperty="zoneinfo.error.code"/>
+
+        <if>
+            <not>
+                <equals arg1="${zoneinfo.error.code}" arg2="0"/>
+            </not>
+            <then>
+                <echo msg="${zoneinfo.error.msg}" level="warning"/>
+            </then>
+        </if>
+
+        <exec command="/etc/init.d/apache2 restart" level="info"/>
+
+        <exec command="mkdir /var/log/stalkerd" level="info"/>
+        <chmod file="/var/log/stalkerd" mode="0777" />
+
+        <exec command="mkdir ${project_path}/../${web_player_server_path}" level="info"/>
+        <copy file="./src/player/index.php" tofile="${project_path}/../${web_player_server_path}/index.php" overwrite="true"/>
+        <copy file="./src/player/.htaccess" tofile="${project_path}/../${web_player_server_path}/.htaccess" overwrite="true"/>
+        <chmod file="${project_path}/../${web_player_server_path}/.htaccess" mode="644" />
+        <exec command="php ${project_path}/admin/bin/console mtv:clear-util:update" level="info" returnProperty="util.exitCode" outputProperty="util.out"/>
+        <echo msg="Now run database migrations. This might take a while." level="warning"/>
+        <exec command="php ${project_path}/deploy/scripts/change_permissions.php" level="info" checkreturn="false" />
+
+    </target>
+
+</project>

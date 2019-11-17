@@ -1,0 +1,210 @@
+{% extends app['twig_theme'] ~ '/layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Audio club'|trans ~ ': ' ~ (app.audioAlbumEdit ? ('Edit album'|trans ~ (app.performerName ? " '" ~ app.performerName ~ "' -": '' ) ~ " '" ~ app.albumName ~ "'"): 'Add album'|trans) %}
+{% set active_alias = 'audio-albums' %}
+
+{% form_theme app['form'] _self %}
+
+{# form_errors.html.twig #}
+{% block form_errors %}
+    {% spaceless %}
+        <div {{ attr.class is defined ? 'class=' ~ attr.class : '' }}>
+            {% if errors|length > 0 %}
+                {% for error in errors %}
+                    <i class="txt-danger fa fa-ban"></i> {{ error.message }} {% if not loop.last %}<br>{% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% endspaceless %}
+{% endblock form_errors %}
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+{% endblock %}
+
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include app.twig_theme ~ "/AudioClub/add_audio_albums/add_audio_albums.js.twig" %}
+        </script>
+    {% block footer_steps_js %}
+    {% endblock footer_steps_js %}
+{% endblock %}
+
+
+{% block content %}
+    <div id="add_channel">
+        {{ form_start(app['form'], {'method': 'POST', 'action': (app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias) | trans, 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
+        <div class="row">
+                <div class="box">
+
+                    {% set form_steps = {
+                        1 : 'Basic'|trans,
+                        2 : 'Tracks'|trans
+                    } %}
+
+                    <ol class="nav nav-pills step-wizard-progress-bar active-{{ app.step }} clearfix" role="navigation">
+                        {% for step, step_name in form_steps %}
+                            <li class=" step-{{ step }} {{ step < app.step or app['audioAlbumEdit'] ? 'complete': ''}} {{ step == app.step ? 'active': '' }}">
+                                {% if step == app.step %}
+                                    {{ step_name }}
+                                {% elseif app['audioAlbumEdit'] or step < app.step %}
+                                    <a class="no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-audio-albums?step={{ step }}{% if attribute(app, 'audioAlbumID') is defined %}&id={{ app.audioAlbumID }}{% endif %}">{{ step_name }}</a>
+                                {% else %}
+                                    {{ step_name }}
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ol>
+
+                    {% block form_step_by_step %}
+                    {% endblock form_step_by_step %}
+
+                </div>
+
+                <div class="form-buttons col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="box">
+                        <div class="box-content">
+                            <div class="row">
+                                <div class="col-xs-10 col-sm-8 pull-right">
+                                    {% if app['audioAlbumEdit'] and app.step == form_steps|length %}
+                                    <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/audio-albums" class="btn btn-success  pull-right"> {{ 'CLOSE'|trans }} </a>
+                                    {% elseif not(app['audioAlbumEdit']) and app.step == form_steps|length %}
+                                    <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/audio-albums" class="btn btn-success  pull-right"> {{ 'Complite'|trans }} </a>
+                                    {% else %}
+                                    <button type="submit" id="form_save" name="form[save]" class="btn btn-success pull-right">{{ "Save & Forward"|trans }}<i class="fa fa-arrow-right"></i></button>
+                                    {% endif %}
+
+                                    {% if 1 < app.step %}
+                                    <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/edit-audio-albums?step={{app.step-1}}{% if attribute(app, 'audioAlbumID') is defined %}&id={{ app.audioAlbumID }}{% endif %}" class="btn btn-default  pull-right"><i class="fa fa-arrow-left"></i> {{ 'Back'|trans }} </a>
+                                    {% endif %}
+
+                                    {% if app['audioAlbumEdit'] and app.step != form_steps|length %}
+                                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/audio-albums" class="btn btn-default pull-right">{{ 'CLOSE'|trans }}</a>
+                                    {% elseif not(app['audioAlbumEdit']) and app.step == 1 %}
+                                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/audio-albums" class="btn btn-default pull-right">{{ 'CLOSE'|trans }}</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div style="">
+            {{ form_rest(app.form) }}
+        </div>
+        {{ form_end(app['form']) }}
+    </div>
+
+    <div id="modalbox_ad">
+        <div class="devoops-modal">
+            <div class="devoops-modal-header">
+                <div class="modal-header-name">
+                    <span></span>
+                </div>
+                <div class="box-icons">
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <form class="form-horizontal" role="form" id="track_form" action="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/audio-tracks-manage">
+                <div class="devoops-modal-inner">
+                    <div class="box">
+                        <div class="box-content no-padding">
+                            <div class="col-sm-8 col-sm-offset-2" id="file_form_input_container">
+                                
+                                <!-- track name -->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{{ 'Title'|trans }}<span class="icon-required">*</span></label>
+                                    <div class="col-xs-10 col-sm-9 no-padding">
+                                        <div class=" col-xs-10 col-sm-10 ">
+                                            <input type="hidden" name="id">
+                                            <input type="text" name="name" data-validation='required' class='form-control'>
+                                        </div>
+                                        <i class="i-hint"
+                                            title="{{ 'You can use symbols from the list: ! @ # $ % ^ & * ( ) _ - + : ; , .'|trans }}" >
+                                            <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                        </i>
+                                    </div>
+                                </div>
+
+                                <!-- language -->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{{ 'Language'|trans }}<span class="icon-required">*</span></label>
+                                    <div class="col-xs-10 col-sm-9 no-padding">
+                                        <div class=" col-xs-10 col-sm-6 ">
+                                            <select class="populate placeholder" data-validation='required' name="language_id" id="s2_track_lang">
+                                                {% if attribute(app, 'allLanguages') is defined %}
+                                                    {% for s_item in app.allLanguages %}
+                                                        <option value="{{s_item.id}}">{{s_item.name}}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- URL -->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{{ 'URL'|trans }}<span class="icon-required">*</span></label>
+                                    <div class="col-xs-10 col-sm-9 no-padding">
+                                        <div class=" col-xs-10 col-sm-10">
+                                            <input id="audio_url" type="text" name="url" data-validation = 'required custom' data-validation-regexp = '^(\w+\s)?\w+\:\/\/.+$' data-validation-error-msg-custom = "{{ 'Invalid format links'|trans }}" class='form-control' >
+                                        </div>
+                                        <i class="i-hint"
+                                            title="{{ 'Accepted input: URL or solution + URL. Example ffmpeg http://example.com/track.mp3'|trans }}" >
+                                            <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                        </i>
+                                    </div>
+                                </div>
+
+                                <!-- duration -->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">{{ 'Duration'|trans }}<span class="icon-required">*</span></label>
+                                    <div class="col-xs-10 col-sm-9 no-padding">
+                                        <div class=" col-xs-10 col-sm-10">
+                                            <input type="text" name="duration" class='form-control' data-validation='required number'>
+                                        </div>
+                                        <i class="i-hint"
+                                            title="{{ 'Track duration in seconds'|trans }}" >
+                                            <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                        </i>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-sm-4" id="media_info">
+                                <button class="btn btn-success btn-block disabled hidden" disabled="disabled">{{ 'Autofill'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="devoops-modal-bottom">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success col-sm-2 pull-right">{{ 'Save'|trans }}</button>
+                        <button type="reset"  class="btn btn-default col-sm-2 pull-right" >{{ 'Cancel'|trans }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# moved to popup
+    <script type="text/template" id="media_info_body">
+        <div class="col-sm-4" id="media_info">
+            <button class="btn btn-success btn-block disabled hidden" disabled="disabled">{{ 'Autofill'|trans }}</button>
+        </div>
+    </script>
+    #}
+
+    <script type="text/template" id="media_info_info">
+        <span class="col-sm-12 center" {#data-info-key="" data-info-val=""#}></span>
+    </script>
+
+{% endblock %}

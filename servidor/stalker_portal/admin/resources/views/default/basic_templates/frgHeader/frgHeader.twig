@@ -1,0 +1,60 @@
+
+<!--Start Header-->
+
+<div id="modalbox">
+    <div class="devoops-modal">
+        <div class="devoops-modal-header">
+            <div class="modal-header-name">
+                <span>Basic table</span>
+            </div>
+            <div class="box-icons">
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="devoops-modal-inner">
+        </div>
+        <div class="devoops-modal-bottom">
+        </div>
+    </div>
+</div>
+
+<header class="navbar">
+    <div class="container-fluid expanded-panel">
+        <div class="row">
+            <div id="logo" class="col-xs-2 col-sm-2">
+                <a href="{{app.request_context.baseUrl}}/"><img src="img/m-logo.png"></a>
+                <div class="pull-right menu-btn btn6" data-menu="6">
+                    <div class="icon"></div>
+                </div>
+            </div>
+            <div id="top-panel" class="pull-right">
+                
+                <div id="breadcrumb" class="pull-left">
+                    {{ renderBreadCrumbs() }}
+                </div>
+
+                <ul class="nav navbar-nav panel-menu page-head-elements pull-right">
+                    <li class="tile-lang-menu">
+                        {% include app['twig_theme'] ~ '/basic_templates/langMenuList.twig' %}
+                    </li>
+                    {#<li>
+                        {% include app['twig_theme'] ~ '/basic_templates/userTaskInfo.twig' %}
+                    </li>#}
+                    {% if app.user_info.login == 'admin' %}
+                    <li id="userNotificationInfo" class="dropdown">
+                        {% include app['twig_theme'] ~ '/basic_templates/userNotificationInfo.twig' %}
+                    </li>
+                    {% endif %}
+                    <li class="dropdown dropup-user">
+                        {% include app['twig_theme'] ~ '/basic_templates/userProfileInfo.twig' %}
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</header>
+
+<!--End Header-->

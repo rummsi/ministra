@@ -1,0 +1,87 @@
+{% extends app.twig_theme ~ "/NewVideoClub/add_video/add_video.twig"%}
+{% block footer_steps_js %}
+
+    {{ parent() }}
+    <script type="text/javascript">
+
+        {% include app.twig_theme ~ "/NewVideoClub/add_video/add_video_step_3.js.twig" %}
+
+    </script>
+
+{% endblock %}
+{% block form_step_by_step %}
+                <h4 class="section-header"><span>{{ 'Screenshots'|trans }}</span></h4>
+                {#
+                <a class="collapse-link">
+                    <div class="box-header">
+                        <div class="box-name">
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4">
+                                    <span>{{ 'Screenshots'|trans }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-icons">
+                            <i class="fa fa-chevron-up"></i>
+                        </div>
+                        <div class="no-move"></div>
+                    </div>
+                </a>
+                #}
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="form-group">
+                                <div class=" col-xs-6 col-sm-6 col-sm-offset-2 no-padding">
+                                    {{ form_widget(app['form'].cover_big) }}
+                                    {{ form_widget(app['form'].cover_id) }}
+                                    <div id="cover_container" data-id="{% if app['form'].cover_id.vars.value %}{{ app['form'].cover_id.vars.value }}{% else %}new{% endif %}" data-file_num="0">
+                                        <input type="file" name="files" style="opacity: 0;" multiple>
+                                    </div>
+                                    <img class="img-rounded channel-logo" src="{% if app['form'].cover_id.vars.value %}{{ app['curr_cover_dir'] }}/{{ app['form'].cover_id.vars.value }}{{ app['cover_ext'] }}{% elseif app['form'].cover_big.vars.value %}{{ app['form'].cover_big.vars.value }}{% endif %}" alt="">
+                                    <a id="delete_cover" class="no_context_menu" href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/delete-cover" data-cover_id="{% if app['form'].cover_id.vars.value %}{{ app['form'].cover_id.vars.value }}{% endif %}">
+                                        <span class="txt-primary">{{ 'Delete cover'|trans }}</span>
+                                    </a>
+                                </div>
+                                <div class=" col-xs-6 col-sm-6 col-sm-offset-2 no-padding" style="line-height: 22px;"><br></div>
+
+                                <div class=" col-xs-6 col-sm-6 col-sm-offset-2 " id="fileupload_episodes">
+                                    <ul class="video_episodes">
+                                        {% for key in 1..9 %}
+                                            {% if attribute(app, 'videoImages') is defined and attribute(app.videoImages, key) is defined %}
+                                        <li class="col-xs-4 col-sm-4">
+                                            <div id="video_episodes_{{ key }}" data-id="{{ app.videoImages[key].id }}" data-file_num="{{ key }}">
+                                                <input type="file" name="files" style="opacity: 0;" multiple>
+                                            </div>
+                                            <img class="img-rounded" src="{{ app.videoImages[key].curr_cover_dir }}/{{ app.videoImages[key].name }}" alt="">
+                                            <div class="clear_video_episodes"></div>
+                                        </li>
+                                            {% else %}
+                                        <li class="col-xs-4 col-sm-4">
+                                            <div id="video_episodes_{{ key }}" data-id="new" data-file_num="{{ key }}">
+                                                <input type="file" name="files" style="opacity: 0;" multiple>
+                                            </div>
+                                            <img class="img-rounded" src="" alt="">
+                                            <div class="clear_video_episodes"></div>
+                                        </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+
+                                <div class=" col-xs-6 col-sm-6 col-sm-offset-2 no-padding">
+                                    <span class="txt-default">
+                                        {{ 'Available formats - jpg, jpeg, png. Maximum file size - 1MB.'|trans }}
+                                    </span>
+                                    <span class="txt-default">
+                                        {{ 'For cover recommended portrait orientation picture (aspect ratio 3:4).'|trans }}
+                                    </span>
+                                    <span class="txt-default">
+                                        {{ 'For screenshots recommended landscape orientation picture (aspect ratio 4:3)'|trans }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endblock form_step_by_step %}

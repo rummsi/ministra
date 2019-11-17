@@ -1,0 +1,63 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Video club'|trans ~ ': ' ~ 'moderators list'|trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+
+{% endblock %}
+{% block footer %}
+    
+        {{ parent() }}
+        <script type="text/javascript" defer>
+            {% include (app.twig_theme ~ "/VideoClub/video_moderators_addresses/video_moderators_addresses.js.twig") %}
+        </script>
+        
+{% endblock %}
+
+
+{% block content %}
+    <div id="iptv_list">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <a href="{{ app.request_context.baseUrl }}/{{ app.controller_alias }}/add-video-moderators" class="btn btn-success pull-right">{{ 'Add moderator'|trans }}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="box">
+                <div class="auto-height">
+                    <div class="box-name">
+                        <div class="row">
+                            <div class="col-xs-10 col-sm-8 col-sm-offset-2 text-center bg-warning">
+                                <span class="text_black">{{ 'STB of moderators  allow to show unpublished video and optionally skipping advertising'|trans }}{#Приставки модераторов позволяют показывать неопубликованное видео и опционально пропускают рекламу#}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="no-move"></div>
+                </div>
+            </div>
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

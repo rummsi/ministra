@@ -1,0 +1,141 @@
+{% extends app['twig_theme'] ~ '/' ~ 'layout.twig' %}
+
+{% set title = 'Video club'|trans ~ ': ' ~ (app.adsEdit ? ('Edit commercial'|trans ~ " '"~ app.adsTitle ~ "'"): 'Add commercial'|trans) %}
+{% set active_alias = 'video-advertise' %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+{% endblock footer_js %}
+
+{% block footer %}
+    {{ parent() }}
+    
+    <script type="text/javascript" defer>
+       
+        {% include app.twig_theme ~ "/NewVideoClub/add_video_ads/add_video_ads.js.twig" %}
+
+    </script>
+{% endblock %}
+
+
+{% block content %}
+    <div id="add_channel">
+        {{ form_start(app['form'], {'method': 'POST', 'action': (app.request_context.baseUrl ~ '/' ~ app.controller_alias  ~ '/' ~ app.action_alias), 'attr': {'class': 'form-horizontal', 'role': 'form', 'id': 'form_'}}) }}
+        <div class="bg-danger">
+            <div class="bg-danger">
+                {{ form_errors(app['form']) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="box">
+                    <div class="box-content">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label ">{{ 'Title'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {{ form_widget(app['form'].id, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_widget(app['form'].title, {'attr': {'class': 'form-control', 'data-validation':'required'}}) }}
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].title) }}
+                                    </div>
+                                </div>
+                                <i class="i-hint"
+                                    title="{{ 'You can use letters, digits' |trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label ">{{ 'Address'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {{ form_widget(app['form'].url, {'attr': {'class': 'form-control', 'data-validation':'required'}}) }}
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].url) }}
+                                    </div>
+                                </div>
+                                <i class="i-hint"
+                                    title="{{ 'Format: solution+URL. Example: ffmpeg http://example_of_link' |trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label ">{{ 'Weight'|trans }}<span class="icon-required">*</span></label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {{ form_widget(app['form'].weight, {'attr': {'class': 'form-control', 'data-validation':'required', 'value':'1'}}) }}
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].weight) }}
+                                    </div>
+                                </div>
+                                <i class="i-hint"
+                                    title="{{ 'Display frequency rate' |trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label ">{{ 'Disabled for categories'|trans }}</label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-6">
+                                    {{ form_widget(app['form'].denied_categories, {'attr': {'class': 'populate placeholder'}}) }}
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].denied_categories) }}
+                                    </div>
+                                </div>
+                                <i class="i-hint"
+                                    title="{{ "Show categories that won't see the advertising" |trans }}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label ">{{ 'Necessary to see'|trans }}</label>
+                            <div class="col-xs-10 col-sm-6">
+                                <div class=" col-xs-10 col-sm-12">
+                                    {{ form_widget(app['form'].must_watch, {'attr': {'class': 'populate placeholder'}}) }}
+                                    
+                                    <div id="slider" class="pull-left">
+                                         <div id="slider-handle" class="ui-slider-handle"></div>
+                                    </div>
+                                    {#<input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;" value="32">#}
+
+                                    <i class="i-hint"
+                                        title="{{ 'Percentage of the total length of video that user has to watch to skip commercials.' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+
+                                    <div class="bg-danger">
+                                        {{ form_errors(app['form'].must_watch) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-content">
+                        <div class="row">
+                            <div class="col-xs-10 col-sm-3 col-offset-control-label">
+                                <div class=" pull-right">
+                                    {{ form_widget(app['form'].save, { 'label': 'Save'|trans , attr: {'class': 'btn btn-success pull-right'}}) }}
+                                    <a href="{{app.request_context.baseUrl}}/{{app.controller_alias}}/video-advertise" class="btn btn-default pull-right">{{ 'Cancel'|trans }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="">
+            {{ form_rest(app.form) }}
+        </div>
+        {{ form_end(app['form']) }}  
+    </div>
+{% endblock %}

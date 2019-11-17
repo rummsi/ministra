@@ -1,0 +1,74 @@
+{
+    "name": "infomir/ministra-middleware",
+    "description": "Ministra TV Platform",
+    "type": "project",
+    "license": "Apache 2.0",
+    "authors": [
+        {
+            "name": "Infomir",
+            "email": "support@infomir.eu"
+        }
+    ],
+    "optimize-autoloader": true,
+    "classmap-authoritative": true,
+    "apcu-autoloader": true,
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.5.9",
+        "ext-openssl": "*",
+        "ext-json": "*",
+        "ext-zlib": "*",
+        "ext-posix": "*",
+        "ext-mysqli": "*",
+        "ext-zip": "*",
+        "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-pdo": "*",
+        "ext-sqlite3": "*",
+        "ext-imagick": "*",
+        "ext-gettext": "*",
+        "ext-soap": "*",
+        "leafo/scssphp": "0.7.7",
+        "rock/phpwsdl": "^1.0",
+        "mtdowling/cron-expression": "^1.2",
+        "symfony/dependency-injection": "^3.4",
+        "symfony/process": "^3.4",
+        "doctrine/dbal": "^2.5",
+        "websvc/php-rocketchat-webhooks": "1.0.0",
+        "vlucas/phpdotenv": "^3.3",
+        "monolog/monolog": "^1.24",
+        "symfony/config": "^3.4",
+        "symfony/console": "^3.4",
+        "guzzlehttp/guzzle": "^6.3",
+        "symfony/http-foundation": "^3.4",
+        "jarjak/dbal-manager": "^v2.1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ministra\\": "./../../server"
+        },
+        "files": [
+            "./../../server/Lib/funcs/functions.php",
+            "./../../server/administrator/lib/tasks.php",
+            "./../../server/administrator/lib/data.php",
+            "./../../server/administrator/lib/functions.php",
+            "./../../server/administrator/lib/subsys/Subsys_JsHttpRequest_Php.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ministra\\Tests\\": "./../../tests"
+        },
+        "files": [
+            "./../../tests/rest_api/tv_chanels.php",
+            "./../../tests/rest_api/video.php"
+        ]
+    },
+    "config": {
+        "vendor-dir": "./../../vendor"
+    },
+    "require-dev": {
+        "sonrac/symfony-seed-command": "^1.6",
+        "fzaninotto/faker": "^1.8"
+    }
+}

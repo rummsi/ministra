@@ -1,0 +1,180 @@
+{% extends app.twig_theme ~ "/NewVideoClub/add_video/add_video.twig"%}
+{% block footer_steps_js %}
+
+    {{ parent() }}
+    <script type="text/javascript">
+
+        {% include app.twig_theme ~ "/NewVideoClub/add_video/add_video_step_2.js.twig" %}
+
+    </script>
+
+{% endblock %}
+{% block form_step_by_step %}
+                <h4 class="section-header">
+                        <span>{{ 'Movie information'|trans }}</span>
+                </h4>
+                {#
+                <a class="collapse-link">
+                    <div class="box-header">
+                        <div class="box-name">
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4">
+                                    <span>{{ 'Movie information'|trans }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-header-btn" id="autocomplete_button_container">
+                            <button class="btn btn-default btn-add-video-rating" data-provider="tmdb">{{ 'Autocomplete'|trans }} {#TMDB# }</button>
+                            {#<button class="btn btn-default btn-add-video-rating" data-provider="kinopoisk">{{ 'Autocomplete'|trans }} {{ 'Kinopoisk'|trans }}</button># }
+                        </div>
+                        <div class="box-icons">
+                            <i class="fa fa-chevron-up"></i>
+                        </div>
+                        <div class="no-move"></div>
+                    </div>
+                </a>
+                #}
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-8 col-lg-8" style="max-width: 790px;">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Original title'|trans }}<span class="icon-required">*</span></label>
+                                <div class="col-xs-10 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].o_name, {'attr': {'class': 'form-control', 'data-oldvalue': app['form'].o_name.vars.value, 'data-validation':'required' }}) }}
+                                        {{ form_errors(app['form'].o_name) }}
+                                        <div>
+                                            <a href="" id="kinopoisk_url"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{% if app['form'].autocomplete_provider.vars.value and app['form'].autocomplete_provider.vars.value == 'tmdb' %}{{ 'TMDB ID'|trans }}{% else %}{{ 'Kinopoisk ID'|trans }}{% endif %}</label>
+                                <div class="col-xs-10 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].autocomplete_provider) }}
+                                        {{ form_widget(app['form'].kinopoisk_id, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(app['form'].kinopoisk_id) }}
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{% if app['form'].autocomplete_provider.vars.value and app['form'].autocomplete_provider.vars.value == 'tmdb' %}{{ 'ID of movie on the TMDB'|trans }}{% else %}{{ 'ID of movie on the Kinopoisk'|trans }}{% endif %}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{% if app['form'].autocomplete_provider.vars.value and app['form'].autocomplete_provider.vars.value == 'tmdb' %}{{ 'TMDB rating'|trans }}{% else %}{{ 'Kinopoisk rating'|trans }}{% endif %}</label>
+                                <div class="col-xs-10 col-sm-7">
+                                    <div class="col-xs-9 col-sm-11 col-md-11 col-lg-11">
+                                        {{ form_widget(app['form'].rating_kinopoisk, {'attr': {'class': 'form-control', 'readonly': 'readonly'}}) }}
+                                        {{ form_errors(app['form'].rating_kinopoisk) }}
+                                    </div>
+                                    <div class=" col-xs-3 col-sm-1 no-padding">
+                                        <button class="btn btn-default btn-app-mini btn-circle" type="button" id="update_rating_kinopoisk"><i class="fa fa-refresh"></i></button>
+                                    </div>
+                                </div>
+                                <i class="i-hint"
+                                    title="{% if app['form'].autocomplete_provider.vars.value and app['form'].autocomplete_provider.vars.value == 'tmdb' %}{{ 'Film rating on the TMDB. Autocomplete only'|trans }}{% else %}{{ 'Film rating on the Kinopoisk. Autocomplete only'|trans }}{% endif %}" >
+                                    <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                </i>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label uniseries">{{ 'Length'|trans }}</label>
+                                <label class="col-sm-2 control-label ">{{ 'Approximate duration'|trans }}</label>
+                                <div class="col-xs-10 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].time, {'attr': {'class': 'form-control', 'data-validation':'number', 'data-validation-optional' : 'true'}}) }}
+                                        {{ form_errors(app['form'].time) }}
+                                    </div>
+                                    <i class="i-hint uniseries"
+                                        title="{{ 'Film length in minutes Example: 102' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                    <i class="i-hint"
+                                        title="{{ 'Approximate duration(format)  of episode of serial on minutes. Example: 24' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                    {#
+                                    <span class="help-inline col-xs-12 col-sm-12">
+                                        <span class="small txt-default uniseries">{{ 'Film length in minutes Example: 102'|trans }}</span>
+                                        <span class="small txt-default">{{ 'Approximate duration(format)  of episode of serial on minutes. Example: 24'|trans }}</span>
+                                    </span>
+                                    #}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Country'|trans }}</label>
+                                <div class="col-xs-10 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].country, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(app['form'].country) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Director'|trans }}</label>
+                                <div class="col-xs-10 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].director, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(app['form'].director) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Actors'|trans }}</label>
+                                <div class="col-xs-10 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].actors, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(app['form'].actors) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Movie description'|trans }}</label>
+                                <div class="col-xs-10 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].description, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(app['form'].description) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Comments'|trans }}:</label>
+                                <div class="col-xs-10 col-sm-7">
+                                    <div class=" col-xs-9 col-sm-11">
+                                        {{ form_widget(app['form'].comments, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(app['form'].comments) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'MPAA rating'|trans }}</label>
+                                <div class="col-xs-10 col-sm-7">
+                                    <div class=" col-xs-5 col-sm-5">
+                                        {{ form_widget(app['form'].rating_mpaa, {'attr': {'class': 'populate placeholder'} }) }}
+                                        {{ form_errors(app['form'].rating_mpaa) }}
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{{ 'MPAA age restriction' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label ">{{ 'Age restriction'|trans }}</label>
+                                <div class="col-xs-10 col-sm-7">
+                                    <div class=" col-xs-5 col-sm-5">
+                                        {{ form_widget(app['form'].age, {'attr': {'class': 'populate placeholder'} }) }}
+                                        {{ form_errors(app['form'].age) }}
+                                    </div>
+                                    <i class="i-hint"
+                                        title="{{ 'Recommended viewer age' |trans }}" >
+                                        <img class="i-hint-sign" src="{{app.request_context.baseUrl}}/img/field-hint-sign.svg" />
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    {% endblock form_step_by_step %}

@@ -1,0 +1,61 @@
+{% extends app['twig_theme'] ~ '/layout.twig' %}
+{% import  app['twig_theme'] ~ '/macro/iptw_macro.twig' as main_macro %}
+
+{% set title = 'Events'|trans ~ ': ' ~ 'list of scheduled events '|trans %}
+
+
+{% block footer_js %}
+    
+        {{ parent() }}
+        {% include app.twig_theme ~ "/basic_templates/scripts-datatables.twig" %}
+        {% include app.twig_theme ~ "/basic_templates/scripts-select2.twig" %}
+
+{% endblock footer_js %}
+
+{% block footer %}
+        
+        {{ parent() }}
+        {% include app['twig_theme'] ~ "/basic_templates/scheduler_events_menu.twig" %}
+        
+        <script type="text/javascript" defer>
+            {% include app.twig_theme ~ "/Events/event_scheduler/event_scheduler.js.twig" %}
+        </script>
+
+{% endblock %}
+
+
+{% block content %} 
+    <div id="iptv_list">
+        <div class="row  filters-actions-pannel">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {{ main_macro.get_datepicker_double_input(3, 6) }}
+                {{ main_macro.get_filter('type', 'Type'|trans, 'id', 'title', app['scheduleType'], 5, 9) }}
+                {{ main_macro.get_filter('state', 'State'|trans, 'id', 'title', app['scheduleState'], 5, 9) }}
+
+                <a id="add_events" href="#" class="btn btn-success pull-right no_context_menu"><i class="fa fa-plus"></i>{{ 'Add event'|trans }}</a>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="box">
+                {% if attribute(app, 'dropdownAttribute') is defined %}
+                    {{ main_macro.get_dropdown_attribute(app['dropdownAttribute']) }}
+                {% endif %}
+                <div class="box-content">
+                    <div class="box-content no-padding">
+                        <div class="dataTables_processing"></div>
+                        <table class="table  table-hover table-datatable" id="datatable-1">
+                            {% if attribute(app, 'dropdownAttribute') is defined %}
+                                {{ main_macro.get_datatable_head(app['dropdownAttribute']) }}
+                            {% endif %}
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
