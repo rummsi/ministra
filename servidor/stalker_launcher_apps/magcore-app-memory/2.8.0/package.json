@@ -1,0 +1,90 @@
+{
+  "name": "magcore-app-memory",
+  "version": "2.8.0",
+  "description": "Memory is a game for memory development. Find out how much time you need to open all the matching cards.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "ministra",
+    "application",
+    "magcore",
+    "memory"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "app",
+    "category": "games",
+    "name": "Memory",
+    "description": "Memory is a game for memory development. Find out how much time you need to open all the matching cards.",
+    "uris": {
+      "app": "/",
+      "entry": "index.html",
+      "icons": {
+        "480": {
+          "logoNormal": "img/480/icons/normal.png",
+          "logoActive": "img/480/icons/active.png",
+          "primeLogoNormal": "img/576/icons/prime.normal.png",
+          "primeLogoActive": "img/576/icons/prime.active.png"
+        },
+        "576": {
+          "logoNormal": "img/576/icons/normal.png",
+          "logoActive": "img/576/icons/active.png",
+          "primeLogoNormal": "img/576/icons/prime.normal.png",
+          "primeLogoActive": "img/576/icons/prime.active.png"
+        },
+        "720": {
+          "logoNormal": "img/720/icons/normal.png",
+          "logoActive": "img/720/icons/active.png",
+          "primeLogoNormal": "img/720/icons/prime.normal.png",
+          "primeLogoActive": "img/720/icons/prime.active.png"
+        },
+        "1080": {
+          "logoNormal": "img/1080/icons/normal.png",
+          "logoActive": "img/1080/icons/active.png",
+          "primeLogoNormal": "img/1080/icons/prime.normal.png",
+          "primeLogoActive": "img/1080/icons/prime.active.png"
+        }
+      }
+    },
+    "colors": {
+      "splashFont": "#fff",
+      "splashBackground": "#f7a81a"
+    }
+  },
+  "dependencies": {
+    "magcore-core": "^3.0.0"
+  },
+  "_id": "magcore-app-memory@2.8.0",
+  "scripts": {},
+  "_shasum": "97de5354c1c331e59b84e1c9a5896fc8bf0d4896",
+  "_from": "magcore-app-memory@2.8.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "97de5354c1c331e59b84e1c9a5896fc8bf0d4896",
+    "tarball": "https://registry.npmjs.org/magcore-app-memory/-/magcore-app-memory-2.8.0.tgz",
+    "integrity": "sha512-YkTllmsIYDVVkFmzjG7ers7BdtBIQoowJgRnR5PHGlR0fgluCNDk5M5rTiSiaoo+pYaErq1nnccx5u8Vi/Bcpg==",
+    "fileCount": 123,
+    "unpackedSize": 1849023,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtiMCRA9TVsSAnZWagAAAB8P/3oIj2a9e5E24MrOFUop\n2PShjxO/3BEzU0YkYt+FN8MKOIMj74tVgTxpYxWMGpTmGGRfRLNx7sIbpA8r\nl/KA/MQlJIfHqMXt7a8ED+r5VRg230h0ov6ChP8TEkM0Rhdg6Ky3MnUkUhyS\niFVW6VZzZWyIj+tE5gO4UrvNK7J757Y1Ay435jJ+7wXS1W/o9rdiyDYwKj61\nn1CDOhpisM/PsJmWQs0HELalqwr9qcQ0TnvcYSVTjckKdbcZqerbhNekYDP7\nrY58D2lV0n6d/4C01RMy0hn737zv8WbD5fgc5aySX2DKuFJC/cC1FTBuwvus\nJwmUadc/T/bSRfWv0Yr/hCwq7nkc/IfaiAbtFMkFV/Ah7djeQRh1CZ7k7mWb\nOTYKnh+YRTb0y7qnP/pQsj+6TWqNqXNUk5Vn2kA2y0FmzP9yHQpV8mXk734E\nA8k2eO5qlI68gSJ01UU6QplV9P0UpAqNZNn49R8dbFGMPg0mqni7mdDHOBqY\nLasG+qi2ZtMqza6ERiCyv1KCZtGAcm1aZAdk5BdQiDHE+BaaxyI5aPPSM0K8\ntzkH6hfbdk3sJazbcKITVPUVdyQosIKJNj3FI7M99oUupx5YTh7/DOumxC4F\nLBZPW8WRrxeffz/Lw4peRbWa2/OGinZojnSEOBms62HIasHEitdPTbnioJNv\nbT01\r\n=jaTD\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-app-memory_2.8.0_1556011147736_0.06425818163337982"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-app-memory/-/magcore-app-memory-2.8.0.tgz"
+}

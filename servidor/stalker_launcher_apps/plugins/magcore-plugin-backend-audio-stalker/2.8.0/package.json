@@ -1,0 +1,59 @@
+{
+  "name": "magcore-plugin-backend-audio-stalker",
+  "version": "2.8.0",
+  "description": "Audio backend plugin for stalker.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "ministra",
+    "plugin",
+    "video",
+    "backend"
+  ],
+  "license": "license.md",
+  "config": {
+    "name": "audioBackend",
+    "type": "plugin",
+    "contentBoardApi": "1",
+    "uris": {
+      "entry": "main.js"
+    }
+  },
+  "dependencies": {
+    "magcore-core": "^3.7.86"
+  },
+  "_id": "magcore-plugin-backend-audio-stalker@2.8.0",
+  "scripts": {},
+  "_shasum": "ba83fa9e18c656147e6ea7a8ad6f85308a421441",
+  "_from": "magcore-plugin-backend-audio-stalker@2.8.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "ba83fa9e18c656147e6ea7a8ad6f85308a421441",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-backend-audio-stalker/-/magcore-plugin-backend-audio-stalker-2.8.0.tgz",
+    "integrity": "sha512-lRIwy4ylDl6YUfCQvMRqFHyhVcYBzJjf/jW78VWTbjpD94s/svVAtbOich05PNtmtKj1JiB6GE1TaWsMVG9+Og==",
+    "fileCount": 39,
+    "unpackedSize": 93252,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtkNCRA9TVsSAnZWagAA1W0P/1Mzvn+eYtrJ6nxnTNyT\nLGGvVKANzbw+cQtytGZSYBCm3EbCoQOoFHwjOt5XTYkC4vSsUDRum8m4WPRW\n4afx+zABnVd0vIupN8T3Rst6Y4ICB1Bf50rqaM9rMXJBDQ39TIKcCky3cxko\nHRrb2cpffYxEOMwTtGdhc7sAp/ced9jVfkoopm+GQuBSVY9sLnBRoyYnDdy0\noPuM6ACzCrfgjUweYhkyhqL7H5Kx8/Cs6kaDEeHc5BYAZzMcBiUE5Ezgl3n4\nzGoWsqYdjgJAkMyWuNuBPiOZkm2h9Xt8MyE83LOh0+jzsE7h9+PM+Yc3UQc2\nbC4RdJAxNAKOYkVH2usSZD2q10gKaKd4iSFWYO+oIgSCxuVcT8LdtQBaqqtW\n/fT4bEG3f4mEtJ2aki6ZdowVUohKpAK/2WuxN3TCsuEB9ufOA+ltgJajM7SK\nO1aLTA53oqncQ4VKso3A5l46H/fsocjMf8XeRwv6lyJmEZjL7IL3qCsZaHCn\nj3cqHPfng+ZQbBWzXOTu2SX5kMaxmnPJuS1U8CU0MLM2nlMzAOK225XiMyJT\ndXP7VsfhaS7sAvy5IYRW3++Yq5vznExfLQzxrppomNjx2dD1v1WhUNjOKSr/\n3ugJyACG1cMXVmC+JE2Wewz9OhVjN6eVrT/wgBS1FQihtMEEUTxYQZLOK4a3\nQNMw\r\n=Re4H\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-backend-audio-stalker_2.8.0_1556011277104_0.5622054459389538"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-backend-audio-stalker/-/magcore-plugin-backend-audio-stalker-2.8.0.tgz"
+}

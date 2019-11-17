@@ -1,0 +1,64 @@
+{
+  "name": "magcore-plugin-settings-audio",
+  "version": "2.10.0",
+  "description": "Audio settings plugin",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "ministra",
+    "settings",
+    "plugin"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "plugin",
+    "name": "settingsAudio",
+    "daemon": true,
+    "tuner": true,
+    "uris": {
+      "entry": "main.js"
+    },
+    "platforms": {
+      "exclude": {
+        "emulator": "*"
+      }
+    }
+  },
+  "dependencies": {
+    "magcore-plugin-settings-stalker": "^1.3.7"
+  },
+  "_id": "magcore-plugin-settings-audio@2.10.0",
+  "scripts": {},
+  "_shasum": "0aa4a04c0402389902941a8f3dd91f630244896f",
+  "_from": "magcore-plugin-settings-audio@2.10.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "0aa4a04c0402389902941a8f3dd91f630244896f",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-settings-audio/-/magcore-plugin-settings-audio-2.10.0.tgz",
+    "integrity": "sha512-UAXPq6+QwNMH0y+ADsKRgkv5mYwPJd/Ps/a/S1PceShWsTBWSy+jachljrY2RbqVW26i56GlPE/MTVT3sqcKqQ==",
+    "fileCount": 23,
+    "unpackedSize": 108291,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtleCRA9TVsSAnZWagAAm7gP+wR90XC45VAr382RPwod\nf3w/+D5W2Mw7fhSJpchKNa8R7ylMM9tahdbR4P0VHYFa6XK8owXDwuqZCc2q\nPr5JW7dqIhcTqo1PNEzk+oFG524Lds6zD3BuRIFAL4P7nQKTVJQrQvNhg6O9\nN+7B1oKBzoG51eAaV1CCU5JP4rjYDC3zTCr3mpiKrrQQOZ6Xx6FQxiYs/asU\nRjzjnOJfaLZyBfvbWSOUJgmsJqlkHp88a40zTVVbzUuihNk5HCgRPA/YiY27\ni2fit0V0YytZ8I4uek7iG2aXArWHsq9rMyRkTpNGyyHX8H+W1ZuVXg/NgPT/\nSi1PAlVOGN6rwfD6X6sde4J2ksGUGFZfgp0+9xrWvDAitqzssuxUZioxZ9P6\ntQYNTR8kof/vuLZzRt2q9AoDgiDquxq4QuEqDJfQ6lgtYn699Tp4Xx3muYoj\nkhEe1ryUXve+ihl7vCF4pJBUL62p30tiEnNFpFOTkoAYUNCXuaSvLQDN2s++\nv7V8rRYOu1tQwSIDbmcYJCXE+AcTFbPxz2hKN1PKRW6kPrYTuaCvNKHcXiGR\ncmzYXVwlNoVfqegwqTP9DiZVjPEBFgXKC8ufQhnHMyJgilXaez7bJRQzK3DZ\nPi1jZjfFyJL8p0COZTyNGJMkRyM88wkWRPMY6rTXq+M9B1jn4H3DfXo6T+DF\n47aq\r\n=fPnV\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-settings-audio_2.10.0_1556011357937_0.9711985481147194"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-settings-audio/-/magcore-plugin-settings-audio-2.10.0.tgz"
+}

@@ -1,0 +1,97 @@
+{
+  "name": "magcore-plugin-settings-default-structure",
+  "version": "1.6.0",
+  "description": "Structure of the settings",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "plugin",
+    "settings"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "plugin",
+    "name": "settingsStructure",
+    "uris": {
+      "entry": "main.js"
+    },
+    "options": [
+      {
+        "name": "tree",
+        "desc": "{\"systemSettings\":[\"keyboardLayouts\",\"language\",\"timezone\",\"ntp\",\"playback\",\"dvb\",\"timeshift\",\"teletext\",\"updater\",\"remote-control\",\"standby\",\"systemSettingsMag\"],\"network\":[\"ethernet\",\"pppoe\",\"wifi\",\"upnp\",\"igmpVersion\",\"multicastProxy\",\"portals\",\"speedtest\",\"traceroute\"],\"video\":null,\"settingsAudio\":null,\"stalkerSettings\":null,\"userInterface\":[\"theme\",\"screenSaver\",\"hdmiReaction\",\"apd\"],\"deviceInfo\":null,\"loadEmbedPortal\":null}"
+      }
+    ],
+    "tree": {
+      "systemSettings": [
+        "keyboardLayouts",
+        "language",
+        "timezone",
+        "ntp",
+        "playback",
+        "dvb",
+        "timeshift",
+        "teletext",
+        "updater",
+        "remote-control",
+        "standby",
+        "systemSettingsMag"
+      ],
+      "network": [
+        "ethernet",
+        "pppoe",
+        "wifi",
+        "upnp",
+        "igmpVersion",
+        "multicastProxy",
+        "portals",
+        "speedtest",
+        "traceroute"
+      ],
+      "video": null,
+      "settingsAudio": null,
+      "stalkerSettings": null,
+      "userInterface": [
+        "theme",
+        "screenSaver",
+        "hdmiReaction",
+        "apd"
+      ],
+      "deviceInfo": null,
+      "loadEmbedPortal": null
+    }
+  },
+  "_id": "magcore-plugin-settings-default-structure@1.6.0",
+  "scripts": {},
+  "_shasum": "01a12f8c46e6a6ade209ae5b69585a398433de54",
+  "_from": "magcore-plugin-settings-default-structure@1.6.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "01a12f8c46e6a6ade209ae5b69585a398433de54",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-settings-default-structure/-/magcore-plugin-settings-default-structure-1.6.0.tgz",
+    "integrity": "sha512-pQ2yFwl+tT39bFN98oVfNEGYlp5pQSKKhQiwBa2SehsC86tvYUqLbpF6nUSGqd/pU/S78Yt5PyhBZRD9RyL+2w==",
+    "fileCount": 5,
+    "unpackedSize": 23027,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtliCRA9TVsSAnZWagAA7MEP/1A9D1S2zLrMP1KCuTcw\nKuGyndh84NuvObiVTzSaagfwigDc6IyIwsLBbEoAs1g3Rm338OYaYlRyYrYI\nkznXHY7ItIBzierXbJuNa9fZXK0K9anZzEMGHz33GHkTJDD3xILccTak8jJL\nODpeG85XAfETIoXEHZ32Ms6yjvliVaAfytsgwsurHz0yf5mFGrP60zcdftmz\nhbR0t+bqnmDoXd423JUpzNyvR+eHl34ph0l0KkDcju+3q0deza53Dotk9ULs\nhCa+CQf/6OylWgTHiXSRJnEckqXzMVT7+EkVTXffToRr4xOlqFNeVOYEKnOE\nDombjuKrD0zaeQiWbbhK64wjc8DOa522LyoWFFmcY/UQXVFroPXBDfKTdRSu\niJeN/wpAeFcP0FVJziOylnLRO+NL4o/mbPfn9BgEcmu6Uf6H/VN2R6EsAxdf\nhY6TqnnOI0g+JPhJT1BxgYogfOehl/1juRZL7JEaFgyKHFbdk7WzDW+0OkAX\n9D1HAbimcf0UCTpXd4djkWhrOMZskTdhaT5pNvw8voV1NPSrmAaKXCSFjjKu\njn/dkFV4tA0WDKM8HNTznBPkRyggQb8UWW4RFTqgVafd8zu2z/8uOnvdFuYK\n/omh1NWYNX3sYXuWW0jV3R0f5CM3M2oaBg+YyK5LXaysaf90WwCPs5VQLuxV\nO8gB\r\n=3+I2\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-settings-default-structure_1.6.0_1556011362014_0.8479970432971109"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-settings-default-structure/-/magcore-plugin-settings-default-structure-1.6.0.tgz"
+}

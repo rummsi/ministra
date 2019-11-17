@@ -1,0 +1,64 @@
+{
+  "name": "magcore-plugin-timeshift",
+  "version": "1.8.0",
+  "description": "Plugin",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "ministra",
+    "settings",
+    "plugin"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "plugin",
+    "name": "timeshift",
+    "tuner": true,
+    "uris": {
+      "entry": "main.js"
+    },
+    "platforms": {
+      "exclude": {
+        "emulator": "*",
+        "emulator_stb": "*"
+      }
+    }
+  },
+  "dependencies": {
+    "magcore-plugin-settings-stalker": "^1.3.0"
+  },
+  "_id": "magcore-plugin-timeshift@1.8.0",
+  "scripts": {},
+  "_shasum": "777d99631069f49f182f1c890b4742f65b2c4d04",
+  "_from": "magcore-plugin-timeshift@1.8.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "777d99631069f49f182f1c890b4742f65b2c4d04",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-timeshift/-/magcore-plugin-timeshift-1.8.0.tgz",
+    "integrity": "sha512-SmjS7ul0S9gS7vaYt6/6OY57RQ04NOW/f4yPpkFeuGn0NubgKUqPGuteiNZqamiPKd6MGWXz5WfxO/bRXPfL+A==",
+    "fileCount": 23,
+    "unpackedSize": 120968,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtmlCRA9TVsSAnZWagAAYicP/jIjVRAfGOtPmS7gJRl+\n7nF94rSTHi92KNbS/6fA6uGwCSW+9UiwrKtcabosMvJ4fw8/1Vh+M01P8BCC\nVDmFQpKU3eu0lnz3mX7U5yaMsjskvCIViW5dTQJ4SQIVWsYeetWuhQA1dRFI\n9jRvktLDOnvNz2uO0zRNZLu71f6Aye6TPxjrrJVxOogWSUiiBfcYrpyl3GOz\nkTJcefXhvtPIJ7UKFp+02smM4/rbgDoyQdsQJ2hrMlRyHnR8od8Y1APhkrhh\n24eZ7FJfLS/AUAGMfr0YEkmkanXP0R5q6/5KW6YIVMuJxxdP+EGLTDLXbpIP\npmUIDEg9S5D5MGWrUtrCZW7uSpzV+EnwsMTN+JN1anV/G8iEHjdMIKkJgNY3\nuv6/HK2K3IHFaPDWXVZ1Lx9roZXUlpULk0v6O47n1kVziDTexI5eNvkXt2cP\nbSnzbHtumH18Bp+/RVNeXFXrHlqhGOarJ+Jef2jy+r//PJJjzzxIOSag2ArB\nVWBL6X9xz5rU2f+hyaqwdxifraP8Qu5IBY7KOBl38Mmv2xwvlpRrs/QFCohz\nHHe6iXZeB245jdf/Mb70omvuxID6d4xDhub/OpQa485dccXHs4d68ARUW4UB\nnbO8JNJ4d1uaEsArqpxUkjJnjwdMOCD6OHETyri+xF6ZntndTCG9FWkcrJhl\n9XDq\r\n=u4HD\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-timeshift_1.8.0_1556011429241_0.6652253241631667"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-timeshift/-/magcore-plugin-timeshift-1.8.0.tgz"
+}

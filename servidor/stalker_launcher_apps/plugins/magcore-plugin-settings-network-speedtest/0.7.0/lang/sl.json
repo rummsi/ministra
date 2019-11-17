@@ -1,0 +1,1 @@
+{"meta":{"charset":"utf-8","project":"magcore-plugin-settings-portals 0.0.4","language":"sl","plural":"(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)"},"data":{"":{"Available":"Na voljo","Error":"Napaka","Measure progress":"Napredek merjenja","Network speed":"Hitrost omrežja","Not available":"Ni na voljo","Speed:":"Hitrost:","Waiting":"Na čakanju","speedtest":""}}}

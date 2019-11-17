@@ -1,0 +1,58 @@
+{
+  "name": "magcore-plugin-network-nfs",
+  "version": "1.6.0",
+  "description": "NFS network plugin for Ministra TV Platform.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "plugin",
+    "ministra",
+    "network",
+    "nfs"
+  ],
+  "license": "license.md",
+  "config": {
+    "name": "networkNfs",
+    "type": "plugin",
+    "uris": {
+      "entry": "main.js"
+    }
+  },
+  "dependencies": {
+    "magcore-core": "^3.7.86"
+  },
+  "_id": "magcore-plugin-network-nfs@1.6.0",
+  "scripts": {},
+  "_shasum": "895afe740d0554b48587aa4fbd723a2c151f3892",
+  "_from": "magcore-plugin-network-nfs@1.6.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "895afe740d0554b48587aa4fbd723a2c151f3892",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-network-nfs/-/magcore-plugin-network-nfs-1.6.0.tgz",
+    "integrity": "sha512-2Xx2/fgZZIUoQcUf4NZPE9W2683qtB4iTWXNiu5ZWWEA9/rf5Fx4kNJ+d9Q1duDjW2QUfrqIr5KHEgXG4ZkIZg==",
+    "fileCount": 5,
+    "unpackedSize": 32509,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtlECRA9TVsSAnZWagAAsDsP/RqYAgqfC5pZE8/3X39c\nTQsk1SBKEWjLnLdA7HZ7ZIT7X0tP1ychYI9mKa4rkrkkL7MHkh1PaBrh7OBT\nW57mXEceJL+1h72E9SLnFca4ixMPDxooncz+674bR+Pk/ghL/rtNxiZ5NhZ2\nmPXubdR2mByH7HxNVEzBIvhLNEY+Ir912A/+oR8bifXO4sthjVXvwXFN5eSU\nhIYijsnHG8DzpT8rqWHMLnGte86POAsuqptB75oT6jPA2QKIQhYtIhaMVakV\nI2BGib1UCwLfjt5z69P31CiGYGEgH5/C6wRAozE3rPg+siea/ALEDaLv16qx\noZTyI6PWxTkCto6D8dQDAJqASyO18XRoOtgsRIVZ3Fa2XsRkQeikXF9cbhK6\nyIQxWe8g24Jb0VJBG/jovk90M99z3baFha54xc7vvTH+DBxm3ihCxbpenxlA\nZH2u6zSfXAWCPyVeQKhTiyZHYOHZYa4vg5OpofPvfcgdZmPP1JqyPL7RxX+x\nVn6DiWs8/8H92QcUwDW7YOFYvka2S9SXm8Si3HCH1JvotwYzyO173RM3A+kX\nR2FwvfIqm/V0u+m7Kszl7qYY8uOFosAutgjnY53vZuHKOtUBbYsByEyLxdNh\nKPcA3aPCJEFAPfzeMamIhNih+YsiPlnyT2GYqsv5x8mtF//yNuSloYLZry7u\nugrU\r\n=vcyl\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-network-nfs_1.6.0_1556011331937_0.18230577288702587"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-network-nfs/-/magcore-plugin-network-nfs-1.6.0.tgz"
+}

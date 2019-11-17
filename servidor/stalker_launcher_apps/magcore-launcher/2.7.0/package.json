@@ -1,0 +1,66 @@
+{
+  "name": "magcore-launcher",
+  "version": "2.7.0",
+  "description": "Applicaion launcher for mag.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "ministra",
+    "launcher"
+  ],
+  "license": "license.md",
+  "dependencies": {
+    "magcore-core": "^3.2.0",
+    "magcore-theme": "^1.0.5"
+  },
+  "config": {
+    "name": "Smart Launcher",
+    "description": "Simple launcher for ministra apps",
+    "type": "launcher",
+    "unique": true,
+    "uris": {
+      "app": "/",
+      "entry": "index.html"
+    },
+    "options": [
+      {
+        "name": "config",
+        "desc": "launcher configuration file, in JSON format"
+      }
+    ]
+  },
+  "_id": "magcore-launcher@2.7.0",
+  "scripts": {},
+  "_shasum": "8de4168f71fb14fc34218ce6b7f2eaa705a4ad1a",
+  "_from": "magcore-launcher@2.7.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "8de4168f71fb14fc34218ce6b7f2eaa705a4ad1a",
+    "tarball": "https://registry.npmjs.org/magcore-launcher/-/magcore-launcher-2.7.0.tgz",
+    "integrity": "sha512-pULU/XDbStPZ3PDcmQjQ2WGd05gqrvkM58Na/ZF1LQJGhoYa54RQO+DDW4aDFT+5mEqpVtI/BQOam0zdLbAE5Q==",
+    "fileCount": 82,
+    "unpackedSize": 437190,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtjfCRA9TVsSAnZWagAAZB4P/j7ilft2BEhHvUn7fRq2\nOOkwtSAxtKXvFidU/MuFkC25YvXZyQq1c5StU3bMwbWgvWIa3GxTvvX8Hnq7\nGRU/I+zMnobHul20v/3MXRctL4WZl5XHqbBwT62jhfdjj3zouwJdamE/OgZU\nALBQdGS7YU1aV3FYbms/8XGVxjEC70OftiKrJiw83Af/GftMU7WS9K1c04gi\nBZ9aFOgdKY/sHfbevuV9TeYaHfDfX5blXBIa4oB1WNj4mwrskF6QX18Axqgo\n5iNJhJW7iWmwZsrSdCfLgvGcpK2n4L14b3/V8sjIfjVQTs1iJFThw7pB4/jM\n2Wuh7Qp/6m+IJVDd7J4HzAsEI3nu3US+ZaJkwL6JFNVYv82ZS+gVSBr6WcPo\nZQcjopTRNd/QAgdDgFC4KCzshEp60AI7//YlPnU00ZKRDVNOtJcYWoBATBzo\nJozPmmXvirl6/Yfaa3oL16RjltfhRmuAMZYeJiCGtXkKXpo2yZYvwmYZAprF\nltxzzaqMB4VX+stsAmQbQBi8PPkc6/gohCJzgUbPvpf8KMZDib1oeqD5tU+/\n3OOQx7qun1xhLBxVlN/BNhY4jqK5/0lolfyx/ax8Ri49/ibbrrFpp2/LHPs9\nJtF52ogDroE/aR/ABP2Js/2pADKhDW2LmyJbehL5iLG+Gd6OFe9wG2jATnxv\nIYMn\r\n=OPlH\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-launcher_2.7.0_1556011230935_0.9459862388244846"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-launcher/-/magcore-launcher-2.7.0.tgz"
+}

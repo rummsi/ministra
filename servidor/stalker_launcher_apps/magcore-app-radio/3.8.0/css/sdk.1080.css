@@ -1,0 +1,377 @@
+/* spa-app: release */
+html, body {
+    height: 1080px;
+    width: 1920px;
+    font-size: 33px;
+    font-family: Ubuntu, sans-serif;
+    overflow: hidden;
+    margin: 0;
+    padding: 0; }
+
+table {
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0; }
+    table td {
+        padding: 0; }
+
+.maxh {
+    height: 100%; }
+
+.maxw {
+    width: 100%; }
+
+a {
+    text-decoration: none; }
+
+.invisible {
+    visibility: hidden; }
+
+/* stb-app: release */
+html, body {
+    -webkit-user-select: none; }
+
+/* mag-app: release */
+
+.mag-component-footer {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 1740px;
+    height: 54px;
+    line-height: 54px;
+    position: absolute;
+    left: 90px;
+    bottom: 57px;
+    display: table;
+    z-index: 10; }
+    .mag-component-footer.hidden {
+        display: none; }
+    .mag-component-footer > table {
+        vertical-align: middle;
+        text-align: center; }
+        .mag-component-footer > table > tbody > tr > td {
+            width: 54px; }
+            .mag-component-footer > table > tbody > tr > td.central {
+                width: 1632px; }
+                .mag-component-footer > table > tbody > tr > td.central > .wrapper {
+                    height: 54px;
+                    visibility: inherit; }
+                    .mag-component-footer > table > tbody > tr > td.central > .wrapper.hidden {
+                        display: none; }
+                    .mag-component-footer > table > tbody > tr > td.central > .wrapper > .button {
+                        display: inline-block;
+                        height: 54px;
+                        padding: 0 30px 0 22.5px; }
+                        .mag-component-footer > table > tbody > tr > td.central > .wrapper > .button.disabled {
+                            opacity: 0.3; }
+                        .mag-component-footer > table > tbody > tr > td.central > .wrapper > .button.hidden {
+                            display: none; }
+                        .mag-component-footer > table > tbody > tr > td.central > .wrapper > .button .title {
+                            padding-left: 15px; }
+            .mag-component-footer > table > tbody > tr > td .iconImg, .mag-component-footer > table > tbody > tr > td .iconImg:before {
+                height: 54px;
+                line-height: 54px;
+                width: 54px;
+                text-align: center;
+                float: left; }
+            .mag-component-footer > table > tbody > tr > td .title {
+                display: block;
+                float: right; }
+
+.mag-component-layout {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    display: table;
+    width: 100%; }
+    .mag-component-layout.hidden {
+        display: none; }
+    .mag-component-layout > div {
+        display: table-cell;
+        text-align: left;
+        vertical-align: middle;
+        height: 100%; }
+
+.mag-component-layout-list {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 100%;
+    position: relative; }
+    .mag-component-layout-list.hidden {
+        display: none; }
+    .mag-component-layout-list > .body > .item {
+        cursor: pointer;
+        padding: 0 12px;
+        vertical-align: middle;
+        height: 72px;
+        line-height: 72px; }
+    .mag-component-layout-list.horizontal {
+        display: table;
+        table-layout: fixed;
+        width: 100%; }
+        .mag-component-layout-list.horizontal > .item {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle; }
+    .mag-component-layout-list > .body > .item > div {
+        display: table;
+        width: 100%; }
+        .mag-component-layout-list > .body > .item > div > div {
+            display: table-cell;
+            text-align: left;
+            vertical-align: middle;
+            height: 100%; }
+        .mag-component-layout-list > .body > .item > div > .number {
+            width: 84px; }
+    .mag-component-layout-list .noData {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        display: block;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0; }
+        .mag-component-layout-list .noData:before {
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            content: ""; }
+        .mag-component-layout-list .noData > div {
+            display: inline-block;
+            vertical-align: middle;
+            width: 100%;
+            text-align: center; }
+        .mag-component-layout-list .noData.hidden {
+            visibility: hidden; }
+
+.mag-component-modal {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: table;
+    z-index: 10;
+    visibility: visible; }
+    .mag-component-modal.hidden {
+        display: none; }
+    .mag-component-modal.hidden {
+        display: table;
+        visibility: hidden; }
+    .mag-component-modal.active > div > div > div.overlay {
+        display: none; }
+    .mag-component-modal > div {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center; }
+        .mag-component-modal > div > div {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            max-width: 80%;
+            min-width: 399.375px;
+            max-height: 80%; }
+            .mag-component-modal > div > div > div.header {
+                height: 105px;
+                line-height: 105px;
+                font-size: 36px;
+                padding: 0 30px; }
+                .mag-component-modal > div > div > div.header .text {
+                    display: table-cell;
+                    vertical-align: middle;
+                    text-align: center; }
+                    .mag-component-modal > div > div > div.header .text:empty {
+                        padding: 0; }
+            .mag-component-modal > div > div > div.body {
+                position: relative; }
+                .mag-component-modal > div > div > div.body > div .item {
+                    height: 90px;
+                    line-height: 90px;
+                    padding: 0 30px; }
+            .mag-component-modal > div > div > div.overlay {
+                display: block;
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0; }
+
+.mag-component-panel {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 540px;
+    height: 672px;
+    box-sizing: border-box;
+    padding: 0;
+    display: inline-block;
+    position: absolute;
+    z-index: 0; }
+    .mag-component-panel.hidden {
+        display: none; }
+    .mag-component-panel > .body {
+        overflow: hidden; }
+    .mag-component-panel > .title {
+        display: table;
+        width: 100%;
+        height: 84px;
+        line-height: 84px;
+        position: relative;
+        padding-left: 30px;
+        padding-right: 30px;
+        background-repeat: repeat-x;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box; }
+        .mag-component-panel > .title > div {
+            display: table-cell;
+            text-align: left;
+            vertical-align: middle;
+            height: 100%; }
+        .mag-component-panel > .title .name {
+            max-width: 585px;
+            text-transform: uppercase; }
+        .mag-component-panel > .title .amountContainer {
+            width: 135px; }
+            .mag-component-panel > .title .amountContainer .amount {
+                float: right;
+                height: 36px;
+                min-width: 21px;
+                -webkit-border-radius: 100px;
+                border-radius: 100px;
+                font-size: 29.7px;
+                padding: 0 9px;
+                line-height: 40.26px; }
+    .mag-component-panel .mag-component-list .item {
+        height: 84px;
+        line-height: 84px;
+        font-size: 29.7px; }
+    .mag-component-panel.main {
+        width: 720px;
+        top: 102px;
+        left: 600px;
+        height: 816px;
+        z-index: 2; }
+        .mag-component-panel.main .mag-component-list .item {
+            height: 102px;
+            line-height: 102px;
+            font-size: 33px; }
+        .mag-component-panel.main > .title {
+            height: 102px;
+            line-height: 102px;
+            font-size: 36px; }
+        .mag-component-panel.main.size2 {
+            width: 1170px; }
+        .mag-component-panel.main.size3 {
+            width: 1170px; }
+    .mag-component-panel.left {
+        top: 192px;
+        left: 60px; }
+    .mag-component-panel.right {
+        top: 192px;
+        right: 60px; }
+    .mag-component-panel > .overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0; }
+    .mag-component-panel.active > .overlay {
+        visibility: hidden; }
+    .mag-component-panel.top {
+        z-index: 3; }
+    .mag-component-panel > .shadow {
+        width: 30px;
+        position: absolute;
+        top: 0;
+        z-index: -1;
+        display: none; }
+        .mag-component-panel > .shadow.left {
+            left: -30px; }
+        .mag-component-panel > .shadow.right {
+            right: -30px; }
+    .mag-component-panel.leftShadow > .shadow.left {
+        display: block; }
+    .mag-component-panel.rightShadow > .shadow.right {
+        display: block; }
+    .mag-component-panel.active > .shadow {
+        z-index: 1; }
+
+.mag-component-panel-set {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 100%;
+    height: 100%; }
+    .mag-component-panel-set.hidden {
+        display: none; }
+    .mag-component-panel-set.hidden {
+        display: block !important;
+        visibility: hidden; }
+
+.mag-component-radio-list {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 100%; }
+    .mag-component-radio-list.hidden {
+        display: none; }
+    .mag-component-radio-list > .body > .item {
+        cursor: pointer;
+        padding: 0 12px;
+        vertical-align: middle;
+        height: 72px;
+        line-height: 72px; }
+    .mag-component-radio-list.horizontal {
+        display: table;
+        table-layout: fixed;
+        width: 100%; }
+        .mag-component-radio-list.horizontal > .item {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle; }
+    .mag-component-radio-list > .item .checkBoxWrapper >
+div {
+        display: block; }
+
+.stb-component-page {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 1920px;
+    height: 1080px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    visibility: hidden;
+    overflow: hidden; }
+    .stb-component-page.hidden {
+        display: none; }
+    .stb-component-page.active {
+        visibility: inherit; }
+
+.stb-component-scrollbar {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    display: inline-block;
+    height: 100%;
+    width: 12px;
+    vertical-align: bottom;
+    background-color: #bbb; }
+    .stb-component-scrollbar.hidden {
+        display: none; }
+    .stb-component-scrollbar .thumb {
+        display: block;
+        width: 12px;
+        min-height: 12px;
+        background-color: #aaa; }
+        .stb-component-scrollbar .thumb.hidden {
+            display: none; }
+    .stb-component-scrollbar.horizontal {
+        display: block;
+        height: 12px;
+        width: 100%; }
+        .stb-component-scrollbar.horizontal .thumb {
+            display: inline-block;
+            vertical-align: top;
+            height: 12px;
+            min-width: 12px; }

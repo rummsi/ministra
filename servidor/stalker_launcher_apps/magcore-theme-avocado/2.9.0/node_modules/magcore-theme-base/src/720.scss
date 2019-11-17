@@ -1,0 +1,42 @@
+$width: 1280px;
+$height: 720px;
+
+$imgPath: './img/720';
+$safePadding: 20px;
+$listItemHeight: 56px;
+$mainListItemHeight: 68px;
+$panelTitleSize: 24px;
+$panelFontSize: 20px;
+$mainPanelFontSize: 20px;
+$mainPanelTitleSize: 26px;
+$infoTextFontSize: 22px;
+$iconsSize: 30px;
+$panelIconSize: 28px;
+$fWidth: 25px;
+$fHeight: 15px;
+$panelWidth: 360px;
+$panelX2Width: 800px;
+$modalMsgShadow: 10px;
+$h2: 35px;
+
+$progressHeaderTop: 180px;
+$progressContentHeight: 210px;
+$progressBarHeight: 16px;
+$progressBarBottom: 170px;
+$progressBarLeft: 192px;
+
+// shadows
+$panelHeight:     448px;
+$panelMainHeight: 544px;
+$leftPanelTop:    128px;
+$mainPanelTop:    68px;
+
+$equalizerFrameSize: 17px;
+$equalizerFrameFontSize: 23px;
+
+.panelEx.main.size2 {
+    width: 840px!important;
+}
+.component.clock {
+    z-index: 8;
+}

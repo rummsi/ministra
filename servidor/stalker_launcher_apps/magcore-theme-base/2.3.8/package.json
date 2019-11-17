@@ -1,0 +1,53 @@
+{
+  "name": "magcore-theme-base",
+  "version": "2.3.8",
+  "description": "Base theme for magsdk stalker.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "repository": {
+    "type": "git",
+    "url": "gitlab"
+  },
+  "devDependencies": {
+    "magcore-theme": "^1.5.0"
+  },
+  "keywords": [
+    "theme",
+    "base",
+    "magsdk",
+    "ministra"
+  ],
+  "_id": "magcore-theme-base@2.3.8",
+  "scripts": {},
+  "_shasum": "cf6450ccc7785f7aedf7cd74f38b07d9afdd461b",
+  "_from": "magcore-theme-base@>=2.3.8 <3.0.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "10.3.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "cf6450ccc7785f7aedf7cd74f38b07d9afdd461b",
+    "tarball": "https://registry.npmjs.org/magcore-theme-base/-/magcore-theme-base-2.3.8.tgz",
+    "integrity": "sha512-kl89J9gca6uVdy5Obr2Sp3euw5reeP03+glFjGfNM8QLLzPQFBwp0x+36WjWZRu/z3J/qWnl2AE/AnQGXxi9+A==",
+    "fileCount": 34,
+    "unpackedSize": 1057415,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvxvhCRA9TVsSAnZWagAAtyIP/RibtGROUU3tqGe0oFRn\n6Covw6UvFDWWugdT3XEUIYkY8NLyoE7d+VqFnbENzPXSU9nkMncLLZn2nteW\nyPFMLMosoCYEtbl7hLmM8Pc1Fc0bgvXr5we5sTUsSdhfgScRBG7DNarMF+Ib\noO+3luvhkPCQcWHo9Welc+EZmkr5o4GEehcea10lmJNiBwJBzJInIoxY9Y63\nQY/4Wa7/P7qovN1h76d9IDaiZJ7AeeV9GZ2ZzvkmFVnnE6mzY3x3mTciEND+\npjC+fasZoCMtK74S9lKxvThaFHbCPBtrvb8HtXaZrZFuh/uf5xAtOIbxgwPt\nzzDZM92rmFtP2uRK2W+AA2Hfchbgq8jVUpKShR9Uk4RHkJWulwvvKaHSpnKO\nRbvwq3t7CXpebO/MYf2jrAxlRiMWGkEJvHvqIuM3ZbWecOexZLXuHcPtdDlC\n6Ke+sBiFBK0XQ9ENa7NVSFNrLrQHuAxYrxlXg8kisSj4JT/bubtAfSv0AqRq\nqmXlpFwBLkGc7LSb+1NwQ602Actmbhq6iU51UO2d6yiUJc5ohdL3DsVMjE68\n+XwPijNxbYFMXrZ7j+kIT0BCWCLPxQX2lhGmMj7NmpEK70QoYzMFZeM+NYLx\nApJUpPv01CWfH0nyMgps845EVckRLtw8yVfqLpWZUwkVd+cqy/xvunWBAlFw\nhvQR\r\n=8l7U\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-theme-base_2.3.8_1556028384490_0.6541654733715616"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-theme-base/-/magcore-theme-base-2.3.8.tgz"
+}

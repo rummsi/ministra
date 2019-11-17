@@ -1,0 +1,55 @@
+{
+  "name": "magcore-plugin-settings-stalker",
+  "version": "1.10.0",
+  "description": "Plugin",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "settings",
+    "plugin",
+    "ministra"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "plugin",
+    "tuner": true,
+    "name": "stalkerSettings",
+    "uris": {
+      "entry": "main.js"
+    }
+  },
+  "_id": "magcore-plugin-settings-stalker@1.10.0",
+  "scripts": {},
+  "_shasum": "522c1ac0f099922c83ea6805f2eb3591f4cf7bdc",
+  "_from": "magcore-plugin-settings-stalker@1.10.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "522c1ac0f099922c83ea6805f2eb3591f4cf7bdc",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-settings-stalker/-/magcore-plugin-settings-stalker-1.10.0.tgz",
+    "integrity": "sha512-b4q+/w7eLeHHMlil5oRpZIW3U9Qon/pRiNVTF1g9vrYA8Oq4SrvNXTojlNoiX7QM5mH4KOk5W6/UTS/8i6Wjzg==",
+    "fileCount": 23,
+    "unpackedSize": 151989,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtmMCRA9TVsSAnZWagAAnTsQAJp/cwm49Ycyz9+D20vu\nLMC6n5KmVlcAQtACui4E0pKL5loVYZI07K7uJodcBpHlyMdq0sUc09iuzEwF\nSIdnxewdQF8yucCBz2sr7ORqdszvtLA34h8pkd7W1RqC1ZSOJh+TT6jOCz3w\n4YUDeWCVDlbQbji04h/K2UeU64TzvK1x4Vdd+gFdey83jOJuOh9u/fBGMeSj\nb37/D2NdlOveKHi+a+RVYpgHEZmH3usQMGS7KRZs5iIVEJtUuGvGKY5UH6qJ\nbO8nBxLrLQbkcmKajSyhTk1u8mu9xhXSvA6DLR8YSzp2CQGzoBnNoaATnY5V\ny8nXXljYu5wuWkU18MmFmtxV7qKnCg5XJori/WxHgg8IkxpJ+9/Mwc7GQQg6\nyFbP8mzg0+Zzr9EWP0i3A+2O7um5NYj7nwPQ789K+PbUJ91z1fBOXE00WiMW\nJYZx6Sa2Fc73nO1U2ihbaBO7KU+J7iSNNDzrmSCMo9RhbsM3B8kJVQmEJSdI\nqV0epn9fsXjRvxlNbGpgVEcekPiWxPzU7BIgHvcRnBFukXKUgHe+wq/QUYfv\nkGP+Nhul/3WfMjGZEiOM9Hew5SvNY3XE3WVgWmblw1OuprWj1JgKV9ai8PGb\n/W5l4HIOHZYXC+XxvPA7zBKqg6BJZPg2/3vbAycZw6lZtN9skZ8lEQNTtrfQ\ncyDj\r\n=EoS0\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-settings-stalker_1.10.0_1556011403731_0.8335428003057161"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-settings-stalker/-/magcore-plugin-settings-stalker-1.10.0.tgz"
+}

@@ -1,0 +1,91 @@
+{
+  "name": "magcore-app-2048",
+  "version": "2.9.0",
+  "description": "2048 is one of the world’s most popular puzzles. The rules are simple: you need to shuffle all the bars to one side of the game field. Your goal is to reach 2048.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "ministra",
+    "game",
+    "2048",
+    "application",
+    "magcore"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "app",
+    "category": "games",
+    "name": "2048",
+    "description": "2048 is one of the world’s most popular puzzles. The rules are simple: you need to shuffle all the bars to one side of the game field. Your goal is to reach 2048.",
+    "uris": {
+      "app": "/",
+      "entry": "index.html",
+      "icons": {
+        "480": {
+          "logoNormal": "img/480/icons/normal.png",
+          "logoActive": "img/480/icons/active.png",
+          "primeLogoNormal": "img/576/icons/prime.normal.png",
+          "primeLogoActive": "img/576/icons/prime.active.png"
+        },
+        "576": {
+          "logoNormal": "img/576/icons/normal.png",
+          "logoActive": "img/576/icons/active.png",
+          "primeLogoNormal": "img/576/icons/prime.normal.png",
+          "primeLogoActive": "img/576/icons/prime.active.png"
+        },
+        "720": {
+          "logoNormal": "img/720/icons/normal.png",
+          "logoActive": "img/720/icons/active.png",
+          "primeLogoNormal": "img/720/icons/prime.normal.png",
+          "primeLogoActive": "img/720/icons/prime.active.png"
+        },
+        "1080": {
+          "logoNormal": "img/1080/icons/normal.png",
+          "logoActive": "img/1080/icons/active.png",
+          "primeLogoNormal": "img/1080/icons/prime.normal.png",
+          "primeLogoActive": "img/1080/icons/prime.active.png"
+        }
+      }
+    },
+    "colors": {
+      "splashFont": "#fff",
+      "splashBackground": "#ddb288"
+    }
+  },
+  "dependencies": {
+    "magcore-core": "^3.0.0"
+  },
+  "_id": "magcore-app-2048@2.9.0",
+  "scripts": {},
+  "_shasum": "34886278f55f1f70c89dc45bbf03646a00ab8155",
+  "_from": "magcore-app-2048@2.9.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "34886278f55f1f70c89dc45bbf03646a00ab8155",
+    "tarball": "https://registry.npmjs.org/magcore-app-2048/-/magcore-app-2048-2.9.0.tgz",
+    "integrity": "sha512-kAiA3314NcbS2SQ4pGOfrbvJWJiu48XCagoaTY90lacPu5Xxv+6XYRS236t/8eReFGHkRtfFmO/O6YkvpyExlw==",
+    "fileCount": 51,
+    "unpackedSize": 322801,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvthRCRA9TVsSAnZWagAA5rsQAJmDbZM9K49/4dTC3nVG\nuYxGYxnH/5gNH6ei2mzH58c4cI5xbY04AISGO/rs2zunsBMpEBmEan1hf0My\nMAO0OfPNvI6yn0SSa+uJHsC4xuG4cxy1qhOd7y4e5VIJg3fC+KqSHS3nfluE\nGh4loTW/CW0dTWuQ+dWjIm/5ZMpesZGZN/xd5XEBImm4BY/g+cNu0U7u9+JL\nXad0aV5ZWKznKOu3JqrzDLzVXXDSIP6Cq3Hh1LQrye0m28Ah1vWIb1yZ30n8\nPsVgYcKlyzrHtAkNpVHBDR3PNbDRvA3vL8oUDvFCHVHgl8zldwXRLBVlKedu\nPwN9xSUdtp5ntCFc5fraPggVefsQHgwwDqs2WCGbFwsWv9wKfvsnPxcMSukV\n6nUpVvwI2+0D11lgi2LQltyQzb6H9dCfZQ0i22yQLNb9qIMLEImlN/8YrfbT\nzQ0bzrsivQ+WWEpl4Aki+YRgpUKtx6lWT/nkiXyZ/OEySa2oZW4rGEhr4f8o\nmUA4gBXw0uPQNTV80g3jNJFBrmTRpMZ7L0uicYC4J2ENwBi7sU7txXE26fm2\ncvQRrNRuUVYV76bB8qameEt23A+eb6JxokLz4vepkRrAzpYkP82Rw+1Vu+e5\n5strAJbZVorC4E9GbmaX365JrwPI+3Y7xvNJtRM+o6RSWYvw48lR3ZO8VWDT\nOBIy\r\n=72d6\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-app-2048_2.9.0_1556011088673_0.5637385436581934"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-app-2048/-/magcore-app-2048-2.9.0.tgz"
+}

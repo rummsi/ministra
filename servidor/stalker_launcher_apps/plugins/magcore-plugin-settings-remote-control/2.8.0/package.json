@@ -1,0 +1,66 @@
+{
+  "name": "magcore-plugin-settings-remote-control",
+  "version": "2.8.0",
+  "description": "The Remote control function allows you to connect devices to the set-top box remotely (for example, a mobile phone with MAGic Remote App installed).",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "plugin",
+    "ministra",
+    "settings",
+    "remote control"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "plugin",
+    "name": "remote-control",
+    "daemon": true,
+    "tuner": true,
+    "uris": {
+      "entry": "main.js"
+    },
+    "platforms": {
+      "exclude": {
+        "emulator": "*",
+        "emulator_stb": "*"
+      }
+    }
+  },
+  "dependencies": {
+    "magcore-plugin-settings-stalker": "^1.3.7"
+  },
+  "_id": "magcore-plugin-settings-remote-control@2.8.0",
+  "scripts": {},
+  "_shasum": "6fecc6507cdac48b663ff87ae7e2b644237c069e",
+  "_from": "magcore-plugin-settings-remote-control@2.8.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "6fecc6507cdac48b663ff87ae7e2b644237c069e",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-settings-remote-control/-/magcore-plugin-settings-remote-control-2.8.0.tgz",
+    "integrity": "sha512-9tF4/p8KbQXM3+LHN+XEFmOObvukyDpLA7Ayp4u71R+4/nT8pppVv3mQg2UUha6ApIXiMVve8eOHIEJ1rumwwQ==",
+    "fileCount": 23,
+    "unpackedSize": 78254,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtmDCRA9TVsSAnZWagAAZ44P/25CBFvZVf3owdW9BEuW\n9Y7UAWOjn5nqsCl/XYo971C19QFfGJHWL/fD1Txzxgh08QBLXZUow3+iG2w5\nc9DAuiXUDgBIc1y63TaezTFWi9v/uxiwHfP9YNrva5kn0x3eP6lGt2th8r2P\n+pqwQDbp3UrsWcRo/STub6M0FZVO+0GuHsIh0BmhJ2vDVMBx3Zl7YPB+AAYf\nVgfRCOi1vDuR47bqA6zrTQku81rPdAfLFJqOiKMBo9QXKmwyh9zwijAKOImO\nU3ROxTA30KfkZ42t23808o2G1fJR6WRKiXUJdK/X33vJUCSgZ66uJMa3/xUB\nsi73k8ssygjShcZOeADV4DI8llO4aMOp69Pou5tPZA/J6LqxEuBSXlW3Yn3g\nURVsXo4pmRl22QHU1JIHYzigh+wXS9VJrjyPKpKxbmg5eUeMnJE6abEzodpp\nCce2SEZsW4bjTsLpqi/vTxs4OrMYx9GbvMeEn5i3tn8b3ZP6I+XLnxLZZ3WZ\nh1IqoTo2dGjNsLFbtFIFYYEvuIylDo3cRZ2PIhZWu0tD1fAh3LTiQkAkhX+G\n2I6PesyNFtjLrKXaAobF60kw7fWF/9AYuvDz5qQyl+9nscwFtdgjiWwP+vPb\nz2mqdKuKv4yrEP8pt4gcdPqSiTc51+x10w0ccy6WYwxPW11+Tlvw2n4K9I7v\n32A9\r\n=LRNH\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-settings-remote-control_2.8.0_1556011394430_0.695274861210833"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-settings-remote-control/-/magcore-plugin-settings-remote-control-2.8.0.tgz"
+}

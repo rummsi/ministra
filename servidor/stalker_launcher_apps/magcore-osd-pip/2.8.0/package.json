@@ -1,0 +1,59 @@
+{
+  "name": "magcore-osd-pip",
+  "version": "2.8.0",
+  "description": "Mag osd PiP.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "osd",
+    "pip",
+    "ministra"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "osd",
+    "name": "osd-pip",
+    "actions": {
+      "pip": true
+    },
+    "unique": true,
+    "uris": {
+      "app": "/",
+      "entry": "index.html"
+    }
+  },
+  "_id": "magcore-osd-pip@2.8.0",
+  "scripts": {},
+  "_shasum": "0af257b3f140a2a54959b623a034a1b923b4444e",
+  "_from": "magcore-osd-pip@2.8.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "0af257b3f140a2a54959b623a034a1b923b4444e",
+    "tarball": "https://registry.npmjs.org/magcore-osd-pip/-/magcore-osd-pip-2.8.0.tgz",
+    "integrity": "sha512-bXN5hl3RLPSwl0jfziim9cJPjJAzo7A1xcA84leXIl1ku8ABuszrYjioeYuedeuib8y1GN0IMO6axccawud98w==",
+    "fileCount": 93,
+    "unpackedSize": 415190,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtj/CRA9TVsSAnZWagAAsg0P/3DRJOKRIYAoxAi9SDiB\nTZFTeYzIVRLhE72/DWjm8fwc4QGpUMd5O/Z1rdorZiQftdICjOlJlglXPjYN\naQDOGAE6ESt5F6823ol0KyCOc/s1+1U61MCI+kzXgrg7JTlohLjzJ1bafl07\nAPChtl2ibhy94Hsh0JdXnfLArzPZbfI2SyjHQZORuDnAM1n4UbaDKd7ojzMp\nym9YXlZdbugxaxeI82YfQeHxN0WlSEtOX8cGciIaJcoG+wrWP6H31EUbEgJG\nTzG6RnuL42LFmOLn5S8IDl9asFS7rJUynSAeTwHSXZPEiHHVnLEynyPz2A3T\nrJVL6hBwzUOU/cv93Y+KXFKuFt8w1ITBVqmfEexsPuNDEvdQJJ6OYl3PfC4Q\nyGETCSVvUk+74ZB7BvYqYhLGfWDS051pmFwXoEyPS+zuQdQXucSm7AQccq5C\nlpvGiya+z/bSGbQ+a62T38to6mltfEn3D2EALc90bCC2gAgkDS5ZQdnnW4DE\nTHSBhm7ETsFmLEq0O06h2m4E/HuE8C8TLU8uTHlr4iHf0AN4U4ENvpcAoGm9\nkGlfZCDtR9qeFUS93gB2bgAejoDu2ExAo8p+ds7ejYMfmk/Oz1QNzr1P7NtQ\nOzPrWX0T4pDzNP5cLr9mnF4YNk4bnyq0Px52nYgbS/6gve9NSDsrli7T37Or\n+2mF\r\n=EXJO\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-osd-pip_2.8.0_1556011262469_0.9911654943789523"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-osd-pip/-/magcore-osd-pip-2.8.0.tgz"
+}

@@ -1,0 +1,239 @@
+/* spa-app: release */
+html, body {
+    height: 576px;
+    width: 720px;
+    font-size: 18px;
+    font-family: Ubuntu, sans-serif;
+    overflow: hidden;
+    margin: 0;
+    padding: 0; }
+
+table {
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0; }
+    table td {
+        padding: 0; }
+
+.maxh {
+    height: 100%; }
+
+.maxw {
+    width: 100%; }
+
+a {
+    text-decoration: none; }
+
+.invisible {
+    visibility: hidden; }
+
+/* stb-app: release */
+html, body {
+    -webkit-user-select: none; }
+
+/* mag-app: release */
+
+.mag-component-list {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 100%; }
+    .mag-component-list.hidden {
+        display: none; }
+    .mag-component-list > .body > .item {
+        cursor: pointer;
+        padding: 0 5px;
+        vertical-align: middle;
+        height: 38.4px;
+        line-height: 38.4px; }
+    .mag-component-list.horizontal {
+        display: table;
+        table-layout: fixed;
+        width: 100%; }
+        .mag-component-list.horizontal > .item {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle; }
+
+.mag-component-modal {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: table;
+    z-index: 10;
+    visibility: visible; }
+    .mag-component-modal.hidden {
+        display: none; }
+    .mag-component-modal.hidden {
+        display: table;
+        visibility: hidden; }
+    .mag-component-modal.active > div > div > div.overlay {
+        display: none; }
+    .mag-component-modal > div {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center; }
+        .mag-component-modal > div > div {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            max-width: 80%;
+            min-width: 172.5px;
+            max-height: 80%; }
+            .mag-component-modal > div > div > div.header {
+                height: 50px;
+                line-height: 50px;
+                font-size: 24px;
+                padding: 0 20px; }
+                .mag-component-modal > div > div > div.header .text {
+                    display: table-cell;
+                    vertical-align: middle;
+                    text-align: center; }
+                    .mag-component-modal > div > div > div.header .text:empty {
+                        padding: 0; }
+            .mag-component-modal > div > div > div.body {
+                position: relative; }
+                .mag-component-modal > div > div > div.body > div .item {
+                    height: 45px;
+                    line-height: 45px;
+                    padding: 0 20px; }
+            .mag-component-modal > div > div > div.overlay {
+                display: block;
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0; }
+
+.mag-component-radio-list {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 100%; }
+    .mag-component-radio-list.hidden {
+        display: none; }
+    .mag-component-radio-list > .body > .item {
+        cursor: pointer;
+        padding: 0 5px;
+        vertical-align: middle;
+        height: 38.4px;
+        line-height: 38.4px; }
+    .mag-component-radio-list.horizontal {
+        display: table;
+        table-layout: fixed;
+        width: 100%; }
+        .mag-component-radio-list.horizontal > .item {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle; }
+    .mag-component-radio-list > .item .checkBoxWrapper >
+div {
+        display: block; }
+
+.spa-component-input {
+    box-sizing: border-box;
+    width: 250px;
+    height: 48px;
+    font-size: 24px;
+    color: #000; }
+    .spa-component-input.hidden {
+        display: none; }
+
+.stb-component-button {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    background-color: #dde9ff;
+    display: inline-table;
+    height: 36px;
+    cursor: pointer; }
+    .stb-component-button.hidden {
+        display: none; }
+    .stb-component-button:hover {
+        background-color: #bbd3ff; }
+    .stb-component-button.focus {
+        background-color: #bbd3ff; }
+    .stb-component-button.click {
+        background-color: #a8c9ff; }
+    .stb-component-button .icon {
+        height: 36px;
+        width: 36px;
+        display: table-cell;
+        background: no-repeat center center; }
+    .stb-component-button .text {
+        display: table-cell;
+        padding: 6px 7px;
+        vertical-align: middle;
+        text-align: center; }
+        .stb-component-button .text:empty {
+            padding: 0; }
+
+.stb-component-grid {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    background-color: #333; }
+    .stb-component-grid.hidden {
+        display: none; }
+    .stb-component-grid table {
+        width: 100%;
+        table-layout: fixed; }
+        .stb-component-grid table td.item {
+            cursor: pointer;
+            padding: 2.4px 5px;
+            vertical-align: middle;
+            text-align: center; }
+        .stb-component-grid table td.item.mark {
+            color: black;
+            background-color: green; }
+        .stb-component-grid table td.item.focus {
+            color: black;
+            background-color: orange; }
+        .stb-component-grid table td.item.focus.mark {
+            color: white;
+            background-color: #AE7200; }
+        .stb-component-grid table td.item.disable {
+            color: grey;
+            background-color: #111; }
+
+.stb-component-page {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 720px;
+    height: 576px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    visibility: hidden;
+    overflow: hidden; }
+    .stb-component-page.hidden {
+        display: none; }
+    .stb-component-page.active {
+        visibility: inherit; }
+
+.stb-component-scrollbar {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    display: inline-block;
+    height: 100%;
+    width: 4px;
+    vertical-align: bottom;
+    background-color: #bbb; }
+    .stb-component-scrollbar.hidden {
+        display: none; }
+    .stb-component-scrollbar .thumb {
+        display: block;
+        width: 4px;
+        min-height: 4px;
+        background-color: #aaa; }
+        .stb-component-scrollbar .thumb.hidden {
+            display: none; }
+    .stb-component-scrollbar.horizontal {
+        display: block;
+        height: 4.8px;
+        width: 100%; }
+        .stb-component-scrollbar.horizontal .thumb {
+            display: inline-block;
+            vertical-align: top;
+            height: 4.8px;
+            min-width: 4.8px; }

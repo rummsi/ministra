@@ -1,0 +1,54 @@
+{
+  "name": "magcore-theme-ministra",
+  "version": "2.9.0",
+  "description": "Ministra theme for magsdk",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "magsdk",
+    "theme",
+    "ministra"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "theme",
+    "name": "ministra"
+  },
+  "dependencies": {
+    "magcore-theme-base": "^2.3.8"
+  },
+  "_id": "magcore-theme-ministra@2.9.0",
+  "scripts": {},
+  "_shasum": "db53d79e2e3cc0cea47c9d42cf6e6e7078bef8d1",
+  "_from": "magcore-theme-ministra@2.9.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "db53d79e2e3cc0cea47c9d42cf6e6e7078bef8d1",
+    "tarball": "https://registry.npmjs.org/magcore-theme-ministra/-/magcore-theme-ministra-2.9.0.tgz",
+    "integrity": "sha512-pXf012vV8Btc49nvrjrXyTb6+vT2TKGI9V1ew9pdl5lhnVue7jZR3ZSjb5FiahBEjZWI8AOQHvnts+gyFZYjIw==",
+    "fileCount": 69,
+    "unpackedSize": 3091152,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtnbCRA9TVsSAnZWagAAHigP/jdlgqhRXk1ne3cGeKnZ\nZQVWmHA0M3sfuq7/itfy2QGboM1GXhEypQE1DFD50lbZB4Pxn8y7TEAzbpPT\np6ktWk0E44seL/sLymer0c0D9Sv8vdtJezhdMOl0T5b9w+cnnW0x0M0/yGqH\nFf3lhn7/VDkETGSuSPDCE/qZmwmTCrCamYHMrBdLVK6Gefb+o4em9dK0N2mn\nx7KtJ+STxIRk5lSuMuKRyRmJKmE2xV/aBEvxHL0JehmRh3YQbVOvgLfIGN2Q\nI78CsKsehXwh3mySYiEhn0O9ufskw+rnmDuNXLIjm+4rA8FfVgJsTNADddhq\nwUUZVpj+FyXRdSbKpmfi5sB4gEil2dx9A+tenTUDiFCKlWULJLS/7QPFSM18\n738R+vGwKZMQtgKz8UCRddlLMKePV16TBcRgmZJnBC+aSpZDWSq0VlIDRdxq\npDSYpah4ShLiMDrSeSXP/P1AlpiU3HtYSDxTVYlI3/1OFZ/Sq2PCvq2y3GMJ\npMVQq21OdgNFdyH9fTkd4OVn4/5BhKBkJqYdimBXVFQWPkUIa1M4RxpsKPg8\n/FVUqjdXtYuJCauMVwQZZnZ05dTv0CaH6qVG+hcyjKZx3gOwMHD7xlOWsfJf\n7jQf/8Nvzd8XJyHjKdlNCeZ69MYmzHToTbWA0rsxi23Ya3/0iHw+NUlpSAXe\nvFnJ\r\n=banY\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-theme-ministra_2.9.0_1556011482468_0.6535492780056111"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-theme-ministra/-/magcore-theme-ministra-2.9.0.tgz"
+}

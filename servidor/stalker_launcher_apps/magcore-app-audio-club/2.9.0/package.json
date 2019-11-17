@@ -1,0 +1,109 @@
+{
+  "name": "magcore-app-audio-club",
+  "version": "2.9.0",
+  "description": "Audio club for stalker.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "application",
+    "audio",
+    "club",
+    "audio-club",
+    "ministra"
+  ],
+  "license": "license.md",
+  "config": {
+    "name": "AUDIO CLUB",
+    "description": "Audio club app allows you to create a special atmosphere for a party or a family event.",
+    "type": "app",
+    "category": "media",
+    "actions": {
+      "audioClub": true
+    },
+    "contentProviders": [
+      "magcore-plugin-backend-audio-stalker"
+    ],
+    "uris": {
+      "app": "/",
+      "entry": "index.html",
+      "icons": {
+        "480": {
+          "logoNormal": "img/480/normal.png",
+          "logoActive": "img/480/active.png",
+          "primeLogoNormal": "img/480/prime-normal.png",
+          "primeLogoActive": "img/480/prime-active.png"
+        },
+        "576": {
+          "logoNormal": "img/576/normal.png",
+          "logoActive": "img/576/active.png",
+          "primeLogoNormal": "img/576/prime-normal.png",
+          "primeLogoActive": "img/576/prime-active.png"
+        },
+        "720": {
+          "logoNormal": "img/720/normal.png",
+          "logoActive": "img/720/active.png",
+          "primeLogoNormal": "img/720/prime-normal.png",
+          "primeLogoActive": "img/720/prime-active.png"
+        },
+        "1080": {
+          "logoNormal": "img/1080/normal.png",
+          "logoActive": "img/1080/active.png",
+          "primeLogoNormal": "img/1080/prime-normal.png",
+          "primeLogoActive": "img/1080/prime-active.png"
+        }
+      }
+    },
+    "colors": {
+      "splashFont": "#fff",
+      "splashBackground": "#339a35"
+    },
+    "resource": "audio"
+  },
+  "dependencies": {
+    "magcore-core": "^3.7.86",
+    "magcore-theme": "^1.4.1",
+    "magcore-app-auth-ministra": "^3.5.15",
+    "magcore-osd-access-control": "^2.0.17",
+    "magcore-plugin-backend-audio-stalker": "^2.2.6",
+    "magcore-app-player": "^3.7.0",
+    "magcore-osd-keyboard": "^2.0.0"
+  },
+  "optionalDependencies": {
+    "magcore-app-player": "^3.7.0",
+    "magcore-osd-keyboard": "^2.0.0"
+  },
+  "_id": "magcore-app-audio-club@2.9.0",
+  "scripts": {},
+  "_shasum": "4ca6bbeff1afd9779ea606340277533578225a99",
+  "_from": "magcore-app-audio-club@2.9.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "4ca6bbeff1afd9779ea606340277533578225a99",
+    "tarball": "https://registry.npmjs.org/magcore-app-audio-club/-/magcore-app-audio-club-2.9.0.tgz",
+    "integrity": "sha512-MDgArxCVrNkJIO3hGDLaTqwT5z4DhYDORfCtpYpq6/EZNoK7ez71+nHOpp8KDc192inQYVUysjGkOYqQ5I8bgA==",
+    "fileCount": 54,
+    "unpackedSize": 641408,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvthXCRA9TVsSAnZWagAAAlcQAIwUhOE8+FFoqKubBYlT\nRjZRBzgtEA3STIDbjP2cRRKzUR7BcRhzKz4JAvZogFiKq8172XTvlBJIg4Yd\nXN0R2SPaD4z8xhv714EfW7HnIdGkfnUMV1BpwHaDyLNTK++wFQQI74zrhDaI\ngYZ0IDIBlCc2MmP67nu7TJBhbtxCXOCrwTJvv87+Hk5tUrJSHmYPenN+e5n2\nB5Z2zaBk+pBuDE94DBFtYyEPX4E11zGjQqnZAHVA1UE3B1qmgtMaOhvBHZOv\nFalYhINNzqRUzNcH2F5yjlN3Ev6WNm/V6hR9Y2kJ75FvzZy3RRSqHk833p7M\n8GhGqFpupB13OyefTj8T0Dd22kuG36UIoD+MetXkzyGalyNTS7UE1gagDyWj\nfJP34ThGAo7Z3AKXlpffmEEQOFK98Grdq+XrfV85AKEnx1OVkwfcRtkbaBoi\nYRNSjJW6/2ng+f1KQ1xSSeiPZ45bDgdMFRjD1sJgbCkd2PU7rzzK+LasmmE9\nKrQLBjmLYpq6R8kdeDnKL/P5kyyY3deJJ2QjZ3tQLwbs+m9ajHQ/Y002D9OD\nCyxQxXEDa9Cn8Bq+KuImwSNaufSha5p98J3ExUq6GrkE24A13X7jrpxPelHU\nLFTWBsTWOem650VgnCHHpeOaJbTPCHSYZYHLz2s1EIZJ9ueqIPMHzBHkYrrN\nzjLf\r\n=2XwP\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-app-audio-club_2.9.0_1556011094298_0.18661727557174324"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-app-audio-club/-/magcore-app-audio-club-2.9.0.tgz"
+}

@@ -1,0 +1,1 @@
+{"meta":{"charset":"utf-8","project":"downloads","language":"uk","plural":"(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"},"data":{"":{"Failed to create download.":"","File already exist.":"Файл вже існує.","Wrong download item.":"","Wrong fileName.":"Невірна назва файла.","Wrong path to storage.":"","Wrong url.":"Невірний URL."}}}

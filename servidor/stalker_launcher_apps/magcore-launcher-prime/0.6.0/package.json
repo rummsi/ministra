@@ -1,0 +1,64 @@
+{
+  "name": "magcore-launcher-prime",
+  "version": "0.6.0",
+  "description": "Prime Launcher for magcore applications.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "mag",
+    "magcore",
+    "ministra",
+    "prime",
+    "launcher",
+    "launcher-prime"
+  ],
+  "license": "license.md",
+  "config": {
+    "name": "Prime Launcher",
+    "description": "Prime launcher for ministra apps",
+    "type": "launcher",
+    "unique": true,
+    "uris": {
+      "app": "/",
+      "entry": "index.html"
+    }
+  },
+  "dependencies": {
+    "magcore-core": "^3.2.8",
+    "magcore-theme": "^1.4.1",
+    "magcore-plugin-content-board": "^1.0.18"
+  },
+  "_id": "magcore-launcher-prime@0.6.0",
+  "scripts": {},
+  "_shasum": "ad889064f6dc7f657f9b2ce3b0ac8fb39c7991a6",
+  "_from": "magcore-launcher-prime@0.6.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "ad889064f6dc7f657f9b2ce3b0ac8fb39c7991a6",
+    "tarball": "https://registry.npmjs.org/magcore-launcher-prime/-/magcore-launcher-prime-0.6.0.tgz",
+    "integrity": "sha512-gfCWONKKamEbkO5kBaMz7G347ZcatEaGeE+aSXk6Ws2qyO6vChasrjzPD4876XBXz+Iy7jT+tRVKwsHEa7QYQQ==",
+    "fileCount": 86,
+    "unpackedSize": 763808,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtjlCRA9TVsSAnZWagAAP1YP/1hAbjW2jH9pxGKBF6F5\nex/aaHd7p84l44sWiLwz77lUrCYD1peNpt3/32cVT08JcR8NEjOIouQqj3D6\n+1uaFBgeCxn/HS//It4frKEz+VDrSHrgjpwiVa3t9seNZPL9D66XchxhxPGC\nCJY/4UiAqJ0gjLZwVibdafON402/lR/+UvBwzF71yFwaVC4RGWI6GefA8rUS\nHDXQY6TVQoymBpR7URuurHz2UXCzWWuLvJT96HQFe6VqkstEKqt38m9TMsUF\nwpYsTH/bbt7d9N8RN6DD0eyxr0hq7oFgUmotc0OGyIAUC4ugdcJIFhpCeqCv\narrQyeyUBP8k75L5JaErR+UBUGQq18GK8c2UrtOSUocX9rBLfVS0bdzLkJ6o\nEa7R0W8HbpK69P3qoQ90BzMsyxh42ZhiBNAXDK2yTTWUrxY56P8ETOT8436B\ntFhdpZ9jWdKGUnbtsR2ozRn5SbTPOur8ihu/dt4M3yU3TSKbpX67gIJR5V3h\nsZ03Nm+SKJmFOXHsyNnz4U+MWLSPDkrEi+YNzGy3waWPDTIqfrAz+5KyVIyh\nT3DEqahGuXqKzdtyTZZfu/nK9nNlzP8qQxTd0p35QCEj5SOrglWZxREMJLpD\nJ/A4HuOtGAum+xqHLZGARsI5NMkXHl5ld3jZq6CtwBc8n+HGz59EH2ssjE9o\nWJsd\r\n=HrBd\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-launcher-prime_0.6.0_1556011236382_0.21394055996507522"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-launcher-prime/-/magcore-launcher-prime-0.6.0.tgz"
+}

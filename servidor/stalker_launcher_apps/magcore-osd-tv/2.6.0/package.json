@@ -1,0 +1,85 @@
+{
+  "name": "magcore-osd-tv",
+  "version": "2.6.0",
+  "description": "TV app notification osd.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "ministra",
+    "magcore",
+    "osd",
+    "tv"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "osd",
+    "name": "osdTv",
+    "description": "TV app notification osd.",
+    "metrics": {
+      "480": {
+        "width": "640px",
+        "height": "40px",
+        "top": "30px",
+        "left": "48px"
+      },
+      "576": {
+        "width": "640px",
+        "height": "40px",
+        "top": "50px",
+        "left": "55px"
+      },
+      "720": {
+        "width": "1200px",
+        "height": "56px",
+        "top": "68px",
+        "left": "40px"
+      },
+      "1080": {
+        "width": "1800px",
+        "height": "84px",
+        "top": "102px",
+        "left": "60px"
+      }
+    },
+    "actions": {
+      "osd-tv": true
+    },
+    "uris": {
+      "app": "/",
+      "entry": "index.html"
+    }
+  },
+  "_id": "magcore-osd-tv@2.6.0",
+  "scripts": {},
+  "_shasum": "981af2e457abf199a880fe37bdde13f6290a4a4b",
+  "_from": "magcore-osd-tv@2.6.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "981af2e457abf199a880fe37bdde13f6290a4a4b",
+    "tarball": "https://registry.npmjs.org/magcore-osd-tv/-/magcore-osd-tv-2.6.0.tgz",
+    "integrity": "sha512-f9vOSbDl6dyFgrvJ6ih/4sRDJnlxqKtZ1C4zoXRT4i+qrsbfmkbfOM9KoXZay0ey5R4kKbFV0A4aAgsReYaP+A==",
+    "fileCount": 19,
+    "unpackedSize": 118075,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtkJCRA9TVsSAnZWagAA0JgP/iTZ33oQyFj4VsIePEc9\nGpVGxH3Dqv8djWTnlDmYSBQgdfBeED7fRsVnJcVZUIHX58X+CqnrcpcNowlp\nJj67FelXo1uQ1HXScBz9op6Nht0XX9263b06jbaMrD9mFzsK1H1fw8imXu6B\nERw8jfVtKWZT38mkGmrJ5guncnm2MI6JJfG+QCz0lQ3DAcvUWnqZuAoDfYvM\npIwkz7PYjlXyPIN5eYZGReX56PZwC9RyH6D7MbqndPUyDn50lc/I+MCRI/vy\nrjJOL7MLGnXQUeucZLbG051CUZnQ+MmOXiia7qTcyxbFo+AZD28CgJQG2sUm\n1obOmqRNo08QH3n3pSmNx+Dh8dTC52lAl1SBu8Hina9H9QMrh20XxenB5qQ9\nOM4LnhTZq0aiFA8tkbSnCzsKLGbmirHy7AvRu6Z5+/MH8TY+xxpGN5IIj6jt\nf4UyfnjoFoiBjt60+uAzwit+mTC4IEGJxoTE/J2aB+KTlSWj7JpPlKR6i7IY\nP39B87exlvzYXp2hDzgO1cUlhDvGHruzwj7XlzRgpT/F2eK8Ida+m6HPsN19\nUPddNVaaOawRHP8Vd6ApNrTq1IPQfrgNdCm6YquVsfbNe5g8AqXFG5sA9347\nkkhbjSxcR97KrEGJpPuvX45KtXlMV/5aj7tZMBFNWA0TQ9JJ5Iqmgf7tb/sp\n/5ED\r\n=aWPa\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-osd-tv_2.6.0_1556011273334_0.597398267795862"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-osd-tv/-/magcore-osd-tv-2.6.0.tgz"
+}

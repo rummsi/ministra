@@ -1,0 +1,11 @@
+{
+	"version": 3,
+	"file": "app.1080.css",
+	"sources": [
+		"../../../src/sass/release.1080.scss",
+		"../../../src/sass/vars/1080.scss",
+		"../../../src/sass/main.scss"
+	],
+	"names": [],
+	"mappings": ""
+}

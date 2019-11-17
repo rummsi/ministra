@@ -1,0 +1,14 @@
+{
+	"version": 3,
+	"file": "app.1080.css",
+	"sources": [
+		"../../../src/sass/release.1080.scss",
+		"../../../src/sass/vars/1080.scss",
+		"../../../node_modules/mag-component-panel/sass/vars/1080.scss",
+		"../../../node_modules/mag-component-panel/sass/vars/720.scss",
+		"../../../src/sass/main.scss",
+		"../../../src/sass/pages/main.scss"
+	],
+	"names": [],
+	"mappings": "AKIA,AAAA,aAAa,AAAC,CACV,MAAM,CAHM,IAAqC,CAIjD,IAAI,CHGiB,IAAkB,CGFvC,WAAW,CALC,IAAqC,CAMjD,QAAQ,CAAE,MAAM,CAChB,aAAa,CAPD,IAAqC,CAQjD,QAAQ,CAAE,QAAQ,CAClB,GAAG,CHDkB,KAAmB,CGExC,aAAa,CAAE,QAAQ,CACvB,WAAW,CAAE,MAAM,CACnB,KAAK,CHRgB,KAAiB,CGSzC,AAED,AAAA,aAAa,CAAC,GAAG,AAAA,WAAW,AAAC,CACzB,YAAY,CHVS,IAAkB,CGW1C,AAED,AAAA,wBAAwB,AAAC,CACrB,MAAM,CAAE,KAAwC,CAAC,UAAU,CAC3D,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,KAAgB,CACvB,GAAG,CHPkB,KAA2B,CGQnD,AAED,AAAA,YAAY,AAAC,CACT,OAAO,CAAE,CAAC,CHrBW,IAAkB,CGsBvC,KAAK,CAAE,GAAG,CACV,WAAW,CAAE,MAAM,CACtB,AAED,AAAA,eAAe,AAAC,CACZ,aAAa,CH3BQ,IAAkB,CGkC1C,AARD,AAIQ,eAJO,AAGV,WAAW,AACP,OAAO,AAAC,CACL,UAAU,CAAE,gBAAgB,CAC/B,AAIT,AAAA,UAAU,AAAC,CACP,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,QAAQ,CACvB,WAAW,CAAE,MAAM,CACtB"
+}

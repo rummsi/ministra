@@ -1,0 +1,1 @@
+{"meta":{"charset":"utf-8","project":"magcore-app-lines 2.3.0","language":"pl","plural":"(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"},"data":{"":{"Lines":"","Lines is the puzzle from 90-s which is still popular. The game’s goal is to remove balls by forming lines of at least five balls of the same color.":""}}}

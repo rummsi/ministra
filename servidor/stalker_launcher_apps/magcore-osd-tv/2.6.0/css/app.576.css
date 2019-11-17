@@ -1,0 +1,3 @@
+body{background:transparent}#pageMain{height:40px;width:620px;background:rgba(0,0,0,0.5);line-height:40px}#pageMain>div{display:inline-block;height:40px;line-height:40px}#number{min-width:18px;padding:0 9px;max-width:72px;text-align:center}#icons{float:right;font-family:'icons';width:270px;text-align:right;font-size:23.4px}#icons .theme-icon{width:27px;display:inline-block}#icons .theme-icon:before{text-align:right}#icons .theme-icon.hidden{display:none}#time{float:right;width:72px;padding-right:20px;text-align:right}
+
+/*# sourceMappingURL=app.576.map */

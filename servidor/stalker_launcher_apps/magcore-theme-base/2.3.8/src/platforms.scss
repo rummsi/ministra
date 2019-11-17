@@ -1,0 +1,43 @@
+body[platform='mag'] {
+    .theme-icon {
+        &.theme-icon-rc-f1:before {
+            background-image:url($imgPath + '/mag-f1.png');
+        }
+        &.theme-icon-rc-f2:before {
+            background-image:url($imgPath + '/mag-f2.png');
+        }
+        &.theme-icon-rc-f3:before {
+            background-image:url($imgPath + '/mag-f3.png');
+        }
+        &.theme-icon-rc-f4:before {
+            background-image:url($imgPath + '/mag-f4.png');
+        }
+    }
+}
+
+
+body[platform='tizen'], body[platform='smarttv'] {
+    .theme-icon {
+        &.theme-icon-rc-f1:before {
+            background-image:url($imgPath + '/smart-f1.png');
+        }
+        &.theme-icon-rc-f2:before {
+            background-image:url($imgPath + '/smart-f2.png');
+        }
+        &.theme-icon-rc-f3:before {
+            background-image:url($imgPath + '/smart-f3.png');
+        }
+        &.theme-icon-rc-f4:before {
+            background-image:url($imgPath + '/smart-f4.png');
+        }
+    }
+}
+
+
+body[platform='smarttv'] {
+
+}
+
+body[platform='webos'] {
+
+}

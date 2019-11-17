@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Font symbols</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
+    <link rel="stylesheet" href="720.css">
+    <style>
+        @font-face {font-family : 'icons11';src: url('icons.ttf');font-weight : normal;font-style  : normal;}
+        body { background-size: 100% 100%;}
+        h1, h2 {text-align: center;}
+        #container { width: 80%; margin: 15px auto;}
+        #container .icon-wrapper {display: inline-block;font-size: 58px;margin: 15px;position: relative; border: 1px dashed green;}
+        #container .icon-wrapper:hover { cursor: pointer;}
+        #container .theme-icon:before { font-size: 40px!important;}
+        #container .icon-wrapper:hover span{visibility: visible;opacity: 0.8;bottom: 30px;margin-left: -76px;z-index: 999;}
+        #container .icon-wrapper span {position: absolute;top :-45px;left: 10px;width:180px;color: #FFFFFF;background: #000000;
+            height: 30px;line-height: 30px;text-align: center;visibility: hidden;border-radius: 6px;font-size: 14px;}
+        #container .icon-wrapper span:after {content: '';position: absolute;top: 100%;left: 50%;margin-left: -8px;width: 0; height: 0;
+            border-top: 8px solid #000000;border-right: 8px solid transparent;border-left: 8px solid transparent;}
+        #alert {color : #FFFFFF;background: rgba(0,0,0,0.75);font-size: 20px;padding: 8px;position: absolute;
+            left: -9999px;top: 15px;transition: all 550ms ease-in;border-radius: 8px;}
+        #alert.q { left: 55px;}
+    </style>
+</head>
+<body>
+
+<div id="container" class="theme-main">
+    <h1 class="theme-header">Font symbols list</h1>
+</div>
+<h2 class="theme-footer">Click to copy class name :)</h2>
+<div id="alert"> some text</div>
+<script>
+    var c = document.getElementById('container'),
+        a = document.getElementById('alert'),
+        xhr = new XMLHttpRequest(),
+        t;
+    xhr.open('GET', 'icons.json');
+    xhr.onload = render;
+    xhr.onerror = function ( ) {
+        c.innerText = 'Error loading icons.json';
+    };
+
+    function render () {
+        var icons;
+
+        try {
+            icons = JSON.parse(xhr.responseText);
+            icons.forEach(function ( iconData ) {
+                var iconWrapper = document.createElement('div'),
+                    symbol = document.createElement('div'),
+                    tt = document.createElement('span');
+                iconWrapper.className = 'icon-wrapper theme-focus';
+                symbol.className = 'theme-icon ' + iconData.className;
+                //symbol.innerText = iconData.symbol;
+                symbol.setAttribute('data-clipboard-text', 'theme-icon ' + iconData.className);
+                tt.innerText = iconData.className;
+                iconWrapper.appendChild(symbol);
+                iconWrapper.appendChild(tt);
+                c.appendChild(iconWrapper);
+            });
+        } catch (e) {
+            c.innerText = 'Error parsing icons.json';
+        }
+    }
+    xhr.send();
+    var clipboard = new Clipboard('.theme-icon');
+
+    clipboard.on('success', function(e) {
+        console.info('Text:', e.text);
+        a.innerText = 'Copy class: ' + e.text;
+        a.className = 'q';
+        e.clearSelection();
+        clearTimeout(t);
+        t = setTimeout(function () {
+        a.classList.remove('q');
+        }, 2000);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{
+  "name": "magcore-plugin-settings-video",
+  "version": "1.7.0",
+  "description": "Plugin",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "settings",
+    "plugin",
+    "ministra"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "plugin",
+    "tuner": true,
+    "name": "video",
+    "uris": {
+      "entry": "main.js"
+    },
+    "platforms": {
+      "exclude": {
+        "emulator": "*"
+      }
+    }
+  },
+  "_id": "magcore-plugin-settings-video@1.7.0",
+  "scripts": {},
+  "_shasum": "992fba8b5fcd0795a9c60a44ab9ed4c905918213",
+  "_from": "magcore-plugin-settings-video@1.7.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "992fba8b5fcd0795a9c60a44ab9ed4c905918213",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-settings-video/-/magcore-plugin-settings-video-1.7.0.tgz",
+    "integrity": "sha512-DzHwrxgcBClgv2UIz74A86h64qfZdhDFirlmiykHlo0DehgbltAsOenjob8CdVkeMOmMPyzD40mKVoSCpZzh4Q==",
+    "fileCount": 23,
+    "unpackedSize": 76761,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtmdCRA9TVsSAnZWagAAupsP+gPRECSL2hIManWN5R6G\n3qngwBgqCUWYuTM7DSfy4vwq9eTWNbdAb3+No+vq/JxHjEQgMxZb4tAWM65l\nYokoQHaiXA0dlSVgmxbWxTDNQASi0S1XZm+7/IiIpByjgC531Xh8uneD8w9k\n+1Zx+sykB/I5Bcnit8rbUxFuYUQqZL5jgvqkDkPCD4Bl87VYLCDHY0+HYrvQ\nL0u42AZgKOakl7DHH/AlD98VXI3NEoQtaOzGxg3U5JQVZSA8Lm7klQtnXV+1\nJMHGMQNxrIdLFpdL0KG9tlYAnxqeK63yScELy5xo1WJSmCtQUXmcRFnr7F1e\nTBE1AYok6FzgKHUD+wN8GRMPApnYaR8b3ha/Suvidziq7lSaPL7oQ6k/CA3T\nuEQqXXRii3dTYLwWAB2lq7iErCFWTIBgNZWk2/u1a4hdGSmfiTYZTvBpqhzA\n08nngK9mJuuHLmqRz5eQd0yXXg0rbObLy3E1YIkXzakU9q7pYwZRCuqYhmA1\nSc6ipSrK1Uxn2GEUkFrBRCVLfmt473aERAoHZ+4Igj3CfxN/AfbZuGSU6Jap\nPYUPWsu13rphfYMD2ysUT+ANPKXoKnPeunR/HLcQXQepTJia3NasWjyIjbRD\nBhgWaHJijhqPhNg7xyF7KHSzEzSQjG7PVF5Vt6boXCSokjUgV984WzBSzJ7+\niwg1\r\n=OzVn\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-settings-video_1.7.0_1556011420775_0.24059448349452484"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-settings-video/-/magcore-plugin-settings-video-1.7.0.tgz"
+}

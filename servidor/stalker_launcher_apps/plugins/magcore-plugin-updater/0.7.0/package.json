@@ -1,0 +1,68 @@
+{
+  "name": "magcore-plugin-updater",
+  "version": "0.7.0",
+  "description": "Update manager plugin for magsdk applications.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "ministra",
+    "plugin",
+    "updater",
+    "update"
+  ],
+  "license": "license.md",
+  "dependencies": {
+    "magcore-core": "^3.2.0"
+  },
+  "config": {
+    "name": "updater",
+    "type": "plugin",
+    "daemon": true,
+    "tuner": true,
+    "uris": {
+      "entry": "main.js"
+    },
+    "platforms": {
+      "exclude": {
+        "emulator": "*",
+        "emulator_stb": "*",
+        "AndroidSTB": "*",
+        "AndroidAPP": "*"
+      }
+    }
+  },
+  "_id": "magcore-plugin-updater@0.7.0",
+  "scripts": {},
+  "_shasum": "638d7d2ddc593bc4c444ffe33541b679aa1e619a",
+  "_from": "magcore-plugin-updater@0.7.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "638d7d2ddc593bc4c444ffe33541b679aa1e619a",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-updater/-/magcore-plugin-updater-0.7.0.tgz",
+    "integrity": "sha512-PL6AaQGlLVuxOcCcXzNy7JB9vu1UllWud7fDIl8kgSnVu2t8Dk77+S7N+fd5/psbiSuNStXW8rNi4POi7tyjUw==",
+    "fileCount": 23,
+    "unpackedSize": 129544,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtmzCRA9TVsSAnZWagAAKc4QAI1onbFP3ID/80sCECBP\nBQ/5dHxIb2Zt6YCF+OzfRR1HLPLeAEShI/WN7JcjKSDvVj4LlDPUbjpAzjoa\nt6iDDUzYHiHXVoolVmWFfZhbVT3PTGsI7DV88zKunm4WS+TDbHYEMQtC0HS7\n8jGmm8BpUYnqvk5eLulHC2wUBAMysDtHDKcIT+NCdAjyiGom8nXT2A5JbA+c\n0AcFeGahCcT1sB8e9x67NoFiFru+qBBgDfKhDFHOy2fdGBeV2zH/vnv1Nrlg\nvPOm6PAzFJe+rTVRyyjc3O0syPHHxssTX4+iBiSWkVJqyJceIla2Upx8W9U6\nui2MgWBE2xhhB1MElV3PffA6a+pKXqQZhi0LsfsohfLFZDPg2nP+CG3E+ZvD\nYEHM2SzMCMlO4OUWegwrzvgLhCDYb076vUBc3+GhSp8dMGOVMdfdARX1huix\nL5PbBo7GI3aIw3LVHb/+uSlpOBeQVI6m3GJRB3tIGQSoHaTazRYhcXkqlIGx\nNn6v8XRB7+Qdbi+bTUkuP1VDN5wsAvdPsPze5bx8Ht9QGjnJOHUsmGAVkjug\n9kFQM4wcEqDYFcp3k7g96+tXzGRgLOxIYGl+Abm81Zkbzw5cp6nVyqj5Owel\nUlJTSzkgxaHRkoL78vLBLOFAiKYIAOaQ4GranMmkEFPu24xS5Q8lo6xQL5LM\np/+o\r\n=MZXm\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-updater_0.7.0_1556011443227_0.37360679663056007"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-updater/-/magcore-plugin-updater-0.7.0.tgz"
+}

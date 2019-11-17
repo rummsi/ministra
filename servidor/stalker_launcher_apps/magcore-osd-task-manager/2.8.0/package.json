@@ -1,0 +1,63 @@
+{
+  "name": "magcore-osd-task-manager",
+  "version": "2.8.0",
+  "description": "Task manager for stalker applications.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "osd",
+    "task-manager",
+    "ministra"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "osd",
+    "name": "taskManager",
+    "description": "System task manager",
+    "actions": {
+      "taskmanager:show": true
+    },
+    "unique": true,
+    "uris": {
+      "app": "/",
+      "entry": "index.html"
+    }
+  },
+  "dependencies": {
+    "magcore-core": "^3.8.0"
+  },
+  "_id": "magcore-osd-task-manager@2.8.0",
+  "scripts": {},
+  "_shasum": "65d960ec9f64f998d83b12def28a45707715c627",
+  "_from": "magcore-osd-task-manager@2.8.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "65d960ec9f64f998d83b12def28a45707715c627",
+    "tarball": "https://registry.npmjs.org/magcore-osd-task-manager/-/magcore-osd-task-manager-2.8.0.tgz",
+    "integrity": "sha512-Cs8YlV4S6y218lHK169unPO2xGEkegKvDZ3znE0VluK/GE7LDQr+z9bOzcgB+VTdu2vYjg0TFaIjs/mVH9CDyA==",
+    "fileCount": 61,
+    "unpackedSize": 260180,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtkFCRA9TVsSAnZWagAApAsQAJ2yWTKEtpLEfzuuBQ23\nCamu0eiXwjClyqcTV92CyoeP8luR5Feyd3MTc4IutlOWOXdxqjd95Au9Qy1X\n9C5PVbsf+O/rJed0g2a9FdbyYnZFkwT/zrbK/OogV53gVYlat9Rhmhm/4Z5i\nme/OGYEDUomjBJPmN70aKVrE2iC9QCjWv8gqpfGZFLgspLHnD08kkEW3mSrA\niIuyFWHqgtS+RtOoNBSowjLHSSsiCDxqEGxanXN3gVKNal+ZWjextb0pil9A\nsip437GoAnddOxbXGjI9IgL3IqwvoyRCQFHmV0v09pTzdeyH3RM2xcFYfjnm\n78fqPL/HGUVokPkLhucse9gtrdDeNwuFJ6Zh9BKkiaLyiKKE5qjQNtJeAiwn\nSAnXYgw91C1+IjluL2xxenYPFS/FCKSuRJNpi77h+3iciJBKC7otmkHtcZ2C\nPZBFpAJ8ECDy2C146ao92lL3mnQkhOetGzie2vf13uIt3adkJ8zEE5yvhkJM\nAbkiDeCiQeoyQouhf9NYSlP6EObYE0+LuRjJK+8bbv/SRXo2/taKjmP8m0ms\nhX4JuACdK4PA3F0qeGdgHzMyb0Vq85Bs4+9pCGLXVahtmm1VjjKf9cU2BN1A\niFk+6ydW3Tw6HlE068I5IaAhes81FGr29SLn1p6QJDOeP2YSk+xIeFtkz/wM\n2Qzi\r\n=2fXH\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-osd-task-manager_2.8.0_1556011268615_0.17472492787265725"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-osd-task-manager/-/magcore-osd-task-manager-2.8.0.tgz"
+}
