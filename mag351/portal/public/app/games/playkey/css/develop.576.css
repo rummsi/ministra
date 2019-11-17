@@ -1,0 +1,1373 @@
+html,
+body {
+  width: 720px;
+  height: 576px;
+  overflow: hidden;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  font-family: Ubuntu, sans-serif;
+  font-size: 18px;
+  -webkit-user-select: none;
+}
+table {
+  border: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+table td {
+  padding: 0;
+}
+.maxh {
+  height: 100%;
+}
+.maxw {
+  width: 100%;
+}
+a {
+  text-decoration: none;
+}
+.component.hidden {
+  display: none !important;
+}
+.component div {
+  -webkit-box-sizing: border-box;
+}
+.component.button {
+  background-color: #002042;
+  display: inline-table;
+  height: 36px;
+  cursor: pointer;
+}
+.component.button:hover {
+  background-color: #005b9c;
+}
+.component.button.focus {
+  background-color: #005b9c;
+}
+.component.button.click {
+  background-color: #0073c4;
+}
+.component.button .icon {
+  height: 36px;
+  width: 36px;
+  display: table-cell;
+  background: no-repeat center center;
+}
+.component.button .text {
+  display: table-cell;
+  padding: 4.8px 7px;
+  vertical-align: middle;
+  text-align: center;
+}
+.component.button .text:empty {
+  padding: 0;
+}
+.component.checkBox {
+  cursor: pointer;
+  display: inline-block;
+  width: 18px;
+  height: 21.6px;
+  line-height: 21.6px;
+  background-color: #333;
+  vertical-align: bottom;
+}
+.component.checkBox.checked {
+  background-color: orange;
+}
+.component.grid {
+  background-color: #333;
+}
+.component.grid table {
+  width: 100%;
+  table-layout: fixed;
+}
+.component.grid table td.item {
+  cursor: pointer;
+  padding: 2.4px 5px;
+  vertical-align: middle;
+  text-align: center;
+}
+.component.grid table td.item.mark {
+  color: black;
+  background-color: green;
+}
+.component.grid table td.item.focus {
+  color: black;
+  background-color: orange;
+}
+.component.grid table td.item.focus.mark {
+  color: white;
+  background-color: #AE7200;
+}
+.component.grid table td.item.disable {
+  color: grey;
+  background-color: #111;
+}
+.component.input {
+  width: 150px;
+  height: 36px;
+  border: 1px solid green;
+  font-size: 15px;
+  color: #000;
+  background-color: #fff;
+  display: table;
+  table-layout: fixed;
+}
+.component.input .line {
+  cursor: text;
+  display: table-cell;
+  vertical-align: middle;
+  padding: 0 3px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.component.input .line > .char,
+.component.input .line > .placeholder,
+.component.input .line > .caret {
+  display: inline-block;
+  vertical-align: middle;
+}
+.component.input .line > .caret {
+  height: 80%;
+  width: 2px;
+  margin-left: -2px;
+}
+.component.input .line > .placeholder {
+  color: #999;
+}
+.component.input.focus .line > .caret {
+  background-color: #000000;
+  -webkit-animation: inputCursor 1s;
+  -webkit-animation-iteration-count: infinite;
+}
+@-webkit-keyframes inputCursor {
+  from {
+    background-color: #000000;
+  }
+  to {
+    background-color: transparent;
+  }
+}
+.component.list {
+  background-color: #333;
+  width: 100%;
+}
+.component.list > .item {
+  cursor: pointer;
+  padding: 0 5px;
+  vertical-align: middle;
+  height: 47px;
+  line-height: 47px;
+}
+.component.list > .item.mark {
+  background-color: green;
+  color: black;
+}
+.component.list > .item.focus {
+  background-color: orange;
+  color: black;
+}
+.component.list > .item.focus.mark {
+  background-color: #AE7200;
+  color: white;
+}
+.component.list.horizontal {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+.component.list.horizontal > .item {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+.component.modalBox {
+  width: 720px;
+  height: 576px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: black;
+  display: table;
+}
+.component.modalBox > div {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+.component.modalBox > div > div.body {
+  display: inline-block;
+  overflow: hidden;
+  background-color: #333;
+  padding: 3%;
+  max-width: 80%;
+  max-height: 80%;
+}
+.component.modalBox.modalMessage > div > .body {
+  padding: 0;
+}
+.component.modalBox.modalMessage > div > .body > .header,
+.component.modalBox.modalMessage > div > .body > .footer {
+  color: #777;
+  background-color: #222;
+  text-align: center;
+}
+.component.modalBox.modalMessage > div > .body > .header,
+.component.modalBox.modalMessage > div > .body > .footer,
+.component.modalBox.modalMessage > div > .body > .content {
+  padding: 10%;
+}
+.component.page {
+  width: 720px;
+  height: 576px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+  overflow: hidden;
+}
+.component.page.active {
+  visibility: visible;
+}
+.component.panel {
+  padding: 7.2px 6px;
+  background-color: #222;
+}
+.component.progressBar {
+  height: 19.2px;
+  background-color: grey;
+}
+.component.progressBar .value {
+  height: 100%;
+  background-color: orange;
+}
+.component.scrollBar {
+  background-color: grey;
+  display: inline-block;
+  height: 100%;
+  width: 4px;
+  vertical-align: bottom;
+}
+.component.scrollBar .thumb {
+  display: block;
+  width: 4px;
+  min-height: 4px;
+  background-color: white;
+}
+.component.scrollBar .thumb.hidden {
+  display: none;
+}
+.component.scrollBar.horizontal {
+  display: block;
+  height: 4.8px;
+  width: 100%;
+}
+.component.scrollBar.horizontal .thumb {
+  display: inline-block;
+  vertical-align: top;
+  height: 4.8px;
+  min-width: 4.8px;
+}
+.component.widget {
+  position: absolute;
+  background-color: darkslateblue;
+}
+.component.widget.hidden {
+  visibility: hidden;
+}
+.component.page {
+  background: url('../img/576/bg.jpg');
+}
+@font-face {
+  font-family: 'icomoon';
+  src: url('../font/icomoon.ttf?-bs8l61') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+#pageInit {
+  background: #000000 url('../img/init.loader.gif') center no-repeat;
+}
+#pageMain {
+  background: url('../img/576/bg.jpg');
+}
+#pageMain::after {
+  display: block;
+  content: '';
+  width: 100%;
+  height: 30px;
+  background: url('../img/576/shadow.png');
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+#pageMain::before {
+  display: block;
+  content: '';
+  width: 100%;
+  height: 30px;
+  background: url('../img/576/shadow.png');
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  -webkit-transform: rotate(180deg);
+}
+#pMainHeader {
+  width: 700px;
+  height: 80px;
+  background: url('../img/576/logo.png') right no-repeat;
+  position: relative;
+  z-index: 2;
+}
+#pMainMenu {
+  background: transparent;
+  width: 200px;
+  position: absolute;
+  left: 0;
+}
+#pMainMenu .item {
+  font-size: 16.2px;
+  padding-left: 20px;
+}
+#pMainMenu .item.focus {
+  background: transparent;
+  color: #0D57B1;
+  font-size: 17.1px;
+}
+#pMainRight {
+  position: fixed;
+  top: 160px;
+  left: 200px;
+  width: 100%;
+}
+#pMainRight img {
+  margin-right: 10px;
+  width: 140px;
+  height: 240px;
+  border-radius: 2px;
+}
+#pMainLoader {
+  display: none;
+  background: url('../img/576/loader.3.GIF') center no-repeat;
+  background-size: 100%;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  bottom: 80px;
+  right: 80px;
+}
+.modalBox.playkeyModal {
+  background: rgba(0, 0, 0, 0.7);
+}
+.modalBox.playkeyModal .body {
+  background: #021945!important;
+  width: 400px;
+  text-align: center;
+  padding-left: 0!important;
+  padding-right: 0!important;
+}
+.modalBox.playkeyModal .orangeBtn {
+  background: transparent;
+  border: 1px solid #F78C00;
+  margin: 2%;
+  width: 165px;
+}
+.modalBox.playkeyModal .orangeBtn.focus {
+  background: #F78C00;
+}
+.modalBox.playkeyModal .blueBtn {
+  margin: 2%;
+}
+#pSystemHeader {
+  width: 700px;
+  height: 80px;
+  background: url('../img/576/logo.png') right no-repeat;
+  padding: 20px;
+}
+#pSystemBackBtn {
+  background: transparent;
+  height: auto;
+  padding: 0;
+  font-size: 15.3px;
+  color: #909090;
+  line-height: 1;
+}
+#pSystemBackBtn .text {
+  padding: 0;
+}
+#pSystemBackBtn .text::before {
+  content: '< ';
+  padding-right: 4px;
+}
+#pSystemBackBtn.focus {
+  color: #0D57B1;
+}
+#pSystemTitle {
+  display: inline-block;
+  font-size: 18px;
+}
+#pageSystem .systemList {
+  background: transparent;
+  width: auto;
+  margin: 0 auto;
+}
+#pageSystem .systemList .item {
+  height: 496px;
+  width: 190px;
+}
+#pageSystem .systemList .item .wrapper {
+  position: relative;
+}
+#pageSystem .systemList .item .elem {
+  width: 160px;
+  height: 300px;
+  background: #147DFB;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
+#pageSystem .systemList .item .elem .title {
+  font-size: 20px;
+  width: 100%;
+  text-align: left;
+  line-height: 1.2;
+  padding: 7% 7% 0 7%;
+}
+#pageSystem .systemList .item .elem .description {
+  height: 55%;
+  font-size: 18px;
+  width: 100%;
+  text-align: left;
+  line-height: 1.2;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 0 7%;
+}
+#pageSystem .systemList .item .elemFocus {
+  width: 175px;
+  height: 320px;
+  background: #147DFB;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  visibility: hidden;
+  color: #ffffff;
+}
+#pageSystem .systemList .item .elemFocus .title {
+  font-size: 20px;
+  width: 100%;
+  text-align: left;
+  line-height: 1.2;
+  padding: 7% 7% 0 7%;
+}
+#pageSystem .systemList .item .elemFocus .description {
+  height: 55%;
+  font-size: 18px;
+  width: 100%;
+  text-align: left;
+  line-height: 1.2;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 0 7%;
+}
+#pageSystem .systemList .item.focus {
+  background: transparent;
+}
+#pageSystem .systemList .item.focus .elem {
+  visibility: hidden;
+}
+#pageSystem .systemList .item.focus .elemFocus {
+  visibility: visible;
+}
+.grid.keyboardFull {
+  background-color: transparent;
+}
+.grid.keyboardFull table {
+  table-layout: fixed;
+  width: auto;
+  margin: auto;
+}
+.grid.keyboardFull .item {
+  padding: 0!important;
+}
+.grid.keyboardFull .item.focus {
+  background: transparent!important;
+}
+.grid.keyboardFull .item .button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  text-transform: uppercase;
+  background: #ffffff;
+  border-radius: 3px;
+  margin: 2px;
+  box-sizing: border-box;
+  color: #000000;
+  font-size: 18px;
+  line-height: 30px;
+  border: 1px solid #ffffff;
+}
+.grid.keyboardFull .item .button.space {
+  width: 64px;
+  background: transparent;
+  border: 1px solid #ffffff;
+  position: relative;
+}
+.grid.keyboardFull .item .button.space::after {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 6px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border: 2px solid #ffffff;
+  border-top: none ;
+}
+.grid.keyboardFull .item .button.backSpace {
+  background: transparent;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+}
+.grid.keyboardFull .item .button.backSpace::before {
+  font-family: 'icomoon';
+  content: '\ea40';
+}
+.grid.keyboardFull .item .button.changeLang {
+  background: transparent;
+  border: 1px solid #ffffff;
+  text-transform: none;
+  color: #ffffff;
+  font-size: 11.7px;
+}
+.grid.keyboardFull .item .button.plus {
+  background: transparent;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+}
+.grid.keyboardFull.focus .item.focus {
+  background-color: transparent!important;
+}
+.grid.keyboardFull.focus .item.focus .button {
+  background-color: #127EFF;
+  color: #ffffff;
+  border: 1px solid #127EFF;
+}
+.input.playKeyInput {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #909090;
+  color: #ffffff;
+  text-align: center;
+  font-size: 15px;
+}
+.input.playKeyInput.focus {
+  border-bottom: 2px solid #127EFF;
+}
+.input.playKeyInput .caret {
+  color: #ffffff;
+}
+.button.blueBtn {
+  background: transparent;
+  border: 1px solid #127EFF;
+  width: 165px;
+}
+.button.blueBtn.focus {
+  background: #127EFF;
+}
+#pSystemLoginPanel {
+  height: 496px;
+  background: transparent;
+}
+#pSystemLoginMail {
+  background: transparent;
+}
+#pSystemLoginPhone {
+  background: transparent;
+  position: relative;
+}
+#pSystemLoginPhone .input.playKeyInput:nth-child(1) {
+  float: left;
+  margin-left: 50px;
+  width: 210px;
+}
+#pSystemLoginPhone .input.playKeyInput:nth-child(2) {
+  float: right;
+  margin-right: 50px;
+  width: 210px;
+}
+#pSystemLoginPhone .grid.keyboardFull {
+  width: 150px;
+  margin: 0 auto;
+  margin-top: 52px;
+}
+#pSystemLoginPhone .button.blueBtn.code {
+  float: left;
+  position: absolute;
+  top: 60px;
+  left: 80px;
+}
+#pSystemLoginPhone .button.blueBtn.login {
+  float: left;
+  position: absolute;
+  top: 60px;
+  right: 80px;
+}
+#pSystemProfile {
+  height: 496px;
+  background: transparent;
+}
+#pSystemProfile .systemList .elemTitle {
+  font-size: 20px;
+  line-height: 1;
+  padding: 18px;
+  text-align: left;
+}
+#pSystemProfile .systemList .elemDescription {
+  font-size: 14.4px;
+  line-height: 1;
+  text-align: left;
+  padding: 0 18px;
+  padding-top: 54px;
+}
+#pSystemProfile .systemList .elemText {
+  font-size: 18px;
+  line-height: 1;
+  text-align: left;
+  padding: 0 18px;
+}
+#pSystemProfile .systemList .elemFocus {
+  z-index: 8;
+}
+#pSystemProfileSettings {
+  height: 496px;
+  background: transparent;
+  text-align: center;
+}
+#pSystemProfileSettings .title {
+  width: 100%;
+  text-align: center;
+}
+#pSystemProfileSettings .mail {
+  width: 550px;
+  height: 100px;
+  margin: 0 auto;
+  margin-top: 18px;
+  background: url('../img/576/account.bg.png');
+  font-size: 27px;
+  line-height: 100px;
+}
+#pSystemProfileSettings .button {
+  margin-top: 54px;
+}
+#pSystemSubscribeSettings {
+  height: 496px;
+  background: transparent;
+  text-align: center;
+}
+#pSystemSubscribeSettings .title {
+  width: 100%;
+  text-align: center;
+}
+#pSystemSubscribeSettings .date {
+  width: 550px;
+  height: 100px;
+  margin: 0 auto;
+  margin-top: 18px;
+  font-size: 27px;
+  line-height: 100px;
+  border: 2px solid #999999;
+  border-radius: 6px;
+}
+#pSystemSubscribeSettings .button {
+  margin-top: 54px;
+}
+#pageCatalog::after {
+  content: '';
+  display: block;
+  width: 130px;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: url('../img/576/fade.png');
+}
+#pCatalogHeader {
+  width: 700px;
+  height: 80px;
+  background: url('../img/576/logo.png') right no-repeat;
+  padding: 20px;
+  z-index: 1;
+}
+#pCatalogHeaderBackBtn {
+  background: transparent;
+  height: auto;
+  padding: 0;
+  font-size: 15.3px;
+  color: #909090;
+  line-height: 1;
+}
+#pCatalogHeaderBackBtn .text {
+  padding: 0;
+}
+#pCatalogHeaderBackBtn .text::before {
+  content: '< ';
+  padding-right: 4px;
+}
+#pCatalogHeaderBackBtn.focus {
+  color: #0D57B1;
+}
+#pCatalogTitle {
+  display: inline-block;
+  font-size: 18px;
+  padding-left: 10px;
+}
+#pCatalogNumber {
+  display: inline-block;
+  font-size: 15.3px;
+  padding-left: 10px;
+  color: #909090;
+}
+#pCatalogList {
+  background: transparent;
+  width: auto;
+  position: relative;
+  left: -144px;
+}
+#pCatalogList .item {
+  width: 195px;
+  text-align: left;
+}
+#pCatalogList .item img {
+  width: 180px;
+  height: 300px;
+  border: 2px;
+}
+#pCatalogList .item.empty {
+  visibility: hidden;
+}
+#pCatalogList .item.focus {
+  width: 210px;
+  background: transparent;
+}
+#pCatalogList .item.focus img {
+  width: 200px;
+  height: 320px;
+  border: 1px solid transparent;
+}
+#pCatalogList.focus .item.focus img {
+  border: 1px solid #0D57B1;
+}
+#pCatalogTable {
+  width: 660px;
+  table-layout: fixed;
+  margin-left: 48px;
+}
+#pCatalogTable .left {
+  width: 200px;
+  vertical-align: top;
+}
+#pCatalogTable .right {
+  vertical-align: top;
+}
+#pcatalogGameTitle {
+  padding-left: 20px;
+  font-size: 27px;
+}
+#pcatalogGameDescription {
+  padding-left: 20px;
+  font-size: 12.6px;
+}
+#pCatalogPlayBtn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #F78C00;
+}
+#pCatalogPlayBtn.focus {
+  background: #F78C00;
+}
+#pCatalogPlayBtn span {
+  display: none;
+}
+#pCatalogPlayBtn.notAuth {
+  background: url('../img/576/btn.play.account.png');
+  background-size: 100% 100%;
+  border: none;
+}
+#pCatalogPlayBtn.notAuth .text {
+  font-size: 13.5px;
+  padding: 0;
+  text-align: left;
+  padding-left: 10px;
+  color: #999999;
+}
+#pCatalogPlayBtn.notAuth span {
+  padding-right: 10px;
+  font-size: 15.3px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: right;
+}
+#pCatalogPlayBtn.notAuth.focus {
+  background: #F78C00;
+}
+#pCatalogPlayBtn.notAuth.focus .text {
+  display: none;
+}
+#pCatalogPlayBtn.notAuth.focus span {
+  text-align: center;
+  padding: 0;
+  font-size: 18px;
+}
+#pCatalogInfo span {
+  display: block;
+  float: left;
+  color: #909090;
+  font-size: 16.2px;
+}
+#pCatalogInfo span.infoSpan {
+  color: #ffffff;
+  font-size: 18px;
+  float: none;
+}
+#pCatalogInfo span.infoSpan::before {
+  content: '\00a0';
+}
+.clr {
+  clear: both;
+}
+#pG .left {
+  width: 20%;
+  float: left;
+  height: 576px;
+}
+#pG .right {
+  float: right;
+  width: 62%;
+}
+#pGgHeader {
+  width: 700px;
+  height: 80px;
+  background: url('../img/576/logo.png') right no-repeat;
+  padding: 20px;
+  z-index: 1;
+}
+#pGHeaderBackBtn {
+  background: transparent;
+  height: auto;
+  padding: 0;
+  font-size: 15.3px;
+  color: #909090;
+  line-height: 1;
+}
+#pGHeaderBackBtn .text {
+  padding: 0;
+}
+#pGHeaderBackBtn .text::before {
+  content: '< ';
+  padding-right: 4px;
+}
+#pGHeaderBackBtn.focus {
+  color: #0D57B1;
+}
+#pGTitle {
+  display: inline-block;
+  font-size: 18px;
+  padding-left: 10px;
+}
+#pGFullCard {
+  padding: 0;
+  background-color: transparent;
+}
+#pGFullDescription {
+  background-color: transparent;
+  padding: 0 15%;
+}
+#pGPoster {
+  width: 202px;
+  background: transparent;
+  height: 322px;
+  border: 1px solid transparent;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  margin-left: 50px;
+}
+#pGPoster.focus {
+  border: 1px solid #0D57B1;
+}
+#pGScreenshots {
+  width: 20%;
+  height: 264px;
+  background: transparent;
+}
+#pGScreenshots .item {
+  width: 400px;
+  padding: 0;
+  position: relative;
+}
+#pGScreenshots .item .wrapper {
+  position: relative;
+}
+#pGScreenshots .item img {
+  width: 390px;
+  height: 220px;
+  border: 1px solid transparent;
+}
+#pGScreenshots .item.focus {
+  background: transparent;
+}
+#pGScreenshots .item.video .wrapper::before {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background: url('../img/576/play.ico.png') center no-repeat;
+}
+#pGScreenshots.focus .item.focus img {
+  border: 1px solid #0D57B1;
+}
+#pGLeftInfo {
+  width: 48%;
+  float: left;
+}
+#pGLeftInfo div:nth-child(odd) {
+  float: left;
+  color: #909090;
+  line-height: 1;
+  font-size: 16.2px;
+}
+#pGLeftInfo div:nth-child(even) {
+  font-size: 17.1px;
+  line-height: 1;
+  color: #ffffff;
+  max-height: 17.1px;
+  overflow: hidden;
+}
+#pGLeftInfo div:nth-child(even)::before {
+  content: '\00a0';
+}
+#pGRightInfo {
+  width: 48%;
+  float: left;
+}
+#pGRightInfo div:nth-child(odd) {
+  float: left;
+  color: #909090;
+  font-size: 16.2px;
+}
+#pGRightInfo div:nth-child(even) {
+  font-size: 17.1px;
+  color: #ffffff;
+}
+#pGRightInfo div:nth-child(even)::before {
+  content: '\00a0';
+}
+#pGDevices {
+  width: 100%;
+  height: 15.3px;
+  margin: 12.6px 0;
+  display: table;
+}
+#pGDevices div {
+  font-size: 15.3px;
+  margin-right: 18px;
+  display: inline-block;
+}
+#pGDescription {
+  font-size: 15.3px;
+  line-height: 1;
+  max-height: 90px;
+  display: inline;
+}
+#pGReadMore {
+  display: inline-block;
+  background: transparent;
+  height: auto;
+  padding: 0;
+  color: #909090;
+}
+#pGReadMore.focus {
+  color: #0D57B1;
+}
+#pGReadMore .text {
+  padding: 0;
+  line-height: 0.8;
+  font-size: 15.3px;
+}
+#pGKeyboard::before {
+  height: 13px;
+  width: 13px;
+  content: '';
+  display: inline-block;
+  background: url('../img/576/icons.sprite.png') top left;
+  float: left;
+  margin-right: 2px;
+  font-size: 15.3px;
+  line-height: 15.3px;
+  margin-top: 2px;
+}
+#pGMouse::before {
+  content: '';
+  display: inline-block;
+  height: 13px;
+  width: 13px;
+  background: url('../img/576/icons.sprite.png') top right;
+  float: left;
+  margin-right: 2px;
+  margin-top: 2px;
+}
+#pGGamepad::before {
+  content: '';
+  display: inline-block;
+  height: 13px;
+  width: 13px;
+  background: url('../img/576/icons.sprite.png') bottom left;
+  float: left;
+  margin-right: 2px;
+  margin-top: 2px;
+}
+#pGMultiplayer::before {
+  content: '';
+  display: inline-block;
+  height: 13px;
+  width: 13px;
+  background: url('../img/576/icons.sprite.png') bottom right;
+  float: left;
+  margin-right: 2px;
+  margin-top: 2px;
+}
+#pGSystemWrapper .authPlayBtn {
+  background: url('../img/576/btn.play.account.png');
+  background-size: 100% 100%;
+  width: 200px;
+  margin-left: 50px;
+  border: none;
+  margin-top: 15.84px;
+}
+#pGSystemWrapper .authPlayBtn .text {
+  font-size: 13.5px;
+  padding: 0;
+  text-align: left;
+  padding-left: 10px;
+  color: #999999;
+}
+#pGSystemWrapper .authPlayBtn span {
+  padding-right: 10px;
+  font-size: 15.3px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: right;
+}
+#pGSystemWrapper .authPlayBtn.focus {
+  background: #F78C00;
+}
+#pGSystemWrapper .authPlayBtn.focus .text {
+  display: none;
+}
+#pGSystemWrapper .authPlayBtn.focus span {
+  text-align: center;
+  padding: 0;
+  font-size: 18px;
+}
+#pGSystemWrapper .playFreeBtn {
+  width: 200px;
+  margin-left: 50px;
+  background: transparent;
+  border: 1px solid #F78C00;
+  font-size: 15.3px;
+  margin-top: 15.84px;
+}
+#pGSystemWrapper .playFreeBtn.focus {
+  background: #F78C00;
+}
+#pGSystemWrapper .subscribeBtn {
+  width: 200px;
+  margin-left: 50px;
+  background: transparent;
+  border: 1px solid #0D57B1;
+  font-size: 15.3px;
+  margin-top: 9px;
+}
+#pGSystemWrapper .subscribeBtn.focus {
+  background: #0D57B1;
+}
+#pGSystemWrapper .playBtn {
+  width: 200px;
+  margin-left: 50px;
+  background: transparent;
+  border: 1px solid #F78C00;
+  font-size: 15.3px;
+  margin-top: 15.84px;
+}
+#pGSystemWrapper .playBtn.focus {
+  background: #F78C00;
+}
+#pScreenshotPreview {
+  background: transparent;
+}
+#pScreenshotPlayer.player {
+  width: 720px;
+  height: 576px;
+}
+#pScreenshotPlayer.player.video {
+  background: url('../img/576/play.ico.png') center no-repeat;
+}
+#pScreenshotPreviewLeft {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 30.6px;
+  color: #999999;
+}
+#pScreenshotPreviewLeft::after {
+  content: "\f04a";
+  font-family: 'icomoon';
+}
+#pScreenshotPreviewRight {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 30.6px;
+  color: #999999;
+}
+#pScreenshotPreviewRight::after {
+  content: "\f04e";
+  font-family: 'icomoon';
+}
+#pScreenshotPreviewControl {
+  display: table-cell;
+  vertical-align: middle;
+  position: absolute;
+  bottom: 30px;
+  left: 290px;
+  width: 140px;
+  height: 50px;
+  background: url('../img/576/sticker.png');
+  text-align: right;
+  font-size: 12.6px;
+}
+#pScreenshotPreviewControl div {
+  display: inline-block;
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+}
+#pScreenshotPreviewProgress {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 720px;
+  height: 7px;
+  background: transparent;
+}
+#pScreenshotPreviewProgress .value {
+  background: #127EFF;
+}
+#pScreenshotPreviewImg {
+  width: 720px;
+  height: 576px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -10;
+}
+#pSearchHeader {
+  width: 700px;
+  height: 80px;
+  background: url('../img/576/logo.png') right no-repeat;
+  padding: 20px;
+}
+#pSearchHeaderBackBtn {
+  background: transparent;
+  height: auto;
+  padding: 0;
+  font-size: 18px;
+  color: #909090;
+  line-height: 1;
+}
+#pSearchHeaderBackBtn .text {
+  padding: 0;
+}
+#pSearchHeaderBackBtn .text::before {
+  content: '< ';
+  padding-right: 4px;
+}
+#pSearchHeaderBackBtn.focus {
+  color: #0D57B1;
+}
+#pSearchList {
+  background: transparent;
+  width: auto;
+  position: relative;
+  left: -100px;
+}
+#pSearchList .item {
+  width: 140px;
+  padding: 0;
+  text-align: left;
+  box-sizing: border-box;
+  padding-right: 10px;
+}
+#pSearchList .item img {
+  width: 140px;
+  height: 200px;
+  margin: 0;
+  box-sizing: border-box;
+}
+#pSearchList .item.empty {
+  visibility: hidden;
+}
+#pSearchList .item.focus {
+  width: 160px;
+  background: transparent;
+  height: 250px;
+  padding-right: 5px;
+}
+#pSearchList .item.focus img {
+  width: 160px;
+  height: 250px;
+  border: 1px solid transparent;
+}
+#pSearchList.focus .item.focus img {
+  border: 1px solid #0D57B1;
+}
+#pSearchInput {
+  margin: 0 auto;
+  font-size: 36px;
+  line-height: 1;
+  text-transform: uppercase;
+  width: 40%;
+}
+#pSearchKeyboard {
+  margin-top: 21.6px;
+}
+#pSearchMessage {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-align: center;
+  font-size: 36px;
+  width: 720px;
+  height: 72px;
+}
+#modalPopUp {
+  width: 720px;
+  height: 576px;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 4;
+}
+#modalPopUp .panel {
+  background: #021945;
+  width: 400px;
+  height: 85px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  text-align: center;
+}
+#modalPopUp .orangeBtn {
+  background: transparent;
+  border: 1px solid #F78C00;
+  margin: 2%;
+  width: 165px;
+}
+#modalPopUp .orangeBtn.focus {
+  background: #F78C00;
+}
+#modalPopUp .blueBtn {
+  margin: 2%;
+}
+html {
+  overflow: auto;
+}
+div.develop canvas {
+  cursor: none;
+  visibility: hidden;
+  position: absolute;
+  width: 720px;
+  height: 576px;
+}
+div.develop canvas.active {
+  visibility: visible;
+  z-index: 1000;
+}
+body.develop {
+  outline: 1px dashed #005000;
+  outline-offset: -1px;
+}
+body.develop .component {
+  outline: 1px dashed #005000;
+  outline-offset: -1px;
+}
+body.develop .component.focus {
+  outline: 1px dashed red;
+}
+body.develop .component.wired {
+  outline-width: 3px;
+  outline-style: dotted;
+}
+body.develop .component.wired div,
+body.develop .component.wired td {
+  outline: 1px dashed grey;
+  outline-offset: -1px;
+}
+body.develop .component.button {
+  outline: none;
+}
+body.develop .component.button .text,
+body.develop .component.button .icon {
+  outline: 1px dashed #005000;
+  outline-offset: -1px;
+}
+body.develop .component.button.focus .text,
+body.develop .component.button.focus .icon {
+  outline: 1px dashed red;
+}
+body.develop .component.list > .item {
+  outline: 1px dashed #000000;
+  outline-offset: -1px;
+}
+body.develop .component.list > .item.focus {
+  outline: 1px dashed orange;
+  outline-offset: -1px;
+}
+body.develop .component.grid td.item {
+  outline: 1px dashed #000000;
+  outline-offset: -1px;
+}
+body.develop .component.grid td.item.focus {
+  outline: 1px dashed orange;
+  outline-offset: -1px;
+}
+body.develop .component.input > .body {
+  outline: 1px dashed #000;
+}
+body.develop .component.focus.input > .body {
+  outline: 1px dashed red;
+}
+
+/*# sourceMappingURL=develop.576.css.map */

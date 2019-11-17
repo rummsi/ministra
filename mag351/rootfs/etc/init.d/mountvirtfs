@@ -1,0 +1,41 @@
+#!/bin/sh
+
+echo ">>> Mounting virtual filesystems"
+mkdir -p /sys /proc /dev /ram 
+mount -t proc proc /proc
+mount -t sysfs sys /sys
+mount -t debugfs debugfs /sys/kernel/debug
+grep -q devtmpfs /proc/mounts || mount -t devtmpfs none /dev
+mkdir -p /dev/pts
+mount -t devpts devpts /dev/pts
+mkdir -p /dev/shm
+mount -t tmpfs -o noexec,nosuid,nodev,mode=1777 shm /dev/shm
+mount -t ramfs none /ram
+mkdir -p /ram/tmp /ram/db /ram/ntp /ram/run/dbus /ram/media /ram/data /ram/var
+mkdir -p /ram/mnt/smb /ram/mnt/nfs /ram/lock/subsys /ram/run/lirc /ram/drm
+mkdir -p /ram/wifi /ram/wifi/configs /ram/wifi/logs /ram/logs
+
+mount -t tmpfs -o mode=01777 tmpfs /tmp
+
+ln -s /proc/self/fd /dev/fd
+ln -s /dev/fd/0 /dev/stdin
+ln -s /dev/fd/1 /dev/stdout
+ln -s /dev/fd/2 /dev/stderr
+
+
+mkdir /ram/etc_shadow
+mkdir -p /ram/etc_shadow/ppp/peers
+
+echo "" > /proc/sys/kernel/hotplug
+echo 0x23 > /proc/fs/cifs/SecurityFlags
+
+# Don't let SCHED_FIFO / SCHED_RR realtime threads get preempted
+echo -1 > /proc/sys/kernel/sched_rt_runtime_us
+echo 1000000 > /proc/sys/net/core/rmem_max
+
+# -small configuration: do not start any other services automatically
+if [ ! -e /bin/login ]; then
+        [ -f /root/rc.user ] && sh /root/rc.user
+        exit 0
+fi
+

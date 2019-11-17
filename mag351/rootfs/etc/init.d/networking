@@ -1,0 +1,76 @@
+#!/bin/sh
+#
+# start/stop networking daemons.
+#
+# chkconfig: S 40 90
+#
+. /etc/rc.d/init.d/splash-utils.sh
+
+PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+
+[ -x /sbin/ifup ] || exit 0
+
+process_sysctl() {
+    if [ -e /etc/sysctl.conf ] && [ -d /proc/sys ] ; then
+	sysctl -p > /dev/null
+    fi
+}
+
+check_network_file_systems() {
+    [ -e /proc/mounts ] || return 0
+
+    exec 9<&0 < /proc/mounts
+    while read DEV MTPT FSTYPE REST; do
+	case $DEV in
+	/dev/nbd*|/dev/nd[a-z]*|/dev/etherd/e*)
+	    echo "not deconfiguring network interfaces: network devices still mounted."
+	    exit 0
+	    ;;
+	esac
+	case $FSTYPE in
+	nfs|nfs4|smbfs|ncp|ncpfs|cifs|coda|ocfs2|gfs|pvfs|pvfs2|fuse.httpfs|fuse.curlftpfs)
+	    echo "not deconfiguring network interfaces: network file systems still mounted."
+	    exit 0
+	    ;;
+	esac
+    done
+    exec 0<&9 9<&-
+}
+
+case "$1" in
+start)
+	process_sysctl
+	${SPLASH} prg 20
+	${SPLASH} clear_log
+	${SPLASH} log "Starting network interfaces..."
+
+	echo -n "Configuring network interfaces: "
+	/sbin/ifup eth0
+        echo "done."
+	;;
+
+stop)
+	check_network_file_systems
+
+	echo -n  "Deconfiguring network interfaces: "
+	/sbin/ifdown eth0
+	echo "done."
+	;;
+
+force-reload|restart)
+	process_sysctl
+
+	echo -n "Reconfiguring network interfaces: "
+	/sbin/ifdown eth0
+	/sbin/ifup eth0
+	echo "done."
+	;;
+
+*)
+	echo "Usage: /etc/init.d/networking {start|stop|restart|force-reload}"
+	exit 1
+	;;
+esac
+
+exit 0
+

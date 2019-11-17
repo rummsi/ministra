@@ -1,0 +1,68 @@
+#!/bin/sh
+#
+# chkconfig: 2345 58 74
+# description: ntpd is the NTPv4 daemon. \
+# The Network Time Protocol (NTP) is used to synchronize the time of \
+# a computer client or server to another server or reference time source, \
+# such as a radio or satellite receiver or modem.
+
+### BEGIN INIT INFO
+# Provides:        ntp
+# Required-Start:  $network $remote_fs $syslog
+# Required-Stop:   $network $remote_fs $syslog
+# Default-Start:   2 3 4 5
+# Default-Stop:    0 1 6
+# Short-Description: Start NTP daemon
+### END INIT INFO
+
+source /etc/utils/shell-utils.sh
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+NAME=ntp
+DAEMON=/sbin/ntpd
+PIDFILE=/var/run/ntpd.pid
+
+test -x $DAEMON || exit 5
+
+if [ -r /etc/default/$NAME ]; then
+	. /etc/default/$NAME
+fi
+
+append_ntp_config "#start script"
+
+# make basic NTPD config
+#if [ ! -f $NTPCONF ]; then
+#  cat $NTPCONFDEF > $NTPCONF
+#fi
+#exclude $NTPCONF "manual"
+# refresh manual NTP servers
+#if [ "$NTP_IP" ]; then
+#    #echo "add ntp servers"
+#    echo server $NTP_IP "#manual" >> $NTPCONF
+#fi
+
+
+case $1 in
+	start)
+		echo "Starting NTP server: ntpd"
+		/usr/bin/ntp.sh
+  		start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --startas $DAEMON -- -p $PIDFILE $NTPD_OPTS
+  		;;
+	stop)
+		echo "Stopping NTP server: ntpd"
+		#if [ -f $PIDFILE ]; then
+		#    echo "kill existing ntp PID = $PIDFILE..."
+		#    kill -9 `cat $PIDFILE`
+		#fi
+  		start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+		rm -f $PIDFILE
+  		;;
+	restart|force-reload)
+		$0 stop && $0 start
+  		;;
+	*)
+		echo "Usage: $0 {start|stop|restart|force-reload}"
+		exit 2
+		;;
+esac

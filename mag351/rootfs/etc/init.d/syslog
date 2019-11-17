@@ -1,0 +1,74 @@
+#!/bin/sh
+
+. /etc/utils/shell-utils.sh
+
+DEBUG=0
+
+case "$1" in
+  start)
+    #echo -n "Starting network..."
+    log "Starting syslog..."
+    
+    SYSLOG_SRV=""
+    if [ -f "/ram/dhcp_ready" ]; then
+        SYSLOG_SRV=`cat /ram/dhcp_ready | grep "syslog_srv="`
+	SYSLOG_SRV=${SYSLOG_SRV%% *#*}
+        SYSLOG_SRV=${SYSLOG_SRV#syslog_srv=}
+    fi
+    
+    if [ "$SYSLOG_SRV" == "" ]; then
+        SYSLOG_SRV=`fw_printenv syslog_srv 2>/dev/null`
+        SYSLOG_SRV=${SYSLOG_SRV#syslog_srv=}
+    fi
+    if [ "$SYSLOG_SRV" == "" ]; then
+        exit 0
+    fi
+
+    log "Starting syslog to $SYSLOG_SRV"
+    killall syslogd 2>/dev/null
+    syslogd -R "$SYSLOG_SRV"
+
+    killall klogd 2>/dev/null
+    klogd
+    #echo "Done."
+    log "Done."
+  ;;
+
+  restart)
+    echo -n "Restarting SYSLOG..."
+    log "Restarting SYSLOG..."
+    /etc/init.d/syslog stop
+    sleep 1
+    /etc/init.d/syslog start
+    echo "Done."
+    log "Done."
+  ;;
+
+  stop)
+    echo -n "Stopping SYSLOG..."
+    log "Stopping SYSLOG..."
+    killall klogd 2>/dev/null
+    killall syslogd 2>/dev/null
+
+    echo "Done."
+    log "Done."
+  ;;
+
+  *)
+    echo "Usage: /etc/init.d/syslog {start|stop|restart}"
+    log "Usage: /etc/init.d/syslog {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0
+
+
+
+
+
+
+
+
+
+

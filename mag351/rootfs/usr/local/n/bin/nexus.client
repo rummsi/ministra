@@ -1,0 +1,10 @@
+#!/bin/sh
+# this script is used to run nexus clients.
+# the server should already be started and drivers installed.
+
+. nxclient.sh
+
+# Start whatever application is requested
+target=$1;
+shift
+exec ${target} "$@"

@@ -1,0 +1,155 @@
+#!/bin/sh
+# Sample udhcpc bound script
+
+DEBUG=0
+
+. /etc/utils/shell-utils.sh
+
+[ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
+[ -n "$subnet" ] && NETMASK="netmask $subnet"
+
+log "going to update network interface (IP address)"
+/sbin/ifconfig $interface $ip $BROADCAST $NETMASK
+
+# assign metric value based on interface
+if [ "$interface" == "eth0" ]; then
+  metric=0
+else
+  metric=1
+fi
+
+# update default gw for given interface
+update_default_gw_for_interface "$interface" "$router" "$metric"
+
+# add multicast route
+/sbin/route add -net 224.0.0.0 netmask 240.0.0.0 dev $interface metric $metric
+
+# set IGMP version
+igmp_conf=`fw_printenv igmp_conf 2>/dev/null`
+igmp_conf=${igmp_conf#igmp_conf=}
+if [ "$igmp_conf" == "V3" ]; then
+  echo "3" > /proc/sys/net/ipv4/conf/$interface/force_igmp_version
+else
+  echo "2" > /proc/sys/net/ipv4/conf/$interface/force_igmp_version
+fi
+
+# ensure file is exist
+if [ ! -f $RESOLV_CONF ]; then
+    echo "options rotate          #options" > $RESOLV_CONF
+    echo "options timeout: 1      #options" >> $RESOLV_CONF
+fi
+
+exclude $RESOLV_CONF $interface
+
+if [ "$interface" == "eth0" ]; then
+  DNS_IP=`fw_printenv dnsip 2>/dev/null`
+  DNS_IP=${DNS_IP#dnsip=}
+else
+  DNS_IP=`fw_printenv wifi_int_dns 2>/dev/null`
+  DNS_IP=${DNS_IP#wifi_int_dns=}
+fi
+
+if [ "$DNS_IP" ]; then
+  echo nameserver $DNS_IP " #$interface" >> $RESOLV_CONF
+else
+  [ "$domain" ] && echo domain $domain >> $RESOLV_CONF
+  for i in $dns
+  do
+    log "adding dns $i"
+    echo "nameserver $i #$interface" >> $RESOLV_CONF
+  done
+fi
+
+# time zone
+if [ -n "$tzone" ]; then
+	log "Set Time zone: $tzone"
+	echo "$tzone" > $TZCONF
+	rm $LTCONF
+	ln -s /usr/share/zoneinfo/$tzone $LTCONF
+fi
+
+# update NTP servers using DHCP info
+if [ ! -f $NTPCONF ]; then
+  cat $NTPCONFDEF > $NTPCONF
+  NTP_IP=`fw_printenv ntpurl 2>/dev/null`
+  NTP_IP=${NTP_IP#ntpurl=}
+  if [ "$NTP_IP" != "" ]; then
+    echo server $NTP_IP "#manual" >> $NTPCONF
+  fi
+fi
+exclude $NTPCONF $interface
+for i in $ntpsrv
+do
+  echo "server $i #$interface" >> $NTPCONF
+done
+
+if [ -z "$ntpsrv" ] ; then
+    grep -E "^server" $NTPCONF
+    if [ $? -ne 0 ] ; then
+        echo "server pool.ntp.org #$interface" >> $NTPCONF
+    fi
+fi
+[ -x /etc/init.d/ntp-server ] && /etc/init.d/ntp-server restart > /dev/null 2>&1
+
+# support for /ram/dhcp_ready
+if [ -f /ram/dhcp_ready ]; then
+   exclude /ram/dhcp_ready $interface
+   echo "$ip #$interface" >> /ram/dhcp_ready
+else
+   echo "$ip #$interface" > /ram/dhcp_ready
+fi
+
+if [ -n "$portal_dhcp" ]; then 
+  echo "portal_dhcp=$portal_dhcp  #$interface" >> /ram/dhcp_ready
+fi
+if [ -n "$upd_sboot" ]; then 
+  echo "upd_sboot=$upd_sboot  #$interface" >> /ram/dhcp_ready
+fi
+if [ -n "$upd_sb_ver" ]; then 
+  echo "upd_sb_ver=$upd_sb_ver  #$interface" >> /ram/dhcp_ready
+fi
+if [ -n "$upd_ver" ]; then 
+  echo "upd_ver=$upd_ver  #$interface" >> /ram/dhcp_ready
+fi 
+if [ -n "$upd_url" ]; then 
+  echo "upd_url=$upd_url  #$interface" >> /ram/dhcp_ready
+fi
+if [ -n "$upd_mode" ]; then 
+  echo "upd_mode=$upd_mode  #$interface" >> /ram/dhcp_ready
+fi
+
+#if [ -z "$mcip_mng" ]; then
+#    mcip_mng=`fw_printenv mcip_mng_conf 2>/dev/null`
+#    mcip_mng=${mcip_mng#mcip_mng_conf=}
+#    mcport_mng=`fw_printenv mcport_mng_conf 2>/dev/null`
+#    mcport_mng=${mcport_mng#mcport_mng_conf=}
+#fi
+
+if [ "$interface" == "eth0" ]; then
+    if [ -n "$nc_ip" ]; then 
+      echo "nc_ip=$nc_ip  #$interface" >> /ram/dhcp_ready
+    fi 
+    if [ -n "$nc_port" ]; then 
+      echo "nc_port=$nc_port  #$interface" >> /ram/dhcp_ready
+    fi 
+    if [ -n "$nc_level" ]; then 
+      echo "nc_level=$nc_level  #$interface" >> /ram/dhcp_ready
+    fi 
+    if [ -n "$syslog_srv" ]; then 
+      echo "syslog_srv=$syslog_srv  #$interface" >> /ram/dhcp_ready
+    fi 
+    /etc/init.d/rc.netconsole start
+    /etc/init.d/syslog start
+fi
+
+for i in $ntpsrv
+do
+  echo "ntpserver=$i #$interface" >> /ram/dhcp_ready
+done
+
+#if [ "$mcip_mng" != ""  ];    then
+#    if [ "$mcport_mng" != "" ];    then
+#      killall cmd_loop.sh
+#      cmd_loop.sh &
+#    fi
+#fi

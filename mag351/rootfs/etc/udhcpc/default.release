@@ -1,0 +1,22 @@
+#!/bin/sh
+# Sample udhcpc deconfig script
+
+. /etc/utils/shell-utils.sh
+
+DEBUG=1
+
+log "Releasing interface $1 ..."
+
+exit 0
+
+ifconfig $1 0.0.0.0
+
+log "done."
+
+if [ -f $RESOLV_CONF ]; then
+  exclude $RESOLV_CONF $1
+fi
+
+if [ -f $NTPCONF ]; then
+  exclude $NTPCONF $1
+fi

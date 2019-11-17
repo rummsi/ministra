@@ -1,0 +1,238 @@
+#!/bin/sh
+
+. /etc/utils/shell-utils.sh
+DEBUG=0
+
+#set -e
+echo "Executing >>> $0 <<<"; echo
+
+TZCONF="/ram/timezone"
+LTCONF="/ram/localtime"
+
+#ipaddr_conf     - статический IP
+#netmask         - сетевая маска
+#gatewayip       - GateWay (шлюз)
+#dnsip           - DNS
+#ntpurl          - NTP url
+#mcip_conf       - bootstrap IP
+#mcport_conf     - bootstrap Port
+#mcip_img_conf   - image IP
+#mcport_img_conf - image Port
+#mcip_mng_conf   - management IP
+#mcport_mng_conf - management Port
+#portal1      - url портала 1
+#portal2      - url портала 2
+#volume       - громкость (int)
+#language     - индекс языка (int)
+
+init_static_net()
+{
+#/sbin/ifconfig $interface $ip $BROADCAST $NETMASK
+    echo "Use static IP:$STAT_IP MASK:$MASK_IP Default gw:$GATE_IP"
+    /sbin/ifconfig eth0 $STAT_IP netmask $MASK_IP
+    echo "$STAT_IP" > /ram/dhcp_ready
+
+    /sbin/route add -net 224.0.0.0 netmask 240.0.0.0  dev eth0
+    igmp_conf=`fw_printenv igmp_conf 2>/dev/null`
+    igmp_conf=${igmp_conf#igmp_conf=}
+    if [ "$igmp_conf" == "V3" ]; then
+      echo "3" > /proc/sys/net/ipv4/conf/eth0/force_igmp_version
+    else
+      echo "2" > /proc/sys/net/ipv4/conf/eth0/force_igmp_version
+    fi
+
+    if [ "$GATE_IP" ]; then
+        /sbin/route add default gw $GATE_IP dev eth0
+    fi
+    if [ "$DNS_IP" ]; then
+     echo "nameserver $DNS_IP   #eth0" > $RESOLV_CONF
+    fi
+
+    # NTP restart
+    /etc/init.d/ntp-server restart
+
+    # Netconsole
+    /etc/init.d/rc.netconsole restart
+    /etc/init.d/syslog start
+
+    #if [ -n "$mcip_mng" ];    then
+    #    if [ -n "$mcport_mng" ];    then
+    #     killall cmd_loop.sh
+    #      echo $mcip_mng
+    #     echo $mcport_mng
+    #     cmd_loop.sh &
+    #   fi
+    #fi
+}
+
+
+#    . /etc/stb_params
+LAN_NOIP=`fw_printenv lan_noip 2>/dev/null`
+LAN_NOIP=${LAN_NOIP#lan_noip=}
+
+STAT_IP=`fw_printenv ipaddr_conf 2>/dev/null`
+STAT_IP=${STAT_IP#ipaddr_conf=}
+
+MASK_IP=`fw_printenv netmask 2>/dev/null`
+MASK_IP=${MASK_IP#netmask=}
+
+GATE_IP=`fw_printenv gatewayip 2>/dev/null`
+GATE_IP=${GATE_IP#gatewayip=}
+
+DNS_IP=`fw_printenv dnsip 2>/dev/null`
+DNS_IP=${DNS_IP#dnsip=}
+
+NTP_IP=`fw_printenv ntpurl 2>/dev/null`
+NTP_IP=${NTP_IP#ntpurl=}
+
+mcip_mng=`fw_printenv mcip_mng_conf 2>/dev/null`
+export mcip_mng=${mcip_mng#mcip_mng_conf=}
+
+mcport_mng=`fw_printenv mcport_mng_conf 2>/dev/null`
+export mcport_mng=${mcport_mng#mcport_mng_conf=}
+
+#/usr/bin/read_opkey.sh
+
+TZ=`fw_printenv timezone_conf 2>/dev/null`
+export TZ=${TZ#timezone_conf=}
+if [  "$TZ" ];    then
+    #echo "Set Time Zone: $TZ"
+    echo "$TZ" > $TZCONF
+    rm -f $LTCONF
+    ln -s /usr/share/zoneinfo/$TZ $LTCONF
+else
+    echo "Europe/Kiev" > $TZCONF
+    rm -f $LTCONF
+    ln -s /usr/share/zoneinfo/Europe/Kiev $LTCONF
+fi
+
+## make basic NTPD config
+#if [ ! -f $NTPCONF ]; then
+#  cat $NTPCONFDEF > $NTPCONF
+#fi
+#exclude $NTPCONF "manual"
+
+# refresh manual NTP servers
+if [ "$NTP_IP" ]; then
+    #echo "add ntp servers"
+    echo server $NTP_IP "#manual" > $NTPCONF
+fi
+
+
+if [ -z "$2" ]; then
+    echo "Interface not selected. Apply command for ALL available..."
+
+    case "$1" in
+    start)
+        /etc/init.d/rc.network-updown start eth0
+        /etc/init.d/rc.network-updown start wlan0
+    ;;
+    stop)
+        /etc/init.d/rc.network-updown stop eth0
+        /etc/init.d/rc.network-updown stop wlan0
+    ;;
+    restart)
+        /etc/init.d/rc.network-updown stop
+        /etc/init.d/rc.network-updown start
+    ;;
+    esac
+
+    exit 0;
+fi
+
+echo "Executing $1 command for $2 network interface"
+
+
+case "$1" in
+  start)
+    # check spetial STATIC setup for eth0 network interface
+    if [ "$2" == "eth0" ]; then
+        if [ "$LAN_NOIP" == "true" ]; then
+            /etc/init.d/udhcpcd stop eth0
+            ip address flush dev eth0
+            ip link set dev eth0 up
+            # restart NTPD daemon
+            /etc/init.d/ntp-server restart
+            exit 0;
+        fi
+        if [ "$STAT_IP" ]; then
+            echo "Static variant selected."
+            log "Static variant selected."
+
+            # stop DHCP client. there might be old one
+            /etc/init.d/udhcpcd stop eth0
+
+            init_static_net
+            echo "Done."
+            log "Done."
+            exit 0;
+        fi
+    fi
+
+    if [ "$2" == "wlan0" ]; then
+        get_fw_env wifi_int_ip wifi_int_ip
+        if [ "$wifi_int_ip" != "0.0.0.0" ] && [ "$wifi_int_ip" != "" ]; then
+            get_fw_env wifi_int_mask wifi_int_mask
+            get_fw_env wifi_int_gw wifi_int_gw
+            get_fw_env wifi_int_dns wifi_int_dns
+
+            ifconfig wlan0 $wifi_int_ip netmask $wifi_int_mask
+            route add default gw $wifi_int_gw dev wlan0 metric 1
+            route add -net 224.0.0.0 netmask 240.0.0.0  dev wlan0 metric 1
+            echo -e "nameserver $wifi_int_dns #wlan0" >> /etc/resolv.conf
+            /etc/init.d/ntp-server restart
+            if [ ! -f /ram/dhcp_ready ] ; then
+                echo "$wifi_int_ip" > /ram/dhcp_ready
+            fi
+            exit 0
+
+        fi
+        get_fw_env wifi_ssid wifi_ssid
+        if [ "$wifi_ssid" == "" ] ; then
+            exit 0
+        fi
+    fi
+
+    echo "DHCP variant selected."
+    log "DHCP variant selected."
+
+    /etc/init.d/udhcpcd start $2
+
+    echo "Done."
+    log "Done."
+  ;;
+
+  restart)
+    /etc/init.d/rc.network-updown stop $2
+    sleep 1
+    /etc/init.d/rc.network-updown start $2
+
+    echo "Done."
+    log "Done."
+  ;;
+
+  stop)
+    # stop DHCP even if there was STATIC setup
+    /etc/init.d/udhcpcd stop $2
+
+    # erase IP addr
+    if [ "$2" == "eth0" ]; then
+        ifconfig eth0 down
+    fi
+
+    if [ "$2" == "wlan0" ]; then
+        ifconfig wlan0 0.0.0.0
+    fi
+
+    echo "Done."
+    log "Done."
+  ;;
+
+  *)
+    echo "Usage: /etc/init.d/udhcpc {start|stop|restart}"
+    log "Usage: /etc/init.d/udhcpc {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0

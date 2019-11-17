@@ -1,0 +1,19 @@
+#!/bin/sh
+. /etc/rc.d/init.d/splash-utils.sh
+
+echo "Starting network services..."
+${SPLASH} prg 40
+${SPLASH} clear_log
+${SPLASH} log "Starting network services..."
+
+#portmap &
+#telnetd
+
+if [ -e /sbin/dropbear ]; then
+	if [ ! -e /etc/dropbear/dropbear_rsa_host_key ]; then
+		mkdir -p /etc/dropbear
+		dropbearkey -t rsa -f /etc/dropbear/dropbear_rsa_host_key
+		dropbearkey -t dss -f /etc/dropbear/dropbear_dss_host_key
+	fi
+	dropbear
+fi

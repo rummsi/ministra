@@ -1,0 +1,8 @@
+#!/bin/sh
+. /etc/rc.d/init.d/splash-utils.sh
+
+${SPLASH} prg 100
+${SPLASH} clear_log
+${SPLASH} log "Complete."
+
+/etc/init.d/splashfb stop

@@ -1,0 +1,40 @@
+#!/bin/sh
+
+source /etc/utils/shell-utils.sh
+
+percent2byte() {
+    if [ "$1" -le "10" ]; then
+        tmp=$(($1*5/10))
+    elif [ "$1" -ge "100" ]; then
+        tmp=255
+    else
+        tmp=$(($1-10))
+        tmp=$(($tmp*250/90))
+        tmp=$(($tmp+5))
+    fi
+    export $2=$tmp
+}
+
+defaultLedLevel=`fw_printenv defaultLedLevel 2>/dev/null`
+defaultLedLevel=${defaultLedLevel#defaultLedLevel=}
+if [ "$defaultLedLevel" = "" ]; then
+    defaultLedLevel=10
+    fw_setenv defaultLedLevel $defaultLedLevel 2>/dev/null 1>/dev/null
+fi
+
+standbyLedLevel=`fw_printenv standbyLedLevel 2>/dev/null`
+standbyLedLevel=${standbyLedLevel#standbyLedLevel=}
+if [ "$standbyLedLevel" = "" ]; then
+    standbyLedLevel=100
+    fw_setenv standbyLedLevel $standbyLedLevel 2>/dev/null 1>/dev/null
+fi
+
+# Setup LEDs
+echo 2 > /sys/class/leds/mag-front-led/mode
+echo 50 > /sys/class/leds/mag-front-led/delay_on
+echo 50 > /sys/class/leds/mag-front-led/delay_off
+percent2byte $standbyLedLevel val
+echo $val > /sys/class/leds/mag-front-led/level
+percent2byte $defaultLedLevel val
+echo $val > /sys/class/leds/mag-front-led/level_off
+echo 3 > /sys/class/leds/mag-front-led/cnt

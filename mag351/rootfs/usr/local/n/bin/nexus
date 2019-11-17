@@ -1,0 +1,47 @@
+#!/bin/sh
+# this script sets LD_LIBRARY_PATH environment variable
+# and checks consistence of the system configuration
+
+LD_LIBRARY_PATH=.:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH
+PATH=.:${PATH}
+export PATH
+
+if [ $UID -ne "0" ]; then
+	echo "You need to run $@ as root."
+	exit 1
+fi
+
+TEST=`lsmod|grep bcmdriver >/dev/null && echo 1`
+if [ ! -z $TEST ]; then
+    rmmod bcmdriver || exit;
+fi    
+TEST=`lsmod|grep nexus >/dev/null && echo 1`
+if [ ! -z $TEST ]; then
+    rmmod nexus || exit;
+fi    
+TEST=`lsmod|grep wakeup_drv >/dev/null && echo 1`
+if [ ! -z $TEST ]; then
+    rmmod wakeup_drv || exit;
+fi
+
+insmod bcmdriver.ko || exit;
+if [ ! -e /dev/brcm0 ]; then
+mknod -m a=rw /dev/brcm0 c 30 0
+fi
+
+if [ -e wakeup_drv.ko ]; then
+insmod wakeup_drv.ko
+fi
+if [ ! -e /dev/wake0 ]; then
+mknod -m a=rw /dev/wake0 c 34 0
+fi
+
+if [ -e bcm_astra.ko ]; then
+insmod bcm_astra.ko
+fi
+
+# Start whatever application is requested
+target=$1;
+shift
+exec env ${config} ${target} "$@"

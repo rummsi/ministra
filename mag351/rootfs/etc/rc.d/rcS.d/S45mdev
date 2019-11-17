@@ -1,0 +1,11 @@
+#!/bin/sh
+exit
+. /etc/rc.d/init.d/splash-utils.sh
+
+${SPLASH} prg 30
+${SPLASH} clear_log
+${SPLASH} log "Starting mdev..."
+
+/sbin/mdev -s
+
+mount -t ext4 /dev/mmcblk0p8 /mnt/Userfs

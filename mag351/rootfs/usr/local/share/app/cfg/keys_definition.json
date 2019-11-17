@@ -1,0 +1,260 @@
+ [{
+ 		"key": "CH-",
+ 		"code": 913,
+ 		"delay": 2,
+ 		"decimation": 1
+ 	},
+ 	{
+ 		"key": "CH+",
+ 		"code": 956,
+ 		"delay": 2,
+ 		"decimation": 1
+ 	},
+ 	{
+ 		"key": "VOL-",
+ 		"code": 915,
+ 		"delay": 2,
+ 		"decimation": 1
+ 	},
+ 	{
+ 		"key": "VOL+",
+ 		"code": 914,
+ 		"delay": 2,
+ 		"decimation": 1
+ 	},
+ 	{
+ 		"key": "UP",
+ 		"code": 957,
+ 		"delay": 2,
+ 		"decimation": 1
+ 	},
+ 	{
+ 		"key": "DOWN",
+ 		"code": 958,
+ 		"delay": 2,
+ 		"decimation": 1
+ 	},
+ 	{
+ 		"key": "LEFT",
+ 		"code": 959,
+ 		"delay": 2,
+ 		"decimation": 1
+ 	},
+ 	{
+ 		"key": "RIGHT",
+ 		"code": 939,
+ 		"delay": 2,
+ 		"decimation": 1
+ 	},
+ 	{
+ 		"key": "F1",
+ 		"code": 946,
+ 		"delay": 2,
+ 		"decimation": 1
+ 	}, {
+ 		"key": "F2",
+ 		"code": 945,
+ 		"delay": 2,
+ 		"decimation": 1
+ 	}, {
+ 		"key": "F3",
+ 		"code": 953,
+ 		"delay": 2,
+ 		"decimation": 1
+ 	}, {
+ 		"key": "F4",
+ 		"code": 954,
+ 		"delay": 2,
+ 		"decimation": 1
+ 	}, {
+ 		"key": 1,
+ 		"code": 857,
+ 		"delay": 4,
+ 		"decimation": "3 "
+ 	}, {
+ 		"key": 2,
+ 		"code": 898,
+ 		"delay": 4,
+ 		"decimation": "3 "
+ 	}, {
+ 		"key": 3,
+ 		"code": 899,
+ 		"delay": 4,
+ 		"decimation": 3
+ 	}, {
+ 		"key": 4,
+ 		"code": 900,
+ 		"delay": 4,
+ 		"decimation": 3
+ 	}, {
+ 		"key": 5,
+ 		"code": 901,
+ 		"delay": 4,
+ 		"decimation": 3
+ 	}, {
+ 		"key": 6,
+ 		"code": 902,
+ 		"delay": 4,
+ 		"decimation": 3
+ 	}, {
+ 		"key": "7",
+ 		"code": 903,
+ 		"delay": 4,
+ 		"decimation": 3
+ 	}, {
+ 		"key": "8",
+ 		"code": 904,
+ 		"delay": 4,
+ 		"decimation": 3
+ 	},
+ 	{
+ 		"key": "9",
+ 		"code": 905,
+ 		"delay": 4,
+ 		"decimation": 3
+ 	},
+ 	{
+ 		"key": "0",
+ 		"code": 896,
+ 		"delay": 4,
+ 		"decimation": 3
+ 	},
+ 	{
+ 		"key": "POWER",
+ 		"code": 908,
+ 		"delay": 5,
+ 		"decimation": 10
+ 	},
+ 	{
+ 		"key": "MUTE",
+ 		"code": 944,
+ 		"delay": 5,
+ 		"decimation": 6
+ 	},
+ 	{
+ 		"key": "MENU",
+ 		"code": 906,
+ 		"delay": 5,
+ 		"decimation": 6
+ 	},
+ 	{
+ 		"key": "EXIT",
+ 		"code": 909,
+ 		"delay": 3,
+ 		"decimation": 6
+ 	},
+ 	{
+ 		"key": "REFRESH",
+ 		"code": 942,
+ 		"delay": 3,
+ 		"decimation": 4
+ 	},
+ 	{
+ 		"key": "SERVICE",
+ 		"code": 947,
+ 		"delay": 4,
+ 		"decimation": 6
+ 	},
+ 	{
+ 		"key": "TV",
+ 		"code": 949,
+ 		"delay": 4,
+ 		"decimation": 6
+ 	},
+ 	{
+ 		"key": "PHONE",
+ 		"code": 950,
+ 		"delay": 5,
+ 		"decimation": 10
+ 	},
+ 	{
+ 		"key": "WEB",
+ 		"code": 952,
+ 		"delay": 5,
+ 		"decimation": 10
+ 	},
+ 	{
+ 		"key": "REWIND",
+ 		"code": 918,
+ 		"delay": 3,
+ 		"decimation": 4
+ 	},
+ 	{
+ 		"key": "FAST FORWARD",
+ 		"code": 912,
+ 		"delay": 3,
+ 		"decimation": 4
+ 	},
+ 	{
+ 		"key": "PLAY",
+ 		"code": 907,
+ 		"delay": 3,
+ 		"decimation": 4
+ 	},
+ 	{
+ 		"key": "STOP",
+ 		"code": 921,
+ 		"delay": 3,
+ 		"decimation": 4
+ 	},
+ 	{
+ 		"key": "REC",
+ 		"code": 926,
+ 		"delay": 5,
+ 		"decimation": 4
+ 	},
+ 	{
+ 		"key": "INFO",
+ 		"code": 925,
+ 		"delay": 3,
+ 		"decimation": 5
+ 	},
+ 	{
+ 		"key": "FRAME",
+ 		"code": 919,
+ 		"delay": 4,
+ 		"decimation": 6
+ 	},
+ 	{
+ 		"key": "SPEC",
+ 		"code": 920,
+ 		"delay": 4,
+ 		"decimation": 6
+ 	},
+ 	{
+ 		"key": "OK",
+ 		"code": 940,
+ 		"delay": 20,
+ 		"decimation": 10
+ 	},
+ 	{
+ 		"key": "MODE",
+ 		"code": 931,
+ 		"delay": 3,
+ 		"decimation": 4
+ 	},
+ 	{
+ 		"key": "PIP",
+ 		"code": 936,
+ 		"delay": 3,
+ 		"decimation": 4
+ 	},
+ 	{
+ 		"key": "SWAP",
+ 		"code": 938,
+ 		"delay": 3,
+ 		"decimation": 4
+ 	},
+ 	{
+ 		"key": "FAV",
+ 		"code": 941,
+ 		"delay": 3,
+ 		"decimation": 4
+ 	},
+ 	{
+ 		"key": "BACK",
+ 		"code": 911,
+ 		"delay": 4,
+ 		"decimation": 3
+ 	}
+ ]
