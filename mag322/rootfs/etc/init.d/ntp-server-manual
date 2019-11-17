@@ -1,0 +1,32 @@
+#!/bin/sh
+
+. /etc/init.d/shell-utils.sh
+
+test -f /usr/sbin/ntpd || exit 0
+
+case "$1" in
+        start)
+                if [ ! -f $NTPCONF ]; then
+                  cat $NTPCONFDEF > $NTPCONF
+                fi
+                get_fw_env "ntpurl" NTP_IP
+                exclude $NTPCONF manual
+                if [ "$NTP_IP" != "" ]; then
+                    echo server $NTP_IP "#manual" >> $NTPCONF
+                fi
+                /etc/init.d/ntp-server start
+                ;;
+        stop)
+                /etc/init.d/ntp-server stop
+                ;;
+        restart|force-reload)
+                /etc/init.d/ntp-server-manual stop
+                /etc/init.d/ntp-server-manual start
+                ;;
+        *)
+                echo "Usage: /etc/init.d/ntp-server-manual {start|stop|restart|force-reload}"
+                exit 1
+                ;;
+esac
+
+exit 0

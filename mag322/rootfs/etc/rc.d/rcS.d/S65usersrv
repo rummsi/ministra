@@ -1,0 +1,51 @@
+#!/bin/sh
+
+. /etc/init.d/shell-utils.sh
+. /etc/init.d/splash-utils.sh
+
+${SPLASH} prg 50
+${SPLASH} clear_log
+${SPLASH} log "Starting user services..."
+
+bmem_name="KernelMemoryLayout"
+bmem_mag322="bmem=82M@64M bmem=192M@512M"
+bmem_mag324="bmem=128M@512M bmem=384M@768M"
+
+get_fw_env "$bmem_name" bmem_val
+get_model model
+
+if [ "$model" == "MAG322" ] || [ "$model" == "AuraHD4" ] || \
+   [ "$model" == "IM2100V" ] || [ "$model" == "IM2100VI" ] || \
+   [ "$model" == "IM2100" ]; then
+    if [ "$bmem_val" != "$bmem_mag322" ]; then
+        ${SPLASH} log "Environment repairing..."
+
+        set_fw_env "$bmem_name" "$bmem_mag322" > /dev/null 2>&1
+        get_fw_env "$bmem_name" bmem_val
+        if [ "$bmem_val" == "$bmem_mag322" ]; then
+            /etc/init.d/reboot
+        fi
+    fi
+elif [ "$model" == "MAG324" ] || [ "$model" == "MAG325" ] || \
+     [ "$model" == "IM2101" ] || [ "$model" == "IM2102" ] || \
+     [ "$model" == "MAG324C" ] || [ "$model" == "MAG325C" ]; then
+    if [ "$bmem_val" != "$bmem_mag324" ]; then
+        ${SPLASH} log "Environment repairing..."
+
+        set_fw_env "$bmem_name" "$bmem_mag324" > /dev/null 2>&1
+        get_fw_env "$bmem_name" bmem_val
+        if [ "$bmem_val" == "$bmem_mag324" ]; then
+            /etc/init.d/reboot
+        fi
+    fi
+fi
+
+mkdir -p /ram/drm
+load_hdcp1x_from_vs /ram/drm/hdcp1x.bin
+if [ "$model" == "MAG351" ] || [ "$model" == "MAG352" ]; then
+    load_hdcp2x_from_vs /ram/drm/hdcp2x.bin
+fi
+
+if [ -f /root/rc.user ]; then
+    /bin/sh /root/rc.user
+fi

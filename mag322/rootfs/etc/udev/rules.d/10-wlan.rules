@@ -1,0 +1,4 @@
+SUBSYSTEM=="usb", ACTION=="add", ENV{DEVTYPE}=="usb_device", ENV{WLAN_IF_NAME}="%k", ENV{USB_PRODUCT}="$attr{product}", ENV{USB_VENDOR_ID}="$attr{idVendor}", ENV{USB_PRODUCT_ID}="$attr{idProduct}", ENV{USB_MANUFACTURER}="$attr{manufacturer}", RUN+="/etc/init.d/wifi_if_handler.sh add"
+SUBSYSTEM=="usb", ACTION=="remove", ENV{DEVTYPE}=="usb_device", ENV{WLAN_IF_NAME}="%k", RUN+="/etc/init.d/wifi_if_handler.sh remove"
+
+

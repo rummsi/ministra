@@ -1,0 +1,130 @@
+#!/bin/sh
+# Fast Start-up Udev init script
+#
+# chkconfig: S 5 0
+
+UDEVFS=/dev
+UDEVBIN=/sbin/udevd
+. /etc/init.d/splash-utils.sh
+
+export TZ=/etc/localtime
+
+#Load the default settings
+TTYGRP=5
+TTYMODE=620
+
+if [ -f /etc/default/devpts ]
+then
+    . /etc/default/devpts
+fi
+
+TMPFS_SIZE=
+
+if [ -f /etc/default/tmpfs ]
+then
+    . /etc/default/tmpfs
+fi
+
+if [ -n "$TMPFS_SIZE" ]
+then
+    tmpfs_opt="-osize=${TMPFS_SIZE}"
+fi
+
+kill_udevd() {
+    if [ -x /sbin/pidof ]; then
+        pid=`/sbin/pidof -x udevd`
+        [ -n "$pid" ] && kill $pid
+    fi
+}
+
+case "$1" in
+  start)
+    [ -d /sys/class ] || exit 1
+    [ -r /proc/mounts ] || [ -r /etc/mtab ] || exit 1
+    [ -x $UDEVBIN ] || exit 1
+    [ -f /etc/udev/udev.conf ] && . /etc/udev/udev.conf
+
+    export ACTION=add
+    echo "Fast Starting Kernel event manager..."
+    ${SPLASH} clear_log
+    ${SPLASH} log "Starting kernel event manager..."
+    # We need the uevent support introduced in 2.6.15, bail out if we
+    # don't have it and fall back to a static /dev
+    if [ ! -f /sys/class/mem/null/uevent ]; then
+        if mountpoint -q ${UDEVFS} ; then
+            # uh-oh, initramfs made some kind of /dev, get rid of it
+            umount -l ${UDEVFS}/.static/dev
+            umount -l ${UDEVFS}
+        fi
+        exit 1
+    fi
+
+    if ! mountpoint -q ${UDEVFS} ; then
+        #initramfs didn't mount /dev, so we'll need to do that
+        mount -n --bind ${UDEVFS} /etc/udev
+
+        if mountpoint -q ${UDEVFS}/pts ; then
+            umount ${UDEVFS}/pts
+        fi
+        if mountpoint -q ${UDEVFS}/shm ; then
+            umount ${UDEVFS}/shm
+        fi
+        if ! mount -n -t tmpfs -o mode=0755 udev ${UDEVFS} ; then
+            echo ">> STMicroelectronics info:"
+            echo ">> To have " ${UDEVFS} " on a pseudo fs the kernel has"
+            echo ">> to be compiled with the CONFIG_TMPFS option"
+        else
+            # Creates the standard /dev tree
+            mkdir -m 0700 -p ${UDEVFS}/.static/dev
+        fi
+        mount -n --move /etc/udev ${UDEVFS}/.static/dev
+     fi
+
+     [ ! -e ${UDEVFS}/pts ] && mkdir -m 0755 -p ${UDEVFS}/pts
+     [ ! -e ${UDEVFS}/net ] && mkdir -m 0755 -p ${UDEVFS}/net
+     [ ! -e ${UDEVFS}/shm ] && mkdir -m 0755 -p ${UDEVFS}/shm
+
+     mountpoint -q ${UDEVFS}/pts || mount -n -t devpts devpts ${UDEVFS}/pts -ogid=$TTYGRP,mode=$TTYMODE
+     mountpoint -q ${UDEVFS}/shm || mount -n -t tmpfs -o mode=0755 shmfs ${UDEVFS}/shm $tmpfs_opt
+
+    # Copy over default device tree
+    # the static device nodes
+    for i_file in /lib/udev/devices/*
+        do
+            [ ! -e $i_file ] && continue
+            cp -a -f $i_file ${UDEVFS}
+    done
+    #Copy the standard I/O
+    [ -e /proc/self/fd ]   && ln -snf /proc/self/fd   ${UDEVFS}/fd
+    [ -e /proc/self/fd/0 ] && ln -snf /proc/self/fd/0 ${UDEVFS}/stdin
+    [ -e /proc/self/fd/1 ] && ln -snf /proc/self/fd/1 ${UDEVFS}/stdout
+    [ -e /proc/self/fd/2 ] && ln -snf /proc/self/fd/2 ${UDEVFS}/stderr
+    [ -e /proc/kcore ]     && ln -snf /proc/kcore     ${UDEVFS}/core
+
+    kill_udevd > "/dev/null" 2>&1
+    if [ -d /proc/1/. ] ; then
+        start-stop-daemon --start --quiet --exec $UDEVBIN -- "--daemon"
+    else
+        $UDEVBIN --daemon
+    fi
+    ;;
+stop)
+    echo "Stopping kernel event manager..."
+    start-stop-daemon --stop --quiet --oknodo --exec ${UDEVBIN}
+    umount -l ${UDEVFS}/shm
+    umount -l ${UDEVFS}/pts
+    umount -l ${UDEVFS}/.static/dev
+    umount -l ${UDEVFS}
+    ;;
+restart)
+    $0 stop;
+    sleep 2;
+    exec $0 start
+    ;;
+ *)
+    echo "Usage: /etc/init.d/udev {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0

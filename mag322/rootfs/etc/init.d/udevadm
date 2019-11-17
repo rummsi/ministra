@@ -1,0 +1,38 @@
+#!/bin/sh
+# Fast Udev trigger script
+#
+# chkconfig: S 99 0
+
+UDEVBIN=/sbin/udevd
+UDEVCTRL=/sbin/udevadm
+UDEVTRG=/sbin/udevadm
+UDEVSTL=/sbin/udevadm
+
+# Check the udev package is installed
+[ -x $UDEVBIN ] || exit 0
+
+# Check that udevd is running
+#[ -d /dev/.udev ] || exit 0
+
+
+case "$1" in
+    start)
+        # Start udev trigger
+        echo "Fast Replaying boot udev events..."
+        ${UDEVCTRL} control --env STARTUP=1
+        ${UDEVTRG} trigger --action=add
+        (${UDEVSTL} settle --timeout=3; ${UDEVCTRL} control --env STARTUP=)&
+       ;;
+    stop)
+        # Does nothing!
+        ;;
+    restart)
+        exec $0 start
+        ;;
+    *)
+        echo "Usage: /etc/init.d/udevadm {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0
