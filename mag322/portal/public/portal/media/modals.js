@@ -5,8 +5,6 @@
 
 'use strict';
 
-var CModalManualScanDVBtext = 0;
-
 /**
  * Show modal message box with single button Exit
  * @param {CPage|CBase} [parent] object owner (document.body if not set)
@@ -234,190 +232,207 @@ function CModalMount ( parent, link, type ) {
 		// hide and destroy
 		self.Show(false);
 	});
-	this.bpanel.Add(KEYS.OK, 'ok.png', link !== undefined ? _('Save') : _('Connect'), function(){
-		var addr;
 
-		gSTB.HideVirtualKeyboard();
+	this.bpanel.Add(
+		KEYS.OK,
+		'ok.png',
+		link !== undefined ? _('Save') : _('Connect'),
+		function () {
+			var isDuplicate = false,
+				data, isExist, address;
 
-		self.prepare();
+			gSTB.HideVirtualKeyboard();
+			self.prepare();
 
-		// no params
-		if ( !self.url.value || !self.folder.value || !self.local.value ) {
-			// try again
-			new CModalHint(self, _('Wrong connection parameters'), 4000);
-		} else {
-			// check dupes
-			var data, exist, dupl = false;
-			// type dependant check if not edit
-			if ( link === undefined ) {
-				SMB_ARRAY.forEach(function ( item ) {
-					if ( item.local === self.local.value ) {
-						dupl = true;
-					}
-				});
-
-				NFS_ARRAY.forEach(function ( item ) {
-					if ( item.local === self.local.value ) {
-						dupl = true;
-					}
-				});
-			}
-
-			// found
-			if ( dupl ) {
+			// no params
+			if ( !self.url.value || !self.folder.value || !self.local.value ) {
 				// try again
-				new CModalHint(self, _('Local folder with this name already exists'), 4000);
+				new CModalHint(self, _('Wrong connection parameters'), 4000);
 			} else {
-				// good
-				if ( self.type.GetValue() === 'smb' ) {
-					addr = '//' + self.url.value + '/' + self.folder.value;
-
-					// clear
-					MediaBrowser.UnmountSMB();
-					// try to mount if not edit
-					if ( link !== undefined || MediaBrowser.MountSMB({
-						addresses: smbData.addresses,
-						name     : self.folder.value,
-						address  : addr,
-						login    : self.login.value,
-						pass     : self.pass.value
-					}) )
-					{
-						// prepare
-						data = {
-							addresses: smbData.addresses,
-							url   : self.url.value,
-							folder: self.folder.value,
-							local : self.local.value,
-							login : self.login.value || 'guest',
-							pass  : self.pass.value
-						};
-						// check duplicates if not edit
-						exist = false;
-						if ( link === undefined ) {
-							SMB_ARRAY.forEach(function ( item ) {
-								var same = true;
-								if ( !exist ) {
-									for ( var name in data ) {
-										same = same && data[name] === item[name];
-									}
-									if ( same ) {
-										exist = true;
-									}
-								}
-							});
+				// type dependant check if not edit
+				if ( link === undefined ) {
+					SMB_ARRAY.forEach(function ( item ) {
+						if ( item.local === self.local.value ) {
+							isDuplicate = true;
 						}
-						// only if not a duplicate
-						if ( !exist ) {
-							setTimeout(function(){
-								var index = 0, size;
+					});
 
-								if ( link && SMB_ARRAY.indexOf(link) !== -1 ) {
-									SMB_ARRAY[SMB_ARRAY.indexOf(link)] = data;
-								} else {
-									SMB_ARRAY.push(data);
-								}
-								echo(SMB_ARRAY, 'SMB_ARRAY');
-								// resave smb data
-								gSTB.SaveUserData('smb_data', JSON.stringify(SMB_ARRAY));
-								// edit mode
-								if ( link === undefined ) {
-									MediaBrowser.Reset(false, false);
-									size = MediaBrowser.FileList.data.length;
-									while ( index < size ) {
-										if ( MediaBrowser.FileList.data[index].link === data ) {
-											MediaBrowser.FileList.Reposition({index: index}, true);
-											break;
-										}
-										++index;
-									}
-									MediaBrowser.FileList.Open(MediaBrowser.FileList.activeItem.data);
-								} else {
-									var current = MediaBrowser.FileList.Current().data;
-									MediaBrowser.FileList.Refresh(false);
-									MediaBrowser.FileList.Reposition(current);
-								}
-								echo(SMB_ARRAY, 'gSTB.SaveUserData');
-							}, 5);
-							self.Show(false);
-							new CModalHint(currCPage, _('Network folder successfully mounted'), 2000);
-						} else {
-							new CModalHint(self, _('Resource already connected'), 4000);
+					NFS_ARRAY.forEach(function ( item ) {
+						if ( item.local === self.local.value ) {
+							isDuplicate = true;
 						}
-					} else {
-						new CModalHint(self, _('Unable to connect to the resource<br>with the given parameters'), 4000);
-					}
+					});
+				}
+
+				// found
+				if ( isDuplicate ) {
+					// try again
+					new CModalHint(self, _('Local folder with this name already exists'), 4000);
 				} else {
-					// NFS
-					addr = self.url.value + ':' + self.folder.value;
-					// clear
-					MediaBrowser.UnmountNFS();
-					// try to mount if not edit
-					if ( link !== undefined || MediaBrowser.MountNFS({address:addr}) ) {
-						// prepare
-						data = {
-							url   : self.url.value,
-							folder: self.folder.value,
-							local : self.local.value
-						};
-						// check duplicates if not edit
-						exist = false;
+					// good
+					if ( self.type.GetValue() === 'smb' ) {
+						// clear
+						MediaBrowser.UnmountSMB();
 
-						if ( link === undefined ) {
-							NFS_ARRAY.forEach(function(item){
-								var same = true;
-								if ( !exist ) {
-									for (var name in data) {
-										same = same && data[name] === item[name];
-									}
-									if (same) { exist = true; }
-								}
-							});
-						}
-						// only if not a duplicate
-						if ( !exist ) {
-							setTimeout(function(){
-								var index = 0,
-									size;
+						// try to mount if not edit
+						if (
+							link !== undefined
+							|| MediaBrowser.MountSMB({
+								addresses: smbData.addresses,
+								name:      self.folder.value,
+								address:   self.url.value,
+								login:     self.login.value,
+								pass:      self.pass.value
+							})
+						) {
+							data = {
+								addresses: smbData.addresses,
+								url:       self.url.value,
+								folder:    self.folder.value,
+								local:     self.local.value,
+								login:     self.login.value,
+								pass:      self.pass.value
+							};
 
-								if ( link && NFS_ARRAY.indexOf(link) !== -1 ) {
-									NFS_ARRAY[NFS_ARRAY.indexOf(link)] = data;
-								} else {
-									NFS_ARRAY.push(data);
-								}
-								// resave nfs data
-								gSTB.SaveUserData('nfs_data', JSON.stringify(NFS_ARRAY));
-								// edit mode
-								if ( link === undefined ) {
-									MediaBrowser.Reset(false, false);
-									size = MediaBrowser.FileList.data.length;
-									while ( index < size ) {
-										if ( MediaBrowser.FileList.data[index].link === data ) {
-											MediaBrowser.FileList.Reposition({index: index}, true);
-											break;
+							// check duplicates if not edit
+							isExist = false;
+
+							if ( link === undefined ) {
+								SMB_ARRAY.forEach(function ( item ) {
+									var same = true,
+										name;
+
+									if ( !isExist ) {
+										for ( name in data ) {
+											same = same && data[name] === item[name];
 										}
-										++index;
+
+										if ( same ) {
+											isExist = true;
+										}
 									}
-									MediaBrowser.FileList.Open(MediaBrowser.FileList.activeItem.data);
-								} else {
-									var current = MediaBrowser.FileList.Current().data;
-									MediaBrowser.FileList.Refresh(false);
-									MediaBrowser.FileList.Reposition(current);
-								}
-								echo(NFS_ARRAY, 'gSTB.SaveUserData');
-							}, 5);
-							// hide and destroy
-							self.Show(false);
-							new CModalHint(currCPage, _('Network folder successfully mounted'), 2000);
+								});
+							}
+
+							// only if not a duplicate
+							if ( !isExist ) {
+								setTimeout(function () {
+									var index = 0,
+										size, current;
+
+									if ( link && SMB_ARRAY.indexOf(link) !== -1 ) {
+										SMB_ARRAY[SMB_ARRAY.indexOf(link)] = data;
+									} else {
+										SMB_ARRAY.push(data);
+									}
+
+									echo(SMB_ARRAY, 'SMB_ARRAY');
+									// resave smb data
+									gSTB.SaveUserData('smb_data', JSON.stringify(SMB_ARRAY));
+
+									// edit mode
+									if ( link === undefined ) {
+										MediaBrowser.Reset(false, false);
+										size = MediaBrowser.FileList.data.length;
+
+										while ( index < size ) {
+											if ( MediaBrowser.FileList.data[index].link === data ) {
+												MediaBrowser.FileList.Reposition({index: index}, true);
+												break;
+											}
+											++index;
+										}
+										MediaBrowser.FileList.Open(MediaBrowser.FileList.activeItem.data);
+									} else {
+										current = MediaBrowser.FileList.Current().data;
+
+										MediaBrowser.FileList.Refresh(false);
+										MediaBrowser.FileList.Reposition(current);
+									}
+
+									echo(SMB_ARRAY, 'gSTB.SaveUserData');
+								}, 5);
+
+								self.Show(false);
+
+								new CModalHint(currCPage, _('Network folder successfully mounted'), 2000);
+							} else {
+								new CModalHint(self, _('Resource already connected'), 4000);
+							}
 						} else {
-							new CModalHint(self, _('Resource already connected'), 4000);
+							new CModalHint(self, _('Unable to connect to the resource<br>with the given parameters'), 4000);
 						}
 					} else {
-						new CModalHint(self, _('Unable to connect to the resource<br>with the given parameters'), 4000);
+						// NFS
+						address = self.url.value + ':' + self.folder.value;
+						// clear
+						MediaBrowser.UnmountNFS();
+						// try to mount if not edit
+						if ( link !== undefined || MediaBrowser.MountNFS({address:address}) ) {
+							// prepare
+							data = {
+								url   : self.url.value,
+								folder: self.folder.value,
+								local : self.local.value
+							};
+							// check duplicates if not edit
+							isExist = false;
+
+							if ( link === undefined ) {
+								NFS_ARRAY.forEach(function(item){
+									var same = true;
+									if ( !isExist ) {
+										for (var name in data) {
+											same = same && data[name] === item[name];
+										}
+										if (same) { isExist = true; }
+									}
+								});
+							}
+							// only if not a duplicate
+							if ( !isExist ) {
+								setTimeout(function(){
+									var index = 0,
+										size;
+
+									if ( link && NFS_ARRAY.indexOf(link) !== -1 ) {
+										NFS_ARRAY[NFS_ARRAY.indexOf(link)] = data;
+									} else {
+										NFS_ARRAY.push(data);
+									}
+									// resave nfs data
+									gSTB.SaveUserData('nfs_data', JSON.stringify(NFS_ARRAY));
+									// edit mode
+									if ( link === undefined ) {
+										MediaBrowser.Reset(false, false);
+										size = MediaBrowser.FileList.data.length;
+										while ( index < size ) {
+											if ( MediaBrowser.FileList.data[index].link === data ) {
+												MediaBrowser.FileList.Reposition({index: index}, true);
+												break;
+											}
+											++index;
+										}
+										MediaBrowser.FileList.Open(MediaBrowser.FileList.activeItem.data);
+									} else {
+										var current = MediaBrowser.FileList.Current().data;
+										MediaBrowser.FileList.Refresh(false);
+										MediaBrowser.FileList.Reposition(current);
+									}
+									echo(NFS_ARRAY, 'gSTB.SaveUserData');
+								}, 5);
+								// hide and destroy
+								self.Show(false);
+								new CModalHint(currCPage, _('Network folder successfully mounted'), 2000);
+							} else {
+								new CModalHint(self, _('Resource already connected'), 4000);
+							}
+						} else {
+							new CModalHint(self, _('Unable to connect to the resource<br>with the given parameters'), 4000);
+						}
 					}
 				}
 			}
-		}
 	});
 
 	// filling
@@ -976,7 +991,7 @@ CModalPlayListOpen.prototype.constructor = CModalPlayListOpen;
 function CModalSubtitleOpen ( parent, options ) {
 	// for limited scopes
 	var self = this,
-		encs = [/*'utf-8', */'cp1250','cp1251', 'cp1252', 'cp1253', 'cp1254', 'cp1254', 'cp1255', 'cp1256', 'cp1257', 'cp1258', 'iso8859-1', 'iso8859-2', 'iso8859-3', 'iso8859-4', 'iso8859-5', 'iso8859-6', 'iso8859-7', 'iso8859-8', 'iso8859-9', 'iso8859-10', 'iso8859-11', 'iso8859-12', 'iso8859-13', 'iso8859-14', 'iso8859-15', 'iso8859-16'];
+		encs = [/*'utf-8', */ 'cp1250', 'cp1251', 'cp1252', 'cp1253', 'cp1254', 'cp1254', 'cp1255', 'cp1256', 'cp1257', 'cp1258', 'iso8859-1', 'iso8859-2', 'iso8859-3', 'iso8859-4', 'iso8859-5', 'iso8859-6', 'iso8859-7', 'iso8859-8', 'iso8859-9', 'iso8859-10', 'iso8859-11', 'iso8859-12', 'iso8859-13', 'iso8859-14', 'iso8859-15', 'iso8859-16', 'utf-16be', 'utf-16le'];
 
 	this.list = new CSelectBox(this, {
 		data: encs,
@@ -2393,13 +2408,7 @@ CModalImportTVChannels.prototype.constructor = CModalImportTVChannels;
 function CModalScanDVB ( parent ) {
 	// for limited scopes
 	var self = this,
-		html,
-		checkedType = [],
-		domArr = [],
-		model = gSTB.GetDeviceModelExt(),
-		data, oldType, i,
-		inputNumber = 0;
-
+		html, data;
 	// parent constructor
 	CModalBox.call(this, parent);
 
@@ -2409,125 +2418,43 @@ function CModalScanDVB ( parent ) {
 	 */
 	this.name = 'CModalScanDVB';
 
-	function changeType ( input ) {
-		var data = [],
-			domArr = [];
 
-		inputNumber = input ? input : inputNumber;
-		checkedType = DVBChannels.inputs[inputNumber].currentScanTypes;
-
-		for ( i = 0; i < checkedType.length; i++ ) {
-			data.push({
-				name: dvbTypes[checkedType[i]],
-				value: checkedType[i]
-			});
+		try{
+		var text = dvbManager.GetCurrentScanTypes();
+		echo(text,'GetCurrentScanTypes');
+		data = JSON.parse(text);
+		} catch(e){
+			echo(e,'GetCurrentScanTypes parse error');
 		}
-
-		if ( oldType === checkedType[0] ) {
-
-			return;
-		}
-
-		oldType = checkedType[0];
-
-		switch ( oldType ) {
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_C: //DVB-C
-				switch ( model ) {
-					case 'IM2102':
-						break;
-					default:
-						domArr = [
-							element('tr', {}, [
-								element('td', {className: 'name'}, _('Symbol rate:')),
-								element('td', {className: 'data'}, self.stepSRate.parentNode)
-							]),
-							element('tr', {}, [
-								element('td', {className: 'name'}, _('Modulation:')),
-								element('td', {className: 'data'}, self.stepModul.parentNode)
-							])
-						];
-						self.focusList = [self.stepSRate, self.stepModul];
-						break;
-				}
-				break;
-
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_T:  //DVB-T(T2)
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_T2:
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_S2: //DVB-S2
-				break;
-		}
-
-		if ( data.length > 1 ) {
-			self.stepType = new CSelectBox(self, {
-				data: data,
-				idField: 'value',
-				nameField: 'name',
-				parent: element('div'),
-				events: {
-					onChange: function () {
-						changeType();
-					}
-				},
-				selected: checkedType[0],
-				name: 'type'
-			});
-
-			domArr.unshift(element('tr', {}, [
-				element('td', {className: 'name'}, _('DVB type:')),
-				element('td', {className: 'data'}, self.stepType.parentNode)
-			]));
-
-			self.focusList.unshift(self.stepType);
-		}
-
-		if ( DVBChannels.inputs.length > 1 ) {
-			domArr.splice(0, 0, element('tr', {}, [
-					element('td', {className: 'name'}, _('Antenna') + ':'),
-					element('td', {className: 'data'}, self.stepAntenna.parentNode)
-				])
-			);
-			self.focusList.splice(0, 0, self.stepAntenna);
-		}
-		html = element('table', {className: 'main maxw CModalScanDVB'}, domArr);
-		self.SetContent(html);
-		if ( self.focusList.length ) {
-			self.focusList[0].focus();
-		}
-	}
-
-	if ( DVBChannels.inputs.length > 1 ) {
-		data = [];
-		for ( var i = 0; i < DVBChannels.inputs.length; i++ ) {
-			data.push({value: i, name: _('Antenna') + ' ' + (i + 1)});
-		}
-		this.stepAntenna = new CSelectBox(this, {
+	echo('DVBChannels.DVBType : '+DVBChannels.DVBType);
+	echo(data,'data');
+	this.step1 = new CSelectBox(this, {
 			data: data,
-			idField: 'value',
-			nameField: 'name',
+			idField : 'type',
+			nameField : 'name',
 			parent: element('div'),
 			events: {
-				onChange: function () {
-					changeType(this.GetValue());
-				}
+			onChange: function(){}
 			},
-			selected: 0
+		selected : DVBChannels.DVBType
 		});
-	}
 
-	this.stepSRate = new CIntervalBox(SettingsPage, {
-		parent: element('div'),
-		max: 7200,
-		min: 870,
-		interval: 1,
-		value: 6875,
-		style: 'elements'
-	});
 
-	this.stepModul = new CSelectBox(this, {
+	if ( DVBChannels.DVBType === 1 ) {
+		this.step2 = new CIntervalBox(SettingsPage, {
+			parent: element( 'div'),
+			max: 7200,
+			min: 870,
+			interval: 1,
+			value: 6875,
+			style: 'elements'
+		});
+
+		this.step3 = new CSelectBox(this, {
 		data: [
 			{
 				value: 0,
-				name: _('Auto')
+				name: 'Auto'
 			},
 			{
 				value: 1,
@@ -2550,15 +2477,43 @@ function CModalScanDVB ( parent ) {
 				name: '256 QAM'
 			}
 		],
-		idField: 'value',
-		nameField: 'name',
+		idField : 'value',
+		nameField : 'name',
 		parent: element('div'),
 		events: {
-			onChange: function () {
-			}
+			onChange: function(){}
 		},
-		selected: 0
+		selected : 0
 	});
+
+
+		html = element('table', {className: 'main maxw CModalScanDVB'}, [
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('DVB type:')),
+				element('td', {className: 'data'}, this.step1.parentNode)
+			]),
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('Symbol rate:')),
+				element('td', {className: 'data'}, this.step2.parentNode)
+			]),
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('Modulation:')),
+				element('td', {className: 'data'}, this.step3.parentNode)
+			])
+		]);
+		this.focusList = [this.step1, this.step2, this.step3];
+	} else {
+		html = element('table', {className: 'main maxw CModalScanDVB'}, [
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('DVB type:')),
+				element('td', {className: 'data'}, this.step1.parentNode)
+			])
+		]);
+		this.focusList = [this.step1];
+	}
+
+
+
 
 	this.bpanel = new CButtonPanel();
 	this.bpanel.Init(CMODAL_IMG_PATH);
@@ -2567,45 +2522,41 @@ function CModalScanDVB ( parent ) {
 		self.Show(false);
 	});
 	this.bpanel.Add(KEYS.OK, 'ok.png', _('Scan'), function () {
-		var type,
-			config = {};
-
-		if ( self.stepType ) {
-			config.type = type = self.stepType.GetValue();
+		if ( !self.step1.GetValue() ) {
+			// try again
+			new CModalHint(self, _('Wrong field data'), 4000);
 		} else {
-			config.type = type = checkedType[0];
+			self.Show(false);
+			DVBChannels.DVBType = self.step1.GetValue();
+			if ( DVBChannels.DVBType === 1) {
+				echo({
+					type: self.step1.GetValue(),
+					symRate: self.step2.GetValue(),
+					modulation: self.step3.GetValue(),
+					scanMode: 0,
+					networkId: 0
+				},'AUTO SCAN');
+				dvbManager.SetScanParams(JSON.stringify({
+					type: self.step1.GetValue(),
+					symRate: self.step2.GetValue(),
+					modulation: self.step3.GetValue(),
+					scanMode: 0,
+					networkId: 0
+				}));
+			}
+			DVBChannels.startAutoScan();
 		}
-
-		switch ( type ) {
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_C:
-				switch ( model ) {
-					case 'IM2102':
-						break;
-					default:
-						config.symbolRate = self.stepSRate.GetValue() * 1000;
-						config.modulation = self.stepModul.GetValue();
-						break;
-				}
-				config.scanMode = 0;
-				config.networkId = 0;
-			default:
-				DVBChannels.startScan(config, inputNumber);
-				break;
-		}
-		self.Show(false);
 		return false;
 	});
 
 	// filling
 	this.SetHeader(_('Start scanning'));
-	changeType();
+	this.SetContent(html);
 	this.SetFooter(this.bpanel.handle);
 
 	this.onShow = function () {
 		setTimeout(function () {
-			if ( self.focusList.length ) {
-				self.focusList[0].focus();
-			}
+			self.step1.focus();
 		}, 100);
 	};
 
@@ -2618,10 +2569,10 @@ function CModalScanDVB ( parent ) {
 
 	// forward events to button panel
 	this.EventHandler = function ( event ) {
-		if ( this.focusList[this.focusPos] && typeof this.focusList[this.focusPos].EventHandler === 'function' ) {
+		if ( typeof this.focusList[this.focusPos].EventHandler === 'function' ) {
 			this.focusList[this.focusPos].EventHandler(event);
 		}
-		if ( event.stopped === true ) {
+		if (event.stopped === true) {
 			return;
 		}
 		switch ( event.code ) {
@@ -2641,6 +2592,7 @@ function CModalScanDVB ( parent ) {
 
 	// build and display
 	this.Init();
+	this.SetContent(html);
 	this.Show(true);
 }
 
@@ -2649,19 +2601,12 @@ CModalScanDVB.prototype = Object.create(CModalBox.prototype);
 CModalScanDVB.prototype.constructor = CModalScanDVB;
 
 /**
- * manual scan from DVB channel list
- * @param parent
- * @class CModalScanDVB
- * @constructor
- */
+* manual scan from DVB channel list
+* @param parent
+* @class CModalScanDVB
+* @constructor
+*/
 function CModalManualScanDVB ( parent ) {
-	var self = this,
-		model = gSTB.GetDeviceModelExt(),
-		checkedType = [],
-		domArr = [],
-		data, oldType,
-		inputNumber = 0;
-
 	// parent constructor
 	CModalBox.call(this, parent);
 
@@ -2671,216 +2616,83 @@ function CModalManualScanDVB ( parent ) {
 	 */
 	this.name = 'CModalManualScanDVB';
 
+	// for limited scopes
+	var self = this,
+		domArr = [],
+		data,
+		max = 858000,
+		min = 50000;
 
-	function changeType ( input ) {
-		var data = [],
-			html,
-			domArr = [];
-
-		inputNumber = input ? input : inputNumber;
-		checkedType = DVBChannels.inputs[inputNumber].currentScanTypes;
-
-		for ( i = 0; i < checkedType.length; i++ ) {
-			data.push({
-				name: dvbTypes[checkedType[i]],
-				value: checkedType[i]
-			});
-		}
-
-		if ( oldType === checkedType[0] ) {
-			return;
-		}
-
-		oldType = checkedType[0];
-
-		switch ( oldType ) {
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_C: //DVB-C
-				switch ( model ) {
-					case 'IM2102':
-						domArr = [
-							element('tr', {}, [
-								element('td', {className: 'name'}, _('Frequency (KHz):')),
-								element('td', {className: 'data'}, self.stepFreq.parentNode)
-							])
-						];
-						self.focusList = [self.stepFreq];
-						break;
-					default:
-						domArr = [
-							element('tr', {}, [
-								element('td', {className: 'name'}, _('Frequency (KHz):')),
-								element('td', {className: 'data'}, self.stepFreq.parentNode)
-							]),
-							element('tr', {}, [
-								element('td', {className: 'name'}, _('Symbol rate:')),
-								element('td', {className: 'data'}, self.stepSRate.parentNode)
-							]),
-							element('tr', {}, [
-								element('td', {className: 'name'}, _('Modulation:')),
-								element('td', {className: 'data'}, self.stepModul.parentNode)
-							]),
-							element('tr', {}, [
-								element('td', {className: 'name'}, _('Network ID:')),
-								element('td', {className: 'data'}, self.stepNetId)
-							])
-						];
-						self.focusList = [self.stepFreq, self.stepSRate, self.stepModul, self.stepNetId];
-						break;
-				}
-
-				break;
-
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_T:  //DVB-T(T2)
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_T2:
-				domArr = [
-					element('tr', {}, [
-						element('td', {className: 'name'}, _('DVB type:')),
-						element('td', {className: 'data'}, self.stepType.parentNode)
-					]),
-					element('tr', {}, [
-						element('td', {className: 'name'}, _('Frequency (KHz):')),
-						element('td', {className: 'data'}, self.stepFreq.parentNode)
-					]),
-					element('tr', {}, [
-						element('td', {className: 'name'}, _('Bandwidth (MHz):')),
-						element('td', {className: 'data'}, self.stepBand.parentNode)
-					])
-				];
-				self.focusList = [self.stepType, self.stepFreq, self.stepBand];
-				break;
-
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_S2: //DVB-S2
-				domArr = [
-					element('tr', {}, [
-						element('td', {className: 'name'}, _('Frequency from(KHz):')),
-						element('td', {className: 'data'}, self.stepFreqFrom.parentNode)
-					]),
-					element('tr', {}, [
-						element('td', {className: 'name'}, _('Frequency to(KHz):')),
-						element('td', {className: 'data'}, self.stepFreqTo.parentNode)
-					])
-
-				];
-				self.focusList = [self.stepFreqFrom, self.stepFreqTo];
-				break;
-		}
-
-		if ( data.length > 1 ) {
-			self.stepType = new CSelectBox(self, {
-				data: data,
-				idField: 'value',
-				nameField: 'name',
-				parent: element('div'),
-				events: {
-					onChange: function () {
-						changeType();
-					}
-				},
-				selected: checkedType[0],
-				name: 'type'
-			});
-
-			domArr.unshift(element('tr', {}, [
-				element('td', {className: 'name'}, _('DVB type:')),
-				element('td', {className: 'data'}, self.stepType.parentNode)
-			]));
-
-			self.focusList.unshift(self.stepType);
-		}
-
-		if ( DVBChannels.inputs.length > 1 ) {
-			domArr.splice(0, 0, element('tr', {}, [
-					element('td', {className: 'name'}, _('Antenna') + ':'),
-					element('td', {className: 'data'}, self.stepAntenna.parentNode)
-				])
-			);
-			self.focusList.splice(0, 0, self.stepAntenna);
-		}
-		html = element('table', {className: 'main maxw CModalScanDVB'}, domArr);
-		self.SetContent(html);
-		if ( self.focusList.length ) {
-			self.focusList[0].focus();
-		}
+	try{
+		var text = dvbManager.GetCurrentScanTypes();
+		echo(text,'GetCurrentScanTypes');
+		data = JSON.parse(text);
+	} catch(e){
+		echo(e,'GetCurrentScanTypes parse error');
 	}
 
-	if ( DVBChannels.inputs.length > 1 ) {
-		data = [];
-		for ( var i = 0; i < DVBChannels.inputs.length; i++ ) {
-			data.push({value: i, name: _('Antenna') + ' ' + (i + 1)});
-		}
-		this.stepAntenna = new CSelectBox(this, {
-			data: data,
-			idField: 'value',
-			nameField: 'name',
-			parent: element('div'),
-			events: {
-				onChange: function () {
-					changeType(this.GetValue());
-				}
-			},
-			selected: 0
-		});
-	}
-
-	this.stepFreq = new CIntervalBox(SettingsPage, {
-		parent: element('div'),
-		max: 860000,
-		min: 50000,
+	this.step1 = new CIntervalBox(SettingsPage, {
+		parent: element( 'div'),
+		max: max,
+		min: min,
 		interval: 500,
-		value: CModalManualScanDVBtext,
+		value: min,
 		style: 'elements'
 	});
 
-	this.stepFreqFrom = new CIntervalBox(SettingsPage, {
-		parent: element('div'),
-		max: 12750000,
-		min: 10700000,
-		interval: 1000,
-		value: CModalManualScanDVBtext,
-		events: {
-			onChange: function () {
-				if ( this.GetValue() > self.stepFreqTo.GetValue() ) {
-					self.stepFreqTo.SetValue(this.GetValue());
-				}
-			}
-		},
+	this.step11 = new CIntervalBox(SettingsPage, {
+		parent: element( 'div'),
+		max: max,
+		min: min,
+		interval: 500,
+		value: max,
 		style: 'elements'
 	});
 
-	this.stepFreqTo = new CIntervalBox(SettingsPage, {
-		parent: element('div'),
-		max: 12750000,
-		min: 10700000,
-		interval: 1000,
-		value: CModalManualScanDVBtext,
-		events: {
-			onChange: function () {
-				if ( this.GetValue() < self.stepFreqFrom.GetValue() ) {
-					self.stepFreqFrom.SetValue(this.GetValue());
-				}
-			}
-		},
-		style: 'elements'
+	this.step2 = new CSelectBox(this, {
+		data: data,
+		idField : 'type',
+		nameField : 'name',
+		parent: element( 'div'),
+		selectedId: DVBChannels.DVBType
 	});
 
-	this.stepBand = new CSelectBox(this, {
-		data: [
-			{id: 6, name: '6'},
-			{id: 7, name: '7'},
-			{id: 8, name: '8'}
-		],
-		idField: 'id',
-		nameField: 'name',
-		parent: element('div'),
-		events: {
-			onChange: function () {
-			}
-		},
-		selected: 7
-	});
 
-	this.stepSRate = new CIntervalBox(SettingsPage, {
-		parent: element('div'),
+	if( DVBChannels.DVBType !== 1 ) {
+		this.step3 = new CSelectBox(this, {
+			data: [
+				{value: 6, name: '6'},
+				{value: 7, name: '7'},
+				{value: 8, name: '8'}
+			],
+			idField : 'value',
+			nameField : 'name',
+			parent: element('div'),
+			selectedId: 8
+		});
+		this.focusList = [this.step1, this.step11, this.step2, this.step3];
+		domArr = [
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('Frequency start (KHz):')),
+				element('td', {className: 'data'}, this.step1.parentNode)
+			]),
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('Frequency end (KHz):')),
+				element('td', {className: 'data'}, this.step11.parentNode)
+			]),
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('DVB type:')),
+				element('td', {className: 'data'}, this.step2.parentNode)
+			]),
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('Bandwidth (MHz):')),
+				element('td', {className: 'data'}, this.step3.parentNode)
+			])
+
+		];
+	} else {
+		this.step3 = new CIntervalBox(SettingsPage, {
+		parent: element( 'div'),
 		max: 7200,
 		min: 870,
 		interval: 1,
@@ -2888,7 +2700,7 @@ function CModalManualScanDVB ( parent ) {
 		style: 'elements'
 	});
 
-	this.stepModul = new CSelectBox(this, {
+		this.step4 = new CSelectBox(this, {
 		data: [
 			{
 				value: 0,
@@ -2915,17 +2727,67 @@ function CModalManualScanDVB ( parent ) {
 				name: '256 QAM'
 			}
 		],
-		idField: 'value',
-		nameField: 'name',
+		idField : 'value',
+		nameField : 'name',
 		parent: element('div'),
-		events: {
-			onChange: function () {
-			}
-		},
 		selected: 0
 	});
 
-	this.stepNetId = element('input', {type: 'text'});
+		this.step5 = new CSelectBox(this, {
+		data: [
+			{
+				value: 0,
+				name: _('Network')
+			},
+			{
+				value: 1,
+				name:  _('Full')
+			},
+			{
+				value: 2,
+				name:  _('Fast')
+			}
+		],
+		idField : 'value',
+		nameField : 'name',
+		parent: element('div'),
+		selectedId: 1
+	});
+
+		this.step6 = element('input', {type:'text'});
+
+		domArr = [
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('Frequency (KHz):')),
+				element('td', {className: 'data'}, this.step1.parentNode)
+			]),
+			//element('tr', {}, [
+			//	element('td', {className: 'name'}, _('Frequency  end (KHz):')),
+			//	element('td', {className: 'data'}, this.step11.parentNode)
+			//]),
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('DVB type:')),
+				element('td', {className: 'data'}, this.step2.parentNode)
+			]),
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('Symbol rate:')),
+				element('td', {className: 'data'}, this.step3.parentNode)
+			]),
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('Modulation:')),
+				element('td', {className: 'data'}, this.step4.parentNode)
+			]),
+			element('tr', {}, [
+				element('td', {className: 'name'}, _('Network ID:')),
+				element('td', {className: 'data'}, this.step6)
+			])
+		];
+		this.focusList = [this.step1, this.step2, this.step3, this.step4, this.step6];
+	}
+
+	var html = element('table', {className: 'main maxw CModalScanDVB'}, domArr);
+
+
 
 	this.bpanel = new CButtonPanel();
 	this.bpanel.Init(CMODAL_IMG_PATH);
@@ -2934,65 +2796,50 @@ function CModalManualScanDVB ( parent ) {
 		self.Show(false);
 	});
 	this.bpanel.Add(KEYS.OK, 'ok.png', _('Scan'), function () {
-		var type,
-			config = {};
+		var freq = self.step1.GetValue(),
+			freqE = self.step11.GetValue(),
+			type = self.step2.GetValue(),
+			netId;
 
-		if ( self.stepType ) {
-			config.type = type = self.stepType.GetValue();
+		if ( !freq || !type || freq > max || freq < min || type !== 1 && ( freq > freqE || freqE > max || freqE < min ) ) {
+			// try again
+			new CModalHint(self, _('Wrong field data'), 4000);
 		} else {
-			config.type = type = checkedType[0];
+			self.Show(false);
+			DVBChannels.DVBType = type;
+			if ( DVBChannels.DVBType === 1 ) {
+				netId = parseInt(self.step6.value) || 0;
+				dvbManager.SetScanParams(JSON.stringify({
+					type: type,
+					symRate: self.step3.GetValue(),
+					modulation: self.step4.GetValue(),
+					scanMode: 2,
+					frequency: freq,
+					networkId: netId
+				}));
+				echo({
+					type: type,
+					symRate: self.step3.GetValue(),
+					modulation: self.step4.GetValue(),
+					scanMode: 2,
+					frequency: freq,
+					networkId: netId
+				},'MANUAL SCAN');
+				DVBChannels.startAutoScan();
+			} else {
+				DVBChannels.startManualScan( freq, freqE, self.step3.GetValue() );
+			}
 		}
-
-		switch ( type ) {
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_C:
-				switch ( model ) {
-					case 'IM2102':
-						config.networkId = 0;
-						break;
-					default:
-						config.symbolRate = self.stepSRate.GetValue() * 1000;
-						config.modulation = self.stepModul.GetValue();
-						config.networkId = parseInt(self.stepNetId.value) || 0;
-						break;
-				}
-
-				config.scanMode = 2;
-				config.frequency = self.stepFreq.GetValue();
-				DVBChannels.startScan(config, inputNumber);
-				break;
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_T:
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_T2:
-				CModalManualScanDVBtext = self.stepFreq.GetValue();
-				config.from = config.to = CModalManualScanDVBtext;
-				config.bandwidth = self.stepBand.GetValue();
-				config.step = 1000;
-				DVBChannels.startScan(config, inputNumber);
-				break;
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_S:
-			case DVBChannels.inputs[inputNumber].TYPE_DVB_S2:
-				CModalManualScanDVBtext = self.stepFreqFrom.GetValue();
-				config.from = CModalManualScanDVBtext;
-				if ( self.stepFreqFrom.GetValue() > self.stepFreqTo.GetValue() ) {
-					new CModalHint(self, _('Wrong field data'), 4000);
-					return;
-				}
-				config.to = self.stepFreqTo.GetValue();
-				DVBChannels.startScan(config, inputNumber);
-				break;
-		}
-		self.Show(false);
-		return false;
 	});
 
 	// filling
 	this.SetHeader(_('Start scanning'));
+	this.SetContent(html);
 	this.SetFooter(this.bpanel.handle);
 
 	this.onShow = function () {
 		setTimeout(function () {
-			if ( self.focusList.length ) {
-				self.focusList[0].focus();
-			}
+			self.focusList[0].focus();
 		}, 100);
 	};
 
@@ -3005,14 +2852,12 @@ function CModalManualScanDVB ( parent ) {
 
 	// forward events to button panel
 	this.EventHandler = function ( event ) {
-		if ( this.focusList[this.focusPos] && typeof this.focusList[this.focusPos].EventHandler === 'function' ) {
+		if (typeof this.focusList[this.focusPos].EventHandler === 'function'){
 			this.focusList[this.focusPos].EventHandler(event);
 		}
-
-		if ( event.stopped === true ) {
+		if (event.stopped === true) {
 			return;
 		}
-
 		switch ( event.code ) {
 			case KEYS.UP:
 				self.FocusPrev(event, false);
@@ -3030,15 +2875,13 @@ function CModalManualScanDVB ( parent ) {
 
 	// build and display
 	this.Init();
-	//this.SetContent(html);
-	changeType();
+	this.SetContent(html);
 	this.Show(true);
 }
 
 // extending
 CModalManualScanDVB.prototype = Object.create(CModalBox.prototype);
 CModalManualScanDVB.prototype.constructor = CModalManualScanDVB;
-
 
 /**
  * init epg info
@@ -3049,7 +2892,6 @@ CModalManualScanDVB.prototype.constructor = CModalManualScanDVB;
  */
 function CModalInitEPGInfo ( parent, id ) {
 	var data, up, down;
-
 	this.day = 0;
 	this.id = id;
 	//TODO remove this try catch when dvbManager will be fixed
@@ -3430,11 +3272,15 @@ function CModalAntennaPower ( parent, input ) {
 
 	//powerOn = dvbManager.GetAntennaPower(input);
 
-	DVBChannels.inputs[input].currentScanTypes;
+	try{
+		data = JSON.parse( dvbManager.GetCurrentScanTypes(input) );
+	} catch(e){
+		echo(e,'GetCurrentScanTypes parse error');
+	}
 
 	this.focusList = [];
 	this.focusPos = 0;
-	if ( data[0] === 2 || data[0] === 3 ) {
+	if ( data[0].type !== 1 ) {
 		this.step1 = new CCheckBox(this, {
 			parent: element('div', {className: 'control'}),
 			checked: dvbManager.GetAntennaPower(input)
@@ -3454,7 +3300,7 @@ function CModalAntennaPower ( parent, input ) {
 		html = element('table', {className: 'main maxw CModalScanDVB'}, [
 			element('tr', {}, [
 				element('td', {className: 'name'}, _('DVB type:')),
-				element('td', {className: 'data'}, data[0])
+				element('td', {className: 'data'}, data[0].name)
 			])
 		]);
 	}
@@ -3469,7 +3315,7 @@ function CModalAntennaPower ( parent, input ) {
 		self.Show(false);
 	});
 	this.bpanel.Add(KEYS.OK, 'ok.png', _('Save'), function () {
-		DVBChannels.inputs[input].antennaPower = self.step1.IsChecked();
+		dvbManager.SetAntennaPower(self.step1.IsChecked(), input);
 		self.Show(false);
 		return false;
 	});
@@ -3634,122 +3480,3 @@ function CModalStartPlay ( parent ) {
 // extending
 CModalStartPlay.prototype = Object.create(CModalBox.prototype);
 CModalStartPlay.prototype.constructor = CModalStartPlay;
-
-/**
- * set antenna power for DVB
- * @param [CPage] parent
- * @param [number] input number of antenna
- * @class CModalScanDVB
- * @constructor
- */
-function CModalAntennaPower ( parent, input ) {
-	// for limited scopes
-	var self = this,
-		html, data;
-	// parent constructor
-	CModalBox.call(this, parent);
-
-	this.name = 'CModalAntennaPower';
-
-	//powerOn = dvbManager.GetAntennaPower(input);
-
-	data = input.currentScanTypes;
-	// try{
-	// 	data = JSON.parse( dvbManager.GetCurrentScanTypes(input) );
-	// } catch(e){
-	// 	echo(e,'GetCurrentScanTypes parse error');
-	// }
-
-	this.focusList = [];
-	this.focusPos = 0;
-	if ( input.capabilities.antennaPower ) {
-		this.step1 = new CCheckBox(this, {
-			parent: element('div', {className: 'control'}),
-			checked: input.antennaPower
-		});
-		html = element('table', {className: 'main maxw CModalScanDVB'}, [
-			element('tr', {}, [
-				element('td', {className: 'name'}, _('DVB type:')),
-				element('td', {className: 'data'}, dvbTypes[data[0] || 0])
-			]),
-			element('tr', {}, [
-				element('td', {className: 'name'}, _('Antenna power supply')+':'),
-				element('td', {className: 'data'}, this.step1.handle)
-			])
-		]);
-		this.focusList = [this.step1];
-	} else {
-		html = element('table', {className: 'main maxw CModalScanDVB'}, [
-			element('tr', {}, [
-				element('td', {className: 'name'}, _('DVB type:')),
-				element('td', {className: 'data'}, dvbTypes[data[0] || 0])
-			])
-		]);
-	}
-
-
-
-
-	this.bpanel = new CButtonPanel();
-	this.bpanel.Init(CMODAL_IMG_PATH);
-	this.bpanel.Add(KEYS.EXIT, 'exit.png', _('Cancel'), function () {
-		// hide and destroy
-		self.Show(false);
-	});
-	this.bpanel.Add(KEYS.OK, 'ok.png', _('Save'), function () {
-		input.antennaPower = self.step1.IsChecked();
-		self.Show(false);
-		return false;
-	});
-
-
-	this.onShow = function () {
-		setTimeout(function () {
-			if ( self.step1 ) {
-				self.step1.focus();
-			}
-		}, 100);
-	};
-
-	// free resources on hide
-	this.onHide = function () {
-		elclear(self.bpanel.handle);
-		delete self.bpanel;
-		self.Free();
-	};
-
-	// forward events to button panel
-	this.EventHandler = function ( event ) {
-		event.preventDefault();
-		if ( this.focusList.length && typeof this.focusList[this.focusPos].EventHandler === 'function' ) {
-			this.focusList[this.focusPos].EventHandler(event);
-		}
-		if (event.stopped === true) {
-			return;
-		}
-		switch ( event.code ) {
-			case KEYS.UP:
-				self.FocusPrev(event, false);
-				event.preventDefault();
-				break;
-			case KEYS.DOWN:
-				self.FocusNext(event, false);
-				event.preventDefault();
-				break;
-			default:
-				// forward events to button panel
-				self.bpanel.EventHandler(event);
-		}
-	};
-
-	// build and display
-	this.Init();
-	this.SetHeader(_('Antenna') + ' ' + (input+1));
-	this.SetContent(html);
-	this.SetFooter(this.bpanel.handle);
-	this.Show(true);
-}
-
-// extending
-CModalAntennaPower.prototype = Object.create(CModalBox.prototype);
-CModalAntennaPower.prototype.constructor = CModalAntennaPower;

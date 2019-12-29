@@ -481,7 +481,7 @@ IPTVChannels.initEPGNow = function (index){
  * @param {number} index of data array
  */
 IPTVChannels.initEPG = function (index){
-	if ( !configuration.mayEPG || this.TVList.activeItem.data.type !== MEDIA_TYPE_STREAM ) {
+	if ( !configuration.mayEPG || !this.TVList.activeItem || this.TVList.activeItem.data.type !== MEDIA_TYPE_STREAM ) {
 		return;
 	}
 	if ( currCPage === this || currCPage.parent === this ){

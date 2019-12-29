@@ -37,6 +37,7 @@ var stbEvent = {
 			accessControl.init();
 			module.refreshStorageInfo();
 			app.models.main.load();
+			app.cleanFromTrashTasks();
 			// main view setup
 			module.views.main.init();
 		};
@@ -86,6 +87,32 @@ var stbEvent = {
 				}
 			}
 			module.trigger('storageUpdated');
+		};
+
+		// Storage was removed so find and delete tasks connected to this storage
+		module.cleanFromTrashTasks = function () {
+			var trash = [],
+				real  = [],
+				ind, path, timeOut;
+
+			app.refreshStorageInfo();
+			for ( ind = 0; ind < STORAGE_INFO.length; ind++ ) {
+				// collect real devices
+				real.push(STORAGE_INFO[ind].mountPath);
+			}
+
+			for ( ind = 0; ind < app.models.main.downloads.length; ind++ ) {
+				path = app.models.main.downloads[ind].mountPoint;
+				if ( real.indexOf(path) === -1 && trash.indexOf(path) === -1 ) {
+					trash.push(path);
+					// remove trash tasks and update downloads list
+					stbDownloadManager.InvalidateCatalog(path);
+					clearTimeout(timeOut);
+					timeOut = setTimeout(function () {
+						app.views.main.refreshDownloads();
+					}, 10);
+				}
+			}
 		};
 
 		module.prepareSize = function ( size ) {

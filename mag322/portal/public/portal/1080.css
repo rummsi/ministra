@@ -191,10 +191,10 @@
 #pageMasterSettings .screen7 .info_title { font-size:60px; }
 #pageMasterSettings .screen7 .info_text { font-size:36px; color:#fff; }
 
-#pageMasterSettings .screen8 input { width:840px; height:69px; position:relative; margin-top:102px; margin-left:480px; padding:0 15px; background:#fff; font-size:48px; color:#000; border:solid 3px #0ae; }
+#pageMasterSettings .screen8 input { width:840px; height:69px; position:relative; margin-top:87px; margin-left:480px; padding:0 15px; background:#fff; font-size:48px; color:#000; border:solid 3px #0ae; }
 #pageMasterSettings .screen8 input:focus { background:#cceffc; }
 #pageMasterSettings .screen8 .sub_suggest { width:870px; height:375px; position:absolute; margin-left:480px; z-index:100; }
-#pageMasterSettings .screen8 .suggest { width:870px; position:absolute; background:rgba(255, 255, 255, 1); font-size:48px; color:#000; border:solid 3px #0ae; }
+#pageMasterSettings .screen8 .suggest { width:870px; position:absolute; background:rgba(255, 255, 255, 1); font-size:48px; color:#000; border:solid 3px #0ae; bottom: 24px;}
 #pageMasterSettings .screen8 .cslist-main { width:910px; height:686px; position:relative; float:left; margin-top:18px; margin-bottom:18px; font-size:42px; overflow-x:hidden; overflow-y:auto; }
 #pageMasterSettings .screen8 .cslist-main a { width:844px; height:98px; line-height:92px; }
 #pageMasterSettings .screen8 .suggest .item { width:840px; height:69px; padding:0 15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -422,36 +422,17 @@
 .page#pageDVBChannels .body .footer {background: url("../img/1920/backgrounds/player_menu_bg.png") transparent;}
 /*.page#pageDVBChannels .cgmenu-main tr.ilist td { padding-top:0; border-top:33px solid transparent;} */
 .page#pageDVBChannels .cmodal-main .cmodal-menu { float:right; }
-/*.page#pageDVBChannels .content .cslist-main { height:686px;}*/
-/*.page#pageDVBChannels .content .cslist-main a                { width:1035px; height:98px; line-height:92px; padding:0 22px; margin-right:6px;}*/
-/*.page#pageDVBChannels .content .cslist-main a .star {height:98px; width:54px; float:left;}*/
-/*.page#pageDVBChannels .content .cslist-main a.focused        { background-image: url('../img/1920/media/tv_item_focus.png');}*/
-/*.page#pageDVBChannels .content .cslist-main a.marked {background: url("../img/1920/media/tv_item_mark.png"); }*/
-/*.page#pageDVBChannels .content .cslist-main a.focused.marked {background-image: url('../img/1920/media/tv_item_focus_mark.png'); }*/
-/*.page#pageDVBChannels .content .cslist-main a .scrambled {height:98px; float:left; width:54px;}*/
-/*.page#pageDVBChannels .content .cslist-main a .scrambled.on {background:url(../img/1920/media/ico_lock.png) no-repeat center;}*/
-/*.page#pageDVBChannels .content .cslist-main a.stared .star { url('../img/1920/ico_fav.png') no-repeat center; }*/
-/*.page#pageDVBChannels .content .cslist-main a .data        { width:858px; margin-right: 0px;float: left;  text-indent:98px; font-size:42px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; background: no-repeat left center; }*/
-/*.page#pageDVBChannels .content .cslist-main a .number {height:75px; float:left; width:60px;text-align: center;font-size:42px;background-position: center; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;}*/
-
-.page#pageDVBChannels .content .crop.defImage{background: url(../img/1920/backgrounds/bg_icon_dvb.png) 50% 50% no-repeat}
-.page#pageDVBChannels .content .crop .clist-main { height:686px;}
-.page#pageDVBChannels .content .clist-main .list {text-align:left;}
-.page#pageDVBChannels .content .crop.defImage .clist-main {display:none;}
-.page#pageDVBChannels .content .crop.defImage .content_right {display:none;}
-.page#pageDVBChannels .content .clist-main .list > div  {  width:1035px; height:98px; line-height:92px; padding:0 22px; margin-right:6px; overflow: hidden; text-decoration:none; white-space:nowrap; text-overflow:ellipsis}
-.page#pageDVBChannels .content .clist-main .list .star {height:98px; width:54px; float:left;}
-.page#pageDVBChannels .content .clist-main .list > div.focused        { background-image: url('../img/1920/media/tv_item_focus.png');}
-.page#pageDVBChannels .content .clist-main .list > div.marked {background: url("../img/1920/media/tv_item_mark.png"); }
-.page#pageDVBChannels .content .clist-main .list > div.focused.marked {background-image: url('../img/1920/media/tv_item_focus_mark.png'); }
-.page#pageDVBChannels .content .clist-main .list .scrambled {height:98px; float:left; width:54px;}
-.page#pageDVBChannels .content .clist-main .list .scrambled.on {background:url(../img/1920/media/ico_lock.png) no-repeat center;}
-.page#pageDVBChannels .content .clist-main .list > div.stared .star { url('../img/1920/ico_fav.png') no-repeat center; }
-.page#pageDVBChannels .content .clist-main .list .data        {width:858px; margin-right: 0px;float: left;  text-indent:98px; font-size:42px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; background: no-repeat left center;}
-.page#pageDVBChannels .content .clist-main .list .number {height:75px; float:left; width:60px;text-align: center;font-size:42px;background-position: center; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;}
-
-
-
+.page#pageDVBChannels .content .cslist-main { height:686px;}
+.page#pageDVBChannels .content .cslist-main a                { width:1035px; height:98px; line-height:92px; padding:0 22px; margin-right:6px;}
+.page#pageDVBChannels .content .cslist-main a .star {height:98px; width:54px; float:left;}
+.page#pageDVBChannels .content .cslist-main a.focused        { background-image: url('../img/1920/media/tv_item_focus.png');}
+.page#pageDVBChannels .content .cslist-main a.marked {background: url("../img/1920/media/tv_item_mark.png"); }
+.page#pageDVBChannels .content .cslist-main a.focused.marked {background-image: url('../img/1920/media/tv_item_focus_mark.png'); }
+.page#pageDVBChannels .content .cslist-main a .scrambled {height:98px; float:left; width:54px;}
+.page#pageDVBChannels .content .cslist-main a .scrambled.on {background:url(../img/1920/media/ico_lock.png) no-repeat center;}
+.page#pageDVBChannels .content .cslist-main a.stared .star { url('../img/1920/ico_fav.png') no-repeat center; }
+.page#pageDVBChannels .content .cslist-main a .data        { width:858px; margin-right: 0px;float: left;  text-indent:98px; font-size:42px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; background: no-repeat left center; }
+.page#pageDVBChannels .content .cslist-main a .number {height:75px; float:left; width:60px;text-align: center;font-size:42px;background-position: center; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;}
 .page#pageDVBChannels .content .content_right{width: 591px; padding: 0 60px 0 30px; background:transparent;}
 .page#pageDVBChannels .content .content_right .content{width:100%; height:686px; overflow:hidden;}
 .page#pageDVBChannels .content .content_right .title {margin-top:9px; margin-left:111px; font-size:42px; border-left:solid 3px rgba(255,255,255,0.25); padding-left:15px;}

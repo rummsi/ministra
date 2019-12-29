@@ -83,7 +83,6 @@
 			data = { dirs : [], files : [], url: path},
 			result;
 		// check input
-		console.log('listDir: ' + path);
 		if ( path !== undefined && path !== '' ) {
 			// get ListDir result string and remove vars for eval
 			result = gSTB.ListDir( path, false );
@@ -458,29 +457,39 @@
 		listLink.onLevelChange(data, content, level);
 	}
 
+
 	/**
-	 * Enter SMB share
-	 * mount it if necessary
+	 * Enter SMB share, mount it if necessary.
 	 *
-	 * @param {Object} data media item inner data
+	 * @param {Object} data - media item inner data
+	 * @param {number} [level] - hierarchy change flag: 0 - no change, 1 - go level deeper, -1 - go level up
 	 */
 	function openSambaShare ( data, level ) {
-		var modalAuth, currFocus;
+		var modalAuth, currentFocus;
 
 		// reset
 		listLink.parent.UnmountSMB();
+
 		// was not able to mount
 		if ( listLink.parent.MountSMB(data) ) {
 			// folder was mounted so list it
-			openFolder({name:data.name, url:SMB_PATH, type:MEDIA_TYPE_FOLDER, index: data.index}, level);
+			openFolder(
+				{
+					name:  data.name,
+					url:   SMB_PATH,
+					type:  MEDIA_TYPE_FOLDER,
+					index: data.index
+				},
+				level
+			);
 		} else {
-			currFocus = document.activeElement;
+			currentFocus = document.activeElement;
 			// maybe need authorization
 			new CModalConfirm(listLink.parent,
 				_('Network connection'),
 				_('Unable to mount the folder.<br>Authorization may be necessary.<br>Specify login and password?'),
 				_('Cancel'),
-				function(){ currFocus.focus(); },
+				function(){ currentFocus.focus(); },
 				_('Yes'),
 				function(){
 					// get login/pass
@@ -489,7 +498,7 @@
 						_('Login:'),
 						_('Password') + ':',
 						_('Cancel'),
-						function () { listLink.prevFocus = currFocus; },
+						function () { listLink.prevFocus = currentFocus; },
 						_('Connection'),
 						function ( login, pass ) {
 							// store auth data
@@ -501,7 +510,7 @@
 								new CModalHint(modalAuth, _('Unable to connect to the resource<br>with the given parameters'), 4000);
 								return false;
 							} else {
-								listLink.prevFocus = currFocus;
+								listLink.prevFocus = currentFocus;
 								// do file listing
 								setTimeout(function(){ listLink.Open(data); }, 5);
 								return true;

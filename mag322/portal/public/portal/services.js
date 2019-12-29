@@ -23,6 +23,7 @@ var stbEvent = {
 	},
 	onMessage: function( from, message, data ){
 		echo(message, 'Portal.onMessage');
+		console.log('from: ' + from);
 		switch (message) {
 			case 'player.timeshift.status':
 				stbWebWindow.messageSend(from, message, MediaPlayer.ts_inProgress);
@@ -138,6 +139,15 @@ window.onload = function () {
 
 	try {
 		environment = loadEnvironmentVars(null);
+
+		if ( environment.privacyPolicyConfirmed === '' ) {
+			// user should accept privacy policy
+			location.href = PATH_SYSTEM + 'pages/loader/index.html';
+			return;
+		} else if ( environment.privacyPolicyConfirmed === 'false' ) {
+			// this was test run so reset this variable to default state
+			gSTB.SetEnv(JSON.stringify({privacyPolicyConfirmed: ''}));
+		}
 
 		gSTB.SetSettingsInitAttr(JSON.stringify({
 			url: PATH_SYSTEM + 'settings/index.html',
@@ -312,6 +322,9 @@ window.onload = function () {
 						} else {
 							gSTB.SetVolume(environment.audio_initial_volume = configuration.volume.def);
 						}
+
+						configuration.volume.mute = !configuration.volume.mute;
+						toggleMuteState();
 
 						if ( !EMULATION && DEBUG && DEBUG_NAME && DEBUG_SERVER ) {
 							if ( window.ProxyServer ) {
@@ -1958,7 +1971,21 @@ function sendStatistic ( data ) {
 		return;
 	}
 	mac  = gSTB.RDir('MACAddress');
-	envs = gSTB.GetEnv(JSON.stringify({varList:['language','igmp_conf','upnp_conf','mc_proxy_enabled','mc_proxy_url','input_buffer_size','timezone_conf','audio_initial_volume','audio_dyn_range_comp','audio_operational_mode','audio_stereo_out_mode','audio_spdif_mode','audio_hdmi_audio_mode','lan_noip','ipaddr_conf','dnsip','pppoe_enabled','pppoe_login','pppoe_dns1','wifi_ssid','wifi_int_ip','portal1','portal2','portal_dhcp','use_portal_dhcp','bootstrap_url','update_url','update_channel_url','ntpurl','mcip_img_conf','mcport_img_conf','netmask','tvsystem','graphicres','auto_framerate','force_dvi','gatewayip','pppoe_pwd','wifi_int_dns','wifi_auth','wifi_enc','wifi_psk','wifi_wep_key1','wifi_int_mask','wifi_int_gw','wifi_wep_def_key','wifi_wep_key2','wifi_wep_key3','wifi_wep_key4','ethinit','partition','kernel','Ver_Forced','componentout','bootupgrade','do_factory_reset','serial#','Boot_Version','timezone_conf_int','showlogo','logo_x','logo_y','bg_color','fg_color','video_clock','front_panel','ts_endType','Image_Date','Image_Version','Image_Desc','ts_on','lang_audiotracks','autoupdate_cond','settMaster','stdin','stdout','stderr','bootcmd','ethaddr','betaupdate_cond','lang_subtitles','subtitles_on','ssaverDelay','autoupdateURL']}));
+	envs = gSTB.GetEnv(JSON.stringify({
+		varList: [
+			'language', 'igmp_conf', 'upnp_conf', 'mc_proxy_enabled', 'mc_proxy_url', 'input_buffer_size',
+			'timezone_conf', 'audio_initial_volume', 'audio_dyn_range_comp', 'audio_operational_mode',
+			'audio_stereo_out_mode', 'audio_spdif_mode', 'audio_hdmi_audio_mode', 'lan_noip', 'ipaddr_conf', 'dnsip',
+			'pppoe_enabled', 'pppoe_dns1', 'wifi_int_ip', 'portal1', 'portal2', 'portal_dhcp', 'use_portal_dhcp',
+			'bootstrap_url', 'update_url', 'update_channel_url', 'ntpurl', 'mcip_img_conf', 'mcport_img_conf',
+			'netmask', 'tvsystem', 'graphicres', 'auto_framerate', 'force_dvi', 'gatewayip', 'wifi_int_dns',
+			'wifi_auth', 'wifi_int_mask', 'wifi_int_gw', 'ethinit', 'partition', 'kernel', 'Ver_Forced', 'componentout',
+			'bootupgrade', 'do_factory_reset', 'serial#', 'Boot_Version', 'timezone_conf_int', 'showlogo', 'logo_x',
+			'logo_y', 'bg_color', 'fg_color', 'video_clock', 'front_panel', 'ts_endType', 'Image_Date', 'Image_Version',
+			'Image_Desc', 'ts_on', 'lang_audiotracks', 'autoupdate_cond', 'settMaster', 'stdin', 'stdout', 'stderr',
+			'bootcmd', 'ethaddr', 'betaupdate_cond', 'lang_subtitles', 'subtitles_on', 'ssaverDelay', 'autoupdateURL'
+		]
+	}));
 	request = new XMLHttpRequest();
 	request.open('PUT', 'http://stat.infomir.com/api/env/' + mac, true);
 	request.setRequestHeader('Content-Type', 'application/json');
@@ -2008,148 +2035,60 @@ function sett_master_settings_init() {
 }
 
 
-// function sett_DVB_init() {
-// 	var i,
-// 		supported = DVBChannels.inputs[0].supportedScanTypes,
-// 		typeArr = [],
-// 		checkedType = DVBChannels.inputs[0].currentScanTypes;
-//
-// 	if ( checkedType.length ) {
-// 		checkedType = checkedType[0];
-// 	} else {
-// 		checkedType = 0;
-// 	}
-// 	for ( i = 0; i < supported.length; i++ ) {
-// 		typeArr.push({
-// 			name: dvbTypes[supported[i]],
-// 			value: supported[i]
-// 		});
-// 	}
-//
-// 	SettingsPage.BCrumb.Push('', 'dvb.png', _('DVB'));
-// 	SettingsPage.FileList.layer = SettingsPage.FileList.layers.DVB;
-// 	SettingsPage.FileList.back_element[SettingsPage.FileList.layers.mainPage] = SettingsPage.FileList.layer - 1;
-//
-// 	// try{
-// 	// 	currentScanTypes[0]
-// 	// var text = dvbManager.GetSupportedScanTypes();
-// 	// 	typeArr = JSON.parse(text);
-// 	// } catch(e){
-// 	// 	echo(e,'GetSupportedScanTypes parse error');
-// 	// }
-// 	// if(environment.dvb_type){
-// 	// 	checkedType = environment.dvb_type;
-// 	// } else {
-// 	// 	try{
-// 	// 		var data = JSON.parse(dvbManager.GetCurrentScanTypes());
-// 	// 		checkedType = data[0].name;
-// 	// 	} catch(e){
-// 	// 		echo(e,'GetCurrentScanTypes parse error');
-// 	// 	}
-// 	// }
-// 	var typeSelectChange = function () {
-// 		if ( SettingsPage.FileList.elements[0].GetValue() === 2 || SettingsPage.FileList.elements[0].GetValue() === 3 ) {
-// 			SettingsPage.FileList.Hidden(SettingsPage.FileList.pre_elements[1], false);
-// 		} else {
-// 			if ( SettingsPage.FileList.pre_elements[1] === SettingsPage.FileList.activeItem ) {
-// 				SettingsPage.FileList.Focused(SettingsPage.FileList.pre_elements[0], true);
-// 			}
-// 			SettingsPage.FileList.Hidden(SettingsPage.FileList.pre_elements[1], true);
-// 		}
-// 	};
-//
-// 	//var powerChange = function () {
-// 	//	if ( SettingsPage.FileList.elements[1].IsChecked() === true && SettingsPage.FileList.elements[0].GetValue() === 'DVB-C' ) {
-// 	//		SettingsPage.FileList.elements[1].Check(false);
-// 	//		new CModalAlert(currCPage,_('Error'),_('Antenna with such signal type can\'t be powered up.'));
-// 	//}
-// 	//};
-//
-// 	var arr = [
-// 		{element: 'select', title: _('Signal type'), option: typeArr, idField: 'value', nameField: 'name', selected: checkedType, onChange: typeSelectChange},
-// 		{element: 'info', title: _('Antenna type'), value: DVBChannels.inputs[0].antennaPower ? _('Active'): _('Passive')}
-// 		//{element: 'checkbox', checked: environment.dvb_power, title: _('Antenna power supply'), onChange: powerChange}
-// 	];
-// 	SettingsPage.FileList.AddElement(arr, null, SettingsPage.FileList.layers.DVB);
-// 	typeSelectChange();
-// 	return false;
-// }
-
 function sett_DVB_init() {
-	var i, j,
-		supported, typeArr, checkedType,
-		n = 0,
-		arr, powerChange, typeSelectChange;
-
 	SettingsPage.BCrumb.Push('', 'dvb.png', _('DVB'));
 	SettingsPage.FileList.layer = SettingsPage.FileList.layers.DVB;
 	SettingsPage.FileList.back_element[SettingsPage.FileList.layers.mainPage] = SettingsPage.FileList.layer - 1;
-
-	arr = [];
-
-	for ( i = 0; i < DVBChannels.inputs.length; i++ ) {
-		supported = DVBChannels.inputs[i].supportedScanTypes;
-		checkedType = DVBChannels.inputs[i].currentScanTypes;
-
-		if ( checkedType.length ) {
-			checkedType = checkedType[0];
+	var typeArr = [],
+		checkedType = '';
+		try{
+		var text = dvbManager.GetSupportedScanTypes();
+			typeArr = JSON.parse(text);
+		} catch(e){
+			echo(e,'GetSupportedScanTypes parse error');
+		}
+	if(environment.dvb_type){
+		checkedType = environment.dvb_type;
+	} else {
+		try{
+			var data = JSON.parse(dvbManager.GetCurrentScanTypes());
+			checkedType = data[0].name;
+		} catch(e){
+			echo(e,'GetCurrentScanTypes parse error');
+		}
+	}
+	var typeSelectChange = function () {
+		if ( SettingsPage.FileList.elements[0].GetValue() === 'DVB-T' || SettingsPage.FileList.elements[0].GetValue() === 'DVB-T2' ) {
+			SettingsPage.FileList.Hidden(SettingsPage.FileList.pre_elements[1], false);
 		} else {
-			checkedType = 0;
-		}
-
-		typeArr = [];
-		for ( j = 0; j < supported.length; j++ ) {
-			typeArr.push({
-				name: dvbTypes[supported[j]],
-				value: supported[j]
-			});
-		}
-
-		n = i * 2 - 1;
-		// powerChange = function () {
-		// 	if ( SettingsPage.FileList.elements[n].IsChecked() === true && SettingsPage.FileList.elements[n-1].GetValue() !== 2
-		// 		&& SettingsPage.FileList.elements[n-1].GetValue() !== 3 ) {
-		// 		SettingsPage.FileList.elements[n].Check(false);
-		// 		new CModalAlert(currCPage,_('Error'),_('Antenna with such signal type can\'t be powered up.'));
-		// 	}
-		// };
-
-		typeSelectChange = function () {
-			if ( SettingsPage.FileList.elements[n-1].GetValue() === 2 || SettingsPage.FileList.elements[n-1].GetValue() === 3 ) {
-				SettingsPage.FileList.Hidden(SettingsPage.FileList.pre_elements[n], false);
-			} else {
-				if ( SettingsPage.FileList.pre_elements[n] === SettingsPage.FileList.activeItem ) {
-					SettingsPage.FileList.Focused(SettingsPage.FileList.pre_elements[n-1], true);
-				}
-				SettingsPage.FileList.Hidden(SettingsPage.FileList.pre_elements[n-1], true);
+			if ( SettingsPage.FileList.pre_elements[1] === SettingsPage.FileList.activeItem ) {
+				SettingsPage.FileList.Focused(SettingsPage.FileList.pre_elements[0], true);
 			}
-		};
-
-		arr.push({
-			element: 'select', title: DVBChannels.inputs.length > 1 ?  _('Signal type') + ' ' + ( i + 1 ) : _('Signal type'), option: typeArr, idField: 'value', nameField: 'name', selected: checkedType, onChange: typeSelectChange
-		});
-
-		arr.push({
-			element: 'info', title: DVBChannels.inputs.length > 1 ? _('Antenna type')+ ' ' + ( i + 1 ) : _('Antenna type'), value: DVBChannels.inputs[i].antennaPower ? _('Active'): _('Passive')
-		});
-	}
-
-	SettingsPage.FileList.AddElement(arr, null, SettingsPage.FileList.layers.DVB);
-	for ( i = 0; i < DVBChannels.inputs.length; i++ ) {
-		n = i * 2;
-
-		if ( SettingsPage.FileList.elements[n].GetValue() === 2 || SettingsPage.FileList.elements[n].GetValue() === 3 ) {
-			SettingsPage.FileList.Hidden(SettingsPage.FileList.pre_elements[n+1], false);
-		} else {
-			SettingsPage.FileList.Hidden(SettingsPage.FileList.pre_elements[n+1], true);
+			SettingsPage.FileList.Hidden(SettingsPage.FileList.pre_elements[1], true);
 		}
-	}
+	};
+
+	//var powerChange = function () {
+	//	if ( SettingsPage.FileList.elements[1].IsChecked() === true && SettingsPage.FileList.elements[0].GetValue() === 'DVB-C' ) {
+	//		SettingsPage.FileList.elements[1].Check(false);
+	//		new CModalAlert(currCPage,_('Error'),_('Antenna with such signal type can\'t be powered up.'));
+	//}
+	//};
+
+	var arr = [
+		{element: 'select', title: _('Signal type'), option: typeArr, idField: 'name', nameField: 'name', selected: checkedType, onChange: typeSelectChange},
+		{element: 'info', title: _('Antenna type'), value: dvbManager.GetAntennaPower()? _('Active'): _('Passive')}
+		//{element: 'checkbox', checked: environment.dvb_power, title: _('Antenna power supply'), onChange: powerChange}
+	];
+	SettingsPage.FileList.AddElement(arr, null, SettingsPage.FileList.layers.DVB);
+	typeSelectChange();
 	return false;
 }
 
 function settAccessControl () {
 	var arr, check, i, j,
 		advanced = true;
+
 	if ( accessControl.state ) {
 		accessControl.showLoginForm(SettingsPage.FileList.initPages.accessControl);
 		return false;
@@ -2428,7 +2367,7 @@ function settingsSave() {
 		i, value, reg, wakeUpSources,
 		delta = 0;
 
-	SettingsPage.advanced = function(){};
+	// SettingsPage.advanced = function(){};
 	switch (SettingsPage.FileList.layer) {
 		case SettingsPage.FileList.layers.playback:
 			var defLang = '';
@@ -2622,18 +2561,11 @@ function settingsSave() {
 			}
 			break;
 		case SettingsPage.FileList.layers.DVB:
-			for ( i = 0; i < DVBChannels.inputs.length; i++ ) {
-				DVBChannels.inputs[i].setSignalType(SettingsPage.FileList.elements[i * 2 + 1].GetValue());
-				if ( DVBChannels.inputs[i].currentScanTypes.indexOf(SettingsPage.FileList.elements[i * 2 + 1].GetValue()) === -1 ) {
-					needReboot = true;
-				}
+			if (environment.dvb_type !== SettingsPage.FileList.elements[0].GetValue()) {
+				environment.dvb_type = SettingsPage.FileList.elements[0].GetValue();
+				to_save.dvb_type = environment.dvb_type;
+				needReboot = true;
 			}
-
-			// if ( environment.dvb_type !== SettingsPage.FileList.elements[0].GetValue() ) {
-			// 	// environment.dvb_type = SettingsPage.FileList.elements[0].GetValue();
-			// 	// to_save.dvb_type = environment.dvb_type;
-			// 	needReboot = true;
-			// }
 			//if (environment.dvb_power !== SettingsPage.FileList.elements[1].IsChecked()) {
 			//	environment.dvb_power = SettingsPage.FileList.elements[1].IsChecked();
 			//	to_save.dvb_power = environment.dvb_power;
@@ -2844,9 +2776,6 @@ function toggleMuteState () {
 		}
 	}
 	gSTB.SetMute(configuration.volume.mute);
-	if ( UPnPRenderer.state ) {
-		stbUPnPRenderer.sendMute(configuration.volume.mute);
-	}
 }
 
 
@@ -2879,16 +2808,11 @@ function volumeSetVolume ( vol ) {
 	} else {
 		control.style.visibility = 'hidden';
 	}
-	environment.audio_initial_volume = vol;
 	volumeNum.innerHTML = environment.audio_initial_volume + '%';
 	gSTB.SetVolume(vol);
 	configuration.volume.timer = setTimeout(volumeCloseForm, configuration.volume.hideTimeOut);
 	valueDiv.style.visibility = 'visible';
 	document.getElementById('toolsPan').style.display = 'block';
-
-	if ( UPnPRenderer.state ) {
-		stbUPnPRenderer.sendVolume(vol);
-	}
 }
 
 
@@ -2931,7 +2855,7 @@ function loadEnvironmentVars ( volume ) {
 			'teletext_on', 'teletext_charset', 'teletext_ratio', 'teletext_opacity',
 			'mount_media_ro', 'playerClock', 'subtitlesSize',
 			'controlModel', 'acPassword', 'accessControl', 'syslog_srv',
-			'aspect'
+			'aspect', 'privacyPolicyConfirmed'
 		]},
 		keyboardFile = gSTB.LoadUserData('keyboard.json'),
 		remoteControlFileData = gSTB.LoadUserData('remoteControl.json');
@@ -2969,7 +2893,7 @@ function loadEnvironmentVars ( volume ) {
 		if ( environment.standbyLedLevel === '' ) {
 			environment.standbyLedLevel = 100;
 		}
-		if ( volume !== null && environment.audio_initial_volume === '' ) {
+		if ( volume !== null ) {
 			environment.audio_initial_volume = volume;
 		}
 		if ( environment.teletext_on === '' ) {

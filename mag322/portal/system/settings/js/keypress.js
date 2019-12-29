@@ -627,7 +627,9 @@ var navigation = {
 			case 'bluetooth':
 				toggleBluetoothEnable();
 				break;
+			case 'wirelessManual':
 			case 'wirelessAutoDHCP':
+			case 'wirelessAutoDHCPManualDNS':
 				toggleWifiEnable();
 				break;
 			case 'WiFiAuthentication':

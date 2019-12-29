@@ -74,13 +74,27 @@ function CModalBookmarkEdit ( parent, item, options ) {
 	};
 
 	// parent constructor
-	CModalAlert.call(this, parent, item ? _('Modify bookmark') : _('Create bookmark'), html, _('Cancel'), function(){
-		echo('cancel');
-		if ( app.views.main.mode === app.views.main.MODE_BROWSER ) { app.views.main.webWindowShow(true); }
-	});
+	CModalAlert.call(
+		this,
+		parent,
+		item ? _('Modify bookmark') : _('Create bookmark'),
+		html,
+		_('Cancel'),
+		function () {
+			echo('cancel');
 
-	this.onHide = function(){
-		if ( app.views.main.mode === app.views.main.MODE_BROWSER ) { stbWindowMgr.SetVirtualKeyboardCoord('bottom'); }
+			if ( app.views.main.mode === app.views.main.MODE_BROWSER ) {
+				app.views.main.webWindowShow(true);
+			}
+
+			event.preventDefault();
+		}
+	);
+
+	this.onHide = function () {
+		if ( app.views.main.mode === app.views.main.MODE_BROWSER ) {
+			stbWindowMgr.SetVirtualKeyboardCoord('bottom');
+		}
 	};
 
 	// fill navigation list
@@ -94,18 +108,31 @@ function CModalBookmarkEdit ( parent, item, options ) {
 
 	// forward events to button panel
 	this.EventHandler = function ( e ) {
-		if ( !eventPrepare(e, true, self.name) ) { return; }
-		if ( document.activeElement === this.folder.handle ) { this.folder.EventHandler(event); }
-		if (event.stopped === true) { return; }
+		if ( !eventPrepare(e, true, self.name) ) {
+			return;
+		}
+
+		if ( document.activeElement === this.folder.handle ) {
+			this.folder.EventHandler(event);
+		}
+
+		if ( event.stopped === true ) {
+			return;
+		}
+
 		switch ( event.code ) {
-			case KEYS.CHANNEL_NEXT: // channel+
-			case KEYS.CHANNEL_PREV: // channel-
-				event.preventDefault(); // to suppress tabbing
+			// channel+
+			case KEYS.CHANNEL_NEXT:
+			// channel-
+			case KEYS.CHANNEL_PREV:
+				// to suppress tabbing
+				event.preventDefault();
 				break;
 			case KEYS.UP:
 				self.FocusPrev(event);
 				break;
-			case KEYS.DOWN: // down
+			// down
+			case KEYS.DOWN:
 				self.FocusNext(event);
 				break;
 			default:

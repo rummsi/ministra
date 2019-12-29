@@ -55,8 +55,8 @@ var MODAL_IMG_PATH = configuration.newRemoteControl ? PATH_IMG_SYSTEM + 'buttons
 
 		this.EventHandler = function ( event ) {
 			eventPrepare(event);
-			if ( self.select !== undefined && typeof self.select.EventHandler === 'function' ) {
-				self.select.EventHandler(event);
+			if ( self.selectBox !== undefined && !self.selectBox.disabled && typeof self.selectBox.EventHandler === 'function' ) {
+				self.selectBox.EventHandler(event);
 			}
 			self.bpanel.EventHandler(event);
 		};
@@ -119,6 +119,9 @@ CUpdateModal.prototype.onInit = function () {
 			self.bpanel.Rename(self.Exit_btn, _('Exit'));
 			self.$status.innerHTML = data.errorMessage; // show Error message in status field
 			self.$status.classList.add('error');
+			if ( self.selectBox ) {
+				self.selectBox.disabled = false;
+			}
 			self.trigger('onError', data);
 		},
 		onProgress: function ( data ) {
@@ -130,6 +133,10 @@ CUpdateModal.prototype.onInit = function () {
 		},
 		onStart: function () {
 			echo('CUpdateModal.Update: onStart listener');
+			if ( self.selectBox ) {
+				console.log(self.selectBox);
+				self.selectBox.disabled = true;
+			}
 			self.UpdateStart();
 			CModalBox.prototype.Show.call(self, true);
 		}
@@ -162,7 +169,7 @@ CUpdateModal.prototype.onInit = function () {
 		this.image_description = cutTextWithEllipsis(this.images[0].descr, 200);
 		this.image_date = new Date(this.images[0].date);
 		if ( this.select === true && this.images.length > 1 ) {
-			this.select = new CSelectBox(this, {
+			this.selectBox = new CSelectBox(this, {
 				parent: this.new_version = element('div'),
 				data: this.images,
 				nameField: 'title',
@@ -175,7 +182,7 @@ CUpdateModal.prototype.onInit = function () {
 					}
 				}
 			});
-			this.update_url = this.select.GetValue();
+			this.update_url = this.selectBox.GetValue();
 		} else { // if select not specified or images.length = 1
 			this.new_version = this.images[0].title; // select component not needed
 			this.new_version_date = new Date(this.images[0].date);
@@ -363,8 +370,8 @@ CUpdateModal.prototype.ImageSelect = function () {
 
 	if ( this._binded !== true ) {
 		this.bind('onShow', function () {
-			if ( this.layer === this.ImageSelect && this.select && this.select.focus ) {
-				this.select.focus();
+			if ( this.layer === this.ImageSelect && this.selectBox && this.selectBox.focus ) {
+				this.selectBox.focus();
 			}
 		});
 		this._binded = true;

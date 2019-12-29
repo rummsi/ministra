@@ -86,11 +86,11 @@ window.onload = function () {
 	}));
 
 	// backgrounds
-	imageList = imageList.concat(['bottommenu_bg.png', 'exit_wrapper_bg.png', 'topmenu_bg.png'].map(function ( image ) {
+	imageList = imageList.concat(['bottommenu_bg.png', 'topmenu_bg.png'].map(function ( image ) {
 		return PATH_IMG_SYSTEM + 'backgrounds/' + image;
 	}));
 
-	imageList = imageList.concat(['bg_black_50.png'].map(function ( image ) {
+	imageList = imageList.concat(['bg_black_50.png', 'exit_wrapper_bg.png'].map(function ( image ) {
 		return PATH_ROOT + 'system/img/backgrounds/' + image;
 	}));
 
@@ -169,7 +169,9 @@ SettingsPage.onInit = function () {
 			case 'wirelessWiFi':
 				new CModalShowWirelessWiFiInfo(SettingsPage);
 				break;
+			case 'wirelessManual':
 			case 'wirelessAutoDHCP':
+			case 'wirelessAutoDHCPManualDNS':
 				if ( wiFiInfoSideBar.isVisible ) {
 					wiFiInfoSideBar.Show(false, false);
 				} else {
@@ -206,7 +208,9 @@ SettingsPage.onInit = function () {
 	}, true);
 	this.bpanel.btnRefresh = this.bpanel.Add(KEYS.REFRESH, 'refresh.png', _('Refresh'), refreshWiFi = function () {
 		switch ( SettingsPage.BCrumb.Tip().iid ) {
+			case 'wirelessManual':
 			case 'wirelessAutoDHCP':
+			case 'wirelessAutoDHCPManualDNS':
 				RefheshWiFi();
 				break;
 			case 'networkInfoWiredEthernet':
@@ -742,6 +746,8 @@ function networkLoad () {
 			case 'IM2100V':
 			case 'IM2100VI':
 			case 'IM2101':
+			case 'IM2101VI':
+			case 'IM2101VO':
 			case 'IM2102':
 			case 'MAG322':
 			case 'MAG324':
@@ -758,6 +764,8 @@ function networkLoad () {
 			case 'MAG424':
 			case 'MAG425':
 			case 'AuraHD4':
+			case 'IM4411':
+			case 'IM4412':
 				elementsArray = [
 					{name: _('Wired (Ethernet)'), rId: 'Network/Wired(Ethernet)', className: 'ico_folder', func: wiredEthernetLoad},
 					{name: _('Wireless (Wi-Fi)'), rId: 'Network/Wireless(Wi-Fi)', className: 'ico_folder', func: wirelessWiFiLoad}
@@ -819,6 +827,8 @@ function wiredEthernetLoad () {
 			case 'IM2100V':
 			case 'IM2100VI':
 			case 'IM2101':
+			case 'IM2101VI':
+			case 'IM2101VO':
 			case 'IM2102':
 			case 'MAG322':
 			case 'MAG324':
@@ -835,6 +845,8 @@ function wiredEthernetLoad () {
 			case 'MAG424':
 			case 'MAG425':
 			case 'AuraHD4':
+			case 'IM4411':
+			case 'IM4412':
 				dict = [
 					{name: _('Auto (DHCP)'), rId: 'Network/Wired(Ethernet)/Auto(DHCP)', className: 'ico_folder', func: wiredAutoDHCPLoad},
 					{name: _('Auto (DHCP), manual DNS'), rId: 'Network/Wired(Ethernet)/Auto(DHCP),manualDNS', className: 'ico_folder', func: wiredAutoDHCPManualDNSLoad},
@@ -1450,6 +1462,7 @@ function wiFiAuthenticationLoad ( accessPoint, flag ) {
 			{ element: 'input', type: 'password', title: _('Key or passphrase:'), value: '' }
 		];
 
+		console.log(elementsArray);
 		generateElements(elementsArray);
 		updateFooter();
 		SettingsPage.bpanel.Rename(SettingsPage.bpanel.AdditionalBtn, _('Keys and encoding setup'));
@@ -1803,6 +1816,7 @@ function wirelessManualSave () {
 		new CModalAlert(SettingsPage, _('Notice'), _('Following fields filled in incorrectly:') + '<br>' + errors.join(', '), _('Cancel'));
 	} else {
 		wifiLoadVariation = 2;
+		gSTB.SetEnv(JSON.stringify(saveData));
 		showSuccessfullySavedMessage();
 		window.setTimeout(wirelessAutoDHCPLoad,0);
 		return true;
@@ -2120,6 +2134,7 @@ function videoLoad () {
 		}
 	}
 
+	console.log(read.result.tvsystem || configuration.videoOutputMode[0].value);
 	var arr = [
 		{element: 'select', title: _('Video output mode:'), option: configuration.videoOutputMode, selected: read.result.tvsystem || configuration.videoOutputMode[0].value, onChange: function () {
 			navigation.elements[1].SetData(checkResolution());
@@ -2766,6 +2781,8 @@ function networkInfoLoad () {
 			case 'IM2100V':
 			case 'IM2100VI':
 			case 'IM2101':
+			case 'IM2101VI':
+			case 'IM2101VO':
 			case 'IM2102':
 			case 'MAG322':
 			case 'MAG324':
@@ -2782,6 +2799,8 @@ function networkInfoLoad () {
 			case 'MAG424':
 			case 'MAG425':
 			case 'AuraHD4':
+			case 'IM4411':
+			case 'IM4412':
 				dict = [
 					{name: _('Wired (Ethernet)'), rId: 'NetworkInfo/Wired(Ethernet)', className: 'ico_folder', func: networkInfoWiredEthernetLoad},
 					{name: _('Wireless (Wi-Fi)'), rId: 'NetworkInfo/Wireless(Wi-Fi)', className: 'ico_folder', func: networkInfoWirelessWiFiLoad}
@@ -4245,6 +4264,7 @@ function clearUserDataLoad () {
 			reload.portal = true;
 			gSTB.ResetUserFs();
 			setEnv('weather_place', '');
+			reload.device = true;
 		}
 	);
 }
@@ -4877,7 +4897,9 @@ function updateFooter ( additionally, volumeUp, volumeDown, info, refresh, f2, f
 		case 'PPPoE':
 			SettingsPage.bpanel.Rename(SettingsPage.bpanel.infoButton, _('Network info'));
 			break;
+		case 'wirelessManual':
 		case 'wirelessAutoDHCP':
+		case 'wirelessAutoDHCPManualDNS':
 			SettingsPage.bpanel.Rename(SettingsPage.bpanel.infoButton, '');
 			break;
 	}

@@ -156,23 +156,29 @@ CButtonPanel.prototype.Activate = function ( active ) {
 
 
 /**
- * Handle external events
- * @param {Event} event global event object
+ * Handle external events.
+ *
+ * @param {Event} event - global event object
  */
 CButtonPanel.prototype.EventHandler = function ( event ) {
+	var index, data, items, length;
+
 	if ( event.stopped === true ) {
 		return;
 	}
+
 	if ( this.isActive ) {
 		// iterate all items
-		for ( var i = 0, data, items = this.handleInner.children, length = items.length; i < length; i++ ) {
-			data = items[i].data;
+		for ( index = 0, items = this.handleInner.children, length = items.length; index < length; index += 1 ) {
+			data = items[index].data;
+
 			// check data, visibility and validate id
 			if ( !data.hidden && data.code === event.code && typeof data.onclick === 'function' ) {
 				if ( data.onclick() ) {
 					// stop event spreading
 					event.preventDefault();
 				}
+
 				return;
 			}
 		}

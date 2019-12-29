@@ -157,14 +157,14 @@ EpgGrid.prototype.Exit = function () {
  * Generate body item
  */
 EpgGrid.prototype.RenderItem = function () {
-	var item = [
+	var item = null;
+	item = [
 		element ( 'div', { className: 'channel_block' }, [
 			element ( 'div', { className: 'channel_number' } ),
 			element ( 'div', { className: 'channel_name' } )
 		]),
 		element ( 'div', { className: 'schedule_line' } )
 	];
-
 	return item;
 };
 
@@ -177,8 +177,7 @@ EpgGrid.prototype.FillItems = function ( noFocus ) {
 		listLength = this.list.length,
 		active = null,
 		list = [];
-
-	for ( var i = 0; i < this.onPage; i++ ) {
+	for (var i = 0; i < this.onPage; i++) {
 		this.items[ i ].epgActive = 0;
 		this.items[ i ].epgData = null;
 		this.items[ i ].subNavigElements = [];
@@ -275,7 +274,6 @@ EpgGrid.prototype.SetCurrentProgram = function ( data ) {
  */
 EpgGrid.prototype.goToChannel = function ( number ) {
     var index = this.FindByFild ( number, 'channel_number' );
-
 	if ( index !== -1 ) {
 		this.listIndex = index;
 		if ( this.RefreshPageIndex() ) {

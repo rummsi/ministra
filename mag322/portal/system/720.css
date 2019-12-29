@@ -122,7 +122,7 @@
 			.page .body .content .crop { padding-top:0; padding-bottom:0 }
 		.page .body .footer  { height:110px; background: url("../public/img/1280/backgrounds/bottommenu_bg.png") transparent }
 			.page .body .footer .crop { padding-top:0 }
-			.page .body .footer .exit { padding-right:0; padding-left:60px; width:80px; background: url("../public/img/1280/backgrounds/exit_wrapper_bg.png") 0 0 transparent }
+			.page .body .footer .exit { padding-right:0; padding-left:60px; width:80px; background: url("./img/backgrounds/exit_wrapper_bg.png") 0 0 transparent }
 			/*.page .body .footer .exit div { height:80px; width:100px; display:table-cell; vertical-align:middle; padding-left:50px; background: url("img/1280/buttons/exit.png") no-repeat left center transparent; cursor:pointer; font-size:20px; }*/
 
 /* checkbox styles*/

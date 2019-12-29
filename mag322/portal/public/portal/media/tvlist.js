@@ -536,23 +536,28 @@ TVList.prototype.Build = function (data, noPlay) {
  */
 TVList.prototype.Refresh = function (refocus) {
 	var data = {data : null};
+
 	// some media item is opened at the moment
 	if ( this.parentItem !== null ) {
 		// get current focused item
-		this.Build(this.parentItem);
-		if ( refocus !== false) {
+		if ( refocus !== false ) {
 			if ( this.activeItem ) {
 				data = this.activeItem;
 			} else {
 				data = this.FirstMatch(this.filterText);
 			}
 		}
+		this.Build(this.parentItem);
 		// refill
 		// find it in the new list if necessary
-		if ( data && data.data ) {
-			this.Reposition(data.data);
-		} else {
-			this.Reposition(data);
+		if ( data ) {
+			if ( data.data ) {
+				this.Reposition(data.data);
+			} else {
+				this.Reposition(data);
+			}
+		} else if ( this.handleInner.children.length ) {
+			this.Reposition(this.handleInner.children[0].data);
 		}
 	}
 };
@@ -591,6 +596,7 @@ TVList.prototype.RefreshIndex = function () {
  */
 TVList.prototype.Reposition = function (data) {
 	var change = false;
+
 	if ( data ) {
 		for ( var item, i = 0, l = this.Length(); i < l; i++ ) {
 			item = this.handleInner.children[i];
@@ -722,6 +728,7 @@ TVList.prototype.addChannelsToList = function (list, data, refocus, noRefresh) {
 	var needCheck = false, tempList = [], channelStart = -1;
 	var map = this.path.map(function(item){return item.data;});
 	var mapList = list.map(function(item){return item.type;});
+
 	channelStart = mapList.lastIndexOf(MEDIA_TYPE_GROUP);
 	if (data){
 		for (var i = 0; i < data.length; i++) {

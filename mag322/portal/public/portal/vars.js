@@ -57,5 +57,4 @@ var MODEL_TYPE             = gSTB.GetDeviceModelExt(),  // STB identifier
 		720  : [290,12],
 		1280 : [650,14],
 		1920 : [975,21]
-	},
-	dvbTypes = [];
+	};

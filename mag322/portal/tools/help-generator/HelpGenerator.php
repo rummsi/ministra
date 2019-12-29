@@ -1,6 +1,7 @@
 <?php
 
 define("TEMP_DIR", './tmp');
+//define("DEFAULT_URL", 'http://stbhelp.iptv.infomir.com.ua/');
 
 require_once 'inc/init.php';
 require_once DOKU_INC . 'inc/parser/parser.php';
@@ -11,12 +12,12 @@ function dump ( $data, $label ) {
 	file_put_contents(TEMP_DIR . '/build.log', ($label ? $label."\n":'') . $data . "\n", FILE_APPEND);
 }
 
-function delTree($dir) { 
+function delTree($dir) {
 	$files = array_diff(scandir($dir), array('.','..'));
-	foreach ($files as $file) { 
-		(is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file"); 
-	} 
-	return rmdir($dir); 
+	foreach ($files as $file) {
+		(is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file");
+	}
+	return rmdir($dir);
 }
 
 function Zip($source, $destination)
@@ -97,8 +98,8 @@ class HelpGenerator{
 	}
 
 	function renderFile($file){
-		$this->parser = & new Doku_Parser();
-		$this->parser->Handler = & new Doku_Handler();
+		$this->parser = new Doku_Parser();
+		$this->parser->Handler = new Doku_Handler();
 
 		$this->parser->addMode('listblock',new Doku_Parser_Mode_ListBlock());
 		$this->parser->addMode('preformatted',new Doku_Parser_Mode_Preformatted());
@@ -133,9 +134,9 @@ class HelpGenerator{
 		$this->parser->addMode('eol',new Doku_Parser_Mode_Eol());
 		$doc = file_get_contents($file);
 		$instructions = $this->parser->parse($doc);
-		$Renderer = & new Doku_Renderer_XHTML();
+		$Renderer = new Doku_Renderer_XHTML();
 		foreach ( $instructions as $instruction ) {
-			call_user_func_array(array(&$Renderer, $instruction[0]),$instruction[1]);
+			call_user_func_array(array($Renderer, $instruction[0]),$instruction[1]);
 		}
 		return $Renderer->doc;
 	}
@@ -145,15 +146,21 @@ class HelpGenerator{
 		if ($_GET['relative_path']){
 			$client_path = $_GET['relative_path'].'/'.$path.'/';
 		}
-		for ($i=0, $relative = ""; $i < $level; $i++) { 
+		for ($i=0, $relative = ""; $i < $level; $i++) {
 			$relative .= "../";
 		}
+
 		//if ($res = preg_match_all('/<img.*src=[\'"]{1}([^\'"]*[:|=]([^\'"]*))[\'"]{1}.*\/>?/i', $html, $media)){
 		if ($res = preg_match_all('/<img[^>]*src=[\'"]{1}([^\'"]*[:|=]([^\'"]*))[\'"]{1}[^>]*\/>?/i', $html, $media)){
 			foreach ($media[1] as $key => $src) {
 				$image_url = $relative.'images/'.$media[2][$key];
 				$html = str_replace($src, $client_path.$image_url, $html);
+//				print("getBaseURL = ".getBaseURL().$src."\n");
+//				print("HTTP_HOST = "."http://".$_SERVER['HTTP_HOST'].$src."\n");
+//				print(DEFAULT_URL.$src);
+//				dump("http://".$_SERVER['HTTP_HOST'].$src, "HOST:");
 				file_put_contents($this->help_dir.'/'.$path.'/'.$image_url, file_get_contents("http://".$_SERVER['HTTP_HOST'].$src));
+//				file_put_contents($this->help_dir.'/'.$path.'/'.$image_url, file_get_contents(DEFAULT_URL.$src));
 			}
 		}
 		return $html;

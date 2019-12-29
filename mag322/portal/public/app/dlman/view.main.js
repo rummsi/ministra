@@ -166,23 +166,7 @@ app.views.main = (function ( global, app ) {
 			refreshStorageData();
 		});
 		stbEvent.bind('broadcast.storage.unmount', function () {
-			var trash = [],
-				real  = [],
-				ind, path;
-
-			app.refreshStorageInfo();
-			// Storage was removed so find and delete tasks connected to this storage.
-			for ( ind = 0; ind < STORAGE_INFO.length; ind++ ) {
-				real.push(STORAGE_INFO[ind].mountPath); // collect real devices
-			}
-			for ( ind = 0; ind < app.models.main.downloads.length; ind++ ) {
-				path = app.models.main.downloads[ind].mountPoint;
-				if ( real.indexOf(path) === -1 && trash.indexOf(path) === -1 ) {
-					trash.push(path);
-					stbDownloadManager.InvalidateCatalog(path); // remove trash tasks
-				}
-			}
-			module.refreshDownloads();
+			app.cleanFromTrashTasks();
 		});
 		stbEvent.bind('add.download', function ( data ) {
 			new CModalDownloadCreate(module.page, {url: data.data, fileName: decodeURIComponent(data.data).split('/').pop() });

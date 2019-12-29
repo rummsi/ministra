@@ -30,7 +30,7 @@ MediaBrowser.onInit = function () {
 	 * list of media types that can be played
 	 * @type {[Number]}
 	 */
-	this.playable = [MEDIA_TYPE_VIDEO, MEDIA_TYPE_AUDIO, MEDIA_TYPE_IMAGE, MEDIA_TYPE_ISO, MEDIA_TYPE_RECORDS_ITEM, MEDIA_TYPE_STREAM, MEDIA_TYPE_DVB, MEDIA_TYPE_CUE_ITEM];
+	this.playable = [MEDIA_TYPE_VIDEO, MEDIA_TYPE_AUDIO, MEDIA_TYPE_IMAGE, MEDIA_TYPE_ISO, MEDIA_TYPE_RECORDS_ITEM, MEDIA_TYPE_STREAM, MEDIA_TYPE_CUE_ITEM];
 
 	/**
 	 * List of all file types to display
@@ -1405,60 +1405,55 @@ MediaBrowser.UnmountNFS = function ( force ) {
 /**
  * Mount if no connection with the given parameters.
  *
- * @param {Object} data mount options
- * @param {String} data.address ip address
- * @param {String} data.login needed login
- * @param {String} data.pass needed pass
+ * @param {Object} data - mount options
+ * @param {string} data.address - IP address
+ * @param {string} data.login - login for connection
+ * @param {string} data.pass - password for connection
  *
  * @return {boolean} operation status
  */
 MediaBrowser.MountSMB = function ( data ) {
-	var login, pass, command, status, idx;
+	var login, password, command, status, index;
 
-	if ( SMB_MOUNTED ) {
-		return true;
+	if ( data.link ) {
+		data.address = data.link.url;
+		data.name    = data.link.folder;
 	}
 
 	if ( !data.addresses && (!data.link || !data.link.addresses) ) {
-		data.addresses = data.address ? [data.address.match(/(\d+\.){3}\d+/)[0]] : [];
+		data.addresses = data.address ? [data.address] : [];
 	}
 
-	if ( data && (data.addresses || data.link.addresses) ) {
-		for ( idx = 0; idx < (data.addresses || data.link.addresses).length; idx += 1 ) {
-			data.address = '//' + (data.addresses || data.link.addresses)[idx] + '/' + (data.link ? data.link.folder : data.name);
-			// TODO: think about memory overhead due to save potentially unsuccessful connections
-			if ( data.login ) {
-				SMB_AUTH[data.address] = {login: data.login, pass: data.pass};
+	for ( index = 0; index < data.addresses.length; index += 1 ) {
+		data.address = '//' + data.addresses[index] + '/' + data.name;
+
+		if ( data.login ) {
+			SMB_AUTH[data.address] = {login: data.login, pass: data.pass};
+		}
+
+		data.address = data.address.charAt(data.address.length - 1) === '/' ? data.address.substr(0, data.address.length - 1) : data.address;
+
+		login    = data.login || (SMB_AUTH[data.address] && SMB_AUTH[data.address].login ? SMB_AUTH[data.address].login : 'guest');
+		password = data.pass || (SMB_AUTH[data.address] && SMB_AUTH[data.address].pass ? SMB_AUTH[data.address].pass : '');
+
+		command = 'mount cifs "' + data.address + '" "' + SMB_PATH + '" username=' + login + ',password=' + password + ',iocharset=utf8';
+
+		status = gSTB.RDir(command).trim();
+		echo(status, command);
+		// global flag
+		SMB_MOUNTED = status === 'Ok';
+
+		if ( SMB_MOUNTED ) {
+			// update auth data
+			if ( !SMB_AUTH[data.address] ) {
+				SMB_AUTH[data.address] = {};
 			}
-			data.address = data.address.charAt(data.address.length - 1) === '/' ? data.address.substr(0, data.address.length - 1) : data.address;
-			login = data.login || (SMB_AUTH[data.address] && SMB_AUTH[data.address].login ? SMB_AUTH[data.address].login : 'guest');
-			pass = data.pass || (SMB_AUTH[data.address] && SMB_AUTH[data.address].pass ? SMB_AUTH[data.address].pass : '');
-			command = 'mount cifs "' + data.address + '" "' + SMB_PATH + '" username=' + login + ',password=' + pass + ',iocharset=utf8';/*,unc=' + data.address.replace(/\//g, '\\')*/
 
-			//console.log(command);
+			SMB_AUTH[data.address].login = login;
+			SMB_AUTH[data.address].pass = password;
+			SMB_DATA = data.link;
 
-			status = gSTB.RDir(command).trim();
-			echo(status, command);
-			// global flag
-			SMB_MOUNTED = status === 'Ok';
-
-			//console.log(status);
-			//console.log(SMB_MOUNTED);
-
-			// ok
-			if ( SMB_MOUNTED ) {
-				// update auth data
-				if ( !SMB_AUTH[data.address] ) {
-					SMB_AUTH[data.address] = {};
-				}
-				SMB_AUTH[data.address].login = login;
-				SMB_AUTH[data.address].pass = pass;
-				SMB_DATA = data.link;
-
-				//SMB_MOUNTED_ADDR = data.address;
-
-				return SMB_MOUNTED;
-			}
+			return SMB_MOUNTED;
 		}
 	}
 
@@ -1998,13 +1993,20 @@ MediaBrowser.ParseCue = function ( text ) {
  * Alice In Chains_Jar Of Flies_01_Rotten Apple.mp3
  */
 MediaBrowser.ParseM3u = function ( text ) {
-	var lines     = text.trim().split('\n'),
-		currItem  = {},
+	var currItem  = {},
+		hasNumber = true,
 		data      = {
 			strict : false,
 			config : {},
 			items  : []
-		};
+		},
+		splittedName, lines;
+
+	if ( !text ) {
+		return data;
+	}
+
+	lines = text.trim().split('\n');
 
 	// remove whitespaces from both sides of each string
 	lines = lines.map(Function.prototype.call, String.prototype.trim);
@@ -2065,7 +2067,20 @@ MediaBrowser.ParseM3u = function ( text ) {
 						if ( divPos > 0 ) {
 							// extract and set time with title
 							currItem.time = comment.substr(0, divPos).trim();
-							currItem.name = comment.substr(divPos+1).trim();
+							currItem.name = comment.substr(divPos + 1).trim();
+							if ( hasNumber ) {
+								splittedName = currItem.name.split('.');
+								if ( splittedName.length > 1 ) {
+									currItem.number = parseInt(splittedName.shift(), 10);
+									if ( currItem.number ) {
+										currItem.shortName = splittedName.join('.').trim();
+									} else {
+										hasNumber = false;
+									}
+								} else {
+									hasNumber = false;
+								}
+							}
 						}
 						break;
 				}
@@ -2094,6 +2109,23 @@ MediaBrowser.ParseM3u = function ( text ) {
 				currItem = {};
 			}
 		});
+
+		if ( hasNumber ) {
+			data.items.sort(function ( itemA, itemB ) {
+				return itemA.number - itemB.number;
+			});
+
+			data.items.forEach(function ( item ) {
+				item.name = item.shortName;
+				delete item.shortName;
+				delete item.number;
+			});
+		} else {
+			data.items.forEach(function ( item ) {
+				delete item.shortName;
+				delete item.number;
+			});
+		}
 
 		if ( data.config ) {
 			// correct config value types

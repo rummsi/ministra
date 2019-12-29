@@ -8,7 +8,6 @@ var MasterSettings = new CPage(),
 	headerDiv = null,
 	mainDiv = null,
 	footerDiv = null,
-	masterSetGoogleMap = null,
 	wepFlag = null,
 	remoteControlButtonsImagesPath = configuration.newRemoteControl ? PATH_IMG_SYSTEM + 'buttons/new/' : PATH_IMG_SYSTEM + 'buttons/old/';
 
@@ -46,11 +45,13 @@ MasterSettings.EventHandler = function ( e ) {
 					break;
 				case 6:
 					if ( focusElement === -1 ) {
+						document.getElementById('weatherOkButton').style.display = 'block';
 						break;
 					}
 					e.preventDefault();
+					document.getElementById('weatherOkButton').style.display = 'none';
 					if ( focusElement > 0 ) {
-						if ( focusElement < 5 ) {
+						if ( focusElement < navigElements.length ) {
 							navigElements[focusElement].className = 'item navig_element';
 							focusElement--;
 							navigElements[focusElement].className = 'item_focus navig_element';
@@ -84,22 +85,18 @@ MasterSettings.EventHandler = function ( e ) {
 				case 6:
 					e.preventDefault();
 					if ( focusElement === -1 ) {
+						document.getElementById('weatherOkButton').style.display = 'block';
 						break;
 					}
-					if ( focusElement < 4 ) {
-						if ( focusElement < navigElements.length ) {
-							navigElements[focusElement].className = 'item navig_element';
-							focusElement++;
-							navigElements[focusElement].className = 'item_focus navig_element';
-						}
-						else {
-							navigElements[focusElement].className = 'item navig_element';
-							focusElement = 5;
-						}
-					}
-					else if ( focusElement !== 5 ) {
+					document.getElementById('weatherOkButton').style.display = 'none';
+					if ( focusElement < navigElements.length - 1 ) {
 						navigElements[focusElement].className = 'item navig_element';
-						focusElement = 5;
+						focusElement++;
+						navigElements[focusElement].className = 'item_focus navig_element';
+					}
+					else if ( focusElement !== navigElements.length - 1 ) {
+						navigElements[focusElement].className = 'item navig_element';
+						focusElement = navigElements.length - 1;
 					}
 					break;
 				case 7:
@@ -209,9 +206,10 @@ var weatherObj = {
 	googleMapMarker: null,
 	getLocationXHR: null,
 	getLocalityXHR: null,
+	list: [],
 
 	getSuggestedList: function ( query ) {
-		var self = this;
+		var  self = this;
 
 		if ( this.getLocationXHR ) {
 			this.getLocationXHR.abort();
@@ -221,41 +219,92 @@ var weatherObj = {
 			this.getLocalityXHR.abort();
 		}
 
-		document.getElementById('weatherOkButton').style.display = 'none';
+		// document.getElementById('weatherOkButton').style.display = 'none';
+
 		if ( query.length > 0 ) {
-			ajax('GET', as.gSuggestsUrl + query + '&hl=' + newLanguage, function ( suggestedList ) {
-				self.setSuggestedList(suggestedList, query);
-			}, null, 'json');
-		} else {
-			document.getElementById('weather_suggest').style.display = 'none';
-		}
-	},
-	setSuggestedList: function ( suggestedList, query ) {
-		if ( query.length > 0 ) {
-			var d = document.getElementById('weather_suggest');
-			d.innerHTML = '';
-			if ( suggestedList.suggestion ) {
-				var html = '';
-				for ( var i = 0; i < suggestedList.suggestion.length && i < 5; i++ ) {
-					html += '<div class="item navig_element">' + suggestedList.suggestion[i].query + '</div>';
-				}
-				d.innerHTML = html;
-				d.style.display = 'block';
-				navigElements = document.getElementById('pageMasterSettings').getElementsByClassName('navig_element');
-				settingUpNavigationElement();
-				focusElement = 5;
-			} else {
-				d.style.display = 'none';
-				focusElement = -1;
+			try {
+				var request = new XMLHttpRequest();
+				request.open('GET', 'http://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&accept-language=' +
+					newLanguage + '&city=' + query, true);
+
+				request.onreadystatechange = function () {
+					var data;
+
+					if ( request.readyState === 4 && request.status === 200 ) {
+						try {
+							data = JSON.parse(request.responseText);
+							console.log(data);
+						} catch( e ) {
+							echo(e, 'weather response is not valid json');
+						}
+						self.setSuggestedList(data, query);
+					}
+				};
+				request.send(null);
+				this.getLocationXHR = request;
+			} catch ( e ) {
+				echo(e);
 			}
 		} else {
 			document.getElementById('weather_suggest').style.display = 'none';
 		}
 	},
+	geo_types: [17 , 37 , 545, 33],
+	setSuggestedList: function ( obj, query ) {
+		//console.log('setSuggests');
+		var d = document.getElementById('weather_suggest'),
+			html = '',
+			i, sugg, geo_type;
+
+		d.innerHTML = '';
+
+		if ( query.length > 0 ) {
+			if ( obj && obj.length > 0 ) {
+				for ( i = 0; i < obj.length && i < 5; i++ ) {
+					sugg = obj[i];
+					geo_type = null;
+
+					if ( sugg.address ) {
+						if ( sugg.address.city ) {
+							this.list[i] = sugg.address.city;
+						} else if ( sugg.address.town ) {
+							this.list[i] = sugg.address.town;
+						} else if ( sugg.address.village ) {
+							this.list[i] = sugg.address.village;
+						} else {
+							this.list[i] = ''
+						}
+						if ( sugg.address.state ) {
+							this.list[i] += ', ' + sugg.address.state;
+						}
+						if ( sugg.address.country ) {
+							this.list[i] += ', ' + sugg.address.country + ' ';
+						}
+						echo(this.list[i]);
+					} else {
+						this.list[i] = sugg.display_name;
+					}
+					html += '<div class="item navig_element">' + this.list[i] + '</div>';
+				}
+
+				d.innerHTML = html;
+				d.style.display = 'block';
+				navigElements = document.getElementById('pageMasterSettings').getElementsByClassName('navig_element');
+				settingUpNavigationElement();
+				focusElement = navigElements.length;
+			}
+			document.getElementById('suggests').style.display = 'block';
+		} else {
+			focusElement = -1;
+			d.style.display = 'none';
+		}
+	},
 	getLocation: function ( callback ) {
 		var self = this;
+
 		this.getLocationXHR = ajax('GET', 'http://weather.infomir.com.ua/getGeo.php', function ( coordinates, status ) {
 			if ( status === 200 ) {
+				console.log(coordinates);
 				self.getLocality(coordinates, callback, weatherObj.getWeatherData);
 				self.getTimeZone(coordinates);
 			}
@@ -263,42 +312,43 @@ var weatherObj = {
 	},
 	getLocality: function ( coordinates, callback, getWeatherData ) {
 		var locality = null;
-		this.getLocalityXHR = ajax('GET', 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + coordinates.data.lat + ',' + coordinates.data.lon + '&language=' + newLanguage, function ( location, status ) {
-			if ( status === 200 ) {
-				for ( var i = 0; i < location.results.length; i++ ) {
-					for ( var j = 0; j < location.results[i].types.length; j++ ) {
-						switch ( location.results[i].types[j] ) {
-							case 'locality':
-								locality = location.results[i].formatted_address;
-								break;
-							case 'administrative_area_level_1':
-								locality = location.results[i].formatted_address;
-								break;
-							case 'administrative_area_level_2':
-								locality = location.results[i].formatted_address;
-								break;
-							case 'country':
-								locality = location.results[i].formatted_address;
-								break;
+
+		this.getLocalityXHR = ajax('GET', 'http://nominatim.openstreetmap.org/reverse?format=json&lat=' + coordinates.data.lat +
+			'&zoom=18&addressdetails=1&lon=' + coordinates.data.lon + '&accept-language=' + newLanguage,
+			function ( location, status ) {
+				console.log(location);
+				if ( status === 200 ) {
+					if ( location.address ) {
+						if ( location.address.city ) {
+							locality = location.address.city;
+							if ( location.address.state ) {
+								locality += ', ' + location.address.state;
+							}
+							if ( location.address.country ) {
+								locality += ', ' + location.address.country + ' ';
+							}
+						} else {
+							locality = locality.display_name;
 						}
 					}
-					if ( locality !== null ) {
-						break;
+				}
+
+				if ( locality !== null && masterSettingsScreen === 6 ) {
+					document.getElementById('weather_input').value = locality;
+					document.getElementById('weather_input').select();
+					document.getElementById('weatherOkButton').style.display = 'block';
+					if ( getWeatherData ) {
+						getWeatherData(locality);
 					}
 				}
-			}
-			if ( locality !== null && masterSettingsScreen === 6 ) {
-				document.getElementById('weather_input').value = locality;
-				document.getElementById('weather_input').select();
-				if ( getWeatherData ) {
-					getWeatherData(locality);
-				}
-			}
-			callback();
-		}, null, 'json');
+				callback(true, true, locality);
+			}, null, 'json');
+
 	},
 	getTimeZone: function ( coordinates ) {
 		ajax('GET', 'https://maps.googleapis.com/maps/api/timezone/json?location=' + coordinates.data.lat + ',' + coordinates.data.lon + '&timestamp=' + Math.round(new Date().getTime() / 1000) + '&language=' + newLanguage, function ( timeZoneData, status ) {
+			console.log('timeZoneData');
+			console.log(timeZoneData);
 			if ( status === 200 ) {
 				timeZoneId = timeZoneData.timeZoneId;
 			}
@@ -307,33 +357,13 @@ var weatherObj = {
 	getWeatherData: function ( locality ) {
 		document.getElementById('weather_suggest').style.display = 'none';
 		buttonDisable = true;
-		ajax('GET', 'http://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURIComponent(locality), function ( data, status ) {
-			if ( status === 200 ) {
-				if ( data.status === 'OK' && data.results && data.results.length > 0 ) {
-
-					var mapOptions = {
-						zoom: 10,
-						center: new google.maps.LatLng(data.results[0].geometry.location.lat, data.results[0].geometry.location.lng),
-						disableDefaultUI: true
-					};
-
-					masterSetGoogleMap.BuildMap(mapOptions, true, false);
-
-					MasterSettings.temp_geoweather_data = JSON.stringify({
-						lat: Math.floor(data.results[0].geometry.location.lat * 100) / 100,
-						lon: Math.floor(data.results[0].geometry.location.lng * 100) / 100
-					});
-					document.getElementById('weatherOkButton').style.display = 'block';
-				}
-			}
-		}, null, 'json');
 		masterToWrite[1] = '"weather_place":"' + base64Encode(locality) + '"';
 		rebootDevice = true;
 		gSTB.HideVirtualKeyboard();
 		setTimeout(function () {
 			buttonDisable = false;
 		}, 1000);
-		stbWindowMgr.SetVirtualKeyboardCoord('none');
+		stbWindowMgr.SetVirtualKeyboardCoord('bottom');
 	}
 };
 
@@ -604,35 +634,17 @@ var initPageMasterSettings = {
 		masterSettingsScreen = 6;
 		focusElement = -1;
 		masterToWrite[1] = '';
-		masterSetGoogleMap = new CMap(this, {
-			container: document.getElementById('masterSettingsMapCanvas'),
-			events: {
-				onGoogleMapsApiScriptCallback: function () {
-					weatherObj.getLocation(function () {
-						document.getElementById('pageMasterSettings').style.display = 'block';
-						document.getElementById('weather_input').focus();
-						document.getElementById('weather_input').select();
-					});
-				},
-				onGoogleMapReady: function () {
-				}
-			}
-		});
 
 		document.getElementById('pageMasterSettings').style.display = 'block';
 		document.getElementById('weather_input').focus();
 
-		if ( window.googleMapsApiScriptLoaded ) {
-			weatherObj.getLocation(function () {
-				if ( masterSettingsScreen === 6 ) {
-					document.getElementById('pageMasterSettings').style.display = 'block';
-					document.getElementById('weather_input').focus();
-					document.getElementById('weather_input').select();
-				}
-			});
-		} else {
-			masterSetGoogleMap.LoadGoogleMapsApiScript('masterSetGoogleMap', newLanguage);
-		}
+		weatherObj.getLocation(function () {
+			if ( masterSettingsScreen === 6 ) {
+				document.getElementById('pageMasterSettings').style.display = 'block';
+				document.getElementById('weather_input').focus();
+				document.getElementById('weather_input').select();
+			}
+		});
 	},
 	screen7: function () {
 		mainDiv.className = 'screen8';
@@ -646,11 +658,6 @@ var initPageMasterSettings = {
 		}
 
 		masterSettingsScreen = 7;
-
-		if ( masterSetGoogleMap ) {
-			elclear(masterSetGoogleMap.container);
-			masterSetGoogleMap = null;
-		}
 
 		document.getElementById('pageMasterSettings').style.display = 'none';
 		document.getElementById('pageMasterSettings').style.display = 'block';
@@ -1099,26 +1106,39 @@ function pressingOkButton ( event ) {
 			break;
 		case 6:
 			var locality,
-				weatherInput = document.getElementById('weather_input'),
-				initNewScreen = false;
+				weatherInput = document.getElementById('weather_input');
 
-			if ( masterSetGoogleMap.container.style.visibility === 'visible' ) {
-				masterSetGoogleMap.Visible(false);
-				elclear(masterSetGoogleMap.container);
-				initNewScreen = true;
+			if ( focusElement > -1 && focusElement < navigElements.length ) {
+				locality = navigElements[focusElement].textContent;
+				weatherInput.value = locality;
+				document.getElementById('weatherOkButton').style.display = 'block';
+				focusElement = -1;
+				weatherInput.select();
+				document.getElementById('weather_suggest').style.display = 'none';
+			} else {
+				weatherObj.getWeatherData(weatherInput.value);
+				document.getElementById('weatherOkButton').style.display = 'none';
 				initPageMasterSettings.screen7();
 			}
 
-			if ( focusElement !== -1 && focusElement !== 5 ) {
-				locality = navigElements[focusElement].textContent;
-				weatherInput.value = locality;
-				weatherObj.getWeatherData(locality);
-				focusElement = -1;
-			} else if ( !initNewScreen && document.getElementById('weatherOkButton').style.display !== 'none' ) {
-				masterSetGoogleMap.Visible(true);
-				document.getElementById('keyboardButton').style.display = 'none';
-				weatherInput.disabled = true;
-			}
+
+			// if ( masterSetGoogleMap.container.style.visibility === 'visible' ) {
+			// 	masterSetGoogleMap.Visible(false);
+			// 	elclear(masterSetGoogleMap.container);
+			// 	initNewScreen = true;
+			// 	initPageMasterSettings.screen7();
+			// }
+			//
+			// if ( focusElement > -1 && focusElement < navigElements.length ) {
+			// 	locality = navigElements[focusElement].textContent;
+			// 	weatherInput.value = locality;
+			// 	weatherObj.getWeatherData(locality);
+			// 	focusElement = -1;
+			// } else if ( !initNewScreen && document.getElementById('weatherOkButton').style.display !== 'none' ) {
+			// 	masterSetGoogleMap.Visible(true);
+			// 	document.getElementById('keyboardButton').style.display = 'none';
+			// 	weatherInput.disabled = true;
+			// }
 			break;
 		case 7:
 			var ntpUrl = 'pool.ntp.org';
@@ -1340,22 +1360,13 @@ function pressingExitButton () {
 			clearTimeout(masterSettingsTimer.timer1);
 			initPageMasterSettings.screen4();
 			break;
-		case 6:
-			var weatherInput = document.getElementById('weather_input');
 
-			if ( masterSetGoogleMap.container.style.visibility === 'hidden' ) {
-				gSTB.HideVirtualKeyboard();
-				stbWindowMgr.SetVirtualKeyboardCoord('none');
-				initPageMasterSettings.screen4();
-				elclear(masterSetGoogleMap.container);
-				masterSetGoogleMap = null;
-				masterToWrite[1] = '';
-			} else {
-				masterSetGoogleMap.Visible(false);
-				document.getElementById('keyboardButton').style.display = 'block';
-				weatherInput.disabled = false;
-			}
+		case 6:
+			initPageMasterSettings.screen4();
+			masterToWrite[1] = '';
+			gSTB.HideVirtualKeyboard();
 			break;
+
 		case 521:
 			gSTB.HideVirtualKeyboard();
 			initPageMasterSettings.screen52();
@@ -1382,7 +1393,6 @@ function pressingF1Button () {
 function pressingF4Button () {
 	switch ( masterSettingsScreen ) {
 		case 6:
-			masterSetGoogleMap.Visible(false);
 			initPageMasterSettings.screen7();
 			break;
 	}

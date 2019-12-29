@@ -21,7 +21,7 @@ h2 { height:65px; line-height:65px; font-size:28px; color:#e6c62e; margin:0; pad
 #bottom_menu li { position:relative; }
 
 /* Кнопка "выход" внизу слева*/
-#bottom_menu .exit_wrapper { width:139px; height:110px; float:left; background:url('../img/1280/backgrounds/exit_wrapper_bg.png'); }
+#bottom_menu .exit_wrapper { width:139px; height:110px; float:left; background:url('../img/backgrounds/exit_wrapper_bg.png'); }
 #bottom_menu .exit { cursor:pointer; width:100%; height:110px; background:url('../img/1280/buttons/old/exit.png') 64px 22px no-repeat; }
 
 /* Пункты верхнего меню - общие правила */

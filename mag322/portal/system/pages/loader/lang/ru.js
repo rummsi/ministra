@@ -28,6 +28,7 @@ gettext.load({
     "Password": "Пароль",
     "Please check the connection and the page URL": "Пожалуйста, проверьте соединение и URL страницы",
     "Portal": "Портал",
+    "Press MENU to cancel": "Нажмите MENU для отмены",
     "Press MENU to load portal selection screen": "Нажмите MENU для перехода в меню выбора портала",
     "Select a portal for loading": "Выберите портал для загрузки",
     "System settings": "Системные настройки",
@@ -35,6 +36,7 @@ gettext.load({
     "Try again": "Попробовать снова",
     "Unlock": "Разблокировать",
     "Version: ": "Версия: ",
+    "Waiting for network setup": "Ожидание настройки сети",
     "Warning!": "Внимание!",
     "We recommend to update the software.": "Рекомендуем обновить ПО.",
     "Wi-Fi: ": "Wi-Fi: "

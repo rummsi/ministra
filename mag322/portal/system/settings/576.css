@@ -21,7 +21,7 @@ h2 { height:42px; line-height:42px; font-size:18px; color:#e6c62e; margin:0; pad
 #bottom_menu li { position:relative; }
 
 /* Кнопка "выход" внизу слева*/
-#bottom_menu .exit_wrapper { width:140px; height:110px; float:left; background:url('../img/720/backgrounds/exit_wrapper_bg.png'); }
+#bottom_menu .exit_wrapper { width:140px; height:110px; float:left; background:url('../img/backgrounds/exit_wrapper_bg.png'); }
 #bottom_menu .exit { cursor:pointer; width:151px; height:110px; background:url('../img/720/buttons/old/exit.png') 77px 18px no-repeat; margin: -2px 0px 0px -4px; }
 
 /* Пункты верхнего меню - общие правила */
@@ -141,8 +141,8 @@ ul.right_menu li:last-child { padding-right:0; }
 /*#dlg_container .ok div { display:table-cell; vertical-align:middle; }*/
 /*#dlg_container > #dlg_confirm { width:420px; margin-top:135px }*/
 
-input[type="checkbox"] { opacity:0; heihgt: 0px;}
-input[type="checkbox"] + label { background:url('../img/720/settings/switch.png') 0 0 no-repeat; padding:15px 40px 15px 40px; display:block; margin-top:18px; }
+input[type="checkbox"] { opacity: 0; height: 0px; width: 0px; }
+input[type="checkbox"] + label { background:url('../img/720/settings/switch.png') 0 0 no-repeat; padding:15px 40px 15px 40px; display:block; margin-top:14px; }
 input[type="checkbox"]:focus + label { background:url('../img/720/settings/switch_act.png') 0 0 no-repeat; }
 input[type="checkbox"]:checked + label { background-position:0 -34px; }
 input[type="checkbox"]:checked:focus + label { }

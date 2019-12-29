@@ -231,7 +231,7 @@ configuration = (function(configuration){
 		// volume
 		volume: {
 			def        : 100,
-			mute       : 0,
+			mute       : gSTB.GetMute() || 0,
 			step       : 5,
 			timer      : null,
 			hideTimeOut: 3000
@@ -329,7 +329,7 @@ configuration = (function(configuration){
 		registersTypes: ['mpg', 'mpeg', 'mkv', 'avi', '3gp', 'ts', 'tspinf', 'm4a', 'mp3', 'mp4', 'ac3', 'mov', 'vob', 'wav', 'ape', 'mts', 'm2t', 'm2v', 'ogg', 'oga', 'divx', 'aiff',
 			'm2ts', 'wv', 'm2p', 'tp', 'flv', 'tta', 'mod', 'tod', 'asf', 'wma', 'wmv', 'flac', 'ape', 'cue', 'm3u', 'm3u8', 'jpg', 'jpeg', /*'raw', 'gif',*/
 			'png', 'bmp', 'tif', 'tiff', 'iso', 'aac', 'txt', 'srt', 'sub', 'ass', 'm4v', 'trp', 'tts',
-			'raw', 'gif', 'cr2', 'nef', 'orf', 'iiq', 'ico', 'psd', 'webp', 'tif', 'tiff', 'wtv'
+			'raw', 'gif', 'cr2', 'nef', 'orf', 'iiq', 'ico', 'psd', 'webp', 'wtv'
 		]
 	}, false);
 
@@ -402,8 +402,8 @@ configuration = (function(configuration){
 		},
 		registersTypes: ['mpg', 'mpeg', 'mkv', 'avi', '3gp', 'ts', 'tspinf', 'm4a', 'mp3', 'mp4', 'ac3', 'mov', 'vob', 'wav', 'ape', 'mts', 'm2t', 'm2v', 'ogg', 'oga', 'divx', 'aiff',
 			'm2ts', 'wv', 'm2p', 'tp', 'flv', 'tta', 'mod', 'tod', 'asf', 'wma', 'wmv', 'flac', 'ape', 'cue', 'm3u', 'm3u8', 'jpg', 'jpeg', /*'raw', 'gif',*/
-			'png', 'bmp', 'tif', 'tiff', 'iso', 'aac', 'txt', 'srt', 'sub', 'ass', 'm4v', 'trp', 'tts',
-			'gif', 'cr2', 'nef', 'orf', 'iiq', 'ico', 'webp', 'tif', 'wtv'
+			'png', 'bmp', 'iso', 'aac', 'txt', 'srt', 'sub', 'ass', 'm4v', 'trp', 'tts',
+			'gif', 'iiq', 'ico', 'webp', 'wtv'
 		]
 	}, false);
 
@@ -425,7 +425,7 @@ configuration = (function(configuration){
 		registersTypes: ['mpg', 'mpeg', 'mkv', 'avi', '3gp', 'ts', 'tspinf', 'm4a', 'mp3', 'mp4', 'ac3', 'mov', 'vob', 'wav', 'ape', 'mts', 'm2t', 'm2v', 'ogg', 'oga', 'divx', 'aiff',
 			'm2ts', 'wv', 'm2p', 'tp', 'flv', 'tta', 'mod', 'tod', 'asf', 'wma', 'wmv', 'flac', 'ape', 'cue', 'm3u', 'm3u8', 'jpg', 'jpeg', /*'raw', 'gif',*/
 			'png', 'bmp', 'tif', 'tiff', 'iso', 'aac', 'txt', 'srt', 'sub', 'ass', 'm4v', 'trp', 'tts',
-			'raw', 'gif', 'cr2', 'nef', 'orf', 'iiq', 'ico', 'psd', 'webp', 'tif', 'tiff', 'wtv'
+			'raw', 'gif', 'cr2', 'nef', 'orf', 'iiq', 'ico', 'psd', 'webp', 'wtv'
 		]
 	}, false);
 
@@ -438,7 +438,7 @@ configuration = (function(configuration){
 		registersTypes: ['mpg', 'mpeg', 'mkv', 'avi', '3gp', 'ts', 'tspinf', 'm4a', 'mp3', 'mp4', 'ac3', 'mov', 'vob', 'wav', 'ape', 'mts', 'm2t', 'm2v', 'ogg', 'oga', 'divx', 'aiff',
 			'm2ts', 'wv', 'm2p', 'tp', 'flv', 'tta', 'mod', 'tod', 'asf', 'wma', 'wmv', 'flac', 'ape', 'cue', 'm3u', 'm3u8', 'jpg', 'jpeg', /*'raw', 'gif',*/
 			'png', 'bmp', 'tif', 'tiff', 'iso', 'aac', 'txt', 'srt', 'sub', 'ass', 'm4v', 'trp', 'tts',
-			'raw', 'gif', 'cr2', 'nef', 'orf', 'iiq', 'ico', 'psd', 'webp', 'tif', 'tiff', 'wtv'
+			'raw', 'gif', 'cr2', 'nef', 'orf', 'iiq', 'ico', 'psd', 'webp', 'wtv'
 		]
 	}, false);
 
@@ -474,7 +474,7 @@ configuration = (function(configuration){
 		registersTypes: ['mpg', 'mpeg', 'mkv', 'avi', '3gp', 'ts', 'tspinf', 'm4a', 'mp3', 'mp4', 'ac3', 'mov', 'vob', 'wav', 'ape', 'mts', 'm2t', 'm2v', 'ogg', 'oga', 'divx', 'aiff',
 			'm2ts', 'wv', 'm2p', 'tp', 'flv', 'tta', 'mod', 'tod', 'asf', 'wma', 'wmv', 'flac', 'ape', 'cue', 'm3u', 'm3u8', 'jpg', 'jpeg', /*'raw', 'gif',*/
 			'png', 'bmp', 'tif', 'tiff', 'iso', 'aac', 'txt', 'srt', 'sub', 'ass', 'm4v', 'trp', 'tts',
-			'raw', 'gif', 'cr2', 'nef', 'orf', 'iiq', 'ico', 'psd', 'webp', 'tif', 'tiff', 'wtv'
+			'raw', 'gif', 'cr2', 'nef', 'orf', 'iiq', 'ico', 'psd', 'webp', 'wtv'
 		],
 		mayTimeShift: true,
 		mayPVR: true,
@@ -682,6 +682,22 @@ configuration = (function(configuration){
 	}, false);
 
 
+	models.IM2101VO = extend(models.IM2101, {
+		url: {
+			updateList: 'http://update.infomir.com/im/2101vo/update_list.txt'
+		},
+		maySecureM3u: true
+	}, false);
+
+
+	models.IM2101VI = extend(models.IM2101, {
+		url: {
+			updateList: 'http://update.infomir.com/im/2101vi/update_list.txt'
+		},
+		maySecureM3u: true
+	}, false);
+
+
 	// rebrending
 	models.IM2102 = extend(models.MAG324C, {
 		logoImagePath: PATH_IMG_PUBLIC + 'menu/logo/im2102.png',
@@ -690,6 +706,27 @@ configuration = (function(configuration){
 		},
 		setting: {
 			settingsList : ['playback','interface','update','timeShift','speedTest', 'settings', 'accessControl', 'teletext']
+		}
+	}, false);
+
+
+	models.IM4411 = extend(models.MAG420, {
+		logoImagePath: PATH_IMG_PUBLIC + 'menu/logo/im4411.png',
+		url: {
+			updateList: 'http://update.infomir.com/im/4411/update_list.txt'
+		}
+	}, false);
+
+
+	models.IM4412 = extend(models.MAG424, {
+		logoImagePath: PATH_IMG_PUBLIC + 'menu/logo/im4412.png',
+		menu: [
+			menu.mediaBrowser, menu.dvbChannels, menu.tvChannels, menu.magicCast, menu.dlman,
+			menu.wildWeb, menu.weatherSettings, menu.manual, menu.settings/*menu.playkey*/, menu.pvr
+		],
+		mayDVB: true,
+		url: {
+			updateList: 'http://update.infomir.com/im/4412/update_list.txt'
 		}
 	}, false);
 

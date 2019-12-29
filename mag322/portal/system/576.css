@@ -124,7 +124,7 @@
 			.page .body .content .crop { padding-top:0; padding-bottom:0 }
 		.page .body .footer  { height:86px; background: url("../public/img/720/backgrounds/bottommenu_bg.png") transparent }
 			.page .body .footer .crop { padding-top:0 }
-			.page .body .footer .exit { padding-right:0; width:85px; background: url("../public/img/720/backgrounds/exit_wrapper_bg.png") 0 0 transparent }
+			.page .body .footer .exit { padding-right:0; width:85px; background: url("./img/backgrounds/exit_wrapper_bg.png") 0 0 transparent }
 			/*.page .body .footer .exit div { height:62px; width:82px; display:table-cell; vertical-align:middle; padding-left:32px; background: url("img/720/buttons/exit.png") no-repeat left center transparent; cursor:pointer; font-size:14px; }*/
 				.page .body .footer > td:nth-child(2) {padding-left:20px;}
 

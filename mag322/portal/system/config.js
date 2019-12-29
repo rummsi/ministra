@@ -54,8 +54,12 @@ var configuration = (function () {
 
 		case 'MAG351':
 		case 'MAG352':
+		case 'MAG420':
+		case 'MAG422':
 		case 'MAG424':
 		case 'MAG425':
+		case 'IM4411':
+		case 'IM4412':
 			config.videoOutputMode = [
 				{value: 'Auto', title: 'Auto', translated: false},
 				{value: 'PAL', title: 'PAL (576i)', translated: true},

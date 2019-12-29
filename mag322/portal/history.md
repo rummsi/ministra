@@ -1,6 +1,188 @@
 History
 =======
 
+## 2019.10.31 ##
+
+* fix help generator
+* add sorting by number in m3u parser
+
+
+## 2019.10.18 ##
+
+* fix server part of help-generator for php 7 version
+* add device reload after user data cleared
+
+
+## 2019.10.11 ##
+
+* fix timeshift start error modal
+
+
+## 2019.10.09 ##
+
+* skip privacy policy not only in loader but in portal too
+
+
+## 2019.09.26 ##
+
+* fix hiding modal behavior to prevent from show webinput results
+* prevent of showing webinput result box on exit from menu by Exit button
+* fix mounting share by domain name, remove IP validation
+* improve code quality
+
+
+## 2019.09.03 ##
+
+* fix review warnings
+* fix checkbox styles for 576 and 480 resolution
+
+
+## 2019.08.19 ##
+
+* fix teletext in 4k resolution
+
+
+## 2019.08.14 ##
+
+* fix initial mute state after reload portal
+* add 4k resolution for MAG422
+
+
+## 2019.08.06 ##
+
+* portals loader: add privacy policy reset
+* fix focus item in IPTV Channels after empty list
+
+
+## 2019.07.25 ##
+
+* fix update list url for IM2101VO
+
+
+## 2019.07.05 ##
+
+* fix init volume setting change
+
+
+## 2019.07.04 ##
+
+* portals loader: remove HEAD request from portal availability check and use only GET request (some clients have strangely configured servers)
+
+
+## 2019.07.01 ##
+
+* player: fix jscs
+* player: don't show error message for same file twice
+* player: exit from player after error message for bad images in non-slideshow mode
+* player: show error message for bad images
+
+
+## 2019.06.12 ##
+
+* loader: fix embedded portal loading in multiportal mode
+* loader: fix jscs
+
+
+## 2019.06.10 ##
+
+* loader: fix jscs
+* loader: remove exit button from privacy policy
+* loader: add checks for different ajax errors, fix abort function in ajax
+* loader: fix interface
+
+
+## 2019.06.05 ##
+
+* loader: add new exit button
+* fix teletext option setup for low resolutions instead of low video modes
+* help: add privacy policy agreement
+* help generator: update to php 7
+* fix player teletext settings saving
+* fix navigation in player teletext settings
+
+
+## 2019.05.30 ##
+
+* remove tif format support from mag322
+* loader: fix long names problems
+
+
+## 2019.05.17 ##
+
+* fix loader
+
+
+## 2019.05.08 ##
+
+* remove tif format for mag322
+* loader page rework and optimizations
+
+
+## 2019.04.25 ##
+
+* fix list vertical align in DVB channels
+
+
+## 2019.04.18 ##
+
+* add IM2101VO model support
+* remove .raw format support for mag322
+
+
+## 2019.04.11 ##
+
+* add IM4411 model support
+
+
+## 2019.03.27 ##
+
+* add IM4412 model support
+* add IM2101VI model support
+
+
+## 2019.03.25 ##
+
+* remove some user data from speedtest and traceroute reports for aura
+
+
+## 2019.02.13 ##
+
+* fix advanced settings in access control
+* add 4k resolution for MAG420
+* fix wifi manual settings
+* fix set subtitles black color
+* fix load manual wifi settings
+
+
+## 2019.02.07 ##
+
+* fix weather in master settings
+
+
+## 2019.01.28 ##
+
+* fix text in popup which appears for blocked portals
+
+
+## 2019.01.22 ##
+
+* fix name overlap in update modal
+* add 'utf-16be' and 'utf-16le' subtitles encoding
+* fix fast load in loader
+* fix access control in loader
+
+
+## 2019.01.02 ##
+
+* fix update start
+
+
+## 2018.12.27 ##
+
+* update exit_wraper_bg.png from 2x2 to 100x100 size
+* fix event handler in update modal
+
+
 ## 2018.12.10 ##
 
 * support difference between mag254 and mag322 wifi event status implementation
@@ -23,11 +205,6 @@ History
 
 * fix focused out of array
 * fix code style
-
-
-## 2018.11.07 ##
-
-* add mag422, remove PPPoE for mag422, mag424, mag425 from system settings
 
 
 ## 2018.10.30 ##
@@ -62,11 +239,6 @@ History
 * fix empty audio_initial_volume state
 
 
-## 2018.08.13 ##
-
-* fix change position
-
-
 ## 2018.08.07 ##
 
 * fix localization
@@ -76,11 +248,6 @@ History
 
 * fix saving zero volume
 * fix localization
-
-
-## 2018.07.19 ##
-
-* disable stbUPnPRenderer and clear code
 
 
 ## 2018.07.11 ##
@@ -113,14 +280,6 @@ History
 ## 2018.04.27 ##
 
 * add IM2101 device support
-* fix navigation in favorite, fix style in DVB Channels
-
-
-## 2018.04.24 ##
-
-* remove DVB settings for IM2102
-* fix navigation in DVB channels
-* fix DVB channels item style
 
 
 ## 2018.04.13 ##

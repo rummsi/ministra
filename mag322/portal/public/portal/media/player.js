@@ -41,6 +41,8 @@ MediaPlayer.onInit = function () {
 	this.subCModal = null;
 	this.countError = 0;
 	this.errorTimer = null;
+	this.imagesErrorTimer = null;
+	this.imagesLastErrorFile = null;
 	this.errorTime = 300;
 	this.pos = 0;
 	this.posTime = '';
@@ -689,19 +691,16 @@ MediaPlayer.onInit = function () {
 
 					if ( self.ModalMenu.Menu.gTeletext.editModal ) {
 						self.ModalMenu.Menu.gTeletext.editModal.elements[0].SelectById(environment.teletext_charset);
-						switch ( VIDEO_MODE ) {
-							case '480i':
-							case '480p':
-							case '576i':
-							case '576p':
-								self.ModalMenu.Menu.gTeletext.editModal.elements[1].SelectById(environment.teletext_ratio);
-								break;
-							default :
-								self.ModalMenu.Menu.gTeletext.editModal.elements[1].SelectById(environment.teletext_ratio);
-								self.ModalMenu.Menu.gTeletext.editModal.elements[2].SelectById(environment.teletext_opacity);
-								break;
+						if ( WINDOW_HEIGHT < 720 ) {
+							// low resolutions has only 2 settings: charset and opacity
+							self.ModalMenu.Menu.gTeletext.editModal.elements[1].SelectById(environment.teletext_opacity);
+						} else {
+							// high resolutions additionally have teletext ratio setting
+							self.ModalMenu.Menu.gTeletext.editModal.elements[1].SelectById(environment.teletext_ratio);
+							self.ModalMenu.Menu.gTeletext.editModal.elements[2].SelectById(environment.teletext_opacity);
 						}
 					}
+
 					switch ( VIDEO_MODE ) {
 						case '480i':
 						case '480p':
@@ -743,12 +742,27 @@ MediaPlayer.onInit = function () {
 								viewport.width = 1820;
 							}
 							break;
+						case '3840x2160p30':
+						case '3840x2160p25':
+						case '3840x2160p50':
+						case '3840x2160p60':
+							viewport.top = 80;
+							viewport.height = 2000;
+							if ( environment.teletext_ratio === '0' ) {
+								viewport.left = 546;
+								viewport.width = 2748;
+							} else {
+								viewport.left = 100;
+								viewport.width = 3640;
+							}
+							break;
 					}
 					echo(viewport, 'SetTeletextViewport');
 					gSTB.SetTeletextViewport(viewport.width, viewport.height, viewport.left, viewport.top);
 					gSTB.TeletextShow(true);
 					MediaPlayer.showInfo(false);
 					self.ModalMenu.Menu.gTeletext.lastParams = {
+						ratio: environment.teletext_ratio,
 						viewport: viewport,
 						opacity: environment.teletext_opacity,
 						pid: this.data.value
@@ -770,6 +784,8 @@ MediaPlayer.onInit = function () {
 	 */
 	this.ModalMenu.Menu.gTeletext.showEditModal = function () {
 		var self = this,
+			hdResolution = WINDOW_HEIGHT >= 720,
+			opacityOptionIndex = hdResolution ? 2 : 1,
 			arr = [],
 			table,
 			tRow, i, size, elem;
@@ -778,7 +794,11 @@ MediaPlayer.onInit = function () {
 			this.editModal.activeElementIndex = 0;
 			this.editModal.Show(true);
 			this.editModal.elements[self.editModal.activeElementIndex].handle.focus();
-			this.editModal.elements[self.editModal.activeElementIndex].SelectById(gSTB.GetForceTtxCharset());
+			this.editModal.elements[0].SelectById(gSTB.GetForceTtxCharset());
+			if ( hdResolution ) {
+				this.editModal.elements[1].SelectById(MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.ratio);
+			}
+			this.editModal.elements[opacityOptionIndex].SelectById(MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.opacity);
 		} else {
 			table = element('table');
 			this.editModal = new CModalBox(MediaPlayer);
@@ -796,54 +816,75 @@ MediaPlayer.onInit = function () {
 				gSTB.ForceTtxCharset(charset === 'auto' ? 0 : +charset, charset === 'auto');
 
 				MediaPlayer.ModalMenu.Menu.gTeletext.lastParams = {
+					ratio: null,
 					viewport: null,
 					opacity: null,
 					pid: MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.pid,
 					charset: charset
 				};
-				switch ( VIDEO_MODE ) {
-					case '720p':
-					case '720p60':
-						ratio = self.editModal.elements[1].GetValue();
-						viewport.top = 30;
-						viewport.height = 670;
-						if ( ratio === '0' ) {
-							viewport.left = 193;
-							viewport.width = 894;
-						} else {
-							viewport.left = 40;
-							viewport.width = 1200;
-						}
-						gSTB.SetTeletextViewport(viewport.width, viewport.height, viewport.left, viewport.top);
-						gSTB.TeletextTransparency(self.editModal.elements[2].GetValue());
-						MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.opacity = self.editModal.elements[2].GetValue();
-						break;
-					case '1080i':
-					case '1080i60':
-					case '1080p':
-					case '1080p60':
-						ratio = self.editModal.elements[1].GetValue();
-						viewport.top = 40;
-						viewport.height = 1000;
-						if ( ratio === '0' ) {
-							viewport.left = 273;
-							viewport.width = 1374;
-						} else {
-							viewport.left = 50;
-							viewport.width = 1820;
-						}
-						gSTB.SetTeletextViewport(viewport.width, viewport.height, viewport.left, viewport.top);
-						gSTB.TeletextTransparency(self.editModal.elements[2].GetValue());
-						MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.opacity = self.editModal.elements[2].GetValue();
-						break;
-					default :
-						gSTB.TeletextTransparency(self.editModal.elements[1].GetValue());
-						MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.opacity = self.editModal.elements[1].GetValue();
-						break;
+
+				if ( hdResolution ) {
+					MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.ratio = self.editModal.elements[1].GetValue();
+					// viewport modification available
+					switch ( VIDEO_MODE ) {
+						case '720p':
+						case '720p60':
+							ratio = self.editModal.elements[1].GetValue();
+							viewport.top = 30;
+							viewport.height = 670;
+							if ( ratio === '0' ) {
+								viewport.left = 193;
+								viewport.width = 894;
+							} else {
+								viewport.left = 40;
+								viewport.width = 1200;
+							}
+
+							gSTB.SetTeletextViewport(viewport.width, viewport.height, viewport.left, viewport.top);
+							MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.viewport = viewport;
+							break;
+						case '1080i':
+						case '1080i60':
+						case '1080p':
+						case '1080p60':
+							ratio = self.editModal.elements[1].GetValue();
+							viewport.top = 40;
+							viewport.height = 1000;
+							if ( ratio === '0' ) {
+								viewport.left = 273;
+								viewport.width = 1374;
+							} else {
+								viewport.left = 50;
+								viewport.width = 1820;
+							}
+							gSTB.SetTeletextViewport(viewport.width, viewport.height, viewport.left, viewport.top);
+							MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.viewport = viewport;
+							break;
+						case '3840x2160p30':
+						case '3840x2160p25':
+						case '3840x2160p50':
+						case '3840x2160p60':
+							ratio = self.editModal.elements[1].GetValue();
+							viewport.top = 80;
+							viewport.height = 2000;
+							if ( ratio === '0' ) {
+								viewport.left = 546;
+								viewport.width = 2748;
+							} else {
+								viewport.left = 100;
+								viewport.width = 3640;
+							}
+							gSTB.SetTeletextViewport(viewport.width, viewport.height, viewport.left, viewport.top);
+							MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.viewport = viewport;
+							break;
+					}
 				}
-				MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.viewport = viewport;
+
+				MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.opacity = self.editModal.elements[opacityOptionIndex].GetValue();
+				gSTB.TeletextTransparency(MediaPlayer.ModalMenu.Menu.gTeletext.lastParams.opacity);
 				self.editModal.Show(false);
 			});
+
 			arr.push({
 				title: _('Force charset'),
 				option: [
@@ -887,7 +928,8 @@ MediaPlayer.onInit = function () {
 				],
 				selected: gSTB.GetForceTtxCharset()
 			});
-			if ( WINDOW_HEIGHT >= 720 ) {
+
+			if ( hdResolution ) {
 				arr.push({
 					title: _('Aspect Ratio'),
 					option: [
@@ -897,6 +939,7 @@ MediaPlayer.onInit = function () {
 					selected: environment.teletext_ratio
 				});
 			}
+
 			arr.push({
 				title: _('Opacity level'),
 				option: [
@@ -946,7 +989,7 @@ MediaPlayer.onInit = function () {
 					} else if ( event.code === KEYS.UP ) {
 						--self.editModal.activeElementIndex;
 						if ( self.editModal.activeElementIndex < 0 ) {
-							self.editModal.activeElementIndex = 2;
+							self.editModal.activeElementIndex = arr.length - 1;
 						}
 						echo(self.editModal.activeElementIndex, 'self.editModal.activeElementIndex')
 						self.editModal.elements[self.editModal.activeElementIndex].handle.focus();
@@ -1239,7 +1282,7 @@ MediaPlayer.initPlayer = function () {
 	gSTB.SetSubtitleLangs(environment.lang_subtitles === '' || environment.lang_subtitles === -1 ? '' : iso639[environment.lang_subtitles].code[0], defLang);
 	gSTB.SetSubtitlesFont('/usr/lib/fonts/Ubuntu.ttf');
 	this.dvbPowerManualOn = false;
-	if ( environment.subtitlesColor ) {
+	if ( environment.subtitlesColor || environment.subtitlesColor === 0 ) {
 		gSTB.SetSubtitlesColor(environment.subtitlesColor);
 	}
 	if ( environment.subtitlesSize ) {
@@ -1285,15 +1328,20 @@ MediaPlayer.EventHandler = function (e) {
 			}
 			break;
 		case KEYS.PAGE_DOWN:
+			if ( MediaPlayer.imagesErrorTimer ) {
+				clearTimeout(MediaPlayer.imagesErrorTimer);
+			}
 			MediaPlayer.nextMedia(e);
 			e.preventDefault();
 			break;
 		case KEYS.PAGE_UP:
+			if ( MediaPlayer.imagesErrorTimer ) {
+				clearTimeout(MediaPlayer.imagesErrorTimer);
+			}
 			MediaPlayer.prevMedia(e);
 			e.preventDefault();
 			break;
 		case KEYS.OK:
-			e.preventDefault();
 			if ( MediaPlayer.posModFlag ) {
 				clearTimeout(this.timer.setPos);
 				echo(MediaPlayer.pos, 'set pos:');
@@ -1313,6 +1361,7 @@ MediaPlayer.EventHandler = function (e) {
 				if ( MediaPlayer.obj.type === MEDIA_TYPE_ISO ) {
 					MediaPlayer.checkISOChapter();
 				}
+				e.preventDefault();
 				break;
 			}
 			if ( MediaPlayer.playListShow && MediaPlayer.infoFlag ) {
@@ -1367,6 +1416,9 @@ MediaPlayer.EventHandler = function (e) {
 			break;
 		case KEYS.EXIT: // Exit
 			e.preventDefault();
+			if ( MediaPlayer.imagesErrorTimer ) {
+				clearTimeout(MediaPlayer.imagesErrorTimer);
+			}
 			if ( MediaPlayer.posModFlag ) {
 				clearTimeout(this.timer.setPos);
 				MediaPlayer.pos = 0;
@@ -1550,7 +1602,7 @@ MediaPlayer.channelNext = function ( event ) {
 			}
 			break;
 		case DVBChannels:
-			item = DVBChannels.DVBList.Next();
+			item = DVBChannels.DVBList.Next(false, false);
 			if ( item.data.type === MEDIA_TYPE_DVB ) {
 				clearTimeout(DVBChannels.timer.goToChannel);
 				MediaPlayer.domChannelNumber.innerHTML = (item.data.index - DVBChannels.DVBList.channelStart);
@@ -1583,7 +1635,7 @@ MediaPlayer.channelPrev = function ( event ) {
 			}
 			break;
 		case DVBChannels:
-			item = DVBChannels.DVBList.Prev();
+			item = DVBChannels.DVBList.Next(false, true);
 			if ( item.data.type === MEDIA_TYPE_DVB ) {
 				clearTimeout(DVBChannels.timer.goToChannel);
 				MediaPlayer.domChannelNumber.innerHTML = (item.data.index - DVBChannels.DVBList.channelStart);
@@ -1986,7 +2038,7 @@ MediaPlayer.prepare = function ( obj, play, noInfo ) {
 			break;
 		case DVBChannels:
 			if ( DVBChannels.DVBList.activeItem ) {
-				this.domPlayerTitle.innerHTML = '<span>' + DVBChannels.DVBList.activeItem.data.channelNumber + '</span>' + '&nbsp;&nbsp;&nbsp;' + obj.name;
+				this.domPlayerTitle.innerHTML = '<span>' + DVBChannels.DVBList.activeItem.data.number + '</span>' + '&nbsp;&nbsp;&nbsp;' + obj.name;
 			}
 			break;
 		default:
@@ -2150,44 +2202,32 @@ MediaPlayer.setPos = function ( a ) {
 	}
 	this.domPlayerProgressBar.style.width = px + 'px';
 	this.timer.setPos = setTimeout(function () {
-		MediaPlayer.setPosTimeManual(MediaPlayer.pos);
+		gSTB.SetPosTime(MediaPlayer.pos);
+		MediaPlayer.curTime = MediaPlayer.pos;
+		MediaPlayer.pos = 0;
+		MediaPlayer.domPlayerCurrentTime.className = 'time_cur';
+		MediaPlayer.posMod = 0;
+		if ( !gSTB.IsPlaying() ) {
+			gSTB.Continue();
+		}
+		MediaPlayer.posModFlag = false;
+		if ( MediaPlayer.obj.type === MEDIA_TYPE_CUE_ITEM && MediaPlayer.list.length > 1 ) {
+			for ( var i = 0; i < MediaPlayer.list.length; i++ ) {
+				if ( MediaPlayer.pos > MediaPlayer.list[i].time ) {
+					MediaPlayer.PlayList.playIndex = i - 1;
+					MediaPlayer.PlayList.Focused(MediaPlayer.PlayList.handle.children[MediaPlayer.PlayList.playIndex], true);
+					MediaPlayer.obj = MediaPlayer.list[MediaPlayer.PlayList.activeItem.data.index];
+					MediaPlayer.domPlayerTitle.innerHTML = MediaPlayer.obj.name;
+					break;
+				}
+			}
+		}
+		if ( MediaPlayer.obj.type === MEDIA_TYPE_ISO ) {
+			MediaPlayer.checkISOChapter();
+		}
 	}, 2000);
 	return false;
 };
-
-
-MediaPlayer.setPosTimeManual = function ( pos ) {
-	this.curTime = gSTB.GetPosTime();
-	this.showInfo(true, 0, false);
-	this.pos = pos;
-	gSTB.SetPosTime(this.pos);
-	if ( UPnPRenderer.state ) {
-		stbUPnPRenderer.sendPosition(pos);
-	}
-	this.curTime = this.pos;
-	this.pos = 0;
-	this.domPlayerCurrentTime.className = 'time_cur';
-	this.posMod = 0;
-	if ( !gSTB.IsPlaying() ) {
-		gSTB.Continue();
-	}
-	this.posModFlag = false;
-	if ( this.obj.type === MEDIA_TYPE_CUE_ITEM && this.list.length > 1 ) {
-		for ( var i = 0; i < this.list.length; i++ ) {
-			if ( this.pos > this.list[i].time ) {
-				this.PlayList.playIndex = i - 1;
-				this.PlayList.Focused(this.PlayList.handle.children[this.PlayList.playIndex], true);
-				this.obj = this.list[this.PlayList.activeItem.data.index];
-				this.domPlayerTitle.innerHTML = this.obj.name;
-				break;
-			}
-		}
-	}
-	if ( this.obj.type === MEDIA_TYPE_ISO ) {
-		this.checkISOChapter();
-	}
-};
-
 
 MediaPlayer.checkISOChapter = function () {
 	for ( this.PlayList.playIndex = 0; this.PlayList.playIndex < MediaPlayer.list.length -1; this.PlayList.playIndex++ ) {
@@ -2340,6 +2380,8 @@ MediaPlayer.playPause = function ( pause ) {
 
 
 MediaPlayer.event = function ( e, info ) {
+	var info;
+
 	echo('event : ' + e);
 	e = parseInt(e, 10);
 	switch ( e ) {
@@ -2576,23 +2618,37 @@ MediaPlayer.event = function ( e, info ) {
 					}, 5);
 					break;
 				case MEDIA_TYPE_IMAGE:
+					if ( MediaPlayer.imagesLastErrorFile !== MediaPlayer.obj ) {
+						setTimeout(function () {
+							new CModalHint(currCPage, _('Playing error'), 2000);
+						}, 5);
+					}
+
+					// don't show error message for same file twice
+					MediaPlayer.imagesLastErrorFile = MediaPlayer.obj;
 					clearTimeout(MediaPlayer.timer.slideShow);
 					MediaPlayer.timer.slideShow = null;
-					if ( MediaPlayer.slideOn > 0 ) {
-						if ( MediaPlayer.list.length > 1 && MediaPlayer.fullScreen ) {
-							if ( MediaPlayer.PlayList.playIndex + 1 < MediaPlayer.list.length ) {
-								MediaPlayer.PlayList.playIndex++;
-								(MediaPlayer.PlayList.states.marked || []).forEach(function ( item ) {
-									item.self.Marked(item, false);
-								});
-								MediaPlayer.PlayList.Marked(MediaPlayer.PlayList.handle.children[MediaPlayer.PlayList.playIndex], true);
-								MediaPlayer.prepare(MediaPlayer.list[MediaPlayer.PlayList.handle.children[MediaPlayer.PlayList.playIndex].data.index], true);
-								// if ( MediaPlayer.parent === MediaBrowser ) {
-								// 	MediaBrowser.FileList.Reposition(MediaPlayer.obj);
-								// }
-							}
+
+					// Show error message for 2500 ms. If there were no actions from user during this time - open next image.
+					MediaPlayer.imagesErrorTimer = setTimeout(function () {
+						if (
+							MediaPlayer.slideOn > 0
+							&& MediaPlayer.list.length > 1 && MediaPlayer.fullScreen
+							&& MediaPlayer.PlayList.playIndex + 1 < MediaPlayer.list.length
+						) {
+							MediaPlayer.PlayList.playIndex++;
+							(MediaPlayer.PlayList.states.marked || []).forEach(function ( item ) {
+								item.self.Marked(item, false);
+							});
+							MediaPlayer.PlayList.Marked(MediaPlayer.PlayList.handle.children[MediaPlayer.PlayList.playIndex], true);
+							MediaPlayer.prepare(MediaPlayer.list[MediaPlayer.PlayList.handle.children[MediaPlayer.PlayList.playIndex].data.index], true);
+							// if ( MediaPlayer.parent === MediaBrowser ) {
+							//  MediaBrowser.FileList.Reposition(MediaPlayer.obj);
+							// }
+						} else if ( currCPage === MediaPlayer ) {
+							MediaPlayer.exit();
 						}
-					}
+					}, 2500);
 					break;
 			}
 			break;
@@ -2901,7 +2957,17 @@ MediaPlayer.ts_start = function ( start, stop ) {
 		} else {
 			MediaPlayer.tsExit('stop');
 			MediaPlayer.ts_inProgress = false;
-			new CModalAlert(currCPage, _('Error'), _('Start TimeShift error'), _('Close'));
+			if ( !MediaPlayer.tsErrorModal ) {
+				MediaPlayer.tsErrorModal = new CModalAlert(
+					currCPage,
+					_('Error'),
+					_('Start TimeShift error'),
+					_('Close'),
+					function () {
+						MediaPlayer.tsErrorModal = null;
+					}
+				);
+			}
 		}
 	}, start * 1000);
 };
@@ -3015,9 +3081,6 @@ MediaPlayer.tsSave = function ( type, item ) {
 			gSTB.StandBy(true);
 			gSTB.ExecAction('front_panel led-on');
 			break;
-		case 'upnpStart':
-			stbUPnPRenderer.onPlay();
-			break;
 	}
 };
 
@@ -3061,9 +3124,6 @@ MediaPlayer.tsExit = function ( type, item ) {
 			gSTB.StandBy(true);
 			gSTB.ExecAction('front_panel led-on');
 			break;
-		case 'upnpStart':
-			stbUPnPRenderer.onPlay();
-			break;
 	}
 };
 
@@ -3072,18 +3132,13 @@ MediaPlayer.tsExit = function ( type, item ) {
  * Stop player.
  *
  * @param {boolean} silent don't call all subscribers
- * @param {String} type TS exit type
- *
  * @return {boolean} ?
  */
-MediaPlayer.end = function ( silent, type ) {
+MediaPlayer.end = function ( silent ) {
 
 	echo(this.obj, 'end');
 	if ( !this.obj ) {
 		return true;
-	}
-	if ( UPnPRenderer.state ) {
-		UPnPRendererClear();
 	}
 	clearTimeout(this.timer.mono);
 	this.handle.querySelector('#dualmono_indicator').style.display = 'none';
@@ -3093,7 +3148,7 @@ MediaPlayer.end = function ( silent, type ) {
 	MediaPlayer.countError = 0;
 	var self = this;
 	if ( this.ts_inProgress ) {
-		if ( this.tsExitCheck(type ? type : 'exit') ) {
+		if ( this.tsExitCheck('exit') ) {
 			return false;
 		}
 	}
@@ -3138,7 +3193,7 @@ MediaPlayer.end = function ( silent, type ) {
 };
 
 
-MediaPlayer.exit = function ( type ) {
+MediaPlayer.exit = function () {
 	echo('MediaPlayer.exit');
 	var self = this;
 	if ( this.subCModal ) {
@@ -3148,7 +3203,7 @@ MediaPlayer.exit = function ( type ) {
 	this.playListShow = false;
 	this.handle.querySelector('#playerHideplist').innerHTML = _('Show<br />playlist');
 	this.domPlayerList.style.visibility = 'hidden';
-	if ( this.end(false, type) ) {
+	if ( this.end() ) {
 		if ( environment.ts_icon ) {
 			this.domTSIndicator.style.display = 'none';
 		}
@@ -3159,8 +3214,6 @@ MediaPlayer.exit = function ( type ) {
 		if ( currCPage === this || currCPage.parent === this ) {
 			this.Show(false);
 		}
-
-		return true;
 	}
 	return false;
 };

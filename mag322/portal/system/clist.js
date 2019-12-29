@@ -227,10 +227,8 @@ CList.prototype.DeleteFromList = function ( arr ) {
  */
 CList.prototype.RefreshPageIndex = function () {
 	var pageIndex = this.pageIndex;
-
 	this.pageIndex = Math.floor( this.listIndex / this.onPage );
 	this.itemIndex = this.listIndex % this.onPage;
-
 	return pageIndex !== this.pageIndex;
 };
 
@@ -594,7 +592,6 @@ CList.prototype.Focused = function ( item, state, manageFocus ) {
 	var changed = false,
 		prevent = false;
 	state = state !== false;
-
 	if ( manageFocus === undefined ) {
 		manageFocus = this.manageFocus;
 	}

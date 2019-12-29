@@ -162,7 +162,6 @@
 
 		content.push({name: '..', type: MEDIA_TYPE_BACK});
 
-		console.log('openUPnPRoot');
 		// some data received
 		if ( servers && Array.isArray(servers) && servers.length > 0 ) {
 			servers.forEach(function(server){

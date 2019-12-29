@@ -875,14 +875,17 @@ app.views.main = (function ( global, app ) {
 
 
 	/**
-	 * modal menu component
+	 * Modal menu component.
+	 *
 	 * @return {CModal}
 	 */
 	function initBrowserMenu () {
 		// modal window with menu
 		var component = new CModal(module.page);
+
 		component.onShow = function () {
 			var isAdded = Boolean(app.models.main.urls.get(stbWindowMgr.getCurrWebUrl()));
+
 			component.menu.gedit.slist.Hidden(component.menu.gedit.iadd,    isAdded);
 			component.menu.gedit.slist.Hidden(component.menu.gedit.iremove, !isAdded);
 			// set visibility
@@ -898,7 +901,8 @@ app.views.main = (function ( global, app ) {
 		};
 
 		/**
-		 * main side menu
+		 * Main side menu.
+		 *
 		 * @type {CGroupMenu}
 		 */
 		component.menu = new CGroupMenu(component);
@@ -907,12 +911,15 @@ app.views.main = (function ( global, app ) {
 		component.Init(element('div', {className: 'cmodal-menu'}, component.menu.handle));
 
 		// mouse click on empty space should close modal menu
-		component.handle.onclick = function(){ component.Show(false); };
+		component.handle.onclick = function () {
+			component.Show(false);
+		};
 
 		component.EventHandler = function ( event ) {
 			switch ( event.code ) {
 				case KEYS.EXIT:
 				case KEYS.MENU:
+					event.preventDefault();
 					module.browserMenu.Show(false);
 					break;
 				default:
@@ -1021,6 +1028,7 @@ app.views.main = (function ( global, app ) {
 
 		// default group
 		component.menu.Switch(component.menu.gedit);
+
 		return component;
 	}
 
@@ -1330,12 +1338,14 @@ app.views.main = (function ( global, app ) {
 
 		f1 : function () {
 			var options = {};
+
 			// web mode
 			if ( module.mode === module.MODE_BROWSER ) {
 				// exit full-screen mode if any
 				module.webWindowFullScreen(false);
 				// hide web window
 				module.webWindowShow(false);
+
 				if ( app.models.main.urls.get(stbWindowMgr.getCurrWebUrl()) ) {
 					module.actions.remove();
 				} else {
@@ -1484,6 +1494,7 @@ app.views.main = (function ( global, app ) {
 
 	module.webWindowShow = function ( state ) {
 		echo(state, 'webWindowShow');
+
 		// web window was initialized
 		if ( module.webWindowHandle !== null ) {
 			// new and old states are different

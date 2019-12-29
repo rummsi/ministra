@@ -557,7 +557,6 @@ function CModalAddRecord ( parent, label, text ) {
 		echo('loadChannels');
 		try {
 			var text = gSTB.LoadUserData('iptv.json');
-
 			if ( text !== '' ) {
 				var data = JSON.parse(text);
 				data = self.unEscapeChannels(data);
