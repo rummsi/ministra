@@ -16,7 +16,7 @@
 		"pofile"       : "0.2.*",
 		"node-static"  : "0.7.x",
 		"request"      : "2.51.x",
-		"uglify-js"    : "2.4.x",
+		"uglify-js"    : "3.7.x",
 		"wrench"       : "1.5.x",
 		"clean-css"    : "2.2.x"
 	}
