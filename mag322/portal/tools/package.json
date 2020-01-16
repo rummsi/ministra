@@ -15,7 +15,7 @@
 		"commander"    : "2.6.*",
 		"pofile"       : "0.2.*",
 		"node-static"  : "0.7.x",
-		"request"      : "2.51.x",
+		"request"      : "2.88.x",
 		"uglify-js"    : "2.4.x",
 		"wrench"       : "1.5.x",
 		"clean-css"    : "2.2.x"
