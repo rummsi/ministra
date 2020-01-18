@@ -1,0 +1,60 @@
+{
+  "name": "magcore-plugin-settings-network",
+  "version": "2.8.0",
+  "description": "Network plugin",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "ministra",
+    "magcore",
+    "settings",
+    "plugin",
+    "network"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "plugin",
+    "name": "network",
+    "tuner": true,
+    "uris": {
+      "entry": "main.js"
+    }
+  },
+  "dependencies": {
+    "magcore-theme": "^1.1.1",
+    "magcore-plugin-settings-stalker": "^1.0.0"
+  },
+  "_id": "magcore-plugin-settings-network@2.8.0",
+  "scripts": {},
+  "_shasum": "53261819ac46d609931ae159d6cfdfc6494859e0",
+  "_from": "magcore-plugin-settings-network@2.8.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "53261819ac46d609931ae159d6cfdfc6494859e0",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-settings-network/-/magcore-plugin-settings-network-2.8.0.tgz",
+    "integrity": "sha512-PcE3klpFINQJ421FRm6HL5798TPv4FPNSlahsusXqCszaD27QFD/lNIv7VpYG10WTfvtqHxcMr/jWQL4PzZWrg==",
+    "fileCount": 23,
+    "unpackedSize": 196892,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtlyCRA9TVsSAnZWagAAhR8P/1ko89fOHYPMDHFYCUU9\n94B6XJtwZMvE0M4WUTlpjHLfabCCr+mzhqq1JPXGXxxzcfQ9JjPcONqTB+kR\nca4EmTrj08Rq0b/+rn5DGb3aKC2aNWz2Qx+gHhvDESKez/4gsQWRVQZGXBxA\nFdj9zE3QLBOM5Bk4LPAqc+xRDEuPYB9vyIfFVuYuShrCeq87GvWTFakEqOOm\nkbPHFooST6AC68EaJ6oN0C5a0DpZfEWMDB2Jz62Pt253Isn81tL4WAyOEXhI\ndt44QSKVGu3CME0ZX9AqBj4AAQLTTFeIgvUlQPKkiclOhC8vaSJCnwHkmQuf\nLm6D+fA0/sXy7zQmkEGWmjv63Th/xwhXCvm1Mu7Qing/Uyw2IYbtCkfWqkl2\ncIQB0eKDqHe4ap+EvygzBXp5hkR2sXpceFDBwGeTlVLRO5H/k8AtDwVaJTdP\ne2/LAybIEQ9iGcjiJkl0S2N2ijKDFj5wxr+H11vv/ag1ANKhTNYnCxvZTBSY\n2ZmBdyke3w5DOwCVThL/FVN2BMdWdD0b9cRX+nwtV/cBSsqqoydpCIsQGIg1\nB5eK6GTxpeLWdhmYHZ0CxyFXnXUi9uqrvC9g98cVlZaDXDSE3HJ3s+awptSR\nk2TpyO8njz+EJtcL+LpZR6MBoSCsYyqQI1M1Wh0p1qDqIypDo6zpxDjsfNBa\n9RVb\r\n=IzkO\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-settings-network_2.8.0_1556011378218_0.8386026045964432"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-settings-network/-/magcore-plugin-settings-network-2.8.0.tgz"
+}

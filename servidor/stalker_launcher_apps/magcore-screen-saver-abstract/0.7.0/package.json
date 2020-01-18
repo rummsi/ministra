@@ -1,0 +1,56 @@
+{
+  "name": "magcore-screen-saver-abstract",
+  "version": "0.7.0",
+  "description": "Screen saver.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "ministra",
+    "screen-saver",
+    "abstract"
+  ],
+  "license": "license.md",
+  "dependencies": {},
+  "config": {
+    "name": "abstract",
+    "type": "screen-saver",
+    "uris": {
+      "app": "/",
+      "entry": "index.html"
+    }
+  },
+  "_id": "magcore-screen-saver-abstract@0.7.0",
+  "scripts": {},
+  "_shasum": "af853d476d50153831a13415b5b32c27fc25aedb",
+  "_from": "magcore-screen-saver-abstract@0.7.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "af853d476d50153831a13415b5b32c27fc25aedb",
+    "tarball": "https://registry.npmjs.org/magcore-screen-saver-abstract/-/magcore-screen-saver-abstract-0.7.0.tgz",
+    "integrity": "sha512-utbR09l7mANpqbieRE2upKAZVXz1chldcnRt461K0+0VEUGuA6lwU6wM7VsP8jTJMTG+4g49W71fPCYg9AJINw==",
+    "fileCount": 7,
+    "unpackedSize": 33266,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtm7CRA9TVsSAnZWagAANl8P/3RWGzthNmvW5n9CBHYG\n86sFiYFrmdSSG3vPuk8v/eaNFCakhJfLx7u938SeUGapbAuTi6OK2/BqdMVe\nltdAMriWKXp91kyQCbjLmoZ03JxJjzInE+ijHxb3/2YDXDP2iGqm/hNVwal9\n3yC/aKaR8fr7VjVg6C9pdjuk/5VJJRHaS+gkslcm363QPvNHTsqorBDDfXD7\nRXiU725Z22S+9Uz4pwwzLlZ2PYdx2YA1mbmnVOY1tJqzu/pdMXCJterBLtpC\nB58vDugSHRCqtUaMwi+J/D02g9QM/fqKAbEje/zcRMLQCvkQxwrmuSwuaDju\nw/m1zboKIytOyV9haVkB+R5NmL0xjkCcKJYWPyHZ3eUGWXVVWujLYDf0XRre\nzdZRaiVJSYtpfdYYJZbCzTsRA0Idlxol8G213RxECU2FHbf9Jpizb1vI+JoY\nR5jnjW76A1aJNVskBnCzMd5bunnka8pDIq+n3OFyixI+4Wibxw0KkTpAZn/C\ndOGIQVXys5tWm8bnwE5xjOySs27G8Ow+q+jiVWFRvyfeum2OU3vKywFVGD16\nb7EtLdMCNKr7WK+76K+R8jN+ATRrRsI0Fx0RQyBcW95DAviaY1l55MMmlirj\nNbJDqt9Hb5IogDiUhOWBNEcrstlaUICxFYxEQFMr1NB4D4zl52Oq6R+4EG/r\ndUMK\r\n=qfVU\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-screen-saver-abstract_0.7.0_1556011451380_0.3172596221323598"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-screen-saver-abstract/-/magcore-screen-saver-abstract-0.7.0.tgz"
+}

@@ -1,0 +1,1 @@
+{"meta":{"charset":"utf-8","project":"magcore-app-sudoku 2.1.2","language":"sl","plural":"(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)"},"data":{"":{"Sudoku":"","Sudoku is a well-known Japanese puzzle. You need to fill all the cells the way there won't be the same two numbers in each row, column or block.":""}}}

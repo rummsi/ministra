@@ -1,0 +1,60 @@
+{
+  "name": "magcore-plugin-upnp",
+  "version": "2.8.0",
+  "description": "UPnP plugin for Ministra TV Platform.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "plugin",
+    "ministra",
+    "upnp"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "plugin",
+    "name": "upnp",
+    "daemon": true,
+    "tuner": true,
+    "uris": {
+      "entry": "main.js"
+    }
+  },
+  "dependencies": {
+    "magcore-core": "^3.7.86",
+    "magcore-plugin-settings-stalker": "^1.3.7"
+  },
+  "_id": "magcore-plugin-upnp@2.8.0",
+  "scripts": {},
+  "_shasum": "afefb4147255b99f52400b92e8e98d45bd3659ae",
+  "_from": "magcore-plugin-upnp@2.8.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "afefb4147255b99f52400b92e8e98d45bd3659ae",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-upnp/-/magcore-plugin-upnp-2.8.0.tgz",
+    "integrity": "sha512-scZqTJQ8vvCFaAxS5Xjnq4eBd5H9No6IsdcupCi7Ht3Sexck0TzWuqDNjRTsRm1HDU3XQJv4FJFrN7J1e9R2rw==",
+    "fileCount": 22,
+    "unpackedSize": 58318,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtm3CRA9TVsSAnZWagAA7TQP/jz6pz6sZMDPvZRZa2fd\nRqp9dm4S2fCL2nWKPWDVGyTeVvwVTiafY8rIeu6rab2atG0ye4XqufIT9MDT\nJMCMBZjFaxUnVO1l62nrTVe8rRr47E3fdOvE5OK5X5YN61p8UpERKLA505Bz\np07N12tPgUoSdBUhJ66RB3ELiM+ywapxCe1+RvujmoFuOgaDU7YVSv4R95X/\nEhN8AkUKGMobIMeAKmY7dMQKx6vLO+Ej9dwQOzFP6AES4PC31m2ghGHIFsND\nQV3Rm8QgKwyaI7n1hh8wMuN+axF05C5X0wymoelnDsi/xe7qGxoNTfGUF5GW\nszMoXZ0qua1eUTPquV3j2SFktaC9Iw2sA7hPD+6JDlySuhNhhZFvxojEAQa1\nvN3QilrAGt7vf444qMOhwurqxscV9bxD86R4kq1BRXGQ14C6ky2nyCTgIF6f\nodwOZw+0wQyaGemJVqPg288rS+Rv1tm083rXhqG1cqT4Cq25LCavuI6S6he+\nf7hxhSVhS5jAha+fiBG5oT5vUnjSTnpkdPlXfAInCi41n6jcYF76sfv+tYJH\nOiFLDx6XFU/6+sumdgo3AuvtXs8TDp+JPSlw5lbpbVpCylhSu3ZXm2uad+Sw\n4Tw2ocBvOMtJjoMEkQDFwTA8lFppAQkyzldkV4xTCUbumAIFh1IPPXzTuMT8\n0Aat\r\n=EzZZ\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-upnp_2.8.0_1556011447132_0.021326230910127864"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-upnp/-/magcore-plugin-upnp-2.8.0.tgz"
+}

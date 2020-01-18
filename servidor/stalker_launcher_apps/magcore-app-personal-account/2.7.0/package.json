@@ -1,0 +1,92 @@
+{
+  "name": "magcore-app-personal-account",
+  "version": "2.7.0",
+  "description": "Personal account application.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "application",
+    "ministra",
+    "personal account"
+  ],
+  "license": "license.md",
+  "config": {
+    "name": "My account",
+    "description": "My Account - a service with information about your personal account, device and support info.",
+    "type": "app",
+    "category": "media",
+    "uris": {
+      "app": "/",
+      "entry": "index.html",
+      "icons": {
+        "480": {
+          "logoNormal": "img/480/normal.png",
+          "logoActive": "img/480/active.png",
+          "primeLogoNormal": "img/480/prime-normal.png",
+          "primeLogoActive": "img/480/prime-active.png"
+        },
+        "576": {
+          "logoNormal": "img/576/normal.png",
+          "logoActive": "img/576/active.png",
+          "primeLogoNormal": "img/576/prime-normal.png",
+          "primeLogoActive": "img/576/prime-active.png"
+        },
+        "720": {
+          "logoNormal": "img/720/normal.png",
+          "logoActive": "img/720/active.png",
+          "primeLogoNormal": "img/720/prime-normal.png",
+          "primeLogoActive": "img/720/prime-active.png"
+        },
+        "1080": {
+          "logoNormal": "img/1080/normal.png",
+          "logoActive": "img/1080/active.png",
+          "primeLogoNormal": "img/1080/prime-normal.png",
+          "primeLogoActive": "img/1080/prime-active.png"
+        }
+      }
+    },
+    "colors": {
+      "splashFont": "#fff",
+      "splashBackground": "#f08861"
+    }
+  },
+  "dependencies": {
+    "magcore-osd-base": "^2.2.6",
+    "magcore-theme": "^1.4.1",
+    "magcore-core": "^3.7.86"
+  },
+  "_id": "magcore-app-personal-account@2.7.0",
+  "scripts": {},
+  "_shasum": "862bc58d33fa95fc62fe8ed99b76c493efe70bba",
+  "_from": "magcore-app-personal-account@2.7.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "862bc58d33fa95fc62fe8ed99b76c493efe70bba",
+    "tarball": "https://registry.npmjs.org/magcore-app-personal-account/-/magcore-app-personal-account-2.7.0.tgz",
+    "integrity": "sha512-Fbk3U9HR8PKexFj7j4eV5QTy+ZKR62gR6M/J4TsUscBC4Cob2hwYD4bUy76QjeU4t5oY/gDMPOsJTm2tFCC09A==",
+    "fileCount": 53,
+    "unpackedSize": 444123,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtiQCRA9TVsSAnZWagAAGgIP/3a9PUuQaHC2mxXPXDYn\ntRHKMct2xuQ/eaiVS/rK78DrBTAOBJT8iRE2SNZlbx3s9uPA+A689xhX6sIg\nWwPbXDeruDo5u8L89yWeeRgE04aEWgUHICI70RXcDCaTWHtNPeF69zTi5vJV\n1LwAJasjjUBYh0vtCkA3VrmdR2xRpl4+wj25azBxUgVuGYSb8pzlz+Y2XNCF\nzYw6XnCfeqvADyFoWtYm2lbfhVzQfL2dZZ7bIoQCJBuMVWHGlA+OGhBTqWIl\n7ojVo33TjBc88fYjMAekx2iKDF7gGblsA6SJ+BuqK0pXHmGjG80XIwwPdRvI\nyvyIFpOBZfJY9S2Ey0e3N3Cdj9Bukf++rCfBwKPzHcVUgo2L6IB4FxIUCme4\n5PCXt0bfOH4CFmgiNaTnYP/jFOlOb273Y3FtNamD7mA3wboXjNWJHuMU2/qa\n3wpCCbELWx7eagRsWQoiULmuF6krgmfm8f3YeIVwtzsEg/mPrj1Vkr0jvO4F\n05IwGsKlV8Tb5daNvKkrlfK4h5Qj8i36gIJXefYCV5MeAvYfKble5ZeY6iJD\nTDbFXvy5vbYbF5UzPRExtrVXA8Yt/E5px/dBT0umQN/Pvb2cW7ZTOAoLPKlO\nuyD+BrPk/0lTebEwqq2BCOPljXgoUQmnHBkalrdsTkOBNsHR/nA9LiUA4frk\nSKyp\r\n=FcvE\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-app-personal-account_2.7.0_1556011151920_0.43054006361259"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-app-personal-account/-/magcore-app-personal-account-2.7.0.tgz"
+}

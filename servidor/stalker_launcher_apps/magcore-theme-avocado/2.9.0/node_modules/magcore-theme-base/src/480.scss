@@ -1,0 +1,80 @@
+$width: 720px;
+$height: 480px;
+
+$imgPath: './img/480';
+$safePadding: 20px;
+$listItemHeight: 45px;
+$mainListItemHeight: 45px;
+$panelTitleSize: 20px;
+$panelFontSize: 17px;
+$mainPanelFontSize: 20px;
+$mainPanelTitleSize: 24px;
+$infoTextFontSize: 22px;
+$iconsSize: 20px;
+$panelIconSize: 22px;
+$fWidth: 25px;
+$fHeight: 15px;
+$modalMsgShadow: 10px;
+$h2: 20px;
+$progressHeaderTop: 90px;
+$progressContentHeight: 100px;
+$panelWidth: 230px;
+$progressBarHeight: 8px;
+$progressBarBottom: 80px;
+$progressBarLeft: 95px;
+
+// shadows
+$panelHeight:     320px;
+$panelMainHeight: 360px;
+$leftPanelTop:    80px;
+$mainPanelTop:    60px;
+
+$equalizerFrameSize: 14px;
+$equalizerFrameFontSize: 22px;
+
+.mag-component-panel.right,  .mag-component-panel.left{
+    background-color: transparent;
+    .body {
+        visibility: hidden;
+    }
+    > .shadow {
+        display: none!important;
+    }
+    > .overlay {
+        background: transparent;
+    }
+    &.expand {
+        background: rgba($componentBgColor, $panelOpacity);
+        &.active {
+            background-color: rgba($componentBgColor, $mainPanelOpacity);
+        }
+        .body {
+            display: block;
+            visibility: inherit;
+        }
+        >.title {
+            background: initial;
+        }
+        > .shadow {
+            display: block!important;
+        }
+
+    }
+}
+
+.mag-component-panel {
+    &.main {
+        &.position-right {
+            left: 258px!important;
+        }
+        &.position-left {
+            left: 88px!important;
+        }
+    }
+    &.right {
+        right: 32px!important;
+    }
+    &.left {
+        left: 48px!important;
+    }
+}

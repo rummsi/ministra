@@ -1,0 +1,23 @@
+{
+    "name": "magcore-core",
+    "version": "3.14.0",
+    "description": "Bootstrap application for magsdk projects.",
+    "author": {
+        "name": "Infomir",
+        "email": "support@infomir.eu"
+    },
+    "keywords": [
+        "magsdk",
+        "magcore",
+        "core"
+    ],
+    "license": "license.md",
+    "config": {
+        "type": "core",
+        "unique": true,
+        "uris": {
+            "app": "app",
+            "entry": "index.html"
+        }
+    }
+}

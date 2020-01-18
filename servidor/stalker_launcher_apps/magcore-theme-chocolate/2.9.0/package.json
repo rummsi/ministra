@@ -1,0 +1,54 @@
+{
+  "name": "magcore-theme-chocolate",
+  "version": "2.9.0",
+  "description": "Chocolate theme for magsdk",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "magsdk",
+    "theme",
+    "chocolate"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "theme",
+    "name": "chocolate"
+  },
+  "dependencies": {
+    "magcore-theme-base": "^2.3.8"
+  },
+  "_id": "magcore-theme-chocolate@2.9.0",
+  "scripts": {},
+  "_shasum": "8e858d3c32e4745e75c9cfd7f0285921ab6479bd",
+  "_from": "magcore-theme-chocolate@2.9.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "8e858d3c32e4745e75c9cfd7f0285921ab6479bd",
+    "tarball": "https://registry.npmjs.org/magcore-theme-chocolate/-/magcore-theme-chocolate-2.9.0.tgz",
+    "integrity": "sha512-qxb2+YktJykMVIA05b/GPC6e2FBiEkBshOserxtCy4hh5otQ9HUU5McZuYWvqbCTR+VcfC2T0k40LIzazIZmmg==",
+    "fileCount": 69,
+    "unpackedSize": 1286989,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtnPCRA9TVsSAnZWagAA/JoP/3EvlvjXJOnFK9AoP4Zq\nNyW0DkHDPnIj2RVewStt3WGRLwRBJCY6PsJZss2INIxWnWHqsIkfAcP/LTMR\nBC0bUUj5D1/Oy7/Cmz9uH2xRekzZPGBFcS4tO5lm8IhR4fd6PdhzauHqNlvk\nkVKzj/phgWmug8O5NKxNOHFb0f/AwIryLmfHGTfs3MJ+dG6IwP86z4LjSGnr\n8Cch1v3bpXn/j22tcKIq6Dz0qyp5sN76WaGtH3G1NJh2Tin6PpIfO7/g7FJE\nzKZWRRhc0FEfkZPYl7RxhPhcwTOwi+0wVWLwYh3foN62pEYQh6YpDWb53zoZ\nINZgMF06TB8E+itcUzBHCJI3xgLHjGiAQeR54PNLBGOB1Lr3w0v5TBamsZ1A\nIPH8I8LCaBygFgdl5Nda/lbApa+ClaPN4jHSwFCVp4huwQywZVgw4A1VUMO8\n9/2pdSUwJDHHB3s2aCEWoVGg0LU843SgzTR++kDKjenubOw3YQPrJtopRrpu\nkP0urX/3YQIw82iql5ETmZjcYSPtKbOY7hG7D/iY1bEdX5DqcRjo2KENtDXo\nEiyk9PI90gLkPA+VK1nXPtC2MxyfqH315kjVbHheYQTNBXSgFuTv2/VBDrA3\nCt9K0BKYAR1tgx7I9jalrd72tJt+oOV/uZJLEN6bxJbIzO3rahDYV/bqvwDD\nXitZ\r\n=q3Wm\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-theme-chocolate_2.9.0_1556011471232_0.6292010439839224"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-theme-chocolate/-/magcore-theme-chocolate-2.9.0.tgz"
+}

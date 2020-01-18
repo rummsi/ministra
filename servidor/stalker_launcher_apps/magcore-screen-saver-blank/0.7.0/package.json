@@ -1,0 +1,56 @@
+{
+  "name": "magcore-screen-saver-blank",
+  "version": "0.7.0",
+  "description": "Screen saver.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "ministra",
+    "screen-saver",
+    "blank"
+  ],
+  "license": "license.md",
+  "dependencies": {},
+  "config": {
+    "name": "blank",
+    "type": "screen-saver",
+    "uris": {
+      "app": "/",
+      "entry": "index.html"
+    }
+  },
+  "_id": "magcore-screen-saver-blank@0.7.0",
+  "scripts": {},
+  "_shasum": "aff0fffa0af4af77ec82cfa4f5946a56f37e04cd",
+  "_from": "magcore-screen-saver-blank@0.7.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "aff0fffa0af4af77ec82cfa4f5946a56f37e04cd",
+    "tarball": "https://registry.npmjs.org/magcore-screen-saver-blank/-/magcore-screen-saver-blank-0.7.0.tgz",
+    "integrity": "sha512-eSojpWHzK1+WJO+t0tzeS1gstItCuzVOijxW4C0Eq1DZOJqgBOKFY6gx+yaeXCGq+5abusfsEt1I8RFbS+O7AQ==",
+    "fileCount": 5,
+    "unpackedSize": 19241,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtnBCRA9TVsSAnZWagAAfsMP/0hbgRMdy7IncQ4Lnh5l\nlsfxk0FC/pvBlVXyYH8FStdMOsFTbGb9vYJEkuGmzWwQLRwh5blkWV/DA0nd\npoLoev46JGLRMA5ljxT6obAYhalWNzAx1LCh4koy3uEPdmtBMuPeOtxNQmTe\nGDMk9woXwV9GMP95k7Z+6izCsyxUcxDELis6KL5f6Eefqslk1cgXl46Ksgbv\nnw3uABDG9ZIntFW5Q9PS5448IGVCW+f7dcM8s07n/EHrePelPcJHCbsP/1bL\nwBj1bH+MBYHYi4asgIIa2gucR9ReG442/QrAuYRsQLOeWVFAM5SmbMKnOxQw\nGbGNI8usjn23BuLVP6ORq6bEY17fxxKiB2JVPHdicj9rQA9TzuRoSAbTfAMO\nioRPUdFrwjzZQ++d+FYRusANe/ZmuqDVpcqMTxbjHPnnRYXDmYf3XeyhHPyY\nfpVf/lB0BxLEDjznoGuhh2/658sauSf6uUXlrVJPRP6m/8iy8Y8swD65AugZ\n5U94aTetNgLnVAqq2CFtF9dIqdHasnWOxCmWIwObYJJzysidpx5qzSYSahH6\nfgRgUBH2g6D80cp+MJSCxWqoaP4gdVkxD1pEO6X0+S+EFqQW958E8Fw7uut3\nN0MSKlY3DtZbw8J8B3kzldJwmEtXfyLMRaIlvSf2fagFFIyZVnRhUVORreGm\nh3rq\r\n=Fj9+\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-screen-saver-blank_0.7.0_1556011456478_0.24016365176558652"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-screen-saver-blank/-/magcore-screen-saver-blank-0.7.0.tgz"
+}

@@ -1,0 +1,60 @@
+{
+  "name": "magcore-plugin-spvr",
+  "version": "3.8.0",
+  "description": "Server PVR plugin for magsdk applications.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "ministra",
+    "plugin",
+    "records",
+    "spvr"
+  ],
+  "license": "license.md",
+  "dependencies": {
+    "magcore-core": "^3.2.0"
+  },
+  "config": {
+    "name": "spvr",
+    "type": "plugin",
+    "daemon": true,
+    "contentBoardApi": "1",
+    "uris": {
+      "entry": "main.js"
+    }
+  },
+  "_id": "magcore-plugin-spvr@3.8.0",
+  "scripts": {},
+  "_shasum": "a1ba8161f4e08ede656013712075ae567848c86b",
+  "_from": "magcore-plugin-spvr@3.8.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "a1ba8161f4e08ede656013712075ae567848c86b",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-spvr/-/magcore-plugin-spvr-3.8.0.tgz",
+    "integrity": "sha512-5EhBq2meOrQOgBgFKkOwUbPjTUAIV+WMse3nY/RT4EEZRBIpgs44MKnYAagiqJEVRlbQnV9cio6v0TtGdgi4YQ==",
+    "fileCount": 23,
+    "unpackedSize": 89941,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtmhCRA9TVsSAnZWagAAYacP/RqPkKSl6ZbZq2dEWpUg\nN3frpd4BczKga7WMI+HMIx0pKYALK+84ZPndHnfWDcpv7AiWn3py0KaeAwps\nDKQ6EB1rmJh0m6P0t8pn8JLmrhziz+0HbJ4Cl7sGgVOx5VL1OF2yYLEX7QBO\nuJ2c+uNf0TMC59PTkaEdWiIkaBMJkpwHh4IZa8f+YDTFEKRWfJGWmABYLYYt\nz+RimR/5/WgB/Ty/bnL51tDFxGp51gDzJp0JQ+rZvkZWXDuZHtFyFdpj5Fgg\nQS3FjFCPBasf52gwKdhXss0FCsi2ud5AHLcMEXgdKLWZo+9cx/Q3tf7ce6Xj\nu+rk+if6zVfZCyHEdiR2AL0y9RzB38WfYItQr+9/NoevQZwvdgnlJNLUupP0\npnmfefReghchf96XnC1pUdXphY9hJzVdAIT5zj3z1GF1D30OZnxxaqcfnlh4\nhccxMxUk0MLKlG8a3OjCE/JJ4T5ZvbaREPaAGjGzDs2B9HCpHoNgrNcukar2\nEe2Y4yZrxgj2ZA5qBLhDVXQcxgaEDXEXWAPDYoWcB95r7u1gwvwRxBwcf+kA\nIc71t1DdRnxX50GhQmCcEDirpJkHUJwzZNS4VQODb1vfdxy1AkbHgZ+r/wg2\nvC20zSnjJ+iLjo96K5ilvKIm6BgUi9g6YLjLxIpMNa1eENg8NDuw/KBAHgtl\nN9C7\r\n=9LE9\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-spvr_3.8.0_1556011425200_0.05097149587298011"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-spvr/-/magcore-plugin-spvr-3.8.0.tgz"
+}

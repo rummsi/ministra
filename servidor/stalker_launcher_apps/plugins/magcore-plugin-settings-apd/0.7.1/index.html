@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>dead end page</title>
+	<meta charset="utf-8">
+	<meta name="description" content="page">
+	<style type="text/css">
+		html, body {
+			font-family:Ubuntu,
+			sans-serif;
+			overflow:hidden;
+			margin:0;
+			padding:0;
+			position:absolute;
+		}
+		body { background-color:#061329; }
+		.top {
+			right:50%;
+			float:right;
+			position:absolute;
+		}
+		.titleText { color:yellow; }
+		.bodyText { color:white; }
+		.center {
+			text-align:center;
+			width:auto;
+			overflow:hidden;
+			text-overflow:ellipsis;
+			white-space:nowrap;
+			position:relative;
+			right:-50%;
+		}
+		@media screen and  (device-height:480px) {
+			html, body { height:480px; width:720px; }
+			.top { top:200px; }
+			.titleText { font-size:30px; }
+			.bodyText { font-size:18px; }
+			.titleText, .bodyText { height:40px; line-height:40px; }
+			.center { max-width:720px; height:160px; line-height:160px; }
+		}
+		@media screen and  (device-height:576px) {
+			html, body { height:576px; width:720px; }
+			.top { top:248px; }
+			.titleText { font-size:30px; }
+			.bodyText { font-size:19px; }
+			.titleText, .bodyText { height:40px; line-height:40px; }
+			.center { max-width:720px; height:160px; line-height:160px; }
+		}
+		@media screen and  (device-height:720px) {
+			html, body { height:720px; width:1280px; }
+			.top { top:298px; }
+			.titleText { font-size:38px; }
+			.bodyText { font-size:32px; }
+			.titleText, .bodyText { height:62px; line-height:62px; }
+			.center { max-width:1280px; height:248px; line-height:248px; }
+		}
+		@media screen and (device-height:1080px) {
+			html, body { height:1080px; width:1920px; }
+			.top { top:452px; }
+			.titleText { font-size:58px; }
+			.bodyText { font-size:50px; }
+			.titleText, .bodyText { height:93px; line-height:93px; }
+			.center { max-width:1920px; height:372px; line-height:372px; }
+		}
+	</style>
+	<script type="text/javascript">
+		var stbEvent = {
+				onEvent: function ( data ) { },
+				onBroadcastMessage: function ( from, message, data ) { },
+				onMessage: function ( from, message, data ) {
+					//console.log('apd got message with data');
+					//console.log(JSON.stringify(arguments));
+
+					if ( message === 'pluginMode' ) {
+						// plugin alive so he will do all work
+						clearTimeout(modeTimer);
+						stbWebWindow.close();
+					}
+				},
+				event: 0
+			},
+			modeTimer, countDownTimer;
+
+		function standAloneMode () {
+			var timeLeft = 30,
+				text1    = 'Device will be shut down in',
+				text2    = 'seconds.',
+				$text    = document.getElementById('bodyText');
+
+			document.body.style.display = 'block';
+
+			(function countDown () {
+				timeLeft--;
+				$text.innerHTML = text1 + ' ' + timeLeft + ' ' + text2;
+				if ( timeLeft > 0 ) {
+					countDownTimer = setTimeout(countDown, 1000);
+				} else {
+					standByTrigger();
+				}
+			})();
+		}
+
+		// set webkit size
+		window.moveTo(0, 0);
+		window.resizeTo(screen.width, screen.height);
+		// dom is ready
+		window.onload = function () {
+			var language = JSON.parse(gSTB.GetEnv(JSON.stringify({varList: ['language']}))).result.language,
+				messageResived;
+
+			messageResived = stbWebWindow.messageSend(1, 'autoPowerDown', '');
+			if ( messageResived ) {
+				modeTimer = setTimeout(function () {
+					// plugin have 1.5 seconds to answer otherwise use stand alone mode
+					standAloneMode();
+				}, 2000);
+			} else {
+				// nobody listen messages in portal window so start stand alone mode immediately
+				standAloneMode();
+			}
+		};
+
+		document.addEventListener('keydown', function () {
+			clearTimeout(countDownTimer);
+			stbWebWindow.close();
+		});
+
+		function standByTrigger () {
+			var standByStatus = !gSTB.GetStandByStatus(),
+				standByMode   = gSTB.StandByMode;
+
+			//console.log('apd-> current gSTB.StandByMode: ' + (gSTB.StandByMode == 1 ? 'active' : (gSTB.StandByMode == 3 ? 'deep' : 'error')));
+			// deep standBy mode
+			if ( standByMode === 3 ) {
+				//console.log('apd-> go to deep');
+				document.body.style.display = 'none';
+				stbWindowMgr.hideWindow(stbWebWindow.windowId()); // hide itself
+				setTimeout(function () {
+					gSTB.SetLedIndicatorMode(2);
+					gSTB.StandBy(standByStatus);
+					gSTB.SetLedIndicatorMode(1);
+					//console.log('apd-> exit from deep');
+					stbWebWindow.close(); // close itself
+				}, 500); // need some time to hide apd window
+				return;
+			}
+
+			// active standBy mode
+			if ( standByStatus ) {
+				//console.log('apd-> make page black');
+				document.body.style.display = 'none';
+				//console.log('apd-> Go to active');
+				stbWindowMgr.hideWindow(stbWebWindow.windowId()); // hide itself
+				gSTB.SetLedIndicatorMode(2);
+				gSTB.StandBy(standByStatus);
+				gSTB.Stop();
+			} else {
+				//console.log('apd-> wake up from active and close itself');
+				gSTB.StandBy(standByStatus);
+				gSTB.SetLedIndicatorMode(1);
+				stbWebWindow.close(); // close itself
+			}
+		}
+
+		// mouse click
+		window.onclick = function () {};
+		// prevent default right-click menu
+		window.oncontextmenu = function () {return false;};
+	</script>
+</head>
+<body style="display:none">
+<div class="top">
+	<div class="center">
+		<div class="titleText" id="titleText">Auto power down</div>
+		<div class="bodyText" id="bodyText">Device will be shut down in 30 seconds.</div>
+		<div class="bodyText" id="bodyText2">Press any key to cancel.</div>
+	</div>
+</div>
+</body>
+</html>

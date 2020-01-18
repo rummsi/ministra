@@ -1,0 +1,59 @@
+{
+  "name": "magcore-plugin-download-manager",
+  "version": "2.8.0",
+  "description": "Download manager plugin for magsdk applications.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "ministra",
+    "plugin",
+    "download manager",
+    "download"
+  ],
+  "license": "license.md",
+  "dependencies": {
+    "magcore-core": "^3.2.0"
+  },
+  "config": {
+    "name": "downloadManager",
+    "type": "plugin",
+    "daemon": true,
+    "uris": {
+      "entry": "main.js"
+    }
+  },
+  "_id": "magcore-plugin-download-manager@2.8.0",
+  "scripts": {},
+  "_shasum": "3c3586c2f715a655c2f1660b9a2f5264bd5adece",
+  "_from": "magcore-plugin-download-manager@2.8.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "3c3586c2f715a655c2f1660b9a2f5264bd5adece",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-download-manager/-/magcore-plugin-download-manager-2.8.0.tgz",
+    "integrity": "sha512-pEo0IHxRgtuvILZJIn4lpgXjFtUscDq5fRqItt5oiRH6iCdqgdgisLstKngqkaeGCJtsfkBm0aYG9pXjjzRYZg==",
+    "fileCount": 23,
+    "unpackedSize": 63707,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtk2CRA9TVsSAnZWagAAo5kP/03vjq4Wloej61WiivR1\niBIHxOaCF4SxFrvx/siUo8iNuxas3Pv4XA8dufKo+rJgdjqCa8LCV0W5nx39\nKWM+CnOKIast9V1R3JDUF+aXXu7TaO3CZWMQ/csSDzFEGpXlE3byljyqV4Yw\n5vPKj9B2MZfjdZLNj/WuBXm5sO3Q45/m4b1dnuQolyNfuWz48gCleEcVh0Bw\n4Xmibc7aVpQub11KUUZ0FLcu2/4JYFdSmhuYFEjUhA8h1Yzsl99Kz8ImtLWu\nIscMU2RDD1tk95A05bDmMdesdayqDwLDFzTSnzdEoyGvoTaNA22E+y0M4n9h\nXWid4gAVDfi/r4vLc48TVpGQFrNwDHKpBOaCp31TPeeoVae3KwcJIN8Yr73S\n+Pqh33fDRpa1Ga1TinxgTwOMtIRm1zIldApPHWhq7isFtJGhW0j8U3ikNqyF\nEoDbv7Hk8/bf1cd1cAer1CLjB2jSF/32jg4JrqgSvnWRnBcM7xkb+n4Kddtw\nIq3BP2YhJW6L8EJSlIAwTOoXeBTnnrIp8fU2kweILLmeJ8Ez1xlryd/5Sdo8\nn/con/zofhwEFQ0xlxe5LMxYg1DQNkS+MsC8cEZJjQgfHXnXasdih5gjl2f2\nMFZF4n2eJJmU1n2vUsvwRP0B+oFcHcRgXKcAmiI/xRT2o1pTK3+WZrpPkdeY\nsZ13\r\n=+SKN\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-download-manager_2.8.0_1556011318296_0.50278630136748"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-download-manager/-/magcore-plugin-download-manager-2.8.0.tgz"
+}

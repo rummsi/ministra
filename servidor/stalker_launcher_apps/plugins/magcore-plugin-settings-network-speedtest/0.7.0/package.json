@@ -1,0 +1,70 @@
+{
+  "name": "magcore-plugin-settings-network-speedtest",
+  "version": "0.7.0",
+  "description": "Network diagnostic plugin for magsdk applications.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "ministra",
+    "plugin",
+    "network test",
+    "speed test",
+    "network diagnostic"
+  ],
+  "license": "license.md",
+  "dependencies": {
+    "magcore-plugin-settings-network": "^2.2.7",
+    "magcore-core": "^3.2.0"
+  },
+  "config": {
+    "name": "speedtest",
+    "type": "plugin",
+    "daemon": true,
+    "tuner": true,
+    "uris": {
+      "entry": "main.js"
+    },
+    "platforms": {
+      "exclude": {
+        "emulator": "*",
+        "emulator_stb": "*",
+        "AndroidSTB": "*",
+        "AndroidAPP": "*"
+      }
+    }
+  },
+  "_id": "magcore-plugin-settings-network-speedtest@0.7.0",
+  "scripts": {},
+  "_shasum": "ac881ca4a7d67e1f72ab28d93646f42183572b40",
+  "_from": "magcore-plugin-settings-network-speedtest@0.7.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "ac881ca4a7d67e1f72ab28d93646f42183572b40",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-settings-network-speedtest/-/magcore-plugin-settings-network-speedtest-0.7.0.tgz",
+    "integrity": "sha512-k0gRc6q4jcBvtLbhg2DdcGQXf80os8p89smACYUw9tnDUt5TbZwfjz6E+2wY+KAPzDmFRvuPKEpiqWFLbaTeeQ==",
+    "fileCount": 23,
+    "unpackedSize": 70099,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtl2CRA9TVsSAnZWagAAICIQAI3uWnTjuG+QLKm6tOSf\nBgTO8rign9ldcS/hDF7EmAQZlyVG1J6t9OTi3T3SvgjeuTBCpFdG0ATYekYY\nFf5ejoV4YKVXnK4y4yqJmC4YUcsMCtG8LzozfSwPwu+SJNWSaw+hH7BNqS4o\nDloEGu00xZTyuc8iH6Yz1QHnYhWCy5A/mr82mw0AlP67d2P7K1jdAxBGZFdT\nLIpTsk+9JsEgUJHE5N2RWQTIvCnptvnsndfthg5P3SDvpofzGvkLS0CjpMY8\nObu5yt+MdYFSlzG34k/dmhu90vteg0uKKbNZUz8Px5M1eNAF+xFfTEpIMMmN\nGj9803eKfgLTG3bwBUKdSPKZ//h9CplTKvSChbkUonmyNkWSXW101qg4yzYz\nzKczyr/aFVoRm/0FStpQMPSWResFjeybH5A9G9CO4cqzdRBACgJeH/lBugNk\n+h/nOpYX46bYHqbMql+jZ0RG5UH+xJ+AUW9WRr6NaGqqRu2O0nKKtPOxlKiP\nAuTJk8smDEzcPQfn4qrcwtKl4b7TGgyDOiht5QwX/YzAZpr4W2+YIUImfVl8\nINeKWD+/kE3IEYeaA3IX+T1c1RVIqKNOxqHX30nvWyEOmyJOzr5BmWeXWF55\nJthGaRcg3tRAsGmeRp/cJU8CcuvXY3zNed1U/Cr2nX7PJysRgOi10c4LtpVx\nbddv\r\n=spI2\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-settings-network-speedtest_0.7.0_1556011382123_0.0808786840518545"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-settings-network-speedtest/-/magcore-plugin-settings-network-speedtest-0.7.0.tgz"
+}

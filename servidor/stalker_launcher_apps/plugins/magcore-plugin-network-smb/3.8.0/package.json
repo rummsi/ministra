@@ -1,0 +1,59 @@
+{
+  "name": "magcore-plugin-network-smb",
+  "version": "3.8.0",
+  "description": "SMB/CIFS network plugin for Ministra TV Platform.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "plugin",
+    "ministra",
+    "network",
+    "smb",
+    "cifs"
+  ],
+  "license": "license.md",
+  "config": {
+    "name": "networkSmb",
+    "type": "plugin",
+    "uris": {
+      "entry": "main.js"
+    }
+  },
+  "dependencies": {
+    "magcore-core": "^3.7.86"
+  },
+  "_id": "magcore-plugin-network-smb@3.8.0",
+  "scripts": {},
+  "_shasum": "b23c8f77506620b0600b43f7fbe38242f10bd1e8",
+  "_from": "magcore-plugin-network-smb@3.8.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "b23c8f77506620b0600b43f7fbe38242f10bd1e8",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-network-smb/-/magcore-plugin-network-smb-3.8.0.tgz",
+    "integrity": "sha512-/S9uDgReCh9XFxN7AzF6nKzn9BBgwj8vWLtfRnlozb+caqOgXEhSPDpMm3KUGNBV05eNgOaGKmBaHlAFo8iKYw==",
+    "fileCount": 5,
+    "unpackedSize": 44575,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtlICRA9TVsSAnZWagAAP0AP/iOcEat+BDexvu0B45pC\nV3f1C9U30AbPgjSfxqwGYmu/WyqpPS4NxnudDdjywbJBE7e7F60RZUnylStF\nk6fDgXxeO0WpXJiBBKZQIiPGh6TwjYAsyHR3/QLbQKk3gXGezgYI8s3dLRYO\nD7CK56bLq3CSfHBL9HMg7OdeibRNbu7BLch7JURxUXNtaolSXsDkLXyb7B+f\nIeShP3otsEcTSZfzcTrMV0Y61HjoPQHJg82hxcRzuMdUd2yQ8J4N9a+ePB7P\nbCXFctu4F7B6o6DeLQN2dIoT0I8YvoU+w3ARXQxg1nw4R4qZRr6ygs/ghqDG\nTKapgp+GkCpf78yny1TekSTSv84AApfhZGDjk5ylzguhfyUYQgAK7kMbPaFt\nH6Ve71w1Yj/pOQPPhVWUNaUGY18asJ+ORo8wmZBnchyM7HHF1yFAMl1VlLko\nP05eePiXARSRdMJmxIE82qgzVgo9ww/UYhf+Fb1vaxS4qNFeEypqm/ofj9fb\nLQ7/DUoPvcpy26IPjXQUUJik2M+TqU4A003MVusQYi6cUYsto9Co7eG41acC\n1KHKAD4GIJQEmqAhllG74/zB9xz8voCbyAm/KdP8HSa5605FxTcrUKrktLgl\nrsUtuNRSeaT+3iqAYoUoy2MIjXgH6UHGZ8jL08gbawAzes7pEZ7N7b2qNlrE\nZTTb\r\n=nHXN\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-network-smb_3.8.0_1556011336023_0.00021861014019552982"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-network-smb/-/magcore-plugin-network-smb-3.8.0.tgz"
+}

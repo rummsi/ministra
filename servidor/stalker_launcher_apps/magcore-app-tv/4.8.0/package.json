@@ -1,0 +1,112 @@
+{
+  "name": "magcore-app-tv",
+  "version": "4.8.0",
+  "description": "Watch TV shows, movies, tv series, news, and educational programs in digital quality.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "application",
+    "base",
+    "ministra",
+    "tv"
+  ],
+  "license": "license.md",
+  "config": {
+    "name": "TV",
+    "description": "Watch TV shows, movies, tv series, news, and educational programs in digital quality.",
+    "type": "app",
+    "category": "media",
+    "uris": {
+      "app": "/",
+      "entry": "index.html",
+      "icons": {
+        "480": {
+          "logoNormal": "img/480/normal.png",
+          "logoActive": "img/480/active.png",
+          "primeLogoNormal": "img/576/tv.normal.png",
+          "primeLogoActive": "img/576/tv.active.png"
+        },
+        "576": {
+          "logoNormal": "img/576/normal.png",
+          "logoActive": "img/576/active.png",
+          "primeLogoNormal": "img/576/tv.normal.png",
+          "primeLogoActive": "img/576/tv.active.png"
+        },
+        "720": {
+          "logoNormal": "img/720/normal.png",
+          "logoActive": "img/720/active.png",
+          "primeLogoNormal": "img/720/tv.normal.png",
+          "primeLogoActive": "img/720/tv.active.png"
+        },
+        "1080": {
+          "logoNormal": "img/1080/normal.png",
+          "logoActive": "img/1080/active.png",
+          "primeLogoNormal": "img/1080/tv.normal.png",
+          "primeLogoActive": "img/1080/tv.active.png"
+        }
+      }
+    },
+    "colors": {
+      "splashFont": "#fff",
+      "splashBackground": "#04a3eb"
+    },
+    "resource": "tv-channel",
+    "contentProviders": [
+      "magcore-plugin-backend-tv-stalker"
+    ],
+    "actions": {
+      "tv": true
+    }
+  },
+  "dependencies": {
+    "magcore-app-auth-ministra": "^3.7.86",
+    "magcore-core": "^3.7.34",
+    "magcore-osd-access-control": "^2.0.17",
+    "magcore-plugin-backend-tv-stalker": "^2.5.0",
+    "magcore-theme": "^1.4.1",
+    "magcore-app-player": "^3.0.0",
+    "magcore-osd-input": "^2.0.0",
+    "magcore-osd-keyboard": "^2.0.0",
+    "magcore-osd-tv": "^2.0.0"
+  },
+  "optionalDependencies": {
+    "magcore-app-player": "^3.0.0",
+    "magcore-osd-input": "^2.0.0",
+    "magcore-osd-keyboard": "^2.0.0",
+    "magcore-osd-tv": "^2.0.0"
+  },
+  "_id": "magcore-app-tv@4.8.0",
+  "scripts": {},
+  "_shasum": "a0d9414ccafe38272ee3d47be0665fff30147a12",
+  "_from": "magcore-app-tv@4.8.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "a0d9414ccafe38272ee3d47be0665fff30147a12",
+    "tarball": "https://registry.npmjs.org/magcore-app-tv/-/magcore-app-tv-4.8.0.tgz",
+    "integrity": "sha512-kvYJnzyMaI5bne3rmE+o1Ohaz27pgooDX0H/GjGQPag6lU/JkHzPxK4iVbvlr8D/AA337SczJ3tD4Ae4LZwvzQ==",
+    "fileCount": 83,
+    "unpackedSize": 1650428,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvti0CRA9TVsSAnZWagAAuBEP/RzfmUG8Hkq43OK2nHps\nCLnsfBOmw/O0sKfcKVVBm5aLIEjko4Klo0mnSpburkc5uKh85x8aJJwd9tco\ndMr61PQtgCXtNa3xZxpmQplzGuPuO+OLgqXlY386FJ6GSqmEkwutLHJpevXX\nR2Pw0tIORCHzK5MdUgWTqBJruk1j9jlXmv4HkAosxIK1YXovTMnpAKJCjq5S\nvUe+4CUTY8ZWur6J63VuUHRadcu322ZZvzll5z9SU3YHgjYonPvaeTTzWadV\nNvGV9omscDj+W/5CVMuwanxdn1Mtd9zvWptBarm3aa+6DStWzrxyq5vDZWxE\n6Inlo19MNc1Q9XJftQkblLBoCwJGnnslwy0nlBwLrs6oAl1nuZsOWnOEhuu3\nrQI1mhFxPmJocLCk0ehYsQ3DGL+KD4nFPrfsr52f5LfoYdKZpVwj9OcXFdX2\n61JWzSH2uZK0TWpXG1uKlQF2JiKFrmA/t+afBT7OBk6HVHBMfQMEhJ/jBm0/\nYSv/gwHbB8Ko00Ro5cNJif7O/6VG7Zxf5eTlZex3zrYxp81ewI5Z6d8vDQZG\nQY/ALgKw1k/8ltjNAFvX2zp8FMBFZ0yR496K2O0Kmwkbx0/p1jcSyUb3m8No\nff/PJmP6QBVv/JyeJysyYQyWwbkTNBKU8O1rVtfQyG2AqZU4gH8cMDWbVdL+\nWc16\r\n=eo/H\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-app-tv_4.8.0_1556011187612_0.5208697457518146"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-app-tv/-/magcore-app-tv-4.8.0.tgz"
+}

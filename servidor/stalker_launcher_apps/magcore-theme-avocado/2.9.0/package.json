@@ -1,0 +1,54 @@
+{
+  "name": "magcore-theme-avocado",
+  "version": "2.9.0",
+  "description": "Avocado theme for magsdk",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "magsdk",
+    "theme",
+    "graphite"
+  ],
+  "license": "license.md",
+  "config": {
+    "type": "theme",
+    "name": "avocado"
+  },
+  "dependencies": {
+    "magcore-theme-base": "^2.3.8"
+  },
+  "_id": "magcore-theme-avocado@2.9.0",
+  "scripts": {},
+  "_shasum": "463aeb95b7ee6a2009237ea7b910d30c4700de57",
+  "_from": "magcore-theme-avocado@2.9.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "463aeb95b7ee6a2009237ea7b910d30c4700de57",
+    "tarball": "https://registry.npmjs.org/magcore-theme-avocado/-/magcore-theme-avocado-2.9.0.tgz",
+    "integrity": "sha512-uhFUgWcXSxR8wQDrZDC7hBeUbJkzQKxBEHUnTqYYvOvsHpsrIH/Qrhk4iNXpaiZQ9yAMlFTt3XaOWcGKniWgaQ==",
+    "fileCount": 68,
+    "unpackedSize": 1133749,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtnJCRA9TVsSAnZWagAAGhkP/iXgz2yVG7D8ZQsKFPu9\nl3Q9s5gw1NSZ1AAItnnAKztlzFCq6jbATK5ZaehBmrwpDLFYQ3dJYGjdlCM3\niEIMf1Ze3E1qCkUNC7s8tFXSA0YkkYogZSI9b/brFQ1S0c4Bdqql4w86Q1kr\nqggbvSmwrtPmp1yosCn/T+zCF4Z6nra3u9DMjwukoQ3p6kLp+mWNOpLIih/G\nifxGO/3O580mUqyhItWYFlvPDY+SmFHiovyfh9wjBWkMne06+Gvr3y7/3L7n\np1yM6M4B+cty7XCrmfQnHyevptrtDbLxdL+MkXd8XKhGQlD1EOsSXkclEWc8\nlMUD+sbj6UIwp0LkWy85p2ruEFxi8vKHiQ4PAy5NQHSJX9zTT6Is6fR5vrFa\nv7L3jHk5HJclrBFwDoTMc0po4EFIt5S0RFjmxmfH6/sCm1NwtPt9YPuHvW0J\ncNQSo/Vlt+vU9j71fjzaX/Rr8DTdtWrl/VdcG1XCE5zQD7cqr9xYCDRa5GAe\n42hNERapNVLHYOhyY0YG5e3f6LH3uahRJ3Ol5chbPKp4wOKnJuLwxsfpcYgN\nkxZ3qh8hMEJmJb6qUYcVreHiHqpV61UDdkKY1ztnuO2iYGO9GylbtVfH12jZ\nDWnwJyilJgtcC6fNrB1ur8oTEvwhhLwrdOQi1EFkJPCbPogtEsthVgoBJjPT\nVlqu\r\n=EqsL\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-theme-avocado_2.9.0_1556011465013_0.27773905135241583"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-theme-avocado/-/magcore-theme-avocado-2.9.0.tgz"
+}

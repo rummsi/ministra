@@ -1,0 +1,15 @@
+{
+	"version": 3,
+	"file": "app.1080.css",
+	"sources": [
+		"../../../src/sass/release.1080.scss",
+		"../../../src/sass/vars/1080.scss",
+		"../../../node_modules/mag-app/sass/vars/1080.scss",
+		"../../../node_modules/stb-app/sass/vars/1080.scss",
+		"../../../node_modules/stb-app/sass/vars/720.scss",
+		"../../../src/sass/main.scss",
+		"../../../src/sass/pages/main.scss"
+	],
+	"names": [],
+	"mappings": ""
+}

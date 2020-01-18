@@ -1,0 +1,230 @@
+/* spa-app: release */
+html, body {
+    height: 1080px;
+    width: 1920px;
+    font-size: 33px;
+    font-family: Ubuntu, sans-serif;
+    overflow: hidden;
+    margin: 0;
+    padding: 0; }
+
+table {
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0; }
+    table td {
+        padding: 0; }
+
+.maxh {
+    height: 100%; }
+
+.maxw {
+    width: 100%; }
+
+a {
+    text-decoration: none; }
+
+.invisible {
+    visibility: hidden; }
+
+/* stb-app: release */
+html, body {
+    -webkit-user-select: none; }
+
+/* mag-app: release */
+
+.mag-component-layout-list {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 100%;
+    position: relative; }
+    .mag-component-layout-list.hidden {
+        display: none; }
+    .mag-component-layout-list > .body > .item {
+        cursor: pointer;
+        padding: 0 12px;
+        vertical-align: middle;
+        height: 72px;
+        line-height: 72px; }
+    .mag-component-layout-list.horizontal {
+        display: table;
+        table-layout: fixed;
+        width: 100%; }
+        .mag-component-layout-list.horizontal > .item {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle; }
+    .mag-component-layout-list > .body > .item > div {
+        display: table;
+        width: 100%; }
+        .mag-component-layout-list > .body > .item > div > div {
+            display: table-cell;
+            text-align: left;
+            vertical-align: middle;
+            height: 100%; }
+        .mag-component-layout-list > .body > .item > div > .number {
+            width: 84px; }
+    .mag-component-layout-list .noData {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        display: block;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0; }
+        .mag-component-layout-list .noData:before {
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            content: ""; }
+        .mag-component-layout-list .noData > div {
+            display: inline-block;
+            vertical-align: middle;
+            width: 100%;
+            text-align: center; }
+        .mag-component-layout-list .noData.hidden {
+            visibility: hidden; }
+
+.mag-component-list {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 100%; }
+    .mag-component-list.hidden {
+        display: none; }
+    .mag-component-list > .body > .item {
+        cursor: pointer;
+        padding: 0 12px;
+        vertical-align: middle;
+        height: 72px;
+        line-height: 72px; }
+    .mag-component-list.horizontal {
+        display: table;
+        table-layout: fixed;
+        width: 100%; }
+        .mag-component-list.horizontal > .item {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle; }
+
+.mag-component-modal {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: table;
+    z-index: 10;
+    visibility: visible; }
+    .mag-component-modal.hidden {
+        display: none; }
+    .mag-component-modal.hidden {
+        display: table;
+        visibility: hidden; }
+    .mag-component-modal.active > div > div > div.overlay {
+        display: none; }
+    .mag-component-modal > div {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center; }
+        .mag-component-modal > div > div {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            max-width: 80%;
+            min-width: 399.375px;
+            max-height: 80%; }
+            .mag-component-modal > div > div > div.header {
+                height: 105px;
+                line-height: 105px;
+                font-size: 36px;
+                padding: 0 30px; }
+                .mag-component-modal > div > div > div.header .text {
+                    display: table-cell;
+                    vertical-align: middle;
+                    text-align: center; }
+                    .mag-component-modal > div > div > div.header .text:empty {
+                        padding: 0; }
+            .mag-component-modal > div > div > div.body {
+                position: relative; }
+                .mag-component-modal > div > div > div.body > div .item {
+                    height: 90px;
+                    line-height: 90px;
+                    padding: 0 30px; }
+            .mag-component-modal > div > div > div.overlay {
+                display: block;
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0; }
+
+.spa-component-button {
+    box-sizing: border-box;
+    background-color: #dde9ff;
+    display: inline-table;
+    height: 32px;
+    cursor: pointer; }
+    .spa-component-button.hidden {
+        display: none; }
+    .spa-component-button:hover {
+        background-color: #bbd3ff; }
+    .spa-component-button.focus {
+        background-color: #bbd3ff; }
+    .spa-component-button.click {
+        background-color: #a8c9ff; }
+    .spa-component-button .icon {
+        height: 32px;
+        width: 32px;
+        display: table-cell;
+        background: no-repeat center center; }
+    .spa-component-button .text {
+        display: table-cell;
+        padding: 2px 10px;
+        vertical-align: middle;
+        text-align: center; }
+        .spa-component-button .text:empty {
+            padding: 0; }
+
+.spa-component-grid {
+    box-sizing: border-box;
+    background-color: #333; }
+    .spa-component-grid.hidden {
+        display: none; }
+    .spa-component-grid table {
+        width: 100%;
+        table-layout: fixed; }
+        .spa-component-grid table td.item {
+            cursor: pointer;
+            padding: 4px 8px;
+            vertical-align: middle;
+            text-align: center; }
+        .spa-component-grid table td.item.mark {
+            color: black;
+            background-color: green; }
+        .spa-component-grid table td.item.focus {
+            color: black;
+            background-color: orange; }
+        .spa-component-grid table td.item.focus.mark {
+            color: white;
+            background-color: #AE7200; }
+        .spa-component-grid table td.item.disable {
+            color: grey;
+            background-color: #111; }
+
+.stb-component-page {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    width: 1920px;
+    height: 1080px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    visibility: hidden;
+    overflow: hidden; }
+    .stb-component-page.hidden {
+        display: none; }
+    .stb-component-page.active {
+        visibility: inherit; }

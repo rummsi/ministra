@@ -1,0 +1,14 @@
+{
+	"version": 3,
+	"file": "app.576.css",
+	"sources": [
+		"../../../src/sass/release.576.scss",
+		"../../../src/sass/vars/576.scss",
+		"../../../node_modules/mag-app/sass/vars/576.scss",
+		"../../../node_modules/stb-app/sass/vars/576.scss",
+		"../../../src/sass/main.scss",
+		"../../../src/sass/pages/main.scss"
+	],
+	"names": [],
+	"mappings": ""
+}

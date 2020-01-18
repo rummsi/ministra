@@ -1,0 +1,95 @@
+$titleDivider: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAACCAYAAABhYU3QAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABpJREFUeNpiZGBg8GUgAjD+//9fjRiFAAEGAJJMA3OVnUxoAAAAAElFTkSuQmCC';
+$width: 720px;
+$height: 576px;
+
+$safePadding: 20px;
+$imgPath: './img/576';
+$listItemHeight: 45px;
+$mainListItemHeight: 50px;
+$panelTitleSize: 16px;
+$panelFontSize: 16px;
+$mainPanelFontSize: 18px;
+$mainPanelTitleSize: 22px;
+$infoTextFontSize: 17px;
+$iconsSize: 20px;
+$panelIconSize: 22px;
+$fWidth: 25px;
+$fHeight: 15px;
+$panelWidth: 230px;
+$modalMsgShadow: 10px;
+$h2: 20px;
+
+$progressHeaderTop: 90px;
+$progressContentHeight: 100px;
+$progressBarHeight: 8px;
+$progressBarBottom: 80px;
+$progressBarLeft: 108px;
+
+
+//shadows
+$panelHeight: 360px;
+$panelMainHeight: 400px;
+$leftPanelTop: 100px;
+$mainPanelTop: 80px;
+
+$equalizerFrameSize: 14px;
+$equalizerFrameFontSize: 22px;
+
+.mag-component-panel.right,  .mag-component-panel.left{
+    width: 230px;
+    background-color: transparent;
+    .body {
+        visibility: hidden;
+    }
+    >.shadow {
+        display: none!important;
+    }
+    >.overlay {
+        background: transparent;
+    }
+    &.expand {
+        background: rgba($componentBgColor, $panelOpacity);
+        &.active {
+            background-color: rgba($componentBgColor, $mainPanelOpacity);
+        }
+        .body {
+            display: block;
+            visibility: inherit;
+        }
+        >.title {
+            //background: red;
+            background: url($titleDivider) bottom repeat-x;
+        }
+        >.shadow {
+            display: block!important;
+        }
+    }
+}
+
+.mag-component-panel {
+    &.main {
+        width: 370px!important;
+        &.position-right {
+            left: 270px!important;
+            &:not(.top) >.shadow.left {
+                display: none!important;
+            }
+        }
+        &.position-left {
+            left: 80px!important;
+            &:not(.top) >.shadow.right {
+                display: none!important;
+            }
+        }
+    }
+    &.right {
+        right: 40px!important;
+    }
+    &.left {
+        left: 40px!important;
+        &.expand {
+            left: 40px!important
+        }
+    }
+}
+

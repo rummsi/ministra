@@ -1,0 +1,1 @@
+{"meta":{"charset":"utf-8","project":"magcore-plugin-settings-interface 0.0.1","language":"pl","plural":"(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"},"data":{"":{"Home page":"","Last TV Classic channel":"","Last TV channel":"","Selecting a menu section that will be loaded when you turn on the set-top box":"","Startup menu":"","userInterface":""}}}

@@ -1,0 +1,107 @@
+{
+  "name": "magcore-app-downloads",
+  "version": "2.9.0",
+  "description": "Downloads application.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "application",
+    "ministra",
+    "download",
+    "download manager"
+  ],
+  "license": "license.md",
+  "config": {
+    "name": "DOWNLOADS",
+    "description": "Download the files directly from the Internet network to the connected removable storage.",
+    "type": "app",
+    "category": "media",
+    "uris": {
+      "app": "/",
+      "entry": "index.html",
+      "icons": {
+        "480": {
+          "logoNormal": "img/480/normal.png",
+          "logoActive": "img/480/active.png",
+          "primeLogoNormal": "img/480/prime-normal.png",
+          "primeLogoActive": "img/480/prime-active.png"
+        },
+        "576": {
+          "logoNormal": "img/576/normal.png",
+          "logoActive": "img/576/active.png",
+          "primeLogoNormal": "img/576/prime-normal.png",
+          "primeLogoActive": "img/576/prime-active.png"
+        },
+        "720": {
+          "logoNormal": "img/720/normal.png",
+          "logoActive": "img/720/active.png",
+          "primeLogoNormal": "img/720/prime-normal.png",
+          "primeLogoActive": "img/720/prime-active.png"
+        },
+        "1080": {
+          "logoNormal": "img/1080/normal.png",
+          "logoActive": "img/1080/active.png",
+          "primeLogoNormal": "img/1080/prime-normal.png",
+          "primeLogoActive": "img/1080/prime-active.png"
+        }
+      }
+    },
+    "colors": {
+      "splashFont": "#fff",
+      "splashBackground": "#3daf82"
+    },
+    "actions": {
+      "download": true
+    },
+    "platforms": {
+      "exclude": {
+        "emulator": "*"
+      }
+    }
+  },
+  "dependencies": {
+    "magcore-plugin-download-manager": "^2.1.3",
+    "magcore-plugin-fs": "^2.3.8",
+    "magcore-osd-base": "^2.2.6",
+    "magcore-theme": "^1.4.1",
+    "magcore-core": "^3.7.86",
+    "magcore-app-player": "^3.9.64"
+  },
+  "optionalDependencies": {
+    "magcore-app-player": "^3.9.64"
+  },
+  "_id": "magcore-app-downloads@2.9.0",
+  "scripts": {},
+  "_shasum": "bf7fb37daffca82d0763df0b1149f8d4867207b4",
+  "_from": "magcore-app-downloads@2.9.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "bf7fb37daffca82d0763df0b1149f8d4867207b4",
+    "tarball": "https://registry.npmjs.org/magcore-app-downloads/-/magcore-app-downloads-2.9.0.tgz",
+    "integrity": "sha512-t64azu7s6QLbe/8gFq02B2IN4aCleMUzDBXCqdnmravdEt4I+XKXsIrlSBjfQ2Pm8rQU6ROpuH63SWx+ldom7g==",
+    "fileCount": 53,
+    "unpackedSize": 633595,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvthuCRA9TVsSAnZWagAA7YIQAIyJ8Rexg0PTG6fNbp42\nNE2gSu8aMLkOUTK6cS/kDfIbOZu1uLhB9o1mpFD4a0fW07qR/TV6GDI3HlTn\nj8seh9YLmtYxGcEBqubFWbN4rFl3ECOGtOG6BI4lyRuj9naVWdfDnwecleY5\npSou8TUhe7A48Ui/s37uC+d7eyZZ7CV4VFbsXD7qGXDezANLmsLjXR2LHACH\nYrl7A77Yk0I78bqxNmGDxZ+jPzObVZPtEEMPPb/BzJP8xjw29MdGRpl404FP\nlXK3rOpQC/gq5z4fk5A+Rk+CU8Zd8kd5zP6IK1BvM2UJOYe2D4zGkQTt/i1N\njxWPGZizMGo0Nuedi3yQJqf05gVMIL+ziO5CFbRKqDkPoGiTiOrYzQq7GXWP\nwmW/if7jaEGdnvJoCvitn2IFwvyM9rbJXCWAAhwYUBXFf35TDmJAThxbjc0z\nh1kkn23onZrzklJc+E4UFh7uwClW5pleATMJ+In95KYXxmfLd76SOwJ4NEPD\nna7icbkkGi1pNczLRB7mzRRGmn4UQjCofsgBBAynSp6yTBYPIpiHJwZ1ImlJ\npB1+ddq+Ev6oMcqWQWW8POrSRSidM5m3n1EOyR4TOeIayICmQF31UFLOYgQ/\n8QcfV9y6wJr4z/EDuNUFghyMYyWUWwWJP8K+q0JmbmrIyhknpRrr3safazDi\n9JFV\r\n=NSWV\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-app-downloads_2.9.0_1556011117833_0.5250544495697196"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-app-downloads/-/magcore-app-downloads-2.9.0.tgz"
+}

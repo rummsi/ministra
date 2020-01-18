@@ -1,0 +1,100 @@
+{
+  "name": "magcore-app-magic-cast",
+  "version": "2.9.0",
+  "description": "Magic Cast allows you to play videos on your TV from websites, including movies, TV shows, news broadcasts, sports broadcasts and IPTV.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "ministra",
+    "application",
+    "magcore"
+  ],
+  "license": "license.md",
+  "config": {
+    "name": "MAGIC CAST",
+    "description": "Magic Cast allows you to play videos on your TV from websites, including movies, TV shows, news broadcasts, sports broadcasts and IPTV.",
+    "type": "app",
+    "category": "media",
+    "uris": {
+      "app": "/",
+      "entry": "index.html",
+      "icons": {
+        "480": {
+          "logoNormal": "img/480/normal.png",
+          "logoActive": "img/480/active.png",
+          "primeLogoNormal": "img/576/prime.normal.png",
+          "primeLogoActive": "img/576/prime.active.png"
+        },
+        "576": {
+          "logoNormal": "img/576/normal.png",
+          "logoActive": "img/576/active.png",
+          "primeLogoNormal": "img/576/prime.normal.png",
+          "primeLogoActive": "img/576/prime.active.png"
+        },
+        "720": {
+          "logoNormal": "img/720/normal.png",
+          "logoActive": "img/720/active.png",
+          "primeLogoNormal": "img/720/prime.normal.png",
+          "primeLogoActive": "img/720/prime.active.png"
+        },
+        "1080": {
+          "logoNormal": "img/1080/normal.png",
+          "logoActive": "img/1080/active.png",
+          "primeLogoNormal": "img/1080/prime.normal.png",
+          "primeLogoActive": "img/1080/prime.active.png"
+        }
+      }
+    },
+    "colors": {
+      "splashFont": "#fff",
+      "splashBackground": "#005eb3"
+    },
+    "platforms": {
+      "exclude": {
+        "AndroidSTB": {
+          "MAG425A": "*"
+        },
+        "emulator_stb": {
+          "MAG425A": "*"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "magcore-core": "^3.0.0",
+    "magcore-plugin-ufs-json": "^2.0.0"
+  },
+  "_id": "magcore-app-magic-cast@2.9.0",
+  "scripts": {},
+  "_shasum": "af6bd113f563aacbbfc594554a421be346b4a804",
+  "_from": "magcore-app-magic-cast@2.9.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "af6bd113f563aacbbfc594554a421be346b4a804",
+    "tarball": "https://registry.npmjs.org/magcore-app-magic-cast/-/magcore-app-magic-cast-2.9.0.tgz",
+    "integrity": "sha512-4/roUWBbIYuVCd3exN1NeivNo2xeuQfKKmAoZ+isRUG5JVIqmb0F5ECNIlXGGW6udXtnRVu8Pd+khnUAGTBiOQ==",
+    "fileCount": 75,
+    "unpackedSize": 1492038,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtiGCRA9TVsSAnZWagAAIToP/1JHtXLxHqPGDx16+VwZ\n9u35ny8s2Gnl1RFILqUL1GAvkOITFTUP6mSm0+KZfz2An3/i8+yDU25B8e4a\neLd8LMlTG4fE/avDLMAg0h5DHgGHtifH6mnSPH5y0aQLNVxONTR6dbB2krLw\nJYiJ7pmMhACgy0YItaCQtwU2lUrLV0O6uxUa57OGr1XOCTkeU8QvNYjabjtV\nCSxvqp6STZ9ZbCReAC2IPqSgEAZNj1ubM529YywUauuOZJS22dAdImrSDel6\nudymzqacXhTTqsTZNJ4euqVFqlNbZcsC+ADDmxenxR5R1WtBeRdrgZpUBbqr\n9X7hkAD+Zm9LoI0HEpGy681vj1kNCkVAZGN/MkzyNyXtEmM6qqSmwNnqBRit\ny9Xlz0rYp3f79DuBkf9d0kLmt6joVCNfCTASxzWREEA8B1Ri77FUgLa9+qOR\nzSc97VDhpGGp7HIcxBbwSNDJjoJhaniUTHaoCJ4ecqdWHUZodrRMIW9HshK5\nnTXqnRaU0EKW3BwokBMMVlYHbqcqYMY6D/BIERJM5Rqufd6p+5ajeKXSf0zC\n3/nyNLtESb6VBgTF28ofrgcRNZ7qKhpKgDW3zPZL3gDQz4zgtLy5iczXCW8g\npdNECmEeSBirSEvWsPthSUeExlFEAxFpnkRbxy/7xVzHbgqxSbLdxCFgDTgX\ncrWV\r\n=oTUj\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-app-magic-cast_2.9.0_1556011141729_0.5593849697854192"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-app-magic-cast/-/magcore-app-magic-cast-2.9.0.tgz"
+}

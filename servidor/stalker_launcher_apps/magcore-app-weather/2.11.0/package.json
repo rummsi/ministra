@@ -1,0 +1,101 @@
+{
+  "name": "magcore-app-weather",
+  "version": "2.11.0",
+  "description": "Weather application for Ministra TV Platform.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "application",
+    "ministra",
+    "weather"
+  ],
+  "license": "license.md",
+  "config": {
+    "name": "WEATHER",
+    "description": "Weather forecast for three subsequent days in any city of the world.",
+    "type": "app",
+    "category": "media",
+    "uris": {
+      "app": "/",
+      "entry": "index.html",
+      "icons": {
+        "480": {
+          "logoNormal": "img/480/logo.normal.png",
+          "logoActive": "img/480/logo.active.png",
+          "primeLogoNormal": "img/480/prime.logo.normal.png",
+          "primeLogoActive": "img/480/prime.logo.active.png"
+        },
+        "576": {
+          "logoNormal": "img/576/logo.normal.png",
+          "logoActive": "img/576/logo.active.png",
+          "primeLogoNormal": "img/576/prime.logo.normal.png",
+          "primeLogoActive": "img/576/prime.logo.active.png"
+        },
+        "720": {
+          "logoNormal": "img/720/logo.normal.png",
+          "logoActive": "img/720/logo.active.png",
+          "primeLogoNormal": "img/720/prime.logo.normal.png",
+          "primeLogoActive": "img/720/prime.logo.active.png"
+        },
+        "1080": {
+          "logoNormal": "img/1080/logo.normal.png",
+          "logoActive": "img/1080/logo.active.png",
+          "primeLogoNormal": "img/1080/prime.logo.normal.png",
+          "primeLogoActive": "img/1080/prime.logo.active.png"
+        }
+      }
+    },
+    "platforms": {
+      "exclude": {
+        "emulator": "*"
+      }
+    },
+    "colors": {
+      "splashFont": "#fff",
+      "splashBackground": "#59d7c6"
+    }
+  },
+  "dependencies": {
+    "magcore-core": "^3.7.86",
+    "magcore-plugin-ufs-json": "^2.0.0",
+    "magcore-theme": "^1.0.4",
+    "magcore-osd-keyboard": "^2.0.0"
+  },
+  "optionalDependencies": {
+    "magcore-osd-keyboard": "^2.0.0"
+  },
+  "_id": "magcore-app-weather@2.11.0",
+  "scripts": {},
+  "_shasum": "37c12a5c6ba1dfdaf9845d91ae8314b79cc83897",
+  "_from": "magcore-app-weather@2.11.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "37c12a5c6ba1dfdaf9845d91ae8314b79cc83897",
+    "tarball": "https://registry.npmjs.org/magcore-app-weather/-/magcore-app-weather-2.11.0.tgz",
+    "integrity": "sha512-2d2kAwAzYGi++vCVGlbl7q5Tw60qgMU6cUuOTIE9t6Y82orA70tsiUb/Uv0+BGFjtbkg4tzJzpHMBNZycQ+MhA==",
+    "fileCount": 204,
+    "unpackedSize": 902821,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtjLCRA9TVsSAnZWagAA9rMQAIBpy327wrG6itu5MKc4\nweEstLcTfQbd1AD9lXWdZelEpWf6jEjxPMR82zIOsaftLeeOVGhtal3tqEhj\nMipSg0n9UsXiIUhx7JN7ypSGdUBKdcHTzXqVvhqXWf1C1pzKqMR3VP30v/Cp\nN5LFHFnjAigqeYHtDqb4KZ8CF/VwV07zvi7qO6uHb8to2HqUAcqKI07ma5EA\n3cHHE0mP/Ss+gSpB40M2k84l1ZR6oPnI2dprFM9EHlcgrneHWq7+Vh53coQj\nwtSrBlN+PpoNosdj/Lgy5YPbmAcWfxngduQgPAbQ7v+gcwjyXVywlKR3AbVC\n71TTarMc3QMIAfICo8RVXBoFgx/34jgzjopvBGaVHN35/Rdpafvuf4dv7Ts9\nnJ1Hv3GaQm6AkEPxyVvTE/gXouXIpuEtjGwQp1ZmqORXyJ7xoReeMRajVz0J\nSO5XMjhQ3Jlbz8UzETgrdkjt/Xwr1Q5TDhoa5OGrlh32WBlZctibQBHiAQ6Z\n6M+LKa3gwADPZS7/ZjQZIajrWBWHHoPwJkbFLCj8oa8CCIUpGkoES0eAsewD\n+P5Gglas+cv8Bb3a7tRgAgT6fvMJB+t07LTlYoGkrINcjRvW5tTVYfzKyutz\nwnrQQWxPVw5PHv+uiD0oigfo3yygAFg/j49TCV9Hp6UAtcNKjUxyEcC9gmBH\nnoN1\r\n=oOXs\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-app-weather_2.11.0_1556011210663_0.44035423102046933"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-app-weather/-/magcore-app-weather-2.11.0.tgz"
+}

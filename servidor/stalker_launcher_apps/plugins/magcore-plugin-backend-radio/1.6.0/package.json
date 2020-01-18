@@ -1,0 +1,59 @@
+{
+  "name": "magcore-plugin-backend-radio",
+  "version": "1.6.0",
+  "description": "Backend plugin for Radio.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "plugin",
+    "ministra",
+    "radio",
+    "backend"
+  ],
+  "license": "license.md",
+  "config": {
+    "name": "radioBackend",
+    "type": "plugin",
+    "contentBoardApi": "1",
+    "uris": {
+      "entry": "main.js"
+    }
+  },
+  "dependencies": {
+    "magcore-core": "^3.7.86"
+  },
+  "_id": "magcore-plugin-backend-radio@1.6.0",
+  "scripts": {},
+  "_shasum": "e54f1bb2f5d589de1edf84d1348bbaaa081fac41",
+  "_from": "magcore-plugin-backend-radio@1.6.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "e54f1bb2f5d589de1edf84d1348bbaaa081fac41",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-backend-radio/-/magcore-plugin-backend-radio-1.6.0.tgz",
+    "integrity": "sha512-wx5hymLI4HRPTGiwJvmrkE14rtusTPblb0+Gk6v4oSiPQT7XCq5X1nhTf9NzaYIEnEQ1ERxI6x3ORrb4TYughQ==",
+    "fileCount": 29,
+    "unpackedSize": 76124,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtkaCRA9TVsSAnZWagAAUdQP/RrUb2b4TkY2AegR90mc\ny3OPjR2kPuT9QwDdbT/40jCcyrZOGJcNQWvnK5od5GDsegQSfmzqAkcnsSEV\nGUOm3x7JmHR0L8tOc/6xaknOyE4Nsf0Ck2qMno0FvX6NdxzpErW96BgyfrJU\nxycO4WoUf3e+1J0N4fhkI0lTDK3GRIc4xjb9blb6C2vNljcVdp8fxJSpPasR\ntipCjaPfTbcCVEThkBJ+O52izz4K2jIa0TkNU4hNnWI9MJvpgJs4ViEFrGg4\nJK9GTm8nms8Mk6XyYVGGukX5BwCuqx40CrjlrateU0Yp6abSjdOHDxql2AmX\n2IcUregFTbzxmz+j+Un49KozLo4QTr67HGDFXdib9Gh0oJYyyD1XHKxo06QF\nHjCXHIPi9QrUkSL2t2EKhBOy6cTuKV7wRazqff8qr/9t1Y8afFPVZXo4thyq\n26hl4/+b/7fOblzL7xKuXxDSDMy/3Pgf8aMVEl1Gy7519bite3uQKxDDvUfj\nC4yR/eu7hg7jTLUKRvjR8Ca+4zaS8fDC7wL2peUWVldQhm++2WICsYZKsIBi\nSYIj73K0Mpgxw3jVprHSfN7JoaXUrTqz/Zp6ubLMeN20jX2qjgF0WOJaEgm/\nJQEO4t3j7x4JQPhTN32j6PKQ8FdZwVStR08U1pSrmkZtTLrcccrCl5AF0U+U\npAMu\r\n=9L9w\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-backend-radio_1.6.0_1556011289659_0.8971916998397376"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-backend-radio/-/magcore-plugin-backend-radio-1.6.0.tgz"
+}

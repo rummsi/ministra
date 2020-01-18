@@ -1,0 +1,57 @@
+{
+  "name": "magcore-plugin-ufs",
+  "version": "2.7.0",
+  "description": "UserFS plugin for magsdk projects.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "plugin",
+    "ministra",
+    "ufs"
+  ],
+  "license": "license.md",
+  "dependencies": {
+    "magcore-core": "^3.2.0"
+  },
+  "config": {
+    "name": "ufs",
+    "type": "plugin",
+    "uris": {
+      "entry": "main.js"
+    }
+  },
+  "_id": "magcore-plugin-ufs@2.7.0",
+  "scripts": {},
+  "_shasum": "ca29c22efb9f4d7cd9c8197f853e43bf44b80b8d",
+  "_from": "magcore-plugin-ufs@2.7.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "ca29c22efb9f4d7cd9c8197f853e43bf44b80b8d",
+    "tarball": "https://registry.npmjs.org/magcore-plugin-ufs/-/magcore-plugin-ufs-2.7.0.tgz",
+    "integrity": "sha512-Q6oCR2FoWFBAX2PTDnpISg6rQqDWgKmXclpecjQBHIc66GaaEw1oDrfdR2EEs36FeuWkwcEi9FCd02XqKWItVA==",
+    "fileCount": 5,
+    "unpackedSize": 26754,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtmqCRA9TVsSAnZWagAApyUP/jif6oHsI/deRkcLTIwA\nB2ZqX0NRTniWfhHL8hNvSWXVkECRJYQ9SAoydXh1s3j1kEAZJRgakO9ulygt\nYpWxDEX5Ms+MfWmAmjdI8iqajQbq71lxT7kDjSdEeE9893N6gBYrz+mo78Yh\nD4dzo3Eqj7506iEX32IVJ3lnXtzcL8pZOrEV8oJHx9E4fPqD7+14pW0SK6FO\nT3aT8OUdreByx/Ng9HW4QU+4mDeA4HfsMTSivYpRy+iwe8On3SN+phi7G/xt\nNeMAHj6b1OmPjyPZknaNKEjRi2i0izFzWBPV0E/hUSz7NIYyVYtYR/RCIwxA\nNIojj8WW6B+7yu0DcM336Fa48heJNzXvygeD+8gWXwU46CaRDlLKnXIlgL8g\nEXlClF3zmqx7Kb6L+sLnfOv1w13VSoyO3Txk9HiFdh0zRo7K0raKP6zA6hZm\nLfv7HZ+HPUFXklPzxCx+GuFOlNmnxfCkfmKMX69vAI957M6/HzQHmOwQtEVL\ncUe34ru1ujtkNwJPEYYLgvIAU7hS56TBvCv832bZSjVi4DWjkHS7y/l8Czsb\nv8uMxys8YAKJ9nQeTc5B7BSZww6gbTS/ndoOslpkooP25aorMgkng+yaT2kg\nbk8DR8AjwcE66n2qfdeWjrj6Cgwh2kaTgq8td4hxS30kdgW15h/joQ4BMc5N\n7goQ\r\n=p+Tx\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-plugin-ufs_2.7.0_1556011434270_0.4177239611253074"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-plugin-ufs/-/magcore-plugin-ufs-2.7.0.tgz"
+}

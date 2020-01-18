@@ -1,0 +1,1 @@
+{"meta":{"charset":"utf-8","project":"magcore-app-photo-viewer 0.9.1","language":"pl","plural":"(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"},"data":{"":{"Random":"","Repeat":"","Slide show":"","photo-viewer":"","sec":""}}}

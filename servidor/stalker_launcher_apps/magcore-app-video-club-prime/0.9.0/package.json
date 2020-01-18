@@ -1,0 +1,109 @@
+{
+  "name": "magcore-app-video-club-prime",
+  "version": "0.9.0",
+  "description": "Video club for ministra.",
+  "author": {
+    "name": "Infomir",
+    "email": "support@infomir.eu"
+  },
+  "keywords": [
+    "magcore",
+    "application",
+    "video",
+    "club",
+    "video-club",
+    "ministra"
+  ],
+  "license": "license.md",
+  "config": {
+    "name": "VIDEO CLUB",
+    "description": "Watch movies and TV shows, discover the most interesting ones with easy search and flexible filters.",
+    "type": "app",
+    "category": "media",
+    "actions": {
+      "videoClub": true
+    },
+    "contentProviders": [
+      "magcore-plugin-backend-video-stalker"
+    ],
+    "uris": {
+      "app": "/",
+      "entry": "index.html",
+      "icons": {
+        "480": {
+          "logoNormal": "img/480/normal.png",
+          "logoActive": "img/480/active.png",
+          "primekLogoNormal": "img/480/prime-normal.png",
+          "primeLogoActive": "img/480/prime-active.png"
+        },
+        "576": {
+          "logoNormal": "img/576/normal.png",
+          "logoActive": "img/576/active.png",
+          "primeLogoNormal": "img/576/prime-normal.png",
+          "primeLogoActive": "img/576/prime-active.png"
+        },
+        "720": {
+          "logoNormal": "img/720/normal.png",
+          "logoActive": "img/720/active.png",
+          "primeLogoNormal": "img/720/prime-normal.png",
+          "primeLogoActive": "img/720/prime-active.png"
+        },
+        "1080": {
+          "logoNormal": "img/1080/normal.png",
+          "logoActive": "img/1080/active.png",
+          "primeLogoNormal": "img/1080/prime-normal.png",
+          "primeLogoActive": "img/1080/prime-active.png"
+        }
+      }
+    },
+    "colors": {
+      "splashFont": "#fff",
+      "splashBackground": "#6e5fd6"
+    },
+    "resource": "video"
+  },
+  "dependencies": {
+    "magcore-core": "^3.7.86",
+    "magcore-app-auth-ministra": "^3.5.38",
+    "magcore-osd-access-control": "^2.0.17",
+    "magcore-plugin-backend-video-stalker": "^3.3.6",
+    "magcore-theme": "^1.4.1",
+    "magcore-app-player": "^3.7.0",
+    "magcore-osd-keyboard": "^2.0.0"
+  },
+  "optionalDependencies": {
+    "magcore-app-player": "^3.7.0",
+    "magcore-osd-keyboard": "^2.0.0"
+  },
+  "_id": "magcore-app-video-club-prime@0.9.0",
+  "scripts": {},
+  "_shasum": "b32447d2c7a207f7100207692a46c0e107daadc0",
+  "_from": "magcore-app-video-club-prime@0.9.0",
+  "_npmVersion": "2.15.11",
+  "_nodeVersion": "6.16.0",
+  "_npmUser": {
+    "name": "infomir",
+    "email": "darkpark.infomir@gmail.com"
+  },
+  "dist": {
+    "shasum": "b32447d2c7a207f7100207692a46c0e107daadc0",
+    "tarball": "https://registry.npmjs.org/magcore-app-video-club-prime/-/magcore-app-video-club-prime-0.9.0.tgz",
+    "integrity": "sha512-pqk7yhDy5G0VGRrYLxXma0j6O31vrcw2JHyvNBSrqcKiPxJMpZrmFyxYjoojASwdNSTLpkbVoerupc0sXB7Ifw==",
+    "fileCount": 193,
+    "unpackedSize": 3465489,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcvtjHCRA9TVsSAnZWagAAM78P/2Kk2Itt6y57+5L5m4aH\nktdTvgcWgQWv1wtUqwkLpg+ml4v+zMozGG9SP0hX9AE6B6fydGCahqWvXFqz\n2aj6cvmI4fZtUu1K1hXy6ToVkZW07HK7nyzCCMc3XSQfuigRr1GCHf8N1AGY\nTs1X4WFngmkwQn9KuXAuMeu3+40lpSTggbsqXzpirtZ+2ACwVD5CCMuVVtWt\nAcu0W+XIJe6VLPq8qaNAM0oOLt7ZpbcGPJpO8PPlK6xwBjwqboPqGcNjfk8D\nBTuA2xp7KIwqugmpBgHJQcrUYztglBct5S4PO8vvqQqf5GL4YBtPmmgGV/Wq\nUW5pkQO8rL+MPLabrMYn5tJV93C3eN1PumeYemyboNLT2kRGj8tatzoXV+JH\nUZdzyXctHGb8qVl7dtwrkPkNmenPpWZ6P66qRkKpbt4YtBTIWeqnJKBgv66W\nXlREpHXYwFEwOZpJ9G4p+BKQzNwAkU7f5W/KztxhMZ9bhCYgaus5AxNXtBiX\nmZVv9VX/OAPBZM8gGUmiwWbc1c7xKnlg4C4XZ2DGyKY4n8Ghhfo8DsUoC0te\nysMgdXVfqdDZmkQTgqemSovN7O3NO9BGOqVNEpLcR2Vn6hEJ/rkXSRHJ05w/\nXbWk0E9QTS+UKE+ujPK+4172AB2ARPuIcjMTBCgTNXgOvMr7X6wIclo74aj+\nLzRC\r\n=2Fy0\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "maintainers": [
+    {
+      "name": "infomir",
+      "email": "darkpark.infomir@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/magcore-app-video-club-prime_0.9.0_1556011206076_0.803065969452976"
+  },
+  "_hasShrinkwrap": false,
+  "_resolved": "http://registry.npmjs.org/magcore-app-video-club-prime/-/magcore-app-video-club-prime-0.9.0.tgz"
+}
