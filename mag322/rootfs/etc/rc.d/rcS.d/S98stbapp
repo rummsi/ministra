@@ -1,3 +1,0 @@
-#!/bin/sh
-
-/usr/local/share/app/bin/stbapp_start.sh > /dev/null 2>&1 &

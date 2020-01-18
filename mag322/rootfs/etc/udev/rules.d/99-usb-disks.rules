@@ -1,9 +1,0 @@
-
-
-ACTION=="add", KERNEL=="[sh]d[a-z]*", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ENV{uModel}="$attr{model}", ENV{uVendor}="$attr{vendor}", ENV{DEV_NAME}="%k", ENV{SERIAL}="$attr{serial}", ENV{PNUM}="%n", RUN+="/bin/flock -u /ram/mounts.lock /etc/init.d/usb-disks-handler.sh add"
-ACTION=="add", KERNEL=="[sh]d[a-z]*", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{uModel}="$attr{model}", ENV{uVendor}="$attr{vendor}", ENV{DEV_NAME}="%k", ENV{SERIAL}="$attr{serial}", ENV{PNUM}="%n", RUN+="/bin/flock -u /ram/mounts.lock /etc/init.d/usb-disks-handler.sh add"
-
-ACTION=="remove", KERNEL=="[sh]d[a-z]*", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ENV{DEV_NAME}="%k", ENV{PNUM}="%n", ENV{SERIAL}="$attr{serial}", RUN+="/bin/flock -u /ram/mounts.lock /etc/init.d/usb-disks-handler.sh remove"
-ACTION=="remove", KERNEL=="[sh]d[a-z]*", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{DEV_NAME}="%k", ENV{PNUM}="%n", ENV{SERIAL}="$attr{serial}", RUN+="/bin/flock -u /ram/mounts.lock /etc/init.d/usb-disks-handler.sh remove"
-ACTION=="change", KERNEL=="[sh]d[a-z]*", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ENV{DEV_NAME}="%k", RUN+="/bin/flock -u /ram/mounts.lock/etc/init.d/usb-disks-handler.sh change"
-
