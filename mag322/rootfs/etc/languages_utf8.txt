@@ -1,8 +1,0 @@
-"bg","Bulgarian (Български)"
-"en","English"
-"de","German (Deutsch)"
-"ru","Russian (Русский)"
-"uk","Ukrainian (Українська)"
-"es","Spanish (Español)"
-"tr","Turkish (Türkçe)"
-"el","Greek (Ελληνική)"

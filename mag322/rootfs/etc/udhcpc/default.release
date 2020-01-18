@@ -1,6 +1,0 @@
-#!/bin/sh
-# Sample udhcpc deconfig script
-
-DEBUG=0
-
-log "Releasing interface $1 ..."

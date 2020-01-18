@@ -1,1 +1,0 @@
-{"meta":{"charset":"utf-8","project":"magcore-plugin-pvr 4.2.0","language":"lv","plural":"(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2)"},"data":{"":{"Recorded":"","Recording":"","Recording error!":"","Scheduled recording":"","pvr":""}}}
