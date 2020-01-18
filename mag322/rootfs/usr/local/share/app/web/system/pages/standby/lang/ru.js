@@ -1,1 +1,0 @@
-gettext.load({"Device will be shut down in ":"Устройство будет выключено через "," seconds.<br>Press any key to cancel.":" секунд.<br>Нажмите любую кнопку для отмены."});
