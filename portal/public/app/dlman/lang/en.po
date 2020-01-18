@@ -1,0 +1,341 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Internet Bookmarks Manager\n"
+"POT-Creation-Date: 2017-05-12 11:57+0300\n"
+"PO-Revision-Date: 2020-01-18 21:55+0000\n"
+"Last-Translator: rummsi <rummsi@gmail.com>\n"
+"Language-Team: rummsi\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.4\n"
+"X-Poedit-KeywordsList: _;gettext.data\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../app.js:92 ../modals.js:30 ../modals.js:31 ../modals.js:41 ../modals.js:42
+#: ../modals.js:64 ../modals.js:66 ../view.main.js:334
+msgid "GB"
+msgstr "GB"
+
+#: ../app.js:93 ../view.main.js:337
+msgid "MB"
+msgstr "MB"
+
+#: ../app.js:94 ../view.main.js:340
+msgid "KB"
+msgstr "KB"
+
+#: ../app.js:96 ../view.main.js:342
+msgid "B"
+msgstr "B"
+
+#: ../cdlist.js:319
+msgid "Unsupported format"
+msgstr "Unsupported format"
+
+#: ../cdlist.js:322
+msgid "File not found"
+msgstr "File not found"
+
+#: ../modals.js:24 ../modals.js:39
+msgid "No storage device"
+msgstr "No storage device"
+
+#: ../modals.js:51 ../view.main.js:266
+msgid "URL:"
+msgstr "URL:"
+
+#: ../modals.js:55 ../view.main.js:265
+msgid "File name:"
+msgstr "File name:"
+
+#: ../modals.js:59
+msgid "Download in:"
+msgstr "Download in:"
+
+#: ../modals.js:64
+msgid "Free space:"
+msgstr "Free space:"
+
+#: ../modals.js:65
+msgid "of"
+msgstr "of"
+
+#: ../modals.js:80 ../view.main.js:496
+msgid "Add download"
+msgstr "Add download"
+
+#: ../modals.js:80 ../modals.js:158 ../modals.js:225
+msgid "Cancel"
+msgstr "Cancel"
+
+#: ../modals.js:113
+msgid "Create"
+msgstr "Create"
+
+#: ../modals.js:123
+msgid "Not enough disk space"
+msgstr "Not enough disk space"
+
+#: ../modals.js:123
+msgid "File size: "
+msgstr "File size: "
+
+#: ../modals.js:123 ../modals.js:126 ../modals.js:142 ../modals.js:184
+#: ../view.main.js:206 ../view.main.js:468
+msgid "Close"
+msgstr "Close"
+
+#: ../modals.js:126
+msgid "Create download"
+msgstr "Create download"
+
+#: ../modals.js:126
+msgid "File name or URL already used"
+msgstr "File name or URL already used"
+
+#: ../modals.js:142 ../modals.js:184
+msgid "Wrong data"
+msgstr "Wrong data"
+
+#: ../modals.js:142
+msgid "Provided name is invalid"
+msgstr "Provided name is invalid"
+
+#: ../modals.js:144
+msgid "No storage device found"
+msgstr "No storage device found"
+
+#: ../modals.js:154
+msgid "Unsupported file extension"
+msgstr "Unsupported file extension"
+
+#: ../modals.js:158 ../view.main.js:243 ../view.main.js:244
+msgid "Error"
+msgstr "Error"
+
+#: ../modals.js:158
+msgid "File with this name already exist. Do you want rewrite it?"
+msgstr "File with this name already exist. Do you want rewrite it?"
+
+#: ../modals.js:160
+msgid "Ok"
+msgstr "Ok"
+
+#: ../modals.js:175
+msgid "Some error. Please rename the file."
+msgstr "Some error. Please rename the file."
+
+#: ../modals.js:184
+msgid "Provided url is invalid"
+msgstr "Provided url is invalid"
+
+#: ../modals.js:213
+msgid "Delete the related file"
+msgstr "Delete the related file"
+
+#: ../modals.js:225
+msgid "Delete download"
+msgstr "Delete download"
+
+#: ../modals.js:247
+msgid "Apply"
+msgstr "Apply"
+
+#: ../view.main.js:82
+msgid "Download manager"
+msgstr "Download manager"
+
+#: ../view.main.js:96
+msgid "Enter part of download name..."
+msgstr "Enter part of download name..."
+
+#: ../view.main.js:165
+msgid "USB storage is connected"
+msgstr "USB storage is connected"
+
+#: ../view.main.js:185
+msgid "Exit"
+msgstr "Exit"
+
+#: ../view.main.js:198
+msgid "Menu"
+msgstr "Menu"
+
+#: ../view.main.js:201 ../view.main.js:688
+msgid "Show<br>info panel"
+msgstr "Show<br>info panel"
+
+#: ../view.main.js:204
+msgid "Add<br>download"
+msgstr "Add<br>download"
+
+#: ../view.main.js:206 ../view.main.js:468
+msgid "Warning!"
+msgstr "Warning!"
+
+#: ../view.main.js:206 ../view.main.js:468
+msgid "\"Storage read only access mode\" is enabled in System Settings"
+msgstr "\"Storage read only access mode\" is enabled in System Settings"
+
+# menu item
+#: ../view.main.js:211 ../view.main.js:499
+msgid "Select"
+msgstr "Select"
+
+#: ../view.main.js:239
+msgid "Paused "
+msgstr "Paused "
+
+#: ../view.main.js:240 ../view.main.js:523
+msgid "Waiting"
+msgstr "Waiting"
+
+#: ../view.main.js:241
+msgid "Downloading"
+msgstr "Downloading"
+
+#: ../view.main.js:242
+msgid "Completed"
+msgstr "Completed"
+
+#: ../view.main.js:253
+msgid "Downloads:"
+msgstr "Downloads:"
+
+#: ../view.main.js:254
+msgid "Selected:"
+msgstr "Selected:"
+
+#: ../view.main.js:267
+msgid "Storage device:"
+msgstr "Storage device:"
+
+#: ../view.main.js:268
+msgid "State:"
+msgstr "State:"
+
+# menu item
+#: ../view.main.js:269
+msgid "Priority:"
+msgstr "Priority:"
+
+#: ../view.main.js:270
+msgid "Size:"
+msgstr "Size:"
+
+#: ../view.main.js:304
+msgid "Contains a list of items corresponding to the given filter request"
+msgstr "Contains a list of items corresponding to the given filter request"
+
+#: ../view.main.js:310
+msgid "Detailed info on selected download"
+msgstr "Detailed info on selected download"
+
+#: ../view.main.js:430
+msgid "Operations"
+msgstr "Operations"
+
+#: ../view.main.js:484
+msgid "Temporary files cleaning..."
+msgstr "Temporary files cleaning..."
+
+# menu item
+#: ../view.main.js:493
+msgid "Open"
+msgstr "Open"
+
+#: ../view.main.js:494
+msgid "Resume"
+msgstr "Resume"
+
+#: ../view.main.js:495
+msgid "Stop"
+msgstr "Stop"
+
+# menu item
+#: ../view.main.js:497
+msgid "Increase priority"
+msgstr "Increase priority"
+
+# menu item
+#: ../view.main.js:498
+msgid "Decrease priority"
+msgstr "Decrease priority"
+
+# menu item
+#: ../view.main.js:500
+msgid "Select all"
+msgstr "Select all"
+
+# menu item
+#: ../view.main.js:501
+msgid "Deselect all"
+msgstr "Deselect all"
+
+# menu item
+#: ../view.main.js:502
+msgid "Invert selection"
+msgstr "Invert selection"
+
+# menu item
+#: ../view.main.js:503
+msgid "Delete"
+msgstr "Delete"
+
+#: ../view.main.js:504
+msgid "Clean temporary files"
+msgstr "Clean temporary files"
+
+#: ../view.main.js:506
+msgid "View"
+msgstr "View"
+
+# menu item
+#: ../view.main.js:521
+msgid "All"
+msgstr "All"
+
+#: ../view.main.js:522
+msgid "Done"
+msgstr "Done"
+
+#: ../view.main.js:524
+msgid "Paused"
+msgstr "Paused"
+
+#: ../view.main.js:525
+msgid "Errors"
+msgstr "Errors"
+
+#: ../view.main.js:528
+msgid "Sorting"
+msgstr "Sorting"
+
+# menu item
+#: ../view.main.js:544
+msgid "By state"
+msgstr "By state"
+
+# menu item
+#: ../view.main.js:545
+msgid "By name"
+msgstr "By name"
+
+# menu item
+#: ../view.main.js:546
+msgid "By size"
+msgstr "By size"
+
+# menu item
+#: ../view.main.js:547
+msgid "By priority"
+msgstr "By priority"
+
+#: ../view.main.js:688
+msgid "Hide<br>info panel"
+msgstr "Hide<br>info panel"

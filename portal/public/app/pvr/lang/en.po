@@ -1,0 +1,381 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Internet bookmarks Manager\n"
+"POT-Creation-Date: 2017-05-12 12:05+0300\n"
+"PO-Revision-Date: 2020-01-18 22:02+0000\n"
+"Last-Translator: rummsi <rummsi@gmail.com>\n"
+"Language-Team: rummsi\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.4\n"
+"X-Poedit-KeywordsList: _;gettext.data\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../cblist.js:460
+msgid "File not found"
+msgstr "File not found"
+
+#: ../cblist.js:480
+msgid "Error"
+msgstr "Error"
+
+#: ../cblist.js:480
+msgid "Unknown type of selected item"
+msgstr "Unknown type of selected item"
+
+#: ../cblist.js:480 ../view.main.js:222 ../view.main.js:441
+msgid "Close"
+msgstr "Close"
+
+#: ../modals.js:130 ../modals.js:635
+msgid "End recording:"
+msgstr "End recording:"
+
+#: ../modals.js:147 ../modals.js:652
+msgid "Record length:"
+msgstr "Record length:"
+
+#: ../modals.js:234 ../modals.js:344 ../modals.js:854
+msgid "Cancel"
+msgstr "Cancel"
+
+#: ../modals.js:237 ../view.main.js:506
+msgid "Edit"
+msgstr "Edit"
+
+#: ../modals.js:332
+msgid "Delete related file"
+msgstr "Delete related file"
+
+#: ../modals.js:344
+msgid "Delete record"
+msgstr "Delete record"
+
+# menu item
+#: ../modals.js:366 ../view.main.js:512
+msgid "Delete"
+msgstr "Delete"
+
+#: ../modals.js:563
+msgid "IPTV"
+msgstr "IPTV"
+
+#: ../modals.js:590 ../modals.js:785 ../view.main.js:176
+msgid "No storage device"
+msgstr "No storage device"
+
+#: ../modals.js:602
+msgid "No channels"
+msgstr "No channels"
+
+#: ../modals.js:618
+msgid "Start recording:"
+msgstr "Start recording:"
+
+#: ../modals.js:662
+msgid "Path:"
+msgstr "Path:"
+
+#: ../modals.js:667 ../view.main.js:287
+msgid "Channel:"
+msgstr "Channel:"
+
+#: ../modals.js:671
+msgid "Record name:"
+msgstr "Record name:"
+
+#: ../modals.js:677
+msgid "Record in:"
+msgstr "Record in:"
+
+#: ../modals.js:683
+msgid "Free space:"
+msgstr "Free space:"
+
+#: ../modals.js:683 ../modals.js:684
+msgid "GB"
+msgstr "GB"
+
+#: ../modals.js:683
+msgid "of"
+msgstr "of"
+
+#: ../modals.js:766
+msgid "Channel list is empty"
+msgstr "Channel list is empty"
+
+#: ../modals.js:780
+msgid "Error. Too many active records."
+msgstr "Error. Too many active records."
+
+#: ../modals.js:790 ../modals.js:821 ../modals.js:839 ../model.main.js:60
+#: ../model.main.js:78
+msgid "Not enough disk space"
+msgstr "Not enough disk space"
+
+#: ../modals.js:824 ../model.main.js:63
+msgid "Incorrect time"
+msgstr "Incorrect time"
+
+#: ../modals.js:827 ../model.main.js:66
+msgid "Wrong name or path"
+msgstr "Wrong name or path"
+
+#: ../modals.js:830 ../model.main.js:69
+msgid "Duplicated file"
+msgstr "Duplicated file"
+
+#: ../modals.js:833 ../model.main.js:72
+msgid "Wrong URL"
+msgstr "Wrong URL"
+
+#: ../modals.js:836 ../model.main.js:75
+msgid "Too many active records processed"
+msgstr "Too many active records processed"
+
+#: ../modals.js:842
+msgid "Error..."
+msgstr "Error..."
+
+#: ../modals.js:857
+msgid "Start recording"
+msgstr "Start recording"
+
+#: ../model.main.js:39 ../view.main.js:534
+msgid "Scheduled"
+msgstr "Scheduled"
+
+#: ../model.main.js:43
+msgid "Recording"
+msgstr "Recording"
+
+#: ../model.main.js:47 ../model.main.js:81
+msgid "Recording error"
+msgstr "Recording error"
+
+#: ../model.main.js:51 ../view.main.js:537
+msgid "Completed"
+msgstr "Completed"
+
+#: ../view.main.js:92
+msgid "Record manager"
+msgstr "Record manager"
+
+#: ../view.main.js:102
+msgid "Enter record name..."
+msgstr "Enter record name..."
+
+#: ../view.main.js:190
+msgid "USB storage is connected"
+msgstr "USB storage is connected"
+
+#: ../view.main.js:204
+msgid "Exit"
+msgstr "Exit"
+
+#: ../view.main.js:214
+msgid "Menu"
+msgstr "Menu"
+
+#: ../view.main.js:217 ../view.main.js:699
+msgid "Show<br>info panel"
+msgstr "Show<br>info panel"
+
+#: ../view.main.js:220
+msgid "Add<br>record"
+msgstr "Add<br>record"
+
+#: ../view.main.js:222 ../view.main.js:441
+msgid "Warning!"
+msgstr "Warning!"
+
+#: ../view.main.js:222 ../view.main.js:441
+msgid "\"Storage read only access mode\" is enabled in System Settings"
+msgstr "\"Storage read only access mode\" is enabled in System Settings"
+
+# menu item
+#: ../view.main.js:227 ../view.main.js:508
+msgid "Select"
+msgstr "Select"
+
+#: ../view.main.js:247
+msgid "Items:"
+msgstr "Items:"
+
+#: ../view.main.js:248
+msgid "Selected:"
+msgstr "Selected:"
+
+#: ../view.main.js:259
+msgid "Contains a list of items corresponding to the given filter request"
+msgstr "Contains a list of items corresponding to the given filter request"
+
+#: ../view.main.js:279
+msgid "Detailed information about the selected record"
+msgstr "Detailed information about the selected record"
+
+#: ../view.main.js:282
+msgid "Name:"
+msgstr "Name:"
+
+#: ../view.main.js:283
+msgid "Status:"
+msgstr "Status:"
+
+#: ../view.main.js:284
+msgid "Start:"
+msgstr "Start:"
+
+#: ../view.main.js:285
+msgid "End:"
+msgstr "End:"
+
+# menu item
+#: ../view.main.js:286
+msgid "Duration:"
+msgstr "Duration:"
+
+# часов
+#: ../view.main.js:286
+msgid "h."
+msgstr "h."
+
+# минут
+#: ../view.main.js:286
+msgid "m."
+msgstr "m."
+
+#: ../view.main.js:323
+msgid "Jan"
+msgstr "Jan"
+
+#: ../view.main.js:323
+msgid "Feb"
+msgstr "Feb"
+
+#: ../view.main.js:323
+msgid "Mar"
+msgstr "Mar"
+
+#: ../view.main.js:323
+msgid "Apr"
+msgstr "Apr"
+
+#: ../view.main.js:323
+msgid "May"
+msgstr "May"
+
+#: ../view.main.js:323
+msgid "Jun"
+msgstr "Jun"
+
+#: ../view.main.js:323
+msgid "Jul"
+msgstr "Jul"
+
+#: ../view.main.js:323
+msgid "Aug"
+msgstr "Aug"
+
+#: ../view.main.js:323
+msgid "Sep"
+msgstr "Sep"
+
+#: ../view.main.js:323
+msgid "Oct"
+msgstr "Oct"
+
+#: ../view.main.js:323
+msgid "Nov"
+msgstr "Nov"
+
+#: ../view.main.js:323
+msgid "Dec"
+msgstr "Dec"
+
+#: ../view.main.js:429
+msgid "Operations"
+msgstr "Operations"
+
+#: ../view.main.js:443 ../view.main.js:505 ../view.main.js:710
+msgid "Add record"
+msgstr "Add record"
+
+#: ../view.main.js:448
+msgid "Edit record"
+msgstr "Edit record"
+
+# menu item
+#: ../view.main.js:504
+msgid "Open"
+msgstr "Open"
+
+#: ../view.main.js:507
+msgid "Stop"
+msgstr "Stop"
+
+# menu item
+#: ../view.main.js:509
+msgid "Select all"
+msgstr "Select all"
+
+# menu item
+#: ../view.main.js:510
+msgid "Deselect all"
+msgstr "Deselect all"
+
+# menu item
+#: ../view.main.js:511
+msgid "Invert selection"
+msgstr "Invert selection"
+
+#: ../view.main.js:515
+msgid "View"
+msgstr "View"
+
+# menu item
+#: ../view.main.js:533
+msgid "All"
+msgstr "All"
+
+# menu item
+#: ../view.main.js:535
+msgid "In progress"
+msgstr "In progress"
+
+#: ../view.main.js:536
+msgid "Errors"
+msgstr "Errors"
+
+#: ../view.main.js:540
+msgid "Sort"
+msgstr "Sort"
+
+# menu item
+#: ../view.main.js:555
+msgid "By name"
+msgstr "By name"
+
+# menu item
+#: ../view.main.js:556
+msgid "By time"
+msgstr "By time"
+
+# menu item
+#: ../view.main.js:557
+msgid "By state"
+msgstr "By state"
+
+# menu item
+#: ../view.main.js:558
+msgid "By duration"
+msgstr "By duration"
+
+#: ../view.main.js:699
+msgid "Hide<br>info panel"
+msgstr "Hide<br>info panel"

@@ -1,0 +1,198 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Service menu\n"
+"POT-Creation-Date: 2017-05-12 12:12+0300\n"
+"PO-Revision-Date: 2020-01-18 19:43+0000\n"
+"Last-Translator: rummsi <rummsi@gmail.com>\n"
+"Language-Team: rummsi\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.4\n"
+"X-Poedit-KeywordsList: _;gettext.data\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../js/main.js:23
+msgid "Retry"
+msgstr "Retry"
+
+#: ../js/main.js:24
+msgid "Cancel"
+msgstr "Cancel"
+
+#: ../js/main.js:25
+msgid "Show log"
+msgstr "Show log"
+
+#: ../js/main.js:26
+msgid "Hide log"
+msgstr "Hide log"
+
+#: ../js/main.js:27
+msgid "Update"
+msgstr "Update"
+
+#: ../js/main.js:28 ../js/main.js:35
+msgid "Update status"
+msgstr "Update status"
+
+#: ../js/main.js:29
+msgid "Check image"
+msgstr "Check image"
+
+#: ../js/main.js:30
+msgid "Exit"
+msgstr "Exit"
+
+#: ../js/main.js:31
+msgid "Current version"
+msgstr "Current version"
+
+#: ../js/main.js:32
+msgid "New version"
+msgstr "New version"
+
+#: ../js/main.js:33
+msgid "Description"
+msgstr "Description"
+
+#: ../js/main.js:34
+msgid "Updating to version"
+msgstr "Updating to version"
+
+#: ../js/main.js:36
+msgid "<span class=\"alert\">Warning!</span> Device will be rebooted after update"
+msgstr "<span class=\"alert\">Warning!</span> Device will be rebooted after update"
+
+#: ../js/main.js:37
+msgid "Change log"
+msgstr "Change log"
+
+#: ../js/main.js:38
+msgid "Information not found"
+msgstr "Information not found"
+
+#: ../js/main.js:39
+msgid "Signature init error"
+msgstr "Signature init error"
+
+#: ../js/main.js:40
+msgid "Wrong device model"
+msgstr "Wrong device model"
+
+#: ../js/main.js:41
+msgid "Section size exceeds partition size on FLASH"
+msgstr "Section size exceeds partition size on FLASH"
+
+#: ../js/main.js:42
+msgid "Required FLASH section not found. Aborting update"
+msgstr "Required FLASH section not found. Aborting update"
+
+#: ../js/main.js:43
+msgid "Updating kernel"
+msgstr "Updating kernel"
+
+#: ../js/main.js:44
+msgid "Updating image"
+msgstr "Updating image"
+
+#: ../js/main.js:45
+msgid "Internal error"
+msgstr "Internal error"
+
+#: ../js/main.js:46
+msgid "Inspecting firmware"
+msgstr "Inspecting firmware"
+
+#: ../js/main.js:47
+msgid "Updating environment variables"
+msgstr "Updating environment variables"
+
+#: ../js/main.js:48
+msgid "Updating Bootstrap section"
+msgstr "Updating Bootstrap section"
+
+#: ../js/main.js:49
+msgid "Skipping Bootstrap section"
+msgstr "Skipping Bootstrap section"
+
+#: ../js/main.js:50
+msgid "Updating User FS section"
+msgstr "Updating User FS section"
+
+#: ../js/main.js:51
+msgid "Skipping User FS section"
+msgstr "Skipping User FS section"
+
+#: ../js/main.js:52
+msgid "Updating second boot"
+msgstr "Updating second boot"
+
+#: ../js/main.js:53
+msgid "Updating logotype"
+msgstr "Updating logotype"
+
+#: ../js/main.js:54
+msgid "Update finished OK"
+msgstr "Update finished OK"
+
+#: ../js/main.js:55
+msgid "Wrong signature"
+msgstr "Wrong signature"
+
+#: ../js/main.js:56
+msgid "Erasing flash section"
+msgstr "Erasing flash section"
+
+#: ../js/main.js:57
+msgid "Flash write error"
+msgstr "Flash write error"
+
+#: ../js/main.js:58
+msgid "File write error"
+msgstr "File write error"
+
+# Используется в обновлении как статус говорящий о готовности.
+#: ../js/main.js:59
+msgid "Idle"
+msgstr "Idle"
+
+#: ../js/main.js:60
+msgid "Invalid file header"
+msgstr "Invalid file header"
+
+#: ../js/main.js:61
+msgid "Inspecting update file"
+msgstr "Inspecting update file"
+
+#: ../js/main.js:62
+msgid "File check finished"
+msgstr "File check finished"
+
+#: ../js/main.js:63
+msgid "File not found"
+msgstr "File not found"
+
+#: ../js/main.js:64
+msgid "Initialising"
+msgstr "Initialising"
+
+#: ../js/main.js:65
+msgid "Read error"
+msgstr "Read error"
+
+#: ../js/main.js:66
+msgid "Status"
+msgstr "Status"
+
+#: ../js/main.js:67
+msgid "Date"
+msgstr "Date"
+
+#: ../js/main.js:71
+msgid "Autoupdate"
+msgstr "Autoupdate"
