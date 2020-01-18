@@ -1,1 +1,0 @@
-{"meta":{"charset":"utf-8","project":"magcore-app-2048 2.3.0","language":"pl","plural":"(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"},"data":{"":{"2048":"","2048 is one of the world’s most popular puzzles. The rules are simple: you need to shuffle all the bars to one side of the game field. Your goal is to reach 2048.":""}}}
