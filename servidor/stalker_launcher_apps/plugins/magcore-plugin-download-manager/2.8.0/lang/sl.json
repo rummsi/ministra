@@ -1,1 +1,0 @@
-{"meta":{"charset":"utf-8","project":"downloads","language":"sl","plural":"(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)"},"data":{"":{"Failed to create download.":"","File already exist.":"Datoteka že obstaja.","Wrong download item.":"","Wrong fileName.":"Napačno ime datoteke.","Wrong path to storage.":"","Wrong url.":"Napačen url-naslov."}}}

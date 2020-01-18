@@ -1,1 +1,0 @@
-{"meta":{"charset":"utf-8","project":"downloads","language":"pl","plural":"(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"},"data":{"":{"Failed to create download.":"","File already exist.":"Plik już istnieje.","Wrong download item.":"","Wrong fileName.":"Niepoprawna nazwa pliku:","Wrong path to storage.":"","Wrong url.":"Nieprawidłowy adres URL."}}}
