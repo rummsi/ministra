@@ -12241,7 +12241,7 @@ msgstr "Profil de l'utilisateur"
 #: admin/src/Lib/Authentication/User/UserProvider.php:148
 #, php-format
 msgid "User role \"%s\" does not exists"
-msgstr "ou le fichier n'existe pas"
+msgstr ""
 
 msgid "User status"
 msgstr "Statut utilisateur"

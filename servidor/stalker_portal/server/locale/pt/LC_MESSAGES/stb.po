@@ -15,9 +15,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 3.10.3\n"
-"X-Poedit-KeywordsList: "
-"trans;transchoice;setLocalization;transChoice;_;gettext;gettext_noop;"
-"dgettext\n"
+"X-Generator: Poedit 2.2.4\n"
+"X-Poedit-KeywordsList: trans;transchoice;setLocalization;transChoice;_;"
+"gettext;gettext_noop;dgettext\n"
 "X-Poedit-Basepath: ../../../..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: admin/json_menu\n"
@@ -72,9 +72,10 @@ msgstr "ID"
 #: admin/src/Controller/UsersController.php:177
 #: admin/src/Controller/UsersController.php:238
 #: server/administrator/administrators.php:142
-#: server/administrator/administrators.php:173 server/administrator/login.php:59
-#: server/administrator/profile.php:442 server/administrator/user.php:138
-#: server/lang/stb.php:285 server/lang/stb.php:295 server/lang/stb.php:391
+#: server/administrator/administrators.php:173
+#: server/administrator/login.php:59 server/administrator/profile.php:442
+#: server/administrator/user.php:138 server/lang/stb.php:285
+#: server/lang/stb.php:295 server/lang/stb.php:391
 #: admin/resources/views/default/Admins/admins_list/admins_list.twig:83
 #: admin/resources/views/default/Settings/themes_edit/themes_edit.twig:39
 #: admin/resources/views/default/Users/add_users/add_users.twig:57
@@ -86,8 +87,9 @@ msgstr "Entrar"
 #: admin/src/Controller/EventsController.php:567
 #: admin/src/Controller/UsersController.php:181
 #: server/administrator/administrators.php:145
-#: server/administrator/administrators.php:201 server/administrator/events.php:450
-#: server/administrator/playlists.php:160 server/administrator/profile.php:533
+#: server/administrator/administrators.php:201
+#: server/administrator/events.php:450 server/administrator/playlists.php:160
+#: server/administrator/profile.php:533
 #: admin/resources/views/Events_index.twig:93
 #: admin/resources/views/Events_index.twig:126
 #: admin/resources/views/default/Admins/admins_groups/admins_groups.twig:136
@@ -184,7 +186,8 @@ msgstr "Operações"
 #: admin/src/Controller/VideoClubController.php:523
 #: admin/src/Controller/VideoClubController.php:534
 #: admin/src/Controller/VideoClubController.php:551
-#: server/administrator/add_video.php:759 server/administrator/add_video.php:1563
+#: server/administrator/add_video.php:759
+#: server/administrator/add_video.php:1563
 #: server/administrator/audio_album.php:264
 #: server/administrator/audio_language.php:158
 #: server/administrator/audio_track.php:278
@@ -193,12 +196,13 @@ msgstr "Operações"
 #: server/administrator/myvideolog.php:126
 #: server/administrator/services_packages.php:313
 #: server/administrator/services_packages.php:353
-#: server/administrator/stat_timeshift.php:99 server/administrator/stat_tv.php:145
+#: server/administrator/stat_timeshift.php:99
+#: server/administrator/stat_tv.php:145
 #: server/administrator/stat_tv_archive.php:100
-#: server/administrator/stat_video.php:171 server/administrator/stbgroups.php:126
-#: server/administrator/tariffs.php:286 server/administrator/tariffs.php:326
-#: server/administrator/tasks.php:172 server/administrator/vclub_ad.php:140
-#: server/administrator/vclub_ad.php:194
+#: server/administrator/stat_video.php:171
+#: server/administrator/stbgroups.php:126 server/administrator/tariffs.php:286
+#: server/administrator/tariffs.php:326 server/administrator/tasks.php:172
+#: server/administrator/vclub_ad.php:140 server/administrator/vclub_ad.php:194
 #: admin/resources/views/default/AudioClub/add_audio_albums/add_audio_albums.twig:124
 #: admin/resources/views/default/AudioClub/add_audio_albums/add_audio_albums_old.twig:278
 #: admin/resources/views/default/BroadcastServers/add_zone/add_zone.twig:29
@@ -247,13 +251,15 @@ msgstr "permissões para administradores de grupo "
 #: server/administrator/add_karaoke.php:585
 #: server/administrator/add_moderator_mac.php:131
 #: server/administrator/add_moderator_mac.php:198
-#: server/administrator/add_radio.php:131 server/administrator/add_radio.php:215
+#: server/administrator/add_radio.php:131
+#: server/administrator/add_radio.php:215
 #: server/administrator/admin_groups.php:187
 #: server/administrator/admin_groups.php:212
 #: server/administrator/audio_genre.php:159
 #: server/administrator/audio_performer.php:158
 #: server/administrator/audio_track.php:198
-#: server/administrator/audio_year.php:159 server/administrator/playlists.php:125
+#: server/administrator/audio_year.php:159
+#: server/administrator/playlists.php:125
 #: server/administrator/playlists.php:152 server/administrator/profile.php:636
 #: server/administrator/stbgroups.php:153 server/administrator/storages.php:198
 #: server/administrator/storages.php:248
@@ -840,7 +846,8 @@ msgstr "Nome de grupo está disponível"
 #: admin/src/Controller/KaraokeController.php:58
 #: admin/src/Controller/NewVideoClubController.php:1795
 #: admin/src/Controller/VideoClubController.php:1401
-#: server/administrator/add_video.php:1127 server/administrator/subscribe.php:46
+#: server/administrator/add_video.php:1127
+#: server/administrator/subscribe.php:46
 #: server/administrator/unique_video.php:99
 #: server/administrator/video_search.php:102 server/lang/stb.php:274
 #: server/lang/stb.php:398
@@ -848,9 +855,11 @@ msgid "error"
 msgstr "erro"
 
 #: admin/src/Controller/AdminsController.php:426
-msgid "{admin_count} administrators to be moved to another group before deleting"
+msgid ""
+"{admin_count} administrators to be moved to another group before deleting"
 msgstr ""
-"{admin_count} administradores a serem movidos para outro grupo antes de excluir"
+"{admin_count} administradores a serem movidos para outro grupo antes de "
+"excluir"
 
 #: admin/src/Controller/AdminsController.php:466
 #: admin/src/Controller/BroadcastServersController.php:362
@@ -1000,7 +1009,8 @@ msgstr "Aplicação"
 #: admin/src/Controller/TvChannelsController.php:136
 #: admin/src/Controller/TvChannelsController.php:530
 #: server/administrator/add_itv.php:868 server/administrator/add_radio.php:132
-#: server/administrator/add_radio.php:236 server/administrator/audio_track.php:201
+#: server/administrator/add_radio.php:236
+#: server/administrator/audio_track.php:201
 #: server/administrator/audio_track.php:292
 #: admin/resources/views/default/ApplicationCatalog/application_detail/application_detail.twig:53
 #: admin/resources/views/default/ApplicationCatalog/application_list/application_list.twig:59
@@ -1086,7 +1096,8 @@ msgstr "Não instalado"
 msgid "Installed"
 msgstr "Instalado"
 
-#: admin/src/Controller/ApplicationCatalogController.php:66 server/lang/stb.php:45
+#: admin/src/Controller/ApplicationCatalogController.php:66
+#: server/lang/stb.php:45
 #: admin/resources/views/default/BroadcastServers/broadcast_servers_list/broadcast_servers_list.js.twig:61
 msgid "Off"
 msgstr "Desligado"
@@ -1232,7 +1243,8 @@ msgstr "Versões disponíveis"
 #: server/administrator/claims.php:125 server/administrator/msg.php:141
 #: server/administrator/msgs.php:124 server/administrator/myvideolog.php:125
 #: server/administrator/tasks.php:178 server/administrator/tasks.php:222
-#: server/administrator/userlog.php:143 server/administrator/vclub_schedule.php:89
+#: server/administrator/userlog.php:143
+#: server/administrator/vclub_schedule.php:89
 #: server/administrator/videolog.php:103
 #: admin/resources/views/default/TvChannels/iptv_list/iptv_list.twig:132
 msgid "Date"
@@ -1392,7 +1404,8 @@ msgid "Update"
 msgstr "Atualizar"
 
 #: admin/src/Controller/ApplicationCatalogController.php:1148
-#: server/administrator/epg_setting.php:156 server/tools/misctranslations.php:869
+#: server/administrator/epg_setting.php:156
+#: server/tools/misctranslations.php:869
 msgid "Updated"
 msgstr "Atualizado"
 
@@ -1488,8 +1501,10 @@ msgstr "Músicas"
 #: admin/src/Controller/VideoClubController.php:78
 #: server/administrator/add_itv.php:870 server/administrator/add_itv.php:1292
 #: server/administrator/add_karaoke.php:675
-#: server/administrator/add_video.php:1950 server/administrator/add_video.php:1961
-#: server/administrator/add_video.php:1972 server/administrator/add_video.php:1983
+#: server/administrator/add_video.php:1950
+#: server/administrator/add_video.php:1961
+#: server/administrator/add_video.php:1972
+#: server/administrator/add_video.php:1983
 #: server/administrator/audio_album.php:270
 #: server/administrator/audio_genre.php:200
 #: server/administrator/stat_video_genres.php:100 server/lang/stb.php:83
@@ -1681,7 +1696,8 @@ msgstr "Contagem de faixas"
 #: admin/src/Controller/AudioClubController.php:311
 msgid ""
 "{albm} album and his all {cmps} compositions in {gnr} genres has been deleted"
-msgstr "{albm} álbum e todos os {cmps} composições em {gnr} géneros foi excluído"
+msgstr ""
+"{albm} álbum e todos os {cmps} composições em {gnr} géneros foi excluído"
 
 #: admin/src/Controller/AudioClubController.php:331
 #: admin/src/Controller/NewVideoClubController.php:1971
@@ -1779,8 +1795,8 @@ msgstr "Links de formato inválido"
 #: admin/src/Controller/NewVideoClubController.php:2571
 #: admin/src/Controller/TvChannelsController.php:1887
 msgid ""
-"Unable to load FFProbe library. Please install \"ffmpeg\" or other package with "
-"this library(eg \"libav-tools\")"
+"Unable to load FFProbe library. Please install \"ffmpeg\" or other package "
+"with this library(eg \"libav-tools\")"
 msgstr ""
 "Incapaz de carregar a biblioteca FFProbe. Por favor, instalar \"ffmpeg\" ou "
 "outro pacote com esta biblioteca (por exemplo, \"libav-tools\")."
@@ -1799,10 +1815,11 @@ msgstr "Operação de grupo não reconhecida"
 #: admin/src/Controller/NewVideoClubController.php:565
 #: admin/src/Controller/UsersController.php:693
 #: admin/src/Controller/UsersController.php:1763
-#: admin/src/Controller/VideoClubController.php:378 server/Lib/AjaxResponse.php:30
-#: server/administrator/subscribe.php:285 server/administrator/subscribe.php:290
-#: server/administrator/vclub_ad.php:170 server/administrator/vclub_ad.php:252
-#: server/lang/stb.php:439 admin/resources/views/Events_index.twig:91
+#: admin/src/Controller/VideoClubController.php:378
+#: server/Lib/AjaxResponse.php:30 server/administrator/subscribe.php:285
+#: server/administrator/subscribe.php:290 server/administrator/vclub_ad.php:170
+#: server/administrator/vclub_ad.php:252 server/lang/stb.php:439
+#: admin/resources/views/Events_index.twig:91
 #: admin/resources/views/default/NewVideoClub/video_advertise/video_advertise.js.twig:36
 #: admin/resources/views/default/NewVideoClub/video_advertise/video_advertise.js.twig:41
 #: admin/resources/views/default/NewVideoClub/video_advertise/video_advertise.twig:128
@@ -2037,15 +2054,16 @@ msgid "Week"
 msgstr "Semana"
 
 #: admin/src/Controller/EventsController.php:32
-#: admin/src/Controller/StatisticsController.php:1002 server/Lib/Gismeteo.php:25
-#: server/administrator/stat_daily_video.php:112
+#: admin/src/Controller/StatisticsController.php:1002
+#: server/Lib/Gismeteo.php:25 server/administrator/stat_daily_video.php:112
 #: admin/resources/views/default/basic_templates/scheduler_events_menu.twig:125
 msgid "Day"
 msgstr "Dia"
 
 #: admin/src/Controller/EventsController.php:33
 #: server/administrator/add_video.php:370
-#: server/administrator/lib/functions.php:64 server/administrator/profile.php:157
+#: server/administrator/lib/functions.php:64
+#: server/administrator/profile.php:157
 #: admin/resources/views/default/Index/index/index.twig:544
 #: admin/resources/views/default/NewVideoClub/video_list/video_list.js.twig:621
 #: admin/resources/views/default/NewVideoClub/video_schedule/video_schedule.js.twig:419
@@ -2062,7 +2080,8 @@ msgstr "Janeiro"
 
 #: admin/src/Controller/EventsController.php:33
 #: server/administrator/add_video.php:373
-#: server/administrator/lib/functions.php:64 server/administrator/profile.php:160
+#: server/administrator/lib/functions.php:64
+#: server/administrator/profile.php:160
 #: admin/resources/views/default/Index/index/index.twig:545
 #: admin/resources/views/default/NewVideoClub/video_list/video_list.js.twig:622
 #: admin/resources/views/default/NewVideoClub/video_schedule/video_schedule.js.twig:420
@@ -2079,7 +2098,8 @@ msgstr "Fevereiro"
 
 #: admin/src/Controller/EventsController.php:33
 #: server/administrator/add_video.php:376
-#: server/administrator/lib/functions.php:64 server/administrator/profile.php:163
+#: server/administrator/lib/functions.php:64
+#: server/administrator/profile.php:163
 #: admin/resources/views/default/Index/index/index.twig:546
 #: admin/resources/views/default/NewVideoClub/video_list/video_list.js.twig:623
 #: admin/resources/views/default/NewVideoClub/video_schedule/video_schedule.js.twig:421
@@ -2096,7 +2116,8 @@ msgstr "Março"
 
 #: admin/src/Controller/EventsController.php:33
 #: server/administrator/add_video.php:379
-#: server/administrator/lib/functions.php:64 server/administrator/profile.php:166
+#: server/administrator/lib/functions.php:64
+#: server/administrator/profile.php:166
 #: admin/resources/views/default/Index/index/index.twig:547
 #: admin/resources/views/default/NewVideoClub/video_list/video_list.js.twig:624
 #: admin/resources/views/default/NewVideoClub/video_schedule/video_schedule.js.twig:422
@@ -2113,8 +2134,8 @@ msgstr "Abril"
 
 #: admin/src/Controller/EventsController.php:33 server/Lib/Gismeteo.php:26
 #: server/administrator/add_video.php:382
-#: server/administrator/lib/functions.php:64 server/administrator/profile.php:169
-#: server/tools/misctranslations.php:830
+#: server/administrator/lib/functions.php:64
+#: server/administrator/profile.php:169 server/tools/misctranslations.php:830
 #: admin/resources/views/default/Index/index/index.twig:548
 #: admin/resources/views/default/NewVideoClub/video_list/video_list.js.twig:625
 #: admin/resources/views/default/NewVideoClub/video_schedule/video_schedule.js.twig:423
@@ -2131,7 +2152,8 @@ msgstr "Maio"
 
 #: admin/src/Controller/EventsController.php:33
 #: server/administrator/add_video.php:385
-#: server/administrator/lib/functions.php:64 server/administrator/profile.php:172
+#: server/administrator/lib/functions.php:64
+#: server/administrator/profile.php:172
 #: admin/resources/views/default/Index/index/index.twig:549
 #: admin/resources/views/default/NewVideoClub/video_list/video_list.js.twig:626
 #: admin/resources/views/default/NewVideoClub/video_schedule/video_schedule.js.twig:424
@@ -2148,7 +2170,8 @@ msgstr "Junho"
 
 #: admin/src/Controller/EventsController.php:33
 #: server/administrator/add_video.php:388
-#: server/administrator/lib/functions.php:64 server/administrator/profile.php:175
+#: server/administrator/lib/functions.php:64
+#: server/administrator/profile.php:175
 #: admin/resources/views/default/Index/index/index.twig:550
 #: admin/resources/views/default/NewVideoClub/video_list/video_list.js.twig:627
 #: admin/resources/views/default/NewVideoClub/video_schedule/video_schedule.js.twig:425
@@ -2165,7 +2188,8 @@ msgstr "Julho"
 
 #: admin/src/Controller/EventsController.php:33
 #: server/administrator/add_video.php:391
-#: server/administrator/lib/functions.php:64 server/administrator/profile.php:178
+#: server/administrator/lib/functions.php:64
+#: server/administrator/profile.php:178
 #: admin/resources/views/default/Index/index/index.twig:551
 #: admin/resources/views/default/NewVideoClub/video_list/video_list.js.twig:628
 #: admin/resources/views/default/NewVideoClub/video_schedule/video_schedule.js.twig:426
@@ -2182,7 +2206,8 @@ msgstr "Agosto"
 
 #: admin/src/Controller/EventsController.php:33
 #: server/administrator/add_video.php:394
-#: server/administrator/lib/functions.php:64 server/administrator/profile.php:181
+#: server/administrator/lib/functions.php:64
+#: server/administrator/profile.php:181
 #: admin/resources/views/default/Index/index/index.twig:552
 #: admin/resources/views/default/NewVideoClub/video_list/video_list.js.twig:629
 #: admin/resources/views/default/NewVideoClub/video_schedule/video_schedule.js.twig:427
@@ -2199,7 +2224,8 @@ msgstr "Setembro"
 
 #: admin/src/Controller/EventsController.php:33
 #: server/administrator/add_video.php:397
-#: server/administrator/lib/functions.php:64 server/administrator/profile.php:184
+#: server/administrator/lib/functions.php:64
+#: server/administrator/profile.php:184
 #: admin/resources/views/default/Index/index/index.twig:553
 #: admin/resources/views/default/NewVideoClub/video_list/video_list.js.twig:630
 #: admin/resources/views/default/NewVideoClub/video_schedule/video_schedule.js.twig:428
@@ -2216,7 +2242,8 @@ msgstr "Outubro"
 
 #: admin/src/Controller/EventsController.php:33
 #: server/administrator/add_video.php:400
-#: server/administrator/lib/functions.php:64 server/administrator/profile.php:187
+#: server/administrator/lib/functions.php:64
+#: server/administrator/profile.php:187
 #: admin/resources/views/default/Index/index/index.twig:554
 #: admin/resources/views/default/NewVideoClub/video_list/video_list.js.twig:631
 #: admin/resources/views/default/NewVideoClub/video_schedule/video_schedule.js.twig:429
@@ -2233,7 +2260,8 @@ msgstr "Novembro"
 
 #: admin/src/Controller/EventsController.php:33
 #: server/administrator/add_video.php:403
-#: server/administrator/lib/functions.php:64 server/administrator/profile.php:190
+#: server/administrator/lib/functions.php:64
+#: server/administrator/profile.php:190
 #: admin/resources/views/default/Index/index/index.twig:555
 #: admin/resources/views/default/NewVideoClub/video_list/video_list.js.twig:632
 #: admin/resources/views/default/NewVideoClub/video_schedule/video_schedule.js.twig:430
@@ -2479,14 +2507,16 @@ msgstr "Data de validade"
 #: admin/src/Controller/StatisticsController.php:1042
 #: admin/src/Controller/StatisticsController.php:1046
 #: admin/src/Controller/UsersController.php:252
-#: admin/src/Controller/UsersController.php:648 server/administrator/user.php:162
+#: admin/src/Controller/UsersController.php:648
+#: server/administrator/user.php:162
 #: admin/resources/views/default/Users/users_groups_consoles_list/users_groups_consoles_list.twig:60
 msgid "MAC"
 msgstr "MAC"
 
 #: admin/src/Controller/EventsController.php:122
 #: admin/src/Controller/EventsController.php:200
-#: server/administrator/events.php:564 admin/resources/views/Events_index.twig:10
+#: server/administrator/events.php:564
+#: admin/resources/views/Events_index.twig:10
 #: admin/resources/views/Events_index.twig:35
 #: admin/resources/views/default/Events/events/events.twig:33
 msgid "Event"
@@ -2795,11 +2825,11 @@ msgstr "Condições"
 
 #: admin/src/Controller/KaraokeController.php:205
 msgid ""
-"You can not publishing record with protocol - \"custom\", and with empty field "
-"- URL"
+"You can not publishing record with protocol - \"custom\", and with empty "
+"field - URL"
 msgstr ""
-"Não pode publicar gravação com protocolo - \"personalizado\", e com campo -URL -"
-"vazio"
+"Não pode publicar gravação com protocolo - \"personalizado\", e com campo -"
+"URL -vazio"
 
 #: admin/src/Controller/KaraokeController.php:212
 msgid "File unavailable and cannot be published"
@@ -2936,8 +2966,8 @@ msgid ""
 "Operator identifiers is empty. Set options util_operator_secret and "
 "operator_key in config.ini"
 msgstr ""
-"Identificadores do operador estão vazios. Definir opções util_operator_secret e "
-"operator_key em config.ini"
+"Identificadores do operador estão vazios. Definir opções "
+"util_operator_secret e operator_key em config.ini"
 
 #: admin/src/Controller/LicenseKeysController.php:229
 msgid "Empty list"
@@ -2974,7 +3004,8 @@ msgstr "Catálogo"
 #: admin/src/Controller/NewVideoClubController.php:525
 #: admin/src/Controller/VideoClubController.php:78
 #: admin/src/Controller/VideoClubController.php:340
-#: server/administrator/add_video.php:760 server/administrator/add_video.php:1599
+#: server/administrator/add_video.php:760
+#: server/administrator/add_video.php:1599
 #: admin/resources/views/default/NewVideoClub/add_video/add_video.twig:180
 #: admin/resources/views/default/NewVideoClub/add_video/add_video.twig:219
 #: admin/resources/views/default/NewVideoClub/add_video/add_video_old(backup).twig:217
@@ -3221,7 +3252,8 @@ msgstr "Adicionar moderador"
 #: admin/src/Controller/NewVideoClubController.php:659
 #: admin/src/Controller/StatisticsController.php:279
 #: admin/src/Controller/VideoClubController.php:523
-#: server/administrator/myvideolog.php:127 server/administrator/videolog.php:105
+#: server/administrator/myvideolog.php:127
+#: server/administrator/videolog.php:105
 msgid "Moderator"
 msgstr "Moderador"
 
@@ -3231,9 +3263,11 @@ msgstr "Moderador"
 #: admin/src/Controller/TasksController.php:111
 #: admin/src/Controller/VideoClubController.php:534
 #: server/administrator/add_itv.php:865 server/administrator/add_itv.php:1178
-#: server/administrator/add_radio.php:130 server/administrator/add_radio.php:202
+#: server/administrator/add_radio.php:130
+#: server/administrator/add_radio.php:202
 #: server/administrator/audio_track.php:195
-#: server/administrator/audio_track.php:253 server/administrator/city_info.php:135
+#: server/administrator/audio_track.php:253
+#: server/administrator/city_info.php:135
 #: server/administrator/city_info.php:198
 #: server/administrator/help_city_info.php:126
 #: server/administrator/help_city_info.php:184
@@ -3264,7 +3298,8 @@ msgstr "Filmes na categoria"
 #: admin/src/Controller/NewVideoClubController.php:670
 #: admin/src/Controller/TvChannelsController.php:541
 #: admin/src/Controller/VideoClubController.php:534
-#: server/administrator/add_itv.php:1231 server/administrator/add_video.php:1810
+#: server/administrator/add_itv.php:1231
+#: server/administrator/add_video.php:1810
 #: admin/resources/views/default/NewVideoClub/add_video/add_video_old(backup).twig:396
 #: admin/resources/views/default/NewVideoClub/add_video/add_video_step_2.twig:165
 #: admin/resources/views/default/NewVideoClub/video_categories/video_categories.js.twig:267
@@ -3423,8 +3458,8 @@ msgid ""
 "You can not publish this entry. There are no available video file for this "
 "entry."
 msgstr ""
-"Não pode publicar esta entrada. Não há nenhum arquivo de vídeo disponível para "
-"esta entrada."
+"Não pode publicar esta entrada. Não há nenhum arquivo de vídeo disponível "
+"para esta entrada."
 
 #: admin/src/Controller/NewVideoClubController.php:1073
 msgid "Video {updchid} has been processed"
@@ -4011,8 +4046,9 @@ msgstr "Visualizações por mês"
 #: admin/src/Controller/UsersController.php:238
 #: admin/src/Controller/UsersController.php:252
 #: server/administrator/all_userlog.php:141
-#: server/administrator/master_log.php:108 server/administrator/playlist.php:140
-#: server/administrator/playlist.php:173 server/administrator/userlog.php:170
+#: server/administrator/master_log.php:108
+#: server/administrator/playlist.php:140 server/administrator/playlist.php:173
+#: server/administrator/userlog.php:170
 #: admin/resources/views/default/basic_templates/scheduler_events_menu.twig:161
 msgid "Time"
 msgstr "Tempo"
@@ -4314,8 +4350,10 @@ msgid "ID is available"
 msgstr "ID disponível"
 
 #: admin/src/Controller/TariffsController.php:588
-msgid "{trff_rslt} tariff plans and {plns_rslt} their packages has been removed"
-msgstr "{trff_rslt} planos tarifários e {plns_rslt} seus pacotes foram removidos"
+msgid ""
+"{trff_rslt} tariff plans and {plns_rslt} their packages has been removed"
+msgstr ""
+"{trff_rslt} planos tarifários e {plns_rslt} seus pacotes foram removidos"
 
 #: admin/src/Controller/TariffsController.php:684
 msgid "Found faulty storage"
@@ -4331,8 +4369,9 @@ msgstr "Configuração de arquivo de TV não é possível"
 #: server/administrator/last_closed_tasks.php:267
 #: server/administrator/playlist.php:143 server/administrator/playlist.php:220
 #: server/administrator/reply.php:115 server/administrator/send_to.php:111
-#: server/administrator/stat_moderators.php:124 server/administrator/tasks.php:124
-#: server/administrator/tasks.php:221 server/administrator/tasks_archive.php:119
+#: server/administrator/stat_moderators.php:124
+#: server/administrator/tasks.php:124 server/administrator/tasks.php:221
+#: server/administrator/tasks_archive.php:119
 #: server/administrator/tasks_archive.php:170
 #: server/administrator/tasks_archive.php:221
 #: server/administrator/unique_video.php:410
@@ -4392,8 +4431,8 @@ msgstr "Media acessada "
 msgid "Assigned to"
 msgstr "Atribuído a"
 
-#: admin/src/Controller/TasksController.php:71 server/administrator/tasks.php:133
-#: server/tools/misctranslations.php:241
+#: admin/src/Controller/TasksController.php:71
+#: server/administrator/tasks.php:133 server/tools/misctranslations.php:241
 msgid "Messages"
 msgstr "Mensagens"
 
@@ -4674,8 +4713,8 @@ msgstr "Encontrou canais deste gênero. Exclusão não é possível"
 #, fuzzy
 msgid "Error m3u parse. Check the file encoding. Required UTF-8 encoding."
 msgstr ""
-"Erro m3u parse. Verifique a codificação do arquivo. Codificação necessária do "
-"UTF-8."
+"Erro m3u parse. Verifique a codificação do arquivo. Codificação necessária "
+"do UTF-8."
 
 #: admin/src/Controller/TvChannelsController.php:1589
 #, fuzzy
@@ -4809,7 +4848,8 @@ msgid "Login already used"
 msgstr "Login já usado"
 
 #: admin/src/Controller/UsersController.php:427
-#: admin/src/Controller/UsersController.php:1374 server/administrator/user.php:30
+#: admin/src/Controller/UsersController.php:1374
+#: server/administrator/user.php:30
 msgid "Error: STB with such MAC address already exists"
 msgstr "Erro: STB com tal endereço MAC já existe"
 
@@ -5072,7 +5112,8 @@ msgstr "Editar moderador"
 msgid "Publish"
 msgstr "Publicar"
 
-#: admin/src/Controller/VideoClubController.php:1070 server/Lib/RemotePvr.php:297
+#: admin/src/Controller/VideoClubController.php:1070
+#: server/Lib/RemotePvr.php:297
 msgid "scheduled"
 msgstr "agendada"
 
@@ -5125,8 +5166,9 @@ msgstr "O nome de utilizador \"%s\" não existe."
 msgid "User role \"%s\" does not exists"
 msgstr "A função de utilizador \"%s\" não existe"
 
-#: server/Lib/Account.php:21 server/Lib/Account.php:37 server/Lib/Account.php:53
-#: server/Lib/Account.php:75 server/Lib/Account.php:109
+#: server/Lib/Account.php:21 server/Lib/Account.php:37
+#: server/Lib/Account.php:53 server/Lib/Account.php:75
+#: server/Lib/Account.php:109
 msgid "This operation is temporarily unavailable."
 msgstr "Esta operação está temporariamente indisponível."
 
@@ -5413,8 +5455,9 @@ msgstr "Géneros"
 msgid "Years"
 msgstr "Anos"
 
-#: server/Lib/Course/BankuaProvider.php:12 server/Lib/Course/MinfinProvider.php:15
-#: server/Lib/Course/NbuProvider.php:12 server/lang/stb.php:150
+#: server/Lib/Course/BankuaProvider.php:12
+#: server/Lib/Course/MinfinProvider.php:15 server/Lib/Course/NbuProvider.php:12
+#: server/lang/stb.php:150
 msgid "NBU exchange rate on"
 msgstr "Taxa de câmbio NBU em"
 
@@ -5673,7 +5716,8 @@ msgstr ""
 #, fuzzy, php-format
 msgid "Channel %s set to inactive because all its URLs are not available."
 msgstr ""
-"Canal %s definido como inativo porque todas as suas URLs não estão disponíveis."
+"Canal %s definido como inativo porque todas as suas URLs não estão "
+"disponíveis."
 
 #: server/Lib/Itv.php:899
 msgid "DVB"
@@ -5745,7 +5789,8 @@ msgstr ""
 #, fuzzy, php-format
 msgid "Radio-channel %s set to inactive because its URL are not available."
 msgstr ""
-"O canal de rádio %s é definido como inativo porque sua URL não está disponível."
+"O canal de rádio %s é definido como inativo porque sua URL não está "
+"disponível."
 
 #: server/Lib/RemotePvr.php:295
 msgid "recording"
@@ -5839,7 +5884,8 @@ msgstr "EPG"
 #: server/administrator/add_epg.php:105 server/administrator/add_itv.php:833
 #: server/administrator/add_karaoke.php:160
 #: server/administrator/add_moderator_mac.php:107
-#: server/administrator/add_radio.php:106 server/administrator/add_video.php:496
+#: server/administrator/add_radio.php:106
+#: server/administrator/add_video.php:496
 #: server/administrator/admin_groups.php:165
 #: server/administrator/administrators.php:117
 #: server/administrator/all_userlog.php:76 server/administrator/anecdote.php:98
@@ -5851,8 +5897,9 @@ msgstr "EPG"
 #: server/administrator/audio_year.php:116
 #: server/administrator/cache_refresh.php:91
 #: server/administrator/city_info.php:103 server/administrator/claims.php:84
-#: server/administrator/claims_log.php:73 server/administrator/epg_setting.php:120
-#: server/administrator/events.php:237 server/administrator/help_city_info.php:95
+#: server/administrator/claims_log.php:73
+#: server/administrator/epg_setting.php:120 server/administrator/events.php:237
+#: server/administrator/help_city_info.php:95
 #: server/administrator/karaoke_archive.php:73
 #: server/administrator/last_closed_karaoke.php:126
 #: server/administrator/last_closed_tasks.php:106
@@ -5868,7 +5915,8 @@ msgstr "EPG"
 #: server/administrator/stat_daily_video.php:74
 #: server/administrator/stat_moderators.php:74
 #: server/administrator/stat_not_active_users.php:73
-#: server/administrator/stat_timeshift.php:74 server/administrator/stat_tv.php:92
+#: server/administrator/stat_timeshift.php:74
+#: server/administrator/stat_tv.php:92
 #: server/administrator/stat_tv_archive.php:75
 #: server/administrator/stat_tv_users.php:74
 #: server/administrator/stat_video.php:74
@@ -5881,13 +5929,15 @@ msgstr "EPG"
 #: server/administrator/subscribe.php:240
 #: server/administrator/subscribe_import.php:258
 #: server/administrator/tariffs.php:258 server/administrator/tasks.php:78
-#: server/administrator/tasks_archive.php:75 server/administrator/testers.php:108
-#: server/administrator/themes.php:137 server/administrator/unique_video.php:269
-#: server/administrator/user.php:112 server/administrator/userlog.php:75
-#: server/administrator/users.php:100 server/administrator/users_on_storage.php:85
+#: server/administrator/tasks_archive.php:75
+#: server/administrator/testers.php:108 server/administrator/themes.php:137
+#: server/administrator/unique_video.php:269 server/administrator/user.php:112
+#: server/administrator/userlog.php:75 server/administrator/users.php:100
+#: server/administrator/users_on_storage.php:85
 #: server/administrator/vclub_ad.php:118
 #: server/administrator/vclub_schedule.php:68
-#: server/administrator/video_search.php:287 server/administrator/videolog.php:69
+#: server/administrator/video_search.php:287
+#: server/administrator/videolog.php:69
 #: admin/resources/views/default/ApplicationCatalog/application_list/application_list.twig:130
 #: admin/resources/views/default/ApplicationCatalog/smart_application_list/smart_application_list.twig:258
 #: admin/resources/views/default/AudioClub/add_audio_albums/add_audio_albums.twig:84
@@ -5900,7 +5950,8 @@ msgstr "Voltar"
 msgid "Saving was successful"
 msgstr "A poupança foi bem-sucedida"
 
-#: server/administrator/add_epg.php:200 server/administrator/lib/functions.php:643
+#: server/administrator/add_epg.php:200
+#: server/administrator/lib/functions.php:643
 #: server/administrator/lib/functions.php:976
 #: server/administrator/lib/functions.php:1110
 #: admin/resources/views/Events_index.twig:203
@@ -5917,15 +5968,18 @@ msgstr "Carregar EPG"
 #: server/administrator/add_epg.php:271 server/administrator/add_itv.php:1664
 #: server/administrator/add_karaoke.php:702
 #: server/administrator/add_moderator_mac.php:244
-#: server/administrator/add_radio.php:264 server/administrator/add_video.php:2123
+#: server/administrator/add_radio.php:264
+#: server/administrator/add_video.php:2123
 #: server/administrator/admin_groups.php:58
 #: server/administrator/administrators.php:53
-#: server/administrator/anecdote.php:210 server/administrator/audio_album.php:502
+#: server/administrator/anecdote.php:210
+#: server/administrator/audio_album.php:502
 #: server/administrator/audio_genre.php:223
 #: server/administrator/audio_language.php:222
 #: server/administrator/audio_performer.php:222
 #: server/administrator/audio_track.php:335
-#: server/administrator/audio_year.php:223 server/administrator/city_info.php:247
+#: server/administrator/audio_year.php:223
+#: server/administrator/city_info.php:247
 #: server/administrator/epg_setting.php:46 server/administrator/events.php:538
 #: server/administrator/help_city_info.php:233
 #: server/administrator/other_city_info.php:239
@@ -5935,9 +5989,9 @@ msgstr "Carregar EPG"
 #: server/administrator/stbgroup_members.php:45
 #: server/administrator/stbgroups.php:39 server/administrator/storages.php:47
 #: server/administrator/stream_servers.php:45
-#: server/administrator/stream_zones.php:55 server/administrator/subscribe.php:306
-#: server/administrator/tariffs.php:54 server/administrator/testers.php:44
-#: server/administrator/vclub_ad.php:315
+#: server/administrator/stream_zones.php:55
+#: server/administrator/subscribe.php:306 server/administrator/tariffs.php:54
+#: server/administrator/testers.php:44 server/administrator/vclub_ad.php:315
 #: admin/resources/views/Events_index.twig:269
 #: admin/resources/views/default/Admins/admins_groups/admins_groups.twig:95
 #: admin/resources/views/default/Admins/admins_groups_permissions/admins_groups_permissions.twig:149
@@ -6006,15 +6060,19 @@ msgstr "Carregar EPG"
 msgid "Save"
 msgstr "Salvar"
 
-#: server/administrator/add_epg.php:275 server/administrator/add_karaoke.php:706
+#: server/administrator/add_epg.php:275
+#: server/administrator/add_karaoke.php:706
 #: server/administrator/add_moderator_mac.php:248
-#: server/administrator/add_radio.php:268 server/administrator/add_video.php:2127
-#: server/administrator/anecdote.php:214 server/administrator/audio_album.php:507
+#: server/administrator/add_radio.php:268
+#: server/administrator/add_video.php:2127
+#: server/administrator/anecdote.php:214
+#: server/administrator/audio_album.php:507
 #: server/administrator/audio_genre.php:227
 #: server/administrator/audio_language.php:226
 #: server/administrator/audio_performer.php:226
 #: server/administrator/audio_track.php:339
-#: server/administrator/audio_year.php:227 server/administrator/city_info.php:252
+#: server/administrator/audio_year.php:227
+#: server/administrator/city_info.php:252
 #: server/administrator/help_city_info.php:237
 #: server/administrator/other_city_info.php:243
 msgid "New"
@@ -6030,17 +6088,20 @@ msgid "Error: could not save logo"
 msgstr "Erro: não foi possível salvar o logótipo"
 
 #: server/administrator/add_itv.php:217 server/administrator/add_itv.php:314
-#: server/administrator/add_karaoke.php:81 server/administrator/add_karaoke.php:91
+#: server/administrator/add_karaoke.php:81
+#: server/administrator/add_karaoke.php:91
 #: server/administrator/add_moderator_mac.php:36
 #: server/administrator/add_moderator_mac.php:44
 #: server/administrator/add_radio.php:35 server/administrator/add_radio.php:43
-#: server/administrator/add_video.php:220 server/administrator/add_video.php:238
-#: server/administrator/anecdote.php:27 server/administrator/anecdote.php:36
-#: server/administrator/audio_album.php:29 server/administrator/audio_genre.php:20
+#: server/administrator/add_video.php:220
+#: server/administrator/add_video.php:238 server/administrator/anecdote.php:27
+#: server/administrator/anecdote.php:36 server/administrator/audio_album.php:29
+#: server/administrator/audio_genre.php:20
 #: server/administrator/audio_language.php:20
 #: server/administrator/audio_performer.php:20
-#: server/administrator/audio_track.php:34 server/administrator/audio_year.php:20
-#: server/administrator/city_info.php:32 server/administrator/city_info.php:41
+#: server/administrator/audio_track.php:34
+#: server/administrator/audio_year.php:20 server/administrator/city_info.php:32
+#: server/administrator/city_info.php:41
 #: server/administrator/help_city_info.php:26
 #: server/administrator/help_city_info.php:35
 #: server/administrator/other_city_info.php:32
@@ -6100,15 +6161,18 @@ msgid "delete"
 msgstr "excluir"
 
 #: server/administrator/add_itv.php:600 server/administrator/add_itv.php:927
-#: server/administrator/add_karaoke.php:366 server/administrator/add_video.php:798
+#: server/administrator/add_karaoke.php:366
+#: server/administrator/add_video.php:798
 #: server/administrator/admin_groups.php:196
 #: server/administrator/administrators.php:156
-#: server/administrator/anecdote.php:132 server/administrator/audio_album.php:294
+#: server/administrator/anecdote.php:132
+#: server/administrator/audio_album.php:294
 #: server/administrator/audio_genre.php:169
 #: server/administrator/audio_language.php:168
 #: server/administrator/audio_performer.php:168
 #: server/administrator/audio_track.php:217
-#: server/administrator/audio_year.php:169 server/administrator/city_info.php:143
+#: server/administrator/audio_year.php:169
+#: server/administrator/city_info.php:143
 #: server/administrator/epg_setting.php:180
 #: server/administrator/help_city_info.php:134
 #: server/administrator/other_city_info.php:140
@@ -6172,7 +6236,8 @@ msgid "xmltv id"
 msgstr "id xmltv"
 
 #: server/administrator/add_itv.php:872 server/administrator/add_itv.php:1606
-#: server/administrator/add_radio.php:248 server/administrator/add_video.php:762
+#: server/administrator/add_radio.php:248
+#: server/administrator/add_video.php:762
 #: server/administrator/add_video.php:2073
 #: admin/resources/views/default/TvChannels/add_channel/add_channel.twig:143
 msgid "Volume correction"
@@ -6182,7 +6247,8 @@ msgstr "Correção de volume"
 msgid "Claims about<br>audio/video/epg"
 msgstr "Reclamações sobre áudio/vídeo/EPG"
 
-#: server/administrator/add_itv.php:919 server/administrator/add_karaoke.php:357
+#: server/administrator/add_itv.php:919
+#: server/administrator/add_karaoke.php:357
 #: server/administrator/add_video.php:785
 #: admin/resources/views/default/TvChannels/iptv_list/iptv_list.js.twig:508
 msgid "Do you really want to reset claims counter?"
@@ -6254,7 +6320,8 @@ msgstr "Permitir PVR USB"
 msgid "EPG correction"
 msgstr "Correção de EPG"
 
-#: server/administrator/add_itv.php:1619 server/administrator/add_video.php:2086
+#: server/administrator/add_itv.php:1619
+#: server/administrator/add_video.php:2086
 #: admin/resources/views/default/NewVideoClub/add_video/add_video_old(backup).twig:370
 #: admin/resources/views/default/NewVideoClub/add_video/add_video_step_2.twig:143
 #: admin/resources/views/default/Users/add_users/add_users.twig:260
@@ -6357,7 +6424,8 @@ msgstr "Cancelar"
 msgid "KARAOKE"
 msgstr "KARAOKE"
 
-#: server/administrator/add_karaoke.php:230 server/administrator/add_video.php:615
+#: server/administrator/add_karaoke.php:230
+#: server/administrator/add_video.php:615
 #: server/administrator/audio_album.php:249
 #: server/administrator/audio_genre.php:145
 #: server/administrator/audio_language.php:144
@@ -6404,17 +6472,20 @@ msgstr "Postado por"
 msgid "When"
 msgstr "Quando"
 
-#: server/administrator/add_karaoke.php:341 server/administrator/add_video.php:765
+#: server/administrator/add_karaoke.php:341
+#: server/administrator/add_video.php:765
 msgid "Claims about<br>audio/video"
 msgstr "Reclamações sobre<br>áudio/vídeo"
 
-#: server/administrator/add_karaoke.php:387 server/administrator/add_video.php:823
+#: server/administrator/add_karaoke.php:387
+#: server/administrator/add_video.php:823
 #: server/administrator/unique_video.php:439
 #: server/administrator/video_search.php:558
 msgid "Loading"
 msgstr "Carregando"
 
-#: server/administrator/add_karaoke.php:394 server/administrator/add_video.php:830
+#: server/administrator/add_karaoke.php:394
+#: server/administrator/add_video.php:830
 #: server/administrator/unique_video.php:446
 #: server/administrator/video_search.php:565
 msgid "Not found"
@@ -6476,7 +6547,8 @@ msgstr "Canais de rádio"
 msgid "video deleted"
 msgstr "vídeo excluído"
 
-#: server/administrator/add_video.php:252 server/administrator/add_video.php:985
+#: server/administrator/add_video.php:252
+#: server/administrator/add_video.php:985
 msgid "Error: insufficient permissions for this action"
 msgstr "Erro: permissões insuficientes para esta acção"
 
@@ -6484,8 +6556,9 @@ msgstr "Erro: permissões insuficientes para esta acção"
 msgid "Turn on"
 msgstr "Ligar"
 
-#: server/administrator/add_video.php:462 server/administrator/add_video.php:489
-#: server/administrator/index.php:198 server/tools/misctranslations.php:608
+#: server/administrator/add_video.php:462
+#: server/administrator/add_video.php:489 server/administrator/index.php:198
+#: server/tools/misctranslations.php:608
 msgid "VIDEO CLUB"
 msgstr "CLUBE DE VIDEO"
 
@@ -6527,7 +6600,8 @@ msgstr "bom vídeo"
 msgid "bad video"
 msgstr "vídeo ruim"
 
-#: server/administrator/add_video.php:758 server/administrator/add_video.php:1023
+#: server/administrator/add_video.php:758
+#: server/administrator/add_video.php:1023
 #: server/administrator/unique_video.php:172
 #: server/administrator/video_search.php:178
 msgid "Folder"
@@ -6548,7 +6622,8 @@ msgstr "Restrição"
 msgid "Duration, min"
 msgstr "Duração (min)"
 
-#: server/administrator/add_video.php:764 server/administrator/add_video.php:1026
+#: server/administrator/add_video.php:764
+#: server/administrator/add_video.php:1026
 #: server/administrator/unique_video.php:175
 #: server/administrator/video_search.php:181
 msgid "Series"
@@ -6578,7 +6653,8 @@ msgstr "verificar"
 msgid "count md5 sum"
 msgstr "contagem md5 soma"
 
-#: server/administrator/add_video.php:1047 server/administrator/add_video.php:1077
+#: server/administrator/add_video.php:1047
+#: server/administrator/add_video.php:1077
 #: server/administrator/add_video.php:1134
 #: server/administrator/unique_video.php:104
 #: server/administrator/unique_video.php:194
@@ -6615,7 +6691,8 @@ msgstr "preencher automaticamente"
 msgid "Kinopoisk ID"
 msgstr "Kinopoisk ID"
 
-#: server/administrator/add_video.php:1633 server/administrator/add_video.php:1637
+#: server/administrator/add_video.php:1633
+#: server/administrator/add_video.php:1637
 #, fuzzy
 msgid "For unlock please delete Name and Original name fields"
 msgstr "Para desbloquear, exclua os campos nome e nome original"
@@ -6648,8 +6725,10 @@ msgstr "Qualidade Alta"
 msgid "Low quality"
 msgstr "Baixa Qualidade"
 
-#: server/administrator/add_video.php:1893 server/administrator/add_video.php:1904
-#: server/administrator/add_video.php:1915 server/administrator/add_video.php:1926
+#: server/administrator/add_video.php:1893
+#: server/administrator/add_video.php:1904
+#: server/administrator/add_video.php:1915
+#: server/administrator/add_video.php:1926
 msgid "old genre"
 msgstr "género antigo"
 
@@ -6677,10 +6756,10 @@ msgstr "Capa"
 #: server/administrator/add_video.php:2141
 msgid ""
 "1. Upload cover.<br>2. Fill form.<br>3. Save.<br>4. Put the converted in "
-"folder<br>&nbsp;&nbsp;&nbsp;&nbsp;specified in the column \"Folder\".<br>5. If "
-"necessary, edit or delete a record.<br>6. Click on folder name.<br>7. If the "
-"file is physically present in the directory,<br>&nbsp;&nbsp;&nbsp;&nbsp;it is "
-"green, if there is no - in red."
+"folder<br>&nbsp;&nbsp;&nbsp;&nbsp;specified in the column \"Folder\".<br>5. "
+"If necessary, edit or delete a record.<br>6. Click on folder name.<br>7. If "
+"the file is physically present in the directory,<br>&nbsp;&nbsp;&nbsp;&nbsp;"
+"it is green, if there is no - in red."
 msgstr ""
 "1. Carregar capa.<br />2. Preencha o formulário.<br />3. Guardar.<br />4. "
 "Coloque o convertido na pasta<br />&nbsp;&nbsp;&nbsp;&nbsp;especificada na "
@@ -6705,17 +6784,18 @@ msgid "Passwords do not match"
 msgstr "As palavras-passe não coincidem"
 
 #: server/administrator/administrators.php:61
-#: server/administrator/administrators.php:110 server/administrator/index.php:218
+#: server/administrator/administrators.php:110
+#: server/administrator/index.php:218
 #: admin/resources/views/default/Admins/admins_groups/admins_groups.twig:4
 #: admin/resources/views/default/Admins/admins_groups_permissions/admins_groups_permissions.twig:4
 #: admin/resources/views/default/Admins/admins_list/admins_list.twig:4
 msgid "Administrators"
 msgstr "Administradores"
 
-#: server/administrator/administrators.php:185 server/administrator/login.php:65
-#: server/administrator/user.php:144 server/lang/stb.php:286
-#: server/lang/stb.php:296 server/lang/stb.php:329 server/lang/stb.php:384
-#: server/lang/stb.php:392
+#: server/administrator/administrators.php:185
+#: server/administrator/login.php:65 server/administrator/user.php:144
+#: server/lang/stb.php:286 server/lang/stb.php:296 server/lang/stb.php:329
+#: server/lang/stb.php:384 server/lang/stb.php:392
 #: admin/resources/views/default/Admins/admins_list/admins_list.twig:118
 #: admin/resources/views/default/Login/index/index.twig:24
 #: admin/resources/views/default/Users/add_users/add_users.twig:78
@@ -6726,16 +6806,18 @@ msgstr "Palavra-passe"
 msgid "Password repeat"
 msgstr "Repetir palavra-passe"
 
-#: server/administrator/all_userlog.php:60 server/administrator/all_userlog.php:69
+#: server/administrator/all_userlog.php:60
+#: server/administrator/all_userlog.php:69
 msgid "All users log"
 msgstr "Todos os log de utilizadores"
 
-#: server/administrator/all_userlog.php:143 server/administrator/userlog.php:171
-#: server/administrator/videolog.php:104
+#: server/administrator/all_userlog.php:143
+#: server/administrator/userlog.php:171 server/administrator/videolog.php:104
 msgid "Stb action"
 msgstr "Acção STB"
 
-#: server/administrator/all_userlog.php:144 server/administrator/userlog.php:172
+#: server/administrator/all_userlog.php:144
+#: server/administrator/userlog.php:172
 msgid "Parameter"
 msgstr "Parâmetro"
 
@@ -6748,7 +6830,8 @@ msgstr "Piadas"
 msgid "Joke"
 msgstr "Piada"
 
-#: server/administrator/audio_album.php:47 server/administrator/audio_album.php:82
+#: server/administrator/audio_album.php:47
+#: server/administrator/audio_album.php:82
 msgid "Error: could not save cover"
 msgstr "Erro: não foi possível salvar a capa"
 
@@ -6822,7 +6905,8 @@ msgstr "Idiomas"
 msgid "search by track name"
 msgstr "pesquisa por nome de faixa"
 
-#: server/administrator/audio_year.php:85 server/administrator/audio_year.php:109
+#: server/administrator/audio_year.php:85
+#: server/administrator/audio_year.php:109
 msgid "AUDIO YEARS"
 msgstr "ANOS AUDIO"
 
@@ -6844,7 +6928,8 @@ msgstr "Actualização do cache de armazenamento"
 msgid "Information services"
 msgstr "Serviços de informação"
 
-#: server/administrator/city_info.php:134 server/administrator/city_info.php:210
+#: server/administrator/city_info.php:134
+#: server/administrator/city_info.php:210
 #: server/administrator/help_city_info.php:125
 #: server/administrator/help_city_info.php:196
 #: server/administrator/other_city_info.php:131
@@ -6869,7 +6954,8 @@ msgstr "Sem EPG"
 msgid "Wrong epg"
 msgstr "EPG errado"
 
-#: server/administrator/claims_log.php:58 server/administrator/claims_log.php:66
+#: server/administrator/claims_log.php:58
+#: server/administrator/claims_log.php:66
 msgid "Claims log"
 msgstr "Registo de reclamações"
 
@@ -6925,7 +7011,8 @@ msgstr "Arquivo com lista está em falta"
 msgid "Events"
 msgstr "Eventos"
 
-#: server/administrator/events.php:240 admin/resources/views/Events_index.twig:74
+#: server/administrator/events.php:240
+#: admin/resources/views/Events_index.twig:74
 #: admin/resources/views/default/basic_templates/events_menu.twig:5
 msgid "New event"
 msgstr "Novo evento"
@@ -6961,7 +7048,8 @@ msgstr "Para o grupo"
 msgid "Load active events"
 msgstr "Carregar eventos activos"
 
-#: server/administrator/events.php:403 admin/resources/views/Events_index.twig:92
+#: server/administrator/events.php:403
+#: admin/resources/views/Events_index.twig:92
 #: admin/resources/views/default/basic_templates/events_menu.twig:23
 msgid "List"
 msgstr "Lista"
@@ -7104,7 +7192,8 @@ msgstr "Servidores de stream"
 msgid "search by MAC or IP"
 msgstr "pesquisa por MAC ou IP"
 
-#: server/administrator/index.php:492 server/administrator/lib/functions.php:584
+#: server/administrator/index.php:492
+#: server/administrator/lib/functions.php:584
 #, fuzzy
 msgid "Infoportal"
 msgstr "Infoportal"
@@ -7163,13 +7252,15 @@ msgstr "Estatísticas de TimeShift"
 msgid "Inactive users"
 msgstr "Utilizadores inactivos"
 
-#: server/administrator/index.php:558 server/administrator/stat_moderators.php:59
+#: server/administrator/index.php:558
+#: server/administrator/stat_moderators.php:59
 #: server/administrator/stat_moderators.php:67
 #: admin/resources/views/default/Statistics/stat_moderators/stat_moderators.twig:4
 msgid "Moderators statistics"
 msgstr "Estatísticas de moderadores"
 
-#: server/administrator/index.php:587 server/administrator/setting_common.php:116
+#: server/administrator/index.php:587
+#: server/administrator/setting_common.php:116
 #: server/administrator/setting_common.php:128
 #: server/administrator/setting_common.php:332
 msgid "Firmware auto update"
@@ -7349,7 +7440,8 @@ msgstr "ENTRAR"
 msgid "Sign in"
 msgstr "Entrar"
 
-#: server/administrator/master_log.php:61 server/administrator/master_log.php:69
+#: server/administrator/master_log.php:61
+#: server/administrator/master_log.php:69
 msgid "Master-storage logs"
 msgstr "Logs de armazenamento mestre"
 
@@ -7383,7 +7475,8 @@ msgstr "Tarefa rejeitada"
 msgid "My messages"
 msgstr "Minhas mensagens"
 
-#: server/administrator/myvideolog.php:54 server/administrator/myvideolog.php:62
+#: server/administrator/myvideolog.php:54
+#: server/administrator/myvideolog.php:62
 msgid "Movie log"
 msgstr "Registo do filme"
 
@@ -7629,7 +7722,8 @@ msgstr "busca por Mac"
 #: server/administrator/stat_tv.php:146
 #: server/administrator/stat_tv_archive.php:101
 #: server/administrator/stat_tv_users.php:143
-#: server/administrator/stat_video.php:154 server/administrator/stat_video.php:172
+#: server/administrator/stat_video.php:154
+#: server/administrator/stat_video.php:172
 #: server/administrator/stat_video_genres.php:101
 #: server/administrator/stat_video_users.php:144
 msgid "Views"
@@ -7710,7 +7804,8 @@ msgstr "Estatísticas de visualizações de TV de utilizadores por mês"
 msgid "Counting if channel is playing more than 30 minutes"
 msgstr "Contando se o canal está tocando mais de 30 minutos"
 
-#: server/administrator/stat_video.php:58 server/administrator/stat_video.php:66
+#: server/administrator/stat_video.php:58
+#: server/administrator/stat_video.php:66
 msgid "Video views statistics per month"
 msgstr "Estatísticas de visualizações de vídeo por mês"
 
@@ -7724,7 +7819,8 @@ msgstr "pesquisa por título de filme"
 msgid "Sort by"
 msgstr "Ordenar por"
 
-#: server/administrator/stat_video.php:161 server/administrator/stat_video.php:173
+#: server/administrator/stat_video.php:161
+#: server/administrator/stat_video.php:173
 #: server/administrator/video_search.php:525
 msgid "Total views"
 msgstr "Total de visualizações"
@@ -7936,7 +8032,8 @@ msgstr "Actualizado de acordo com os canais de subscrição."
 msgid "Subscription saved"
 msgstr "Subscrição guardada"
 
-#: server/administrator/subscribe.php:223 server/administrator/subscribe.php:231
+#: server/administrator/subscribe.php:223
+#: server/administrator/subscribe.php:231
 msgid "TV channels subscription"
 msgstr "Assinatura de canais de TV"
 
@@ -8739,15 +8836,16 @@ msgstr "C"
 #: server/lang/stb.php:175
 #, fuzzy
 msgid ""
-"Your task is to guess the number of unduplicated four digits, the first of them "
-"- not zero. Every your guess will be compared with the number put forth a STB. "
-"If you guessed a digit, but it is not in place, then it is a COW (C). If you "
-"guessed, and a number, and its location, this BULL (B)."
+"Your task is to guess the number of unduplicated four digits, the first of "
+"them - not zero. Every your guess will be compared with the number put forth "
+"a STB. If you guessed a digit, but it is not in place, then it is a COW (C). "
+"If you guessed, and a number, and its location, this BULL (B)."
 msgstr ""
 "Sua tarefa é adivinhar o número de quatro dígitos não duplicados, o primeiro "
-"deles-não zero. Cada seu palpite será comparado com o número colocado adiante "
-"um STB. Se você adivinhou um dígito, mas não está no lugar, então é uma vaca "
-"(C). Se você adivinhou, e um número, e sua localização, este BULL (B)."
+"deles-não zero. Cada seu palpite será comparado com o número colocado "
+"adiante um STB. Se você adivinhou um dígito, mas não está no lugar, então é "
+"uma vaca (C). Se você adivinhou, e um número, e sua localização, este BULL "
+"(B)."
 
 #: server/lang/stb.php:176
 msgid "Moving the cursor"
@@ -8911,7 +9009,8 @@ msgstr "SIM"
 msgid "CLOSE"
 msgstr "FECHAR"
 
-#: server/lang/stb.php:221 admin/resources/views/default/macro/iptw_macro.twig:375
+#: server/lang/stb.php:221
+#: admin/resources/views/default/macro/iptw_macro.twig:375
 msgid "OK"
 msgstr "OK"
 
@@ -9009,11 +9108,11 @@ msgstr "Sem limite"
 #: server/lang/stb.php:249
 #, fuzzy
 msgid ""
-"Reached limit the duration of continuous playback. To continue playback, press "
-"the OK or EXIT."
+"Reached limit the duration of continuous playback. To continue playback, "
+"press the OK or EXIT."
 msgstr ""
-"Atingido limitar a duração da reprodução contínua. Para continuar a reprodução, "
-"prima a tecla OK ou EXIT."
+"Atingido limitar a duração da reprodução contínua. Para continuar a "
+"reprodução, prima a tecla OK ou EXIT."
 
 #: server/lang/stb.php:250
 msgid "GENERAL SETTINGS"
@@ -9225,7 +9324,8 @@ msgid "You have successfully subscribed to the service.  STB will be rebooted."
 msgstr "Você assinou com sucesso o serviço.  STB será reiniciado."
 
 #: server/lang/stb.php:321
-msgid "You have successfully unsubscribed from the service. STB will be rebooted."
+msgid ""
+"You have successfully unsubscribed from the service. STB will be rebooted."
 msgstr "Você foi retirado do serviço com sucesso. STB será reiniciado."
 
 #: server/lang/stb.php:322
@@ -10313,7 +10413,8 @@ msgstr "Gravação interrompida"
 msgid ""
 "Services are updated according to the subscription. The STB will be rebooted."
 msgstr ""
-"Os serviços são atualizados de acordo com a assinatura. O STB será reiniciado."
+"Os serviços são atualizados de acordo com a assinatura. O STB será "
+"reiniciado."
 
 #: server/tools/misctranslations.php:188
 #, fuzzy
@@ -10928,7 +11029,8 @@ msgstr "Exibir estatísticas por dispositivos do utilizador"
 #: server/tools/misctranslations.php:330
 #, fuzzy
 msgid "Display statistics by user's devices by page + filters"
-msgstr "Exibir estatísticas por dispositivos do utilizador por página + filtros"
+msgstr ""
+"Exibir estatísticas por dispositivos do utilizador por página + filtros"
 
 #: server/tools/misctranslations.php:331
 msgid "Logs of complaints"
@@ -11019,8 +11121,8 @@ msgstr "Exibindo e editando o pacote de serviço"
 #, fuzzy
 msgid "Getting a list of media content for the service (add/edit form package)"
 msgstr ""
-"Obtendo uma lista de conteúdo de mídia para o serviço (adicionar/editar pacote "
-"de formulário)"
+"Obtendo uma lista de conteúdo de mídia para o serviço (adicionar/editar "
+"pacote de formulário)"
 
 #: server/tools/misctranslations.php:353
 msgid "Validation of external ID for package"
@@ -11059,7 +11161,8 @@ msgstr "Logs on/off de pacotes do utilizador por página + filtros"
 #, fuzzy
 msgid "Set tv-archive settings from service-package edit page"
 msgstr ""
-"Definir configurações de arquivo de TV da página de edição do pacote de serviço"
+"Definir configurações de arquivo de TV da página de edição do pacote de "
+"serviço"
 
 #: server/tools/misctranslations.php:362
 msgid "List of tasks"
@@ -11333,8 +11436,8 @@ msgstr "Actualize a classificação do filme no portal kinopoisk.ru"
 #: server/tools/misctranslations.php:424
 #, fuzzy
 msgid ""
-"By title of movie fill in the form of adding movie using data from kinopoisk.ru "
-"portal"
+"By title of movie fill in the form of adding movie using data from kinopoisk."
+"ru portal"
 msgstr ""
 "Por título de filme preencher na forma de adicionar filme usando dados de "
 "kinopoisk.ru portal"
@@ -11342,11 +11445,11 @@ msgstr ""
 #: server/tools/misctranslations.php:425
 #, fuzzy
 msgid ""
-"By ID movie on kinopoisk.ru portal, fill in the form of adding movie using data "
-"from kinopoisk.ru portal"
+"By ID movie on kinopoisk.ru portal, fill in the form of adding movie using "
+"data from kinopoisk.ru portal"
 msgstr ""
-"Por ID filme no portal kinopoisk.ru, preencha a forma de adicionar filme usando "
-"dados de kinopoisk.ru portal"
+"Por ID filme no portal kinopoisk.ru, preencha a forma de adicionar filme "
+"usando dados de kinopoisk.ru portal"
 
 #: server/tools/misctranslations.php:426
 #, fuzzy
@@ -11583,8 +11686,8 @@ msgstr "título"
 #: server/tools/misctranslations.php:477
 #, fuzzy, php-format
 msgid ""
-"Dear Subscriber! Your payment term will expire in \"%s\" days. Please refill a "
-"personal account in order to avoid tripping of services."
+"Dear Subscriber! Your payment term will expire in \"%s\" days. Please refill "
+"a personal account in order to avoid tripping of services."
 msgstr ""
 "Caro assinante! Seu prazo de pagamento expirará em \" %s\" dias. Por favor, "
 "reabastecer uma conta pessoal, a fim de evitar tropeçar de serviços."
@@ -11592,8 +11695,8 @@ msgstr ""
 #: server/tools/misctranslations.php:478
 #, fuzzy
 msgid ""
-"Dear Subscriber! Your payment term will expire today. Please refill a personal "
-"account in order to avoid tripping of services."
+"Dear Subscriber! Your payment term will expire today. Please refill a "
+"personal account in order to avoid tripping of services."
 msgstr ""
 "Caro assinante! Seu prazo de pagamento expirará hoje. Por favor, reabastecer "
 "uma conta pessoal, a fim de evitar tropeçar de serviços."
@@ -11604,7 +11707,8 @@ msgid "Check if available this name for reseller"
 msgstr "Verifique se este nome está disponível para revendedor"
 
 #: server/tools/misctranslations.php:480
-msgid "Сheck for use of the current address or address range by another reseller"
+msgid ""
+"Сheck for use of the current address or address range by another reseller"
 msgstr ""
 "Verificar para uso do endereço actual ou intervalo de endereços por outro "
 "revendedor"
@@ -11721,23 +11825,28 @@ msgstr "Catálogo de aplicações. Lista de aplicações por página + filtros"
 
 #: server/tools/misctranslations.php:507
 #, fuzzy
-msgid "Application catalog. Terms of use of  the catalog of applications Ministra"
-msgstr "Catálogo de aplicações. Termos de uso do catálogo de aplicações Ministra"
+msgid ""
+"Application catalog. Terms of use of  the catalog of applications Ministra"
+msgstr ""
+"Catálogo de aplicações. Termos de uso do catálogo de aplicações Ministra"
 
 #: server/tools/misctranslations.php:508
 msgid ""
-"Application catalog. Application info and list of available application versions"
+"Application catalog. Application info and list of available application "
+"versions"
 msgstr ""
 "Catálogo de aplicações. Informações da aplicação e lista de versões de "
 "aplicações disponíveis"
 
 #: server/tools/misctranslations.php:509
 msgid "Application catalog. Getting application info from repository"
-msgstr "Catálogo de aplicações. Obtendo informações da aplicação do repositório"
+msgstr ""
+"Catálogo de aplicações. Obtendo informações da aplicação do repositório"
 
 #: server/tools/misctranslations.php:510
 msgid "Application catalog. Add new application by URL of the repository"
-msgstr "Catálogo de aplicações. Adicionar nova aplicação por URL do repositório"
+msgstr ""
+"Catálogo de aplicações. Adicionar nova aplicação por URL do repositório"
 
 #: server/tools/misctranslations.php:511
 msgid "Application catalog. List of application versions"
@@ -11798,7 +11907,8 @@ msgstr "Aplicação para SmartLauncher. Lista de versões das aplicações"
 
 #: server/tools/misctranslations.php:523
 msgid "Application for SmartLauncher. Install available application version"
-msgstr "Aplicação para SmartLauncher. Instalar a versão da aplicação disponível"
+msgstr ""
+"Aplicação para SmartLauncher. Instalar a versão da aplicação disponível"
 
 #: server/tools/misctranslations.php:524
 msgid "Application for SmartLauncher. Delete installed application version"
@@ -11829,8 +11939,8 @@ msgstr "Aplicação para SmartLauncher. Editando as opções de aplicação"
 #: server/tools/misctranslations.php:529
 #, fuzzy
 msgid ""
-"Application for SmartLauncher. Saving list of installed applications into the "
-"file"
+"Application for SmartLauncher. Saving list of installed applications into "
+"the file"
 msgstr ""
 "Aplicação para SmartLauncher. Salvando a lista de aplicações instaladas no "
 "arquivo"
@@ -11879,7 +11989,8 @@ msgstr "Edição existe anúncio-empresa"
 
 #: server/tools/misctranslations.php:538
 #, fuzzy
-msgid "Form for viewing, adding, editing and requesting sources for ad-companies"
+msgid ""
+"Form for viewing, adding, editing and requesting sources for ad-companies"
 msgstr ""
 "Formulário para visualização, adição, edição e solicitação de fontes para "
 "anúncios-empresas"
@@ -12226,8 +12337,8 @@ msgstr ""
 
 #: server/tools/misctranslations.php:622
 msgid ""
-"Library of movies for any mood with easy search and sorting by genre that help "
-"to find what you need in seconds."
+"Library of movies for any mood with easy search and sorting by genre that "
+"help to find what you need in seconds."
 msgstr ""
 "Filmek könyvtára mindenféle hangulathoz, egyszerű kereséssel és rendezéssel "
 "műfaj szerint, ami másodpercek alatt segít megtalálni amire épp szüksége van."
@@ -12241,14 +12352,17 @@ msgstr ""
 "rodinnú udalosť!"
 
 #: server/tools/misctranslations.php:624
-msgid "Easy and handy way of listening to music, news, talk shows and much more."
+msgid ""
+"Easy and handy way of listening to music, news, talk shows and much more."
 msgstr ""
-"Egyszerű és kényelmes módja zenék, hírek, talk show-k és sok más hallgatására."
+"Egyszerű és kényelmes módja zenék, hírek, talk show-k és sok más "
+"hallgatására."
 
 #: server/tools/misctranslations.php:625
 msgid "Sing your favourite songs with friends or improve your vocal skills."
 msgstr ""
-"Spievaj svoje obľúbené piesne s priateľmi alebo zlepší svoje vokálne schopnosti."
+"Spievaj svoje obľúbené piesne s priateľmi alebo zlepší svoje vokálne "
+"schopnosti."
 
 #: server/tools/misctranslations.php:626
 msgid ""
@@ -12267,10 +12381,11 @@ msgstr ""
 "tárolóeszközre."
 
 #: server/tools/misctranslations.php:628
-msgid "This app allows recording TV shows or watch the records made previously."
+msgid ""
+"This app allows recording TV shows or watch the records made previously."
 msgstr ""
-"Ez az alkalmazás lehetővé teszi TV-műsörök felvételét, vagy régebben készített "
-"felvételek lejátszását."
+"Ez az alkalmazás lehetővé teszi TV-műsörök felvételét, vagy régebben "
+"készített felvételek lejátszását."
 
 #: server/tools/misctranslations.php:629
 msgid ""
@@ -12295,16 +12410,17 @@ msgstr ""
 
 #: server/tools/misctranslations.php:632
 msgid ""
-"Configure the user interface appearance and set up parental control to ensure "
-"your child’s safety while he’s using a set-top box."
+"Configure the user interface appearance and set up parental control to "
+"ensure your child’s safety while he’s using a set-top box."
 msgstr ""
 "Állítsa be a felhasználói felület kinézetét, és állítson be szülői "
-"felügyeletet, hogy biztosítsa gyermekének a set-top box biztonságos használatát."
+"felügyeletet, hogy biztosítsa gyermekének a set-top box biztonságos "
+"használatát."
 
 #: server/tools/misctranslations.php:633
 msgid ""
-"System settings will help you to set up network connection, graphics resolution "
-"and to change interface language."
+"System settings will help you to set up network connection, graphics "
+"resolution and to change interface language."
 msgstr ""
 "As configurações do sistema ajudarão a configurar a ligação de rede, a "
 "resolução de gráficos e a alterar o idioma da interface."
@@ -12315,14 +12431,14 @@ msgid ""
 "MAGic Remote mobile app or connect the keyboard or mouse via USB port."
 msgstr ""
 "Internetezzen a beépített böngésző segítségével. A könnyébb kezelhetőség "
-"végett, használhatja a MAGic Remote mobilalkalmazást, vagy csatlakoztathat USB "
-"billentyűzetet vagy USB egeret."
+"végett, használhatja a MAGic Remote mobilalkalmazást, vagy csatlakoztathat "
+"USB billentyűzetet vagy USB egeret."
 
 #: server/tools/misctranslations.php:635
 msgid ""
-"2048 is one of the world’s most popular puzzles. The rules are simple: you need "
-"to shuffle all the bars to one side of the game field. Your goal is to reach "
-"2048."
+"2048 is one of the world’s most popular puzzles. The rules are simple: you "
+"need to shuffle all the bars to one side of the game field. Your goal is to "
+"reach 2048."
 msgstr ""
 "2048 é um dos quebra-cabeças mais populares do mundo. As regras são simples: "
 "você precisa embaralhar todas as barras para um lado do campo do jogo. Seu "
@@ -12346,8 +12462,8 @@ msgstr ""
 
 #: server/tools/misctranslations.php:638
 msgid ""
-"Sudoku is a well-known Japanese puzzle. You need to fill all the cells the way "
-"there won't be the same two numbers in each row, column or block."
+"Sudoku is a well-known Japanese puzzle. You need to fill all the cells the "
+"way there won't be the same two numbers in each row, column or block."
 msgstr ""
 "Sudoku é um enigma japonês bem conhecido. Você precisa preencher todas as "
 "células da maneira a não haver os mesmos números em cada linha, coluna ou "
@@ -12355,8 +12471,8 @@ msgstr ""
 
 #: server/tools/misctranslations.php:639
 msgid ""
-"The portal is temporarily unavailable.<br>Please try again later.<br>Sorry for "
-"the inconvenience."
+"The portal is temporarily unavailable.<br>Please try again later.<br>Sorry "
+"for the inconvenience."
 msgstr ""
 "O portal está temporariamente indisponível.<br>Por favor, tente novamente "
 "mais tarde.<br>Desculpem o inconveniente."
@@ -13179,7 +13295,8 @@ msgstr "Reservado"
 
 #: server/tools/misctranslations.php:859
 #: admin/resources/views/default/LicenseKeys/license_keys_list/license_keys_list.twig:104
-msgid "Something went wrong. Check your internet connection and try again later."
+msgid ""
+"Something went wrong. Check your internet connection and try again later."
 msgstr ""
 "Algo correu mal. Verifique sua ligação com a internet e tente novamente mais "
 "tarde."
@@ -13241,8 +13358,8 @@ msgstr "Na predefinição"
 #: admin/resources/views/Events_index.twig:99
 #, fuzzy
 msgid ""
-"Choose recipient. Example: to one, to all, on the list, on the preset, to the "
-"group"
+"Choose recipient. Example: to one, to all, on the list, on the preset, to "
+"the group"
 msgstr ""
 "Escolha o destinatário. Exemplo: para um, para todos, na lista, na "
 "predefinição, para o grupo"
@@ -13262,11 +13379,11 @@ msgstr "Adicionar uma imagem"
 #: admin/resources/views/default/basic_templates/events_menu.twig:58
 #, fuzzy
 msgid ""
-"The file must contain pre-compiled list of MAC-addresses in the txt extension "
-"or another text format"
+"The file must contain pre-compiled list of MAC-addresses in the txt "
+"extension or another text format"
 msgstr ""
-"O arquivo deve conter a lista pré-compilada de endereços MAC na extensão txt ou "
-"outro formato de texto"
+"O arquivo deve conter a lista pré-compilada de endereços MAC na extensão txt "
+"ou outro formato de texto"
 
 #: admin/resources/views/Events_index.twig:136
 #: admin/resources/views/default/basic_templates/events_menu.twig:74
@@ -13633,8 +13750,8 @@ msgstr "lista de revendedores"
 #: admin/resources/views/default/Admins/resellers_list/resellers_list.twig:111
 #, fuzzy
 msgid ""
-"Maximum number of users for current reseller. Set \"0\" for unlimited number of "
-"users."
+"Maximum number of users for current reseller. Set \"0\" for unlimited number "
+"of users."
 msgstr ""
 "Número máximo de utilizadores para o revendedor atual. Defina \"0\" para um "
 "número ilimitado de utilizadores."
@@ -13697,8 +13814,8 @@ msgstr "Desativar"
 #: admin/resources/views/default/ApplicationCatalog/smart_application_detail/smart_application_detail.js.twig:153
 #, fuzzy
 msgid ""
-"Perhaps the application is not installed. Before activate this application is "
-"necessary to install any version of the application."
+"Perhaps the application is not installed. Before activate this application "
+"is necessary to install any version of the application."
 msgstr ""
 "Talvez a aplicação não está instalada. Antes de ativar esta aplicação é "
 "necessário instalar qualquer versão da aplicação."
@@ -13788,11 +13905,11 @@ msgstr "Atenção"
 #: admin/resources/views/default/ApplicationCatalog/smart_application_list/smart_application_list.js.twig:204
 #, fuzzy
 msgid ""
-"This is system apps. Disabling this application can lead to failures in other "
-"applications. Do really want deactivate this application?"
+"This is system apps. Disabling this application can lead to failures in "
+"other applications. Do really want deactivate this application?"
 msgstr ""
-"Isso é aplicação do sistema. Desabilitar esta aplicação pode levar a falhas em "
-"outras aplicações. Realmente quer desativar esta aplicação?"
+"Isso é aplicação do sistema. Desabilitar esta aplicação pode levar a falhas "
+"em outras aplicações. Realmente quer desativar esta aplicação?"
 
 #: admin/resources/views/default/ApplicationCatalog/smart_application_list/smart_application_list.js.twig:221
 #: admin/resources/views/default/AudioClub/audio_albums/audio_albums.js.twig:94
@@ -13997,8 +14114,8 @@ msgstr "Você pode usar símbolos da lista: ! @ # $ % ^ & * ( ) _ - + : ; , ."
 #: admin/resources/views/default/AudioClub/add_audio_albums/add_audio_albums.twig:161
 #: admin/resources/views/default/AudioClub/add_audio_albums/add_audio_albums_old.twig:315
 msgid ""
-"Accepted input: URL or solution + URL. Example ffmpeg http://example.com/track."
-"mp3"
+"Accepted input: URL or solution + URL. Example ffmpeg http://example.com/"
+"track.mp3"
 msgstr ""
 "Entrada aceite: URL ou solução + URL. Exemplo ffmpeg http://example.com/"
 "track.mp3"
@@ -14180,10 +14297,11 @@ msgstr "Mostrar todos os itens"
 #: admin/resources/views/default/Tariffs/add_service_package/add_service_package.twig:84
 #: admin/resources/views/default/VideoClub/add_video/add_video.twig:71
 msgid ""
-"You can use letters, digits and symbols from the list: ! @ # $ % ^ & * ( ) _ - "
-"+ : ; , ."
+"You can use letters, digits and symbols from the list: ! @ # $ % ^ & * ( ) _ "
+"- + : ; , ."
 msgstr ""
-"Pode usar letras, dígitos e símbolos da lista: ! @ # $ % ^ & * ( ) _ - + : ; , ."
+"Pode usar letras, dígitos e símbolos da lista: ! @ # $ % ^ & * ( ) _ - "
+"+ : ; , ."
 
 #: admin/resources/views/default/AudioClub/add_audio_albums/add_audio_albums_step_1.twig:115
 msgid "Required cover dimensions are: 240x240 pixels"
@@ -14302,8 +14420,8 @@ msgstr "adicionar área"
 
 #: admin/resources/views/default/BroadcastServers/add_zone/add_zone.twig:36
 msgid ""
-"Title of the area. You can use letters, digits and symbols from the list: ! @ # "
-"$ % ^ & * ( ) _ - + : ; , ."
+"Title of the area. You can use letters, digits and symbols from the list: ! "
+"@ # $ % ^ & * ( ) _ - + : ; , ."
 msgstr ""
 "Título da área. Pode usar letras, dígitos e símbolos da lista: ! @ # $ % ^ & "
 "* ( ) _ - + : ; , ."
@@ -14319,9 +14437,11 @@ msgstr ""
 
 #: admin/resources/views/default/BroadcastServers/add_zone/add_zone.twig:64
 #, fuzzy
-msgid "To select as default, first you have to uncheck the current default zone"
+msgid ""
+"To select as default, first you have to uncheck the current default zone"
 msgstr ""
-"Para selecionar como padrão, primeiro você tem que desmarcar a zona padrão atual"
+"Para selecionar como padrão, primeiro você tem que desmarcar a zona padrão "
+"atual"
 
 #: admin/resources/views/default/BroadcastServers/add_zone/add_zone.twig:93
 msgid ""
@@ -14364,11 +14484,11 @@ msgstr "lista de servidores"
 
 #: admin/resources/views/default/BroadcastServers/broadcast_servers_list/broadcast_servers_list.twig:82
 msgid ""
-"You can use letters, digits and symbols from the list: ! @ # $ % ^ & * ( ) _ - "
-"+ : ; , . It will be shown in the load balancer."
+"You can use letters, digits and symbols from the list: ! @ # $ % ^ & * ( ) _ "
+"- + : ; , . It will be shown in the load balancer."
 msgstr ""
-"Você pode usar letras, dígitos e símbolos da lista:! @ # $ % ^ & * ( ) _ - + "
-": ; , . Ele será mostrado no balanceador de carga."
+"Você pode usar letras, dígitos e símbolos da lista:! @ # $ % ^ & * ( ) _ - "
+"+ : ; , . Ele será mostrado no balanceador de carga."
 
 #: admin/resources/views/default/BroadcastServers/broadcast_servers_list/broadcast_servers_list.twig:96
 msgid "Example: server.example:8080"
@@ -14382,11 +14502,11 @@ msgstr "Quantidade máxima de utilizadores (carga) valor numérico"
 #: admin/resources/views/default/BroadcastServers/broadcast_servers_list/broadcast_servers_list.twig:131
 #, fuzzy
 msgid ""
-"Choose the streaming area, if the field is clean, there will be set a default "
-"streaming area"
+"Choose the streaming area, if the field is clean, there will be set a "
+"default streaming area"
 msgstr ""
-"Escolha a área de streaming, se o campo estiver limpo, será definido um padrão "
-"de área de streaming"
+"Escolha a área de streaming, se o campo estiver limpo, será definido um "
+"padrão de área de streaming"
 
 #: admin/resources/views/default/BroadcastServers/broadcast_zone_list/broadcast_zone_list.twig:4
 msgid "areas list"
@@ -14441,9 +14561,9 @@ msgstr "Quais são os certificados?"
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:269
 #, fuzzy
 msgid ""
-"The certificates allow operators to connect set-top boxes and applications to "
-"Stalker Middleware. These are the files generated for a certain server at an "
-"administrative control panel request."
+"The certificates allow operators to connect set-top boxes and applications "
+"to Stalker Middleware. These are the files generated for a certain server at "
+"an administrative control panel request."
 msgstr ""
 "Os certificados permitem que os operadores conectem caixas de Set-Top e "
 "aplicações ao stalker middleware. Esses são os arquivos gerados para um "
@@ -14452,17 +14572,17 @@ msgstr ""
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:270
 #, fuzzy
 msgid ""
-"Every certificate includes a certain number of licenses which is the number of "
-"devices which can be connected to Stalker Middleware. To establish a successful "
-"connection, set-top box should be integrated with Stalker Middleware. Infomir’s "
-"MAG set-top boxes and original StalkerTV (Android, iOS) apps don’t require a "
-"certificate."
+"Every certificate includes a certain number of licenses which is the number "
+"of devices which can be connected to Stalker Middleware. To establish a "
+"successful connection, set-top box should be integrated with Stalker "
+"Middleware. Infomir’s MAG set-top boxes and original StalkerTV (Android, "
+"iOS) apps don’t require a certificate."
 msgstr ""
 "Cada certificado inclui um certo número de licenças que é o número de "
-"dispositivos que podem ser conectados ao stalker middleware. Para estabelecer "
-"uma conexão bem-sucedida, o set-top box deve ser integrado ao stalker "
-"middleware. As caixas de Set-Top MAG da infomir e as aplicações StalkerTV "
-"(Android, iOS) originais não exigem um certificado."
+"dispositivos que podem ser conectados ao stalker middleware. Para "
+"estabelecer uma conexão bem-sucedida, o set-top box deve ser integrado ao "
+"stalker middleware. As caixas de Set-Top MAG da infomir e as aplicações "
+"StalkerTV (Android, iOS) originais não exigem um certificado."
 
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:278
 #, fuzzy
@@ -14471,16 +14591,17 @@ msgstr "Como é determinado o uso da licença?"
 
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:279
 msgid ""
-"The license is not attached to a certain device. The rated number of licenses "
-"is the number of unique devices which have been using your services within 24 "
-"hours. "
+"The license is not attached to a certain device. The rated number of "
+"licenses is the number of unique devices which have been using your services "
+"within 24 hours. "
 msgstr ""
 "A licença não está anexada a um determinado dispositivo. O número nominal de "
 "licenças é o número de dispositivos exclusivos que têm usado seus serviços "
 "dentro de 24 horas. "
 
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:286
-msgid "What should I do if I need to connect more devices than I have licenses?"
+msgid ""
+"What should I do if I need to connect more devices than I have licenses?"
 msgstr ""
 "O que devo fazer se precisar conectar mais dispositivos do que as licenças?"
 
@@ -14489,9 +14610,9 @@ msgid ""
 "Users can connect to Stalker middleware even if the number of active devices "
 "exceeds the amount of available licenses. According to active devices "
 "statistics, in the end of every quarter you will get a supplementary invoice "
-"equal to 25%% of annual value of additional licenses. You can also request for "
-"another certificate with needed amount of licenses and use it with the one you "
-"already own."
+"equal to 25%% of annual value of additional licenses. You can also request "
+"for another certificate with needed amount of licenses and use it with the "
+"one you already own."
 msgstr ""
 "Os utilizadores podem ligar-se ao Stalker middleware mesmo que o número de "
 "dispositivos activos exceda a quantidade de licenças disponíveis. De acordo "
@@ -14503,20 +14624,21 @@ msgstr ""
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:296
 #, fuzzy
 msgid "How much will it cost to integrate my devices with Stalker Middleware?"
-msgstr "Quanto vai custar para integrar meus dispositivos com stalker middleware?"
+msgstr ""
+"Quanto vai custar para integrar meus dispositivos com stalker middleware?"
 
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:297
 #, fuzzy
 msgid ""
-"Integration of one firmware version of one device costs $3,000. And $1,500 if "
-"you need to integrate an additional firmware version markedly different from "
-"the integrated one. If your device has already been integrated with Stalker "
-"Middleware, payment is not needed."
+"Integration of one firmware version of one device costs $3,000. And $1,500 "
+"if you need to integrate an additional firmware version markedly different "
+"from the integrated one. If your device has already been integrated with "
+"Stalker Middleware, payment is not needed."
 msgstr ""
-"A integração de uma versão de firmware de um dispositivo custa $3000. E $1500 "
-"se você precisar integrar uma versão de firmware adicional marcadamente "
-"diferente da integrada. Se o seu dispositivo já foi integrado com o stalker "
-"middleware, o pagamento não é necessário."
+"A integração de uma versão de firmware de um dispositivo custa $3000. E "
+"$1500 se você precisar integrar uma versão de firmware adicional "
+"marcadamente diferente da integrada. Se o seu dispositivo já foi integrado "
+"com o stalker middleware, o pagamento não é necessário."
 
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:304
 msgid "Which devices are already integrated with Stalker Middleware?"
@@ -14539,15 +14661,16 @@ msgstr ""
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:325
 #, fuzzy
 msgid ""
-"If you change your server configurations your certificate may become invalid. "
-"So all devices connected to your server will be access denied. If you are "
-"planning configuration changes you need to inform us in advance and to request "
-"for a renewed certificate."
+"If you change your server configurations your certificate may become "
+"invalid. So all devices connected to your server will be access denied. If "
+"you are planning configuration changes you need to inform us in advance and "
+"to request for a renewed certificate."
 msgstr ""
-"Se você alterar as configurações do servidor, seu certificado poderá se tornar "
-"inválido. Assim, todos os dispositivos conectados ao seu servidor serão acesso "
-"negado. Se você estiver planejando alterações de configuração, você precisa nos "
-"informar com antecedência e solicitar um certificado renovado."
+"Se você alterar as configurações do servidor, seu certificado poderá se "
+"tornar inválido. Assim, todos os dispositivos conectados ao seu servidor "
+"serão acesso negado. Se você estiver planejando alterações de configuração, "
+"você precisa nos informar com antecedência e solicitar um certificado "
+"renovado."
 
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:334
 msgid "Can I use multiple certificates simultaneously?"
@@ -14570,19 +14693,20 @@ msgstr "O meu certificado pode ser bloqueado?"
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:344
 #, fuzzy
 msgid ""
-"Yes. Our server gets requests any time you try to authorize a set-top box.  If "
-"your certificate is valid it will be authorized even if the request failed to "
-"reach our server. That guarantees high-availability of connected devices."
+"Yes. Our server gets requests any time you try to authorize a set-top box.  "
+"If your certificate is valid it will be authorized even if the request "
+"failed to reach our server. That guarantees high-availability of connected "
+"devices."
 msgstr ""
 "Sim. Nosso servidor recebe solicitações a qualquer momento que você tentar "
 "autorizar uma set-top box.  Se o seu certificado for válido, ele será "
-"autorizado mesmo que a solicitação não chegue ao nosso servidor. Isso garante "
-"alta disponibilidade de dispositivos conectados."
+"autorizado mesmo que a solicitação não chegue ao nosso servidor. Isso "
+"garante alta disponibilidade de dispositivos conectados."
 
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:345
 msgid ""
-"These requests are important for license use calculation. So if no request is "
-"received by our server within 30 days, your certificate will be banned "
+"These requests are important for license use calculation. So if no request "
+"is received by our server within 30 days, your certificate will be banned "
 "automatically. It can also be banned in case of fraud or late payment for "
 "licenses usage."
 msgstr ""
@@ -14718,8 +14842,8 @@ msgid ""
 "It identifies your subscribers in the system and allows you to count "
 "impressions advertising."
 msgstr ""
-"Ele identifica seus assinantes no sistema e permite que você conte impressões "
-"publicidade."
+"Ele identifica seus assinantes no sistema e permite que você conte "
+"impressões publicidade."
 
 #: admin/resources/views/default/ExternalAdvertising/company_add/company_add.twig:95
 msgid "You can have multiple Source ID."
@@ -14874,8 +14998,8 @@ msgid ""
 "*Please note: This service is available only to those with subscriber bases "
 "with at least 1000 users"
 msgstr ""
-"* Por favor, note: este serviço está disponível apenas para aqueles com bases "
-"de assinantes com pelo menos 1000 utilizadores"
+"* Por favor, note: este serviço está disponível apenas para aqueles com "
+"bases de assinantes com pelo menos 1000 utilizadores"
 
 #: admin/resources/views/default/ExternalAdvertising/register/register.twig:152
 msgid "Web site"
@@ -14893,8 +15017,8 @@ msgstr "Já estou registado"
 #: admin/resources/views/default/ExternalAdvertising/register/register.twig:178
 #, fuzzy
 msgid ""
-"If you have already been through the registration procedure in Video Ad system, "
-"you should not fill this form again"
+"If you have already been through the registration procedure in Video Ad "
+"system, you should not fill this form again"
 msgstr ""
 "Se você já foi através do procedimento de registro no sistema de anúncios de "
 "vídeo, você não deve preencher este formulário novamente"
@@ -14910,7 +15034,8 @@ msgstr "Obrigado por confirmar a sua assinatura!"
 #: admin/resources/views/default/ExternalAdvertising/register_confirm/register_confirm.twig:19
 #, fuzzy
 msgid "In the nearest future a personal manager will get in touch with you."
-msgstr "No futuro mais próximo, um gerente pessoal entrará em contato com você."
+msgstr ""
+"No futuro mais próximo, um gerente pessoal entrará em contato com você."
 
 #: admin/resources/views/default/ExternalAdvertising/register_confirm/register_confirm.twig:22
 msgid "Best regards,"
@@ -15164,21 +15289,22 @@ msgstr "Adicionar composição"
 #: admin/resources/views/default/Karaoke/index/index.twig:119
 #, fuzzy
 msgid ""
-"Content delivery type: http or custom url. When selecting HTTP, the file will "
-"be stored on the server. A unique title will be generated, which you should "
-"then use to rename the file. Custom URL means that you are downloading the file "
-"from the network. In this case, you have to indicate a direct link to the file "
-"using the format: solution + url."
+"Content delivery type: http or custom url. When selecting HTTP, the file "
+"will be stored on the server. A unique title will be generated, which you "
+"should then use to rename the file. Custom URL means that you are "
+"downloading the file from the network. In this case, you have to indicate a "
+"direct link to the file using the format: solution + url."
 msgstr ""
-"Tipo de entrega de conteúdo: http ou URL personalizada. Ao selecionar HTTP, o "
-"arquivo será armazenado no servidor. Um título exclusivo será gerado, que você "
-"deve usar para renomear o arquivo. URL personalizada significa que você está "
-"baixando o arquivo da rede. Nesse caso, você precisa indicar um link direto "
-"para o arquivo usando o formato: Solution + URL."
+"Tipo de entrega de conteúdo: http ou URL personalizada. Ao selecionar HTTP, "
+"o arquivo será armazenado no servidor. Um título exclusivo será gerado, que "
+"você deve usar para renomear o arquivo. URL personalizada significa que você "
+"está baixando o arquivo da rede. Nesse caso, você precisa indicar um link "
+"direto para o arquivo usando o formato: Solution + URL."
 
 #: admin/resources/views/default/Karaoke/index/index.twig:132
 msgid ""
-"Format solution + URL. Example fmpeg http://anon.nasa.net/download_135_720p.wmv"
+"Format solution + URL. Example fmpeg http://anon.nasa.net/download_135_720p."
+"wmv"
 msgstr ""
 "Solução de formato + URL. Exemplo fmpeg http://anon.nasa.net/"
 "download_135_720p.wmv"
@@ -15193,15 +15319,16 @@ msgstr "Transmitir conteúdo em qualquer dispositivo"
 
 #: admin/resources/views/default/LicenseKeys/about_license_keys/about_license_keys.twig:25
 #, fuzzy
-msgid "Owners of practically any device can become subscribers to your service."
+msgid ""
+"Owners of practically any device can become subscribers to your service."
 msgstr ""
 "Os proprietários de praticamente qualquer dispositivo podem se tornar "
 "assinantes de seu serviço."
 
 #: admin/resources/views/default/LicenseKeys/about_license_keys/about_license_keys.twig:26
 msgid ""
-"Now you can connect to Ministra TV platform with the most popular media players "
-"and smart TVs."
+"Now you can connect to Ministra TV platform with the most popular media "
+"players and smart TVs."
 msgstr ""
 "Agora pode ligar-se à plataforma de TV Ministra com os media players mais "
 "populares e smart TVs."
@@ -15209,18 +15336,18 @@ msgstr ""
 #: admin/resources/views/default/LicenseKeys/about_license_keys/about_license_keys.twig:27
 #, fuzzy
 msgid ""
-"This was made possible thanks to the release of Ministra Player, an easy-to-use "
-"application for viewing TV and video content that is available on an increasing "
-"number of platforms."
+"This was made possible thanks to the release of Ministra Player, an easy-to-"
+"use application for viewing TV and video content that is available on an "
+"increasing number of platforms."
 msgstr ""
-"Isso foi possível graças ao lançamento do ministra Player, uma aplicação fácil "
-"de usar para visualização de conteúdo de TV e vídeo que está disponível em um "
-"número crescente de plataformas."
+"Isso foi possível graças ao lançamento do ministra Player, uma aplicação "
+"fácil de usar para visualização de conteúdo de TV e vídeo que está "
+"disponível em um número crescente de plataformas."
 
 #: admin/resources/views/default/LicenseKeys/about_license_keys/about_license_keys.twig:29
 msgid ""
-"The application can be downloaded for free, but its full functionality requires "
-"a License key."
+"The application can be downloaded for free, but its full functionality "
+"requires a License key."
 msgstr ""
 "A aplicação pode ser baixado gratuitamente, mas a sua funcionalidade "
 "completa requer uma chave de licença."
@@ -15278,9 +15405,9 @@ msgstr "Aplicações para Android e iOS"
 #: admin/resources/views/default/LicenseKeys/about_license_keys/about_license_keys.twig:83
 #, fuzzy
 msgid ""
-"The official applications for Apple TV, Android TV, iPad, iPhone, iPod touch, "
-"Android phones & tablets, Android STB can be downloaded and installed for free "
-"from app stores, but a License key will be needed."
+"The official applications for Apple TV, Android TV, iPad, iPhone, iPod "
+"touch, Android phones & tablets, Android STB can be downloaded and installed "
+"for free from app stores, but a License key will be needed."
 msgstr ""
 "As aplicações oficiais para Apple TV, Android TV, iPad, iPhone, iPod Touch, "
 "telefones Android e tablets, Android STB pode ser baixado e instalado "
@@ -15299,8 +15426,8 @@ msgid ""
 "key will be needed."
 msgstr ""
 "Aplicações para Roku Media Player, e Samsung tizen TV e LG WebOS Smart TVs, "
-"pode ser baixado e instalado gratuitamente a partir de lojas de aplicações, mas "
-"uma chave de licença será necessária."
+"pode ser baixado e instalado gratuitamente a partir de lojas de aplicações, "
+"mas uma chave de licença será necessária."
 
 #: admin/resources/views/default/LicenseKeys/about_license_keys/about_license_keys.twig:94
 msgid "Buy a License key"
@@ -15500,8 +15627,8 @@ msgstr "Legendas"
 
 #: admin/resources/views/default/NewVideoClub/add_video/add_video.twig:311
 msgid ""
-"Selecting the method of content delivery to the user (http or custom url). When "
-"using HTTP, there is no link to the content, it is stored on the server."
+"Selecting the method of content delivery to the user (http or custom url). "
+"When using HTTP, there is no link to the content, it is stored on the server."
 msgstr ""
 "Selecionando o método de entrega de conteúdo para o utilizador (http ou URL "
 "personalizada). Ao usar HTTP, não há nenhum link para o conteúdo, ele é "
@@ -15678,8 +15805,8 @@ msgstr "Tipo Série adiciona temporadas e episódios à estrutura"
 #: admin/resources/views/default/NewVideoClub/add_video/add_video_step_1.twig:192
 #: admin/resources/views/default/VideoClub/add_video/add_video.twig:172
 msgid ""
-"Adds the restriction for movie access (password set in the \"Parental advisory"
-"\"). Default password 0000"
+"Adds the restriction for movie access (password set in the \"Parental "
+"advisory\"). Default password 0000"
 msgstr ""
 "Adicionar restrição para acesso a filmes (palavra-passe definida no "
 "\"aconselhamento parental\"). Palavra-passe padrão 0000"
@@ -15769,8 +15896,10 @@ msgstr "Duração do filme em minutos Exemplo: 102"
 #: admin/resources/views/default/NewVideoClub/add_video/add_video_old(backup).twig:314
 #: admin/resources/views/default/NewVideoClub/add_video/add_video_step_2.twig:95
 #, fuzzy
-msgid "Approximate duration(format)  of episode of serial on minutes. Example: 24"
-msgstr "Duração aproximada (formato) do episódio de série em minutos. Exemplo: 24"
+msgid ""
+"Approximate duration(format)  of episode of serial on minutes. Example: 24"
+msgstr ""
+"Duração aproximada (formato) do episódio de série em minutos. Exemplo: 24"
 
 #: admin/resources/views/default/NewVideoClub/add_video/add_video_old(backup).twig:348
 #: admin/resources/views/default/NewVideoClub/add_video/add_video_step_2.twig:125
@@ -15836,13 +15965,13 @@ msgstr "Adicionar uma temporada"
 #: admin/resources/views/default/NewVideoClub/add_video/add_video_old(backup).twig:693
 #, fuzzy
 msgid ""
-"Selecting the method of content delivery to the user (http, custom url, nfs). "
-"When using HTTP or NFS variants do not link to the content, in which case the "
-"content is stored on the server."
+"Selecting the method of content delivery to the user (http, custom url, "
+"nfs). When using HTTP or NFS variants do not link to the content, in which "
+"case the content is stored on the server."
 msgstr ""
 "Selecionando o método de entrega de conteúdo para o utilizador (http, Custom "
-"URL, NFS). Ao usar variantes HTTP ou NFS não vincular ao conteúdo, caso em que "
-"o conteúdo é armazenado no servidor."
+"URL, NFS). Ao usar variantes HTTP ou NFS não vincular ao conteúdo, caso em "
+"que o conteúdo é armazenado no servidor."
 
 #: admin/resources/views/default/NewVideoClub/add_video/add_video_step_1.js.twig:6
 msgid "No matched genres"
@@ -16133,13 +16262,13 @@ msgstr "Informação geral"
 #: admin/resources/views/default/Settings/common/common.twig:107
 #, fuzzy
 msgid ""
-"Number and date of image due to be updated. Taken from the image. For automatic "
-"search of firmware it is enough to fill in version or date of image (one of "
-"fields).Number must be numeric."
+"Number and date of image due to be updated. Taken from the image. For "
+"automatic search of firmware it is enough to fill in version or date of "
+"image (one of fields).Number must be numeric."
 msgstr ""
 "Número e data da imagem devido a ser actualizado. Tirado da imagem. Para a "
-"busca automática de firmware é suficiente para preencher a versão ou a data da "
-"imagem (um dos campos). O número deve ser numérico."
+"busca automática de firmware é suficiente para preencher a versão ou a data "
+"da imagem (um dos campos). O número deve ser numérico."
 
 #: admin/resources/views/default/Settings/common/common.twig:111
 msgid "Image version"
@@ -16147,8 +16276,8 @@ msgstr "Képfájl verziója"
 
 #: admin/resources/views/default/Settings/common/common.twig:137
 msgid ""
-"Update type: http update (load the image from HTTP) or reboot DHCP (reboot the "
-"STB to the DHCP boot mode)"
+"Update type: http update (load the image from HTTP) or reboot DHCP (reboot "
+"the STB to the DHCP boot mode)"
 msgstr ""
 "Tipo de actualização: actualização http (carregar a imagem de HTTP) ou "
 "reiniciar o DHCP (reinicie o STB para o modo de inicialização DHCP)"
@@ -16156,8 +16285,8 @@ msgstr ""
 #: admin/resources/views/default/Settings/common/common.twig:152
 #, fuzzy
 msgid ""
-"Firmware is automatically updated is the version does not match to the current "
-"one."
+"Firmware is automatically updated is the version does not match to the "
+"current one."
 msgstr ""
 "O firmware é atualizado automaticamente é a versão não coincide com o atual."
 
@@ -16168,7 +16297,8 @@ msgstr "Adicional"
 #: admin/resources/views/default/Settings/common/common.twig:184
 msgid ""
 "If you have several firmware files in one catalogue, please specify the file "
-"prefix. For example: if you input tr_ prefix, file tr_imageupdate will be loaded"
+"prefix. For example: if you input tr_ prefix, file tr_imageupdate will be "
+"loaded"
 msgstr ""
 "Se tiver vários arquivos de firmware em um catálogo, por favor especifique o "
 "prefixo do arquivo. Por exemplo: se inserir prefixo tr_, arquivo "
@@ -16177,16 +16307,16 @@ msgstr ""
 #: admin/resources/views/default/Settings/common/common.twig:190
 #, fuzzy
 msgid ""
-"Filter the STB by set parameters. Update will be installed on STB matching the "
-"following parameters only. In 'Image descriptor, it is enough to specify the "
-"part of description or key word. Fill-in data can be found in the interface of "
-"user profile in the corresponding fields."
+"Filter the STB by set parameters. Update will be installed on STB matching "
+"the following parameters only. In 'Image descriptor, it is enough to specify "
+"the part of description or key word. Fill-in data can be found in the "
+"interface of user profile in the corresponding fields."
 msgstr ""
-"Filtre o STB por parâmetros definidos. A atualização será instalada no STB que "
-"corresponda apenas aos seguintes parâmetros. Em ' descritor de imagem, basta "
-"especificar a parte da descrição ou palavra-chave. Os dados de preenchimento "
-"podem ser encontrados na interface do perfil do utilizador nos campos "
-"correspondentes."
+"Filtre o STB por parâmetros definidos. A atualização será instalada no STB "
+"que corresponda apenas aos seguintes parâmetros. Em ' descritor de imagem, "
+"basta especificar a parte da descrição ou palavra-chave. Os dados de "
+"preenchimento podem ser encontrados na interface do perfil do utilizador nos "
+"campos correspondentes."
 
 #: admin/resources/views/default/Settings/common/common.twig:202
 msgid "Required image version"
@@ -16301,7 +16431,8 @@ msgid "Image on a transparent background in png format, no larger than 1MB."
 msgstr "Imagem num fundo transparente no formato png, não maior do que 1MB."
 
 #: admin/resources/views/default/Settings/themes_edit/themes_edit.twig:129
-msgid "The logo will be resized to the appropriate size depending on the platform"
+msgid ""
+"The logo will be resized to the appropriate size depending on the platform"
 msgstr ""
 "O logótipo será redimensionado para o tamanho apropriado, dependendo da "
 "plataforma"
@@ -16413,8 +16544,8 @@ msgid ""
 "Changing the name of the storage can lead to critical consequences. To use a "
 "storage with a different name, create a new storage."
 msgstr ""
-"Alterar o nome do armazenamento pode levar a conseqüências críticas. Para usar "
-"um armazenamento com um nome diferente, crie um novo armazenamento."
+"Alterar o nome do armazenamento pode levar a conseqüências críticas. Para "
+"usar um armazenamento com um nome diferente, crie um novo armazenamento."
 
 #: admin/resources/views/default/Storages/storages_list/storages_list.twig:129
 msgid "IP-address of the storage. Example : 127.0.0.1"
@@ -16432,11 +16563,11 @@ msgstr "Número da porta, acessando o servidor Apache"
 #: admin/resources/views/default/Storages/storages_list/storages_list.twig:151
 #, fuzzy
 msgid ""
-"Home directory where the catalogues and symbol links will be created Example: /"
-"home/username/slash_folder"
+"Home directory where the catalogues and symbol links will be created "
+"Example: /home/username/slash_folder"
 msgstr ""
-"Diretório inicial onde os catálogos e links de símbolos serão criados exemplo:/"
-"home/username/slash_folder"
+"Diretório inicial onde os catálogos e links de símbolos serão criados "
+"exemplo:/home/username/slash_folder"
 
 #: admin/resources/views/default/Storages/storages_list/storages_list.twig:156
 #, fuzzy
@@ -16446,8 +16577,8 @@ msgstr "Máximo dos utilizadores"
 #: admin/resources/views/default/Storages/storages_list/storages_list.twig:162
 #, fuzzy
 msgid ""
-"Maximum quantity of the users, which can watching the content from the storage "
-"at the same time"
+"Maximum quantity of the users, which can watching the content from the "
+"storage at the same time"
 msgstr ""
 "A quantidade máxima dos utilizadores, que pode prestar atenção ao índice do "
 "armazenamento ao mesmo tempo"
@@ -16465,15 +16596,15 @@ msgstr "Permitir gravação de TV"
 msgid ""
 "The emulation mode is used in case when two portals are attached to a single "
 "storage of TV archive. It is necessary to set the recording of TV archive at "
-"the first portal, and TV archive recording with the option of emulation at the "
-"second one. Thus, there will be two portals with the archive, though in fact it "
-"is recorded once."
+"the first portal, and TV archive recording with the option of emulation at "
+"the second one. Thus, there will be two portals with the archive, though in "
+"fact it is recorded once."
 msgstr ""
-"O modo de emulação é usado no caso quando dois portais são anexados a um único "
-"armazenamento de arquivo de TV. É necessário definir a gravação do arquivo de "
-"TV no primeiro portal, e gravação de arquivo de TV com a opção de emulação no "
-"segundo. Assim, haverá dois portais com o arquivo, embora na verdade ele é "
-"gravado uma vez."
+"O modo de emulação é usado no caso quando dois portais são anexados a um "
+"único armazenamento de arquivo de TV. É necessário definir a gravação do "
+"arquivo de TV no primeiro portal, e gravação de arquivo de TV com a opção de "
+"emulação no segundo. Assim, haverá dois portais com o arquivo, embora na "
+"verdade ele é gravado uma vez."
 
 #: admin/resources/views/default/Storages/storages_list/storages_list.twig:274
 msgid ""
@@ -16697,8 +16828,8 @@ msgstr "Identificador tarifário, pode ser usado para serviços externos"
 
 #: admin/resources/views/default/Tariffs/add_tariff_plans/add_tariff_plans.twig:89
 msgid ""
-"Tariff title. You can use letters, digits and symbols from the list: ! @ # $ % "
-"^ & * ( ) _ - + : ; , ."
+"Tariff title. You can use letters, digits and symbols from the list: ! @ # $ "
+"% ^ & * ( ) _ - + : ; , ."
 msgstr ""
 "Título tarifário.Pode usar letras, dígitos e símbolos da lista: ! @ # $ % ^ "
 "& * ( ) _ - + : ; , ."
@@ -16713,7 +16844,8 @@ msgstr "Tarifa padrão para todos os novos STB da rede"
 
 #: admin/resources/views/default/Tariffs/add_tariff_plans/add_tariff_plans.twig:115
 #, fuzzy
-msgid "To select as default, first you have to uncheck the current default tariff"
+msgid ""
+"To select as default, first you have to uncheck the current default tariff"
 msgstr ""
 "Para selecionar como padrão, primeiro você tem que desmarcar a tarifa padrão "
 "atual"
@@ -16955,11 +17087,11 @@ msgstr "Nome do canal"
 
 #: admin/resources/views/default/TvChannels/add_channel/add_channel.twig:112
 msgid ""
-"You can use Latin letters, digits and symbols from the list ! @ # $ % ^ & * ( ) "
-"_ - + : ; , ."
+"You can use Latin letters, digits and symbols from the list ! @ # $ % ^ & * "
+"( ) _ - + : ; , ."
 msgstr ""
-"Pode usar letras latinas, dígitos e símbolos da lista ! @ # $ % ^ & * ( ) _ - "
-"+ : ; , ."
+"Pode usar letras latinas, dígitos e símbolos da lista ! @ # $ % ^ & * ( ) _ "
+"- + : ; , ."
 
 #: admin/resources/views/default/TvChannels/add_channel/add_channel.twig:152
 msgid "Sets compulsory volume level for this channel"
@@ -17032,8 +17164,8 @@ msgstr "Duração do arquivo de TV de configuração"
 
 #: admin/resources/views/default/TvChannels/add_channel/add_channel.twig:559
 msgid ""
-"XMLTV ID of channel in EPG file. If the EPG source has the prefix state it in "
-"&lt;your_prefix&gt;ID format"
+"XMLTV ID of channel in EPG file. If the EPG source has the prefix state it "
+"in &lt;your_prefix&gt;ID format"
 msgstr ""
 "ID XMLTV do canal no arquivo EPG. Se a fonte EPG tem prefixo defina-o no "
 "formato do &lt;your_prefix&gt; ID"
@@ -17091,8 +17223,8 @@ msgid ""
 "Can record only the channels, which is broadcasted in the transport stream "
 "(mpeg-ts),  from multicast and also from http-server."
 msgstr ""
-"Pode gravar somente os canais, que é transmitido no fluxo de transporte (MPEG-"
-"TS), do multicast e também do http-Server."
+"Pode gravar somente os canais, que é transmitido no fluxo de transporte "
+"(MPEG-TS), do multicast e também do http-Server."
 
 #: admin/resources/views/default/TvChannels/add_channel/add_channel.twig:738
 msgid "Channel URL"
@@ -17108,9 +17240,9 @@ msgstr "Valor de filtro incorrecto"
 
 #: admin/resources/views/default/TvChannels/add_channel/add_channel.twig:762
 msgid ""
-"Filter by user-agent. Ability to set the filter by the connection type (WiFi, "
-"Ethernet), by STB model (MAG250, MAG275, ...), by country (UA, RU, ...). Field "
-"is case sensitive"
+"Filter by user-agent. Ability to set the filter by the connection type "
+"(WiFi, Ethernet), by STB model (MAG250, MAG275, ...), by country (UA, "
+"RU, ...). Field is case sensitive"
 msgstr ""
 "Filtrar por user-agent. Pode definir o filtro pelo tipo de ligação (WiFi, "
 "Ethernet), por modelo do STB (MAG250, MAG275,...), por país (UA, RU,...), "
@@ -17192,8 +17324,8 @@ msgid ""
 "Prefix is necessary to distinguish the EPG source in case, if the following "
 "XMLTV ID is stated in several sources"
 msgstr ""
-"O prefixo é necessário para distinguir a fonte de EPG caso que, se o seguinte "
-"ID de XMLTV é indicado em diversas fontes"
+"O prefixo é necessário para distinguir a fonte de EPG caso que, se o "
+"seguinte ID de XMLTV é indicado em diversas fontes"
 
 #: admin/resources/views/default/TvChannels/epg/epg.twig:153
 msgid "Initial state"
@@ -17273,7 +17405,8 @@ msgstr "A imagem não foi carregada"
 
 #: admin/resources/views/default/TvChannels/m3u_import/m3u_import.js.twig:197
 #: admin/resources/views/default/TvChannels/m3u_import/m3u_import.js.twig:203
-msgid "You are going to leave this page, some form data may be lost... Continue?"
+msgid ""
+"You are going to leave this page, some form data may be lost... Continue?"
 msgstr ""
 "Vai deixar esta página, alguns dados do formulário podem ser perdidos... "
 "Continuar?"
@@ -17303,10 +17436,11 @@ msgstr "Nenhum número disponível de canais"
 #: admin/resources/views/default/TvChannels/m3u_import/m3u_import.js.twig:228
 #, fuzzy
 msgid ""
-"To add more channels, you can delete the unwanted channels in the channel list"
+"To add more channels, you can delete the unwanted channels in the channel "
+"list"
 msgstr ""
-"Para adicionar mais canais, você pode excluir os canais indesejados na lista de "
-"canais"
+"Para adicionar mais canais, você pode excluir os canais indesejados na lista "
+"de canais"
 
 #: admin/resources/views/default/TvChannels/m3u_import/m3u_import.twig:4
 msgid "Import from m3u"
@@ -17343,8 +17477,8 @@ msgstr "Desbloquear a posição do canal"
 #: admin/resources/views/default/TvChannels/move_channel/move_channel.js.twig:495
 msgid ""
 "Attention! Processing list of more than 200 elements can greatly affect the "
-"performance and usability of this section of the admin panel. Are you sure you "
-"want to continue?"
+"performance and usability of this section of the admin panel. Are you sure "
+"you want to continue?"
 msgstr ""
 "Atenção! A lista de processamento de mais de 200 elementos pode afetar "
 "consideravelmente o desempenho e a usabilidade desta secção do painel de "
@@ -17445,8 +17579,8 @@ msgid ""
 "More detailed information about the connected packs will be available in the "
 "next editing session"
 msgstr ""
-"Informações mais detalhadas sobre os pacotes conectados estarão disponíveis na "
-"próxima sessão de edição"
+"Informações mais detalhadas sobre os pacotes conectados estarão disponíveis "
+"na próxima sessão de edição"
 
 #: admin/resources/views/default/Users/add_users/add_users.twig:473
 msgid "Valid until"
@@ -17847,8 +17981,8 @@ msgstr "Mais informações aqui"
 
 #: admin/resources/views/default/basic_templates/frgFooter/frgFooter.twig:311
 msgid ""
-"The npm version does not match the required one. For correct operation, install "
-"npm version 2.15.11"
+"The npm version does not match the required one. For correct operation, "
+"install npm version 2.15.11"
 msgstr ""
 "A versão npm não coincide com a necessária. Para a operação correta, instale "
 "a versão do npm 2.15.11"
@@ -17865,11 +17999,12 @@ msgstr "A data do evento final"
 #: admin/resources/views/default/basic_templates/scheduler_events_menu.twig:57
 #, fuzzy
 msgid ""
-"If the date the start / end is not specified, the event will be repeated at a "
-"specified interval until its status is changed to \"Stopped\""
+"If the date the start / end is not specified, the event will be repeated at "
+"a specified interval until its status is changed to \"Stopped\""
 msgstr ""
-"Se a data em que o início/término não for especificado, o evento será repetido "
-"em um intervalo especificado até que seu status seja alterado para \"parado\""
+"Se a data em que o início/término não for especificado, o evento será "
+"repetido em um intervalo especificado até que seu status seja alterado para "
+"\"parado\""
 
 #: admin/resources/views/default/basic_templates/scheduler_events_menu.twig:61
 msgid "Repeating interval"
@@ -17899,7 +18034,8 @@ msgstr "Número do dia"
 #: admin/resources/views/default/basic_templates/scheduler_events_menu.twig:144
 #, fuzzy
 msgid ""
-"If do not selected any of the days of the week the event will be run every day."
+"If do not selected any of the days of the week the event will be run every "
+"day."
 msgstr ""
 "Se não tiver seleccionado qualquer um dos dias da semana, o evento será "
 "executado diariamente."
@@ -18050,10 +18186,12 @@ msgstr "Sem sinal"
 
 #~ msgid ""
 #~ "An Activation Code is a unique set of symbols that is entered as "
-#~ "authorization along with a login, password and link to the operator’s portal."
+#~ "authorization along with a login, password and link to the operator’s "
+#~ "portal."
 #~ msgstr ""
 #~ "An Activation Code is a unique set of symbols that is entered as "
-#~ "authorization along with a login, password and link to the operator’s portal."
+#~ "authorization along with a login, password and link to the operator’s "
+#~ "portal."
 
 #~ msgid "Android STB"
 #~ msgstr "Android STB"
@@ -18167,11 +18305,11 @@ msgstr "Sem sinal"
 #~ msgstr "Data deleted"
 
 #~ msgid ""
-#~ "Dear Subscriber! Term free testing of our service is ended. We ask you to go "
-#~ "to Customer Care."
+#~ "Dear Subscriber! Term free testing of our service is ended. We ask you to "
+#~ "go to Customer Care."
 #~ msgstr ""
-#~ "Dear Subscriber! Term free testing of our service is ended. We ask you to go "
-#~ "to Customer Care."
+#~ "Dear Subscriber! Term free testing of our service is ended. We ask you to "
+#~ "go to Customer Care."
 
 #~ msgid "Dear Subscriber! Term of free testing of our service is ended."
 #~ msgstr "Dear Subscriber! Term of free testing of our service is ended."
@@ -18279,13 +18417,13 @@ msgstr "Sem sinal"
 #~ msgstr "IP-address of the storage. Example : http://127.0.0.1"
 
 #~ msgid ""
-#~ "If after a long time you do not get an answer from a manager or you need an "
-#~ "extra Source, or you receive a message about blocked Source, please contact "
-#~ "us"
+#~ "If after a long time you do not get an answer from a manager or you need "
+#~ "an extra Source, or you receive a message about blocked Source, please "
+#~ "contact us"
 #~ msgstr ""
-#~ "If after a long time you do not get an answer from a manager or you need an "
-#~ "extra Source, or you receive a message about blocked Source, please contact "
-#~ "us"
+#~ "If after a long time you do not get an answer from a manager or you need "
+#~ "an extra Source, or you receive a message about blocked Source, please "
+#~ "contact us"
 
 #~ msgid ""
 #~ "If you have gone through the registration process, a manager will contact "
@@ -18307,23 +18445,25 @@ msgstr "Sem sinal"
 #~ msgstr "Image descriptor"
 
 #~ msgid ""
-#~ "In cooperation with VertaMedia, we are now offering an advertising display "
-#~ "service."
+#~ "In cooperation with VertaMedia, we are now offering an advertising "
+#~ "display service."
 #~ msgstr ""
-#~ "In cooperation with VertaMedia, we are now offering an advertising display "
-#~ "service."
+#~ "In cooperation with VertaMedia, we are now offering an advertising "
+#~ "display service."
 
 #~ msgid ""
 #~ "In partnership with advertising agencies, Demand-Side Platforms, indirect "
-#~ "and direct channels of premium format, we offer the opportunity to display "
-#~ "video ads to your subscribers."
+#~ "and direct channels of premium format, we offer the opportunity to "
+#~ "display video ads to your subscribers."
 #~ msgstr ""
 #~ "In partnership with advertising agencies, Demand-Side Platforms, indirect "
-#~ "and direct channels of premium format, we offer the opportunity to display "
-#~ "video ads to your subscribers."
+#~ "and direct channels of premium format, we offer the opportunity to "
+#~ "display video ads to your subscribers."
 
-#~ msgid "In your cabinet you can see cash receipts for viewed ads in real time."
-#~ msgstr "In your cabinet you can see cash receipts for viewed ads in real time."
+#~ msgid ""
+#~ "In your cabinet you can see cash receipts for viewed ads in real time."
+#~ msgstr ""
+#~ "In your cabinet you can see cash receipts for viewed ads in real time."
 
 #~ msgid "Infomir News"
 #~ msgstr "Infomir News"
@@ -18457,13 +18597,13 @@ msgstr "Sem sinal"
 #~ "players and smart TVs."
 
 #~ msgid ""
-#~ "Official StalkerTV applications for Apple TV, Android TV, iPad, iPhone, iPod "
-#~ "touch, Android phones & tablets, and Android STB can be purchased in their "
-#~ "respective app stores, no activation codes are required."
+#~ "Official StalkerTV applications for Apple TV, Android TV, iPad, iPhone, "
+#~ "iPod touch, Android phones & tablets, and Android STB can be purchased in "
+#~ "their respective app stores, no activation codes are required."
 #~ msgstr ""
-#~ "Official StalkerTV applications for Apple TV, Android TV, iPad, iPhone, iPod "
-#~ "touch, Android phones & tablets, and Android STB can be purchased in their "
-#~ "respective app stores, no activation codes are required."
+#~ "Official StalkerTV applications for Apple TV, Android TV, iPad, iPhone, "
+#~ "iPod touch, Android phones & tablets, and Android STB can be purchased in "
+#~ "their respective app stores, no activation codes are required."
 
 #~ msgid "Ojibwa"
 #~ msgstr "Ojibwa"
@@ -18587,11 +18727,11 @@ msgstr "Sem sinal"
 #~ msgstr "Select a template for the type of STB"
 
 #~ msgid ""
-#~ "Selecting a destination. Example one, all, on the list, on the template, the "
-#~ "group."
+#~ "Selecting a destination. Example one, all, on the list, on the template, "
+#~ "the group."
 #~ msgstr ""
-#~ "Selecting a destination. Example one, all, on the list, on the template, the "
-#~ "group."
+#~ "Selecting a destination. Example one, all, on the list, on the template, "
+#~ "the group."
 
 #~ msgid "Sending a message with video"
 #~ msgstr "Sending a message with video"
@@ -18633,15 +18773,15 @@ msgstr "Sem sinal"
 #~ msgstr "Stalker Middleware Product Manager"
 
 #~ msgid ""
-#~ "Stalker Player applications for Amazon Fire TV and Roku media players, and "
-#~ "Samsung Smart, Samsung Tizen, and LG WebOS smart TVs, can be downloaded and "
-#~ "installed for free from app stores, but the subscriber will need an "
-#~ "Activation Code."
+#~ "Stalker Player applications for Amazon Fire TV and Roku media players, "
+#~ "and Samsung Smart, Samsung Tizen, and LG WebOS smart TVs, can be "
+#~ "downloaded and installed for free from app stores, but the subscriber "
+#~ "will need an Activation Code."
 #~ msgstr ""
-#~ "Stalker Player applications for Amazon Fire TV and Roku media players, and "
-#~ "Samsung Smart, Samsung Tizen, and LG WebOS smart TVs, can be downloaded and "
-#~ "installed for free from app stores, but the subscriber will need an "
-#~ "Activation Code."
+#~ "Stalker Player applications for Amazon Fire TV and Roku media players, "
+#~ "and Samsung Smart, Samsung Tizen, and LG WebOS smart TVs, can be "
+#~ "downloaded and installed for free from app stores, but the subscriber "
+#~ "will need an Activation Code."
 
 #~ msgid "Stalker Smart Launcher"
 #~ msgstr "Stalker Smart Launcher"
@@ -18747,13 +18887,13 @@ msgstr "Sem sinal"
 #~ "remote control and network connection."
 
 #~ msgid ""
-#~ "This was made possible thanks to the release of Stalker Player, an easy-to-"
-#~ "use application for viewing TV and video content that is available on an "
-#~ "increasing number of platforms."
+#~ "This was made possible thanks to the release of Stalker Player, an easy-"
+#~ "to-use application for viewing TV and video content that is available on "
+#~ "an increasing number of platforms."
 #~ msgstr ""
-#~ "This was made possible thanks to the release of Stalker Player, an easy-to-"
-#~ "use application for viewing TV and video content that is available on an "
-#~ "increasing number of platforms."
+#~ "This was made possible thanks to the release of Stalker Player, an easy-"
+#~ "to-use application for viewing TV and video content that is available on "
+#~ "an increasing number of platforms."
 
 #~ msgid "Time of your account is expired"
 #~ msgstr "Time of your account is expired"
@@ -18830,20 +18970,20 @@ msgstr "Sem sinal"
 #~ "advertising campaigns that truly perform."
 
 #~ msgid ""
-#~ "We offering our experienced and skilled strategical insights that make your "
-#~ "ad revenue increase exponentially."
+#~ "We offering our experienced and skilled strategical insights that make "
+#~ "your ad revenue increase exponentially."
 #~ msgstr ""
-#~ "We offering our experienced and skilled strategical insights that make your "
-#~ "ad revenue increase exponentially."
+#~ "We offering our experienced and skilled strategical insights that make "
+#~ "your ad revenue increase exponentially."
 
 #~ msgid ""
 #~ "We thank you for your trust and we would like to know more about your "
-#~ "experience with Stalker Middleware. How satisfied are you with the product "
-#~ "and what should be improved?"
+#~ "experience with Stalker Middleware. How satisfied are you with the "
+#~ "product and what should be improved?"
 #~ msgstr ""
 #~ "We thank you for your trust and we would like to know more about your "
-#~ "experience with Stalker Middleware. How satisfied are you with the product "
-#~ "and what should be improved?"
+#~ "experience with Stalker Middleware. How satisfied are you with the "
+#~ "product and what should be improved?"
 
 #~ msgid ""
 #~ "We will not disclose your personal information. The answers will not be "
@@ -18856,11 +18996,11 @@ msgstr "Sem sinal"
 #~ msgstr "Western Frisian"
 
 #~ msgid ""
-#~ "With our extended reporting, you receive a full and detailed picture of your "
-#~ "performance down to granular insights."
+#~ "With our extended reporting, you receive a full and detailed picture of "
+#~ "your performance down to granular insights."
 #~ msgstr ""
-#~ "With our extended reporting, you receive a full and detailed picture of your "
-#~ "performance down to granular insights."
+#~ "With our extended reporting, you receive a full and detailed picture of "
+#~ "your performance down to granular insights."
 
 #~ msgid "Wowza"
 #~ msgstr "Wowza"
@@ -18875,11 +19015,11 @@ msgstr "Sem sinal"
 #~ msgstr "Wowza port"
 
 #~ msgid ""
-#~ "XMLTV ID of channel in EPG file. If the EPG source has the prefix state it "
-#~ "in &lt;prefix&gt;_XMLTV ID format"
+#~ "XMLTV ID of channel in EPG file. If the EPG source has the prefix state "
+#~ "it in &lt;prefix&gt;_XMLTV ID format"
 #~ msgstr ""
-#~ "XMLTV ID of channel in EPG file. If the EPG source has the prefix state it "
-#~ "in &lt;prefix&gt;_XMLTV ID format"
+#~ "XMLTV ID of channel in EPG file. If the EPG source has the prefix state "
+#~ "it in &lt;prefix&gt;_XMLTV ID format"
 
 #~ msgid "You can request additional Source in the settings."
 #~ msgstr "You can request additional Source in the settings."
@@ -18997,75 +19137,3 @@ msgstr "Sem sinal"
 
 #~ msgid "Изменить лого channel"
 #~ msgstr "Изменить лого channel"
-
-#: server/Lib/RESTAPI/v3/Search.php:76
-#, fuzzy
-msgid "H:i"
-msgstr "h:i A"
-
-#: admin/json_menu/menu.json:68
-msgid "Categories"
-msgstr "Categorias"
-
-#: admin/json_menu/menu.json:261
-msgid "Administrators list"
-msgstr "Lista de administradores"
-
-#: admin/json_menu/menu.json:202
-msgid "About License keys"
-msgstr "Sobre as chaves de licença"
-
-#: admin/json_menu/menu.json:168
-msgid "Filters"
-msgstr "Filtros"
-
-#: admin/json_menu/menu.json:220
-msgid "Classic apps"
-msgstr "Aplicações clássicas"
-
-#: admin/json_menu/menu.json:419
-msgid "Firmware update"
-msgstr "Atualização de Firmware"
-
-#: admin/src/Controller/VideoClubController.php:2609
-msgid "Inserted"
-msgstr "Inserido"
-
-#: admin/json_menu/menu.json:134
-msgid "Tariffs"
-msgstr "Pautas aduaneiras"
-
-#: server/Lib/Core/Stb.php:341 server/Lib/Core/Stb.php:859
-msgid "You can not connect to the service in this network."
-msgstr "Não pode ligar ao serviço através desta rede."
-
-msgid "didn't match any item"
-msgstr "não coincide com nenhum item"
-
-#: admin/json_menu/menu.json:378
-msgid "Video search"
-msgstr "Procurar vídeo"
-
-#: admin/json_menu/menu.json:248
-msgid "Templates of messages"
-msgstr "Modelos de mensagens"
-
-#: admin/json_menu/menu.json:401
-msgid "Streaming areas"
-msgstr "Áreas de streaming"
-
-#: admin/json_menu/menu.json:373
-msgid "Storage list"
-msgstr "Lista de armazenamento"
-
-#: admin/json_menu/menu.json:225
-msgid "Smart Launcher apps"
-msgstr "Aplicações Smart Launcher"
-
-#: admin/json_menu/menu.json:396
-msgid "Servers list"
-msgstr "Lista de servidores"
-
-#: admin/json_menu/menu.json:320
-msgid "Movie statistics"
-msgstr "Estatísticas do filme"
