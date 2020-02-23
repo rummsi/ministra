@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: stalker_portal\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 16:53+0000\n"
-"PO-Revision-Date: 2020-01-25 18:34+0000\n"
+"PO-Revision-Date: 2020-02-23 10:33+0000\n"
 "Last-Translator: Weblate Admin <weblate.admin@example.com>\n"
 "Language-Team: Portuguese <http://serverpt.dynu.net/projects/servidor/stb_po/"
 "pt/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 3.10.3\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3\n"
 "X-Poedit-KeywordsList: trans;transchoice;setLocalization;transChoice;_;"
 "gettext;gettext_noop;dgettext\n"
 "X-Poedit-Basepath: ../../../..\n"
@@ -1370,7 +1370,7 @@ msgstr "Desabilite {ln} e, em seguida, habilite este lançador"
 
 #: admin/src/Controller/ApplicationCatalogController.php:944
 msgid "This application version has conflicts"
-msgstr "Esta versão da aplicação tem conflitos"
+msgstr "Esta versão da aplicação tem conflitos."
 
 #: admin/src/Controller/ApplicationCatalogController.php:960
 #: admin/src/Controller/ApplicationCatalogController.php:978
@@ -4669,9 +4669,8 @@ msgstr "Nenhum item movido, nada a fazer"
 
 #: admin/src/Controller/TvChannelsController.php:1111
 #: admin/src/Controller/TvChannelsController.php:1134
-#, fuzzy
 msgid "Failed to save, update the channel list"
-msgstr "Não conseguiu salvar, atualizar a lista do canal"
+msgstr "Não conseguiu salvar, actualizar a lista do canal."
 
 #: admin/src/Controller/TvChannelsController.php:1237
 #, fuzzy
@@ -4690,9 +4689,8 @@ msgid "URL is free"
 msgstr "URL está livre"
 
 #: admin/src/Controller/TvChannelsController.php:1379
-#, fuzzy
 msgid "Some channels not enough params."
-msgstr "Alguns canais não há param suficientes."
+msgstr "Alguns canais não há param suficientes"
 
 #: admin/src/Controller/TvChannelsController.php:1384
 #: server/administrator/add_itv.php:69
@@ -4705,9 +4703,8 @@ msgid "TV Archive has been restarted."
 msgstr "O arquivo de TV foi reiniciado."
 
 #: admin/src/Controller/TvChannelsController.php:1505
-#, fuzzy
 msgid "Found channels of this genre. Deleting not possible"
-msgstr "Encontrou canais deste gênero. Exclusão não é possível"
+msgstr "Encontrou canais deste género. Exclusão não é possível."
 
 #: admin/src/Controller/TvChannelsController.php:1586
 #, fuzzy
@@ -4717,9 +4714,8 @@ msgstr ""
 "do UTF-8."
 
 #: admin/src/Controller/TvChannelsController.php:1589
-#, fuzzy
 msgid "Error m3u parse. File is empty or non in m3u-format"
-msgstr "Erro m3u parse. O arquivo está vazio ou não no formato m3u"
+msgstr "Erro m3u parse. O arquivo está vazio ou não no formato m3u."
 
 #: admin/src/Controller/TvChannelsController.php:1681
 msgid "Field \"Channel name\" cannot be empty"
@@ -5747,9 +5743,8 @@ msgid "Empty location header"
 msgstr "Local de cabeçalho vazio"
 
 #: server/Lib/Kinopoisk.php:154
-#, fuzzy
 msgid "Wrong location header."
-msgstr "Cabeçalho de local incorreto."
+msgstr "Cabeçalho de local incorreto"
 
 #: server/Lib/Kinopoisk.php:154 server/Lib/Kinopoisk.php:159
 #: server/Lib/Tmdb.php:181
@@ -6184,9 +6179,8 @@ msgid "Do you really want to delete this record?"
 msgstr "Você realmente deseja excluir esse registo?"
 
 #: server/administrator/add_itv.php:770
-#, fuzzy
 msgid "Channel with same number already exists!"
-msgstr "Canal com o mesmo número já existe!"
+msgstr "Canal com o mesmo número já existe"
 
 #: server/administrator/add_itv.php:774
 msgid "Shift channel list?"
@@ -6533,9 +6527,8 @@ msgid "Moderators MAC addresses"
 msgstr "Endereços MAC de moderadores"
 
 #: server/administrator/add_moderator_mac.php:228
-#, fuzzy
 msgid "Disable Video club ad"
-msgstr "Desativar o anúncio do clube de vídeo"
+msgstr "Desactivar o anúncio do clube de vídeo "
 
 #: server/administrator/add_radio.php:90 server/administrator/add_radio.php:99
 #, fuzzy
@@ -6632,9 +6625,8 @@ msgstr "Séries"
 #: server/administrator/add_video.php:767
 #: server/administrator/karaoke_archive.php:120
 #: server/administrator/last_closed_karaoke.php:182
-#, fuzzy
 msgid "Turn on date"
-msgstr "Ative a data"
+msgstr "Active a data "
 
 #: server/administrator/add_video.php:979
 msgid "please wait"
@@ -6711,7 +6703,7 @@ msgstr "Classificação etária"
 #: server/administrator/add_video.php:1719 server/lang/stb.php:90
 #, fuzzy
 msgid "Rating MPAA"
-msgstr "Pontuação MPAA"
+msgstr "Pontuação MPAA "
 
 #: server/administrator/add_video.php:1836
 msgid "Only for MAG100"
@@ -7428,7 +7420,7 @@ msgstr "Razão do retorno"
 
 #: server/administrator/lib/functions.php:1055
 msgid "Clip"
-msgstr "Clip"
+msgstr "Clipe"
 
 #: server/administrator/login.php:43
 msgid "LOGIN"
@@ -8507,9 +8499,8 @@ msgid "on video"
 msgstr "em vídeo"
 
 #: server/lang/stb.php:51
-#, fuzzy
 msgid "Thank you, your opinion will be taken into account"
-msgstr "Obrigado, sua opinião será levada em conta"
+msgstr "Obrigado, sua opinião será levada em conta!"
 
 #: server/lang/stb.php:52
 #, fuzzy
@@ -8744,9 +8735,8 @@ msgid "From USB"
 msgstr "A partir de USB"
 
 #: server/lang/stb.php:147
-#, fuzzy
 msgid "Method select"
-msgstr "Método Select"
+msgstr "Selecção do método "
 
 #: server/lang/stb.php:148
 msgid "EMPTY"
@@ -8863,7 +8853,7 @@ msgstr "Confirmação da etapa"
 #: server/lang/stb.php:180
 #, fuzzy
 msgid "Moving through the pages of history moves"
-msgstr "Movendo-se através das páginas de movimentos de história"
+msgstr "Movendo-se através das páginas de movimentos de história "
 
 #: server/lang/stb.php:181
 msgid "Service is disabled"
@@ -9321,7 +9311,7 @@ msgstr "Você foi retirado do serviço com sucesso."
 #: server/lang/stb.php:320
 #, fuzzy
 msgid "You have successfully subscribed to the service.  STB will be rebooted."
-msgstr "Você assinou com sucesso o serviço.  STB será reiniciado."
+msgstr "Você assinou com sucesso o serviço. STB será reiniciado."
 
 #: server/lang/stb.php:321
 msgid ""
@@ -9329,9 +9319,8 @@ msgid ""
 msgstr "Você foi retirado do serviço com sucesso. STB será reiniciado."
 
 #: server/lang/stb.php:322
-#, fuzzy
 msgid "An error in the management of subscriptions."
-msgstr "Um erro no gerenciamento de assinaturas."
+msgstr "Um erro no gerenciamento de assinaturas"
 
 #: server/lang/stb.php:324
 #, fuzzy
@@ -9520,7 +9509,7 @@ msgstr "Erro PVR: erro ao abrir o URL do canal"
 #: server/lang/stb.php:372
 #, fuzzy
 msgid "PVR Error: Error opening file"
-msgstr "PVR erro: erro ao abrir o arquivo"
+msgstr "PVR erro: erro ao abrir o arquivo "
 
 #: server/lang/stb.php:373
 #, fuzzy
@@ -9639,7 +9628,7 @@ msgstr "Sem canais disponíveis"
 #: server/lang/stb.php:410
 #, fuzzy
 msgid "You can configure DVB channels in the settings menu"
-msgstr "Você pode configurar os canais DVB no menu de configurações"
+msgstr "Você pode configurar os canais DVB no menu de configurações "
 
 #: server/lang/stb.php:411
 #: admin/resources/views/default/ApplicationCatalog/application_detail/application_detail.twig:5
@@ -9683,9 +9672,8 @@ msgid "Compositions"
 msgstr "Composições"
 
 #: server/lang/stb.php:428
-#, fuzzy
 msgid "Playlist select"
-msgstr "Selecionar lista de reprodução"
+msgstr "Seleccionar lista de reprodução "
 
 #: server/lang/stb.php:430
 msgid "NEW"
@@ -9698,7 +9686,7 @@ msgstr "Nova playlist"
 #: server/lang/stb.php:433
 #, fuzzy
 msgid "Error while saving"
-msgstr "Erro ao salvar"
+msgstr "Erro ao salvar "
 
 #: server/lang/stb.php:434
 msgid "CREATE NEW"
@@ -10570,7 +10558,7 @@ msgstr "Remover artista"
 #: server/tools/misctranslations.php:220
 #, fuzzy
 msgid "Validation artist name"
-msgstr "Nome do artista de validação"
+msgstr "Nome do artista de validação "
 
 #: server/tools/misctranslations.php:221
 msgid "List of audio genres"
@@ -10594,19 +10582,18 @@ msgid "Remove the audio genre"
 msgstr "Remover o género de áudio"
 
 #: server/tools/misctranslations.php:226
-#, fuzzy
 msgid "Validation names audio genre"
-msgstr "Nomes de validação gênero de áudio"
+msgstr "Nomes de validação género de áudio "
 
 #: server/tools/misctranslations.php:227
 #, fuzzy
 msgid "List of language performance"
-msgstr "Lista de desempenho do idioma"
+msgstr "Lista de desempenho do idioma "
 
 #: server/tools/misctranslations.php:228
 #, fuzzy
 msgid "List of language performance by page + filters"
-msgstr "Lista de desempenho do idioma por página + filtros"
+msgstr "Lista de desempenho do idioma por página + filtros "
 
 #: server/tools/misctranslations.php:229
 msgid "Add language of performance"
@@ -10666,9 +10653,8 @@ msgid "Broadcast server"
 msgstr "Servidor de difusão"
 
 #: server/tools/misctranslations.php:245
-#, fuzzy
 msgid "List of servers broadcasting"
-msgstr "Lista de servidores de radiodifusão"
+msgstr "Lista de servidores de transmissão "
 
 #: server/tools/misctranslations.php:246
 #, fuzzy
@@ -10765,9 +10751,8 @@ msgid "Set \"readed\" flag for item of feed news"
 msgstr "Ajuste a bandeira \"readed\" para o artigo da notícia da alimentação"
 
 #: server/tools/misctranslations.php:266
-#, fuzzy
 msgid "Set remind date for item of feed news"
-msgstr "Definir lembrar data para o item de feed News"
+msgstr "Definir lembrar data para o item feed de notícias "
 
 #: server/tools/misctranslations.php:267
 #, fuzzy
@@ -11242,7 +11227,7 @@ msgstr "Mover canal - Ordem dos canais"
 #: server/tools/misctranslations.php:380
 #, fuzzy
 msgid "Move channel - Save the changes of order channels"
-msgstr "Mover canal-salvar as alterações dos canais de ordem"
+msgstr "Mover canal-salvar as alterações dos canais de ordem "
 
 #: server/tools/misctranslations.php:381
 #, fuzzy
@@ -11288,9 +11273,8 @@ msgid "Viewing and editing user"
 msgstr "Visualizando e editando o utilizador"
 
 #: server/tools/misctranslations.php:392
-#, fuzzy
 msgid "Validation of login user"
-msgstr "Validação do utilizador de login"
+msgstr "Validação do login de utilizador "
 
 #: server/tools/misctranslations.php:393
 msgid "Reset the password of Parent Control user"
@@ -11310,9 +11294,8 @@ msgid "Adding STB"
 msgstr "Adicionando STB"
 
 #: server/tools/misctranslations.php:397
-#, fuzzy
 msgid "Viewing and editing title of STB"
-msgstr "Exibindo e editando o título do STB"
+msgstr "Ver e Editar título do STB "
 
 #: server/tools/misctranslations.php:398
 #, fuzzy
@@ -11349,7 +11332,7 @@ msgstr "Verifique se você pode adicionar um STB ao grupo"
 #: server/tools/misctranslations.php:405
 #, fuzzy
 msgid "Logs of activity STB"
-msgstr "Logs de atividade STB"
+msgstr "Logs de atividade STB "
 
 #: server/tools/misctranslations.php:406
 msgid "Logs of activity STB by page + filters"
@@ -11417,7 +11400,7 @@ msgstr "Visualizando e editando filmes"
 #: server/tools/misctranslations.php:420
 #, fuzzy
 msgid "Validation of title movie"
-msgstr "Validação do título do filme"
+msgstr "Validação do título do filme "
 
 #: server/tools/misctranslations.php:421
 #, fuzzy
@@ -11464,7 +11447,7 @@ msgstr "Programe o interruptor sobre do filme"
 #: server/tools/misctranslations.php:428
 #, fuzzy
 msgid "Remove movie from schedule switch on"
-msgstr "Remova o filme do interruptor da programação sobre"
+msgstr "Remova o filme do interruptor da programação sobre "
 
 #: server/tools/misctranslations.php:429
 msgid "List of advertising blocks"
@@ -11968,9 +11951,8 @@ msgid "External Advertising"
 msgstr "Publicação Externa"
 
 #: server/tools/misctranslations.php:534
-#, fuzzy
 msgid "List of companies"
-msgstr "Lista de empresas"
+msgstr "Lista de campanhas "
 
 #: server/tools/misctranslations.php:535
 #, fuzzy
@@ -13388,9 +13370,8 @@ msgstr ""
 #: admin/resources/views/Events_index.twig:136
 #: admin/resources/views/default/basic_templates/events_menu.twig:74
 #: admin/resources/views/default/basic_templates/scheduler_events_menu.twig:220
-#, fuzzy
 msgid "Select a group of users that will be delivered message"
-msgstr "Selecione um grupo de utilizadores que serão entregues mensagem"
+msgstr "Seleccione um grupo de utilizadores que serão entregues mensagem "
 
 #: admin/resources/views/Events_index.twig:141
 #: admin/resources/views/default/basic_templates/events_menu.twig:79
@@ -13973,9 +13954,8 @@ msgid "Details"
 msgstr "Detalhes"
 
 #: admin/resources/views/default/ApplicationCatalog/smart_application_list/smart_application_list.js.twig:606
-#, fuzzy
 msgid "The next apps has been installed manually and will be removed."
-msgstr "As próximas aplicações foram instaladas manualmente e serão removidas."
+msgstr "As próximas aplicações foram instaladas manualmente e serão removidas"
 
 #: admin/resources/views/default/ApplicationCatalog/smart_application_list/smart_application_list.js.twig:608
 msgid "current version"
@@ -14436,12 +14416,11 @@ msgstr ""
 "Será seleccionado como padrão para todos os novos servidores de streaming"
 
 #: admin/resources/views/default/BroadcastServers/add_zone/add_zone.twig:64
-#, fuzzy
 msgid ""
 "To select as default, first you have to uncheck the current default zone"
 msgstr ""
-"Para selecionar como padrão, primeiro você tem que desmarcar a zona padrão "
-"atual"
+"Para seleccionar como padrão, primeiro você tem que desmarcar a zona padrão "
+"actual "
 
 #: admin/resources/views/default/BroadcastServers/add_zone/add_zone.twig:93
 msgid ""
@@ -14506,7 +14485,7 @@ msgid ""
 "default streaming area"
 msgstr ""
 "Escolha a área de streaming, se o campo estiver limpo, será definido um "
-"padrão de área de streaming"
+"padrão de área de streaming "
 
 #: admin/resources/views/default/BroadcastServers/broadcast_zone_list/broadcast_zone_list.twig:4
 msgid "areas list"
@@ -14582,7 +14561,7 @@ msgstr ""
 "dispositivos que podem ser conectados ao stalker middleware. Para "
 "estabelecer uma conexão bem-sucedida, o set-top box deve ser integrado ao "
 "stalker middleware. As caixas de Set-Top MAG da infomir e as aplicações "
-"StalkerTV (Android, iOS) originais não exigem um certificado."
+"StalkerTV (Android, iOS) originais não exigem um certificado.  "
 
 #: admin/resources/views/default/Certificates/certificate_request/certificate_request.twig:278
 #, fuzzy
@@ -14699,7 +14678,7 @@ msgid ""
 "devices."
 msgstr ""
 "Sim. Nosso servidor recebe solicitações a qualquer momento que você tentar "
-"autorizar uma set-top box.  Se o seu certificado for válido, ele será "
+"autorizar uma set-top box. Se o seu certificado for válido, ele será "
 "autorizado mesmo que a solicitação não chegue ao nosso servidor. Isso "
 "garante alta disponibilidade de dispositivos conectados."
 
@@ -15378,9 +15357,8 @@ msgid "sales department"
 msgstr "departamento de vendas"
 
 #: admin/resources/views/default/LicenseKeys/about_license_keys/about_license_keys.twig:58
-#, fuzzy
 msgid "Have any additional questions"
-msgstr "Tenha alguma dúvida adicional"
+msgstr "Tenha alguma dúvida adicional?"
 
 #: admin/resources/views/default/LicenseKeys/about_license_keys/about_license_keys.twig:72
 msgid "Which devices are supported?"
@@ -16467,9 +16445,8 @@ msgid "Inactive subscribers"
 msgstr "Assinantes inactivos"
 
 #: admin/resources/views/default/Statistics/stat_claims/stat_claims.twig:57
-#, fuzzy
 msgid "Clean claims"
-msgstr "Reivindicações limpas"
+msgstr "Queixas limpas "
 
 #: admin/resources/views/default/Statistics/stat_claims/stat_claims.twig:78
 msgid "Go to Complaints Log page"
@@ -16873,13 +16850,12 @@ msgid "Invalid value"
 msgstr "Valor Inválido"
 
 #: admin/resources/views/default/Tariffs/add_tariff_plans/add_tariff_plans.twig:152
-#, fuzzy
 msgid ""
 "Acceptable value is from 1 to 365. Leave empty field or 0 for unlimited "
 "validity period"
 msgstr ""
 "O valor aceitável é de 1 a 365. Deixe o campo vazio ou 0 para o período de "
-"validade ilimitado"
+"validade ilimitado."
 
 #: admin/resources/views/default/Tariffs/add_tariff_plans/add_tariff_plans.twig:166
 #: admin/resources/views/default/Tariffs/add_tariff_plans/add_tariff_plans.twig:262
@@ -17061,7 +17037,7 @@ msgstr "Sem resultados"
 #: admin/resources/views/default/TvChannels/add_channel/add_channel.js.twig:942
 #, fuzzy
 msgid "Form data is not valid. Really want to go?"
-msgstr "Dados de formulário não são válidos. Quer mesmo ir?"
+msgstr " Dados de formulário não são válidos. Quer mesmo ir?"
 
 #: admin/resources/views/default/TvChannels/add_channel/add_channel.twig:4
 msgid "edit channel \""
@@ -17248,7 +17224,7 @@ msgstr ""
 "Ethernet), por modelo do STB (MAG250, MAG275,...), por país (UA, RU,...), "
 "por endereço-IP (ex. 192.168.1.1) ou por alcance de endereço-IP (ex. "
 "192.168.1.0-192.168.1.10 or 192.168.1.0/24). Diferencia maiúsculas de "
-"minúsculas"
+"minúsculas."
 
 #: admin/resources/views/default/TvChannels/add_channel/add_channel.twig:780
 msgid "Priority for channel URL, 0 – the highest priority"
@@ -17633,7 +17609,7 @@ msgstr "Alterar revendedor para o grupo actual"
 #: admin/resources/views/default/Users/users_consoles_groups/users_consoles_groups.twig:4
 #, fuzzy
 msgid "list of groups STB"
-msgstr "lista de grupos STB"
+msgstr "lista de grupos STB "
 
 #: admin/resources/views/default/Users/users_consoles_report/users_consoles_report.js.twig:26
 #: admin/resources/views/default/Users/users_consoles_report/users_consoles_report.js.twig:40
